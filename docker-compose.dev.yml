@@ -1,0 +1,12 @@
+version: "3.3"
+
+services:
+  mamut-app-translator:
+    build:
+      context: ./
+      dockerfile: ./docker/translator/dev.Dockerfile
+    ports:
+      - 8310:3000
+    volumes:
+      - ./src/translator/:/app/
+    restart: always
