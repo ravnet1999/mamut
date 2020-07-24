@@ -1,25 +1,22 @@
 const express = require('express');
 const router = express.Router();
 const query = require('../src/mysql/query');
+const response = require('../src/response');
 
 router.post('/login', (req, res, next) => {
-    query('SELECT login, haslo FROM `informatycy` WHERE login=?', [req.body.login], (results, fields) => {
+    query('SELECT * FROM `informatycy` WHERE login=?', [req.body.login], (results, fields) => {
 
         let user = results[0];
 
-        if(user.password == req.body.password) {
-            res.json({
-                error: false,
-                messages: ['test']
-            });
+        if(user.haslo == req.body.password) {
+            delete user.haslo;
+            response(res, false, ['Logowanie pomyślne.'], [user]);
             return;
         }
 
-        res.json({
-            error: true,
-            messages: ['Wrong password...']
-        });
-    })
+        response(res, true, ['Taki użytkownik nie istnieje.']);
+        return;
+    });
 });
 
 module.exports = router;
