@@ -1,53 +1,75 @@
 const Helpers = {
-    buildTaskQuery: (issuer, issuerCompany, pcId, localizedIn, channelId, type, roomNumber, pc, concernedUser, concernedCompany, concernedPcId, concernedLocalizedIn, concernedPc, concernedRoomNumber, serviceId, service, category, description, date, departmentId, operatorId, emailNotif, priority, isTerminowe, notes) => {
+    buildTaskQuery: (requestBody) => {
+        let issuer = {
+            id_zglaszajacy: requestBody['issuer'].id,
+            login: requestBody['issuer'].login,
+            id_klienta: requestBody['issuer'].id_klienta,
+            zglaszajacy: requestBody['issuer'].imie + ' ' + requestBody['issuer'].nazwisko,
+            vip: requestBody['issuer'].vip,
+            numer_wewnetrzny: requestBody['issuer'].numer_wewnetrzny,
+            adres_email: requestBody['issuer'].adres_email,
+            tel_komorkowy: requestBody['issuer'].tel_komorkowy,
+            nr_pokoju: requestBody['issuerRoomNumber'],
+            id_komputera: requestBody['issuerPcId'],
+            komputer: requestBody['issuerPc']
+        }
+
+        let issuerCompany = {
+            klient: requestBody['issuerCompany'].nazwa,
+            lokalizacja: requestBody['issuerCompanyLocation'].nazwa,
+            id_lokalizacja: requestBody['issuerCompanyLocation'].id,
+            telefon: requestBody['issuerCompanyLocation'].nr_telefonu1
+        }
+
+        let concernedUser = {
+            id_zglaszajacy_dot: requestBody['concernedUser'].id,
+            login_dot: requestBody['concernedUser'].login,
+            id_klienta_dot: requestBody['concernedUser'].id_klienta,
+            zglaszajacy_dot: requestBody['concernedUser'].imie + ' ' + requestBody['concernedUser'].nazwisko,
+            vip_dot: requestBody['concernedUser'].vip,
+            numer_wewnetrzny_dot: requestBody['concernedUser'].numer_wewnetrzny,
+            adres_email_dot: requestBody['concernedUser'].adres_email,
+            tel_komorkowy_dot: requestBody['concernedUser'].tel_komorkowy,
+            nr_pokoju_dot: requestBody['concernedRoomNumber'],
+            id_komputera_dot: requestBody['concernedPcId'],
+            komputer_dot: requestBody['concernedPc']
+        }
+
+        let concernedCompany = {
+            klient_dot: requestBody['concernedCompany'].nazwa,
+            id_lokalizacja_dot: requestBody['concernedCompanyLocation'].id,
+            telefon_dot: requestBody['concernedCompanyLocation'].nr_telefonu1,
+            lokalizacja_dot: requestBody['concernedCompanyLocation'].nazwa
+        }
+
+        let task = {
+            kanal: requestBody['channel'],
+            problem_zadanie: requestBody['type'],
+            id_uslugi: requestBody['serviceId'],
+            usluga: requestBody['service'],
+            kat_zapytanie: requestBody['category'],
+            opis: requestBody['description'],
+            komorka: requestBody['department'],
+            informatyk: requestBody['operatorId'],
+            powiadomienie_email: requestBody['emailNotif'],
+            priorytet: requestBody['priority'],
+            terminowe: requestBody['isTerminowe'],
+            uwagi: requestBody['notes'],
+            termin: 'NOW()'
+        }
+
         let fields = {
-            id_zglaszajacy: issuer.id,
-            id_klienta: issuer.id_klienta,
-            id_komputera: pcId,
-            id_lokalizacja: localizedIn.id,
-            kanal: channelId,
-            telefon: localizedIn.nr_telefonu1,
-            problem_zadanie: type,
-            vip: issuer.vip,
-            zglaszajacy: issuer.imie + ' ' + issuer.nazwisko,
-            numer_wewnetrzny: issuer.numer_wewnetrzny,
-            nr_pokoju: roomNumber,
-            komputer: pc,
-            klient: issuerCompany.nazwa,
-            lokalizacja: localizedIn.nazwa,
-            login: issuer.login,
-            adres_email: issuer.adres_email,
-            tel_komorkowy: issuer.tel_komorkowy,
-            id_zglaszajacy_dot: concernedUser.id,
-            id_komputera_dot: concernedPcId,
-            id_klienta_dot: concernedUser.id_klienta,
-            id_lokalizacja_dot: concernedLocalizedIn.id,
-            zglaszajacy_dot: concernedUser.imie + ' ' + concernedUser.nazwisko,
-            telefon_dot: concernedLocalizedIn.nr_telefonu1,
-            komputer_dot: concernedPc,
-            klient_dot: concernedCompany.nazwa,
-            numer_wewnetrzny_dot: concernedUser.numer_wewnetrzny,
-            nr_pokoju_dot: concernedRoomNumber,
-            lokalizacja_dot: concernedLocalizedIn.nazwa,
-            adres_email_dot: concernedUser.adres_email,
-            tel_komorkowy_dot: concernedUser.tel_komorkowy,
-            login_dot: concernedUser.login,
-            id_uslugi: serviceId,
-            usluga: service,
-            kat_zapytanie: category,
-            opis: description,
-            termin: date,
-            komorka: departmentId,
-            informatyk: operatorId,
-            powiadomienie_email: emailNotif,
-            priorytet: priority,
-            vip_dot: concernedUser.vip,
-            terminowe: isTerminowe,
-            uwagi: notes
+            ...issuer,
+            ...issuerCompany,
+            ...concernedUser,
+            ...concernedCompany,
+            ...task
         }
 
         for(field in fields) {
-            console.log(field, ': ', fields[field]);
+            if(!fields[field]) {
+                fields[field] = '';
+            }
         }
 
         let query = 'INSERT INTO `zgloszenia_glowne` (';
