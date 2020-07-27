@@ -1,0 +1,17 @@
+use minihubert;
+
+if(db.getUsers({ filter: { 'user': 'admin' } }).length <= 0) {
+    print('Installing admin user...');
+    db.createUser({
+        user: 'admin',
+        pwd: 'example',
+        roles: [
+            {
+                role: 'dbOwner',
+                db: 'mamut_app'
+            }
+        ]
+    })
+} else {
+    print('Admin user already exists. No need to create a new user.');
+}

@@ -1,0 +1,17 @@
+{
+  "name": "app",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "forever -c \"node\" ./bin/www",
+    "start_dev": "nodemon -x ./bin/www"
+  },
+  "dependencies": {
+    "axios": "^0.19.2",
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "express": "~4.16.1",
+    "mongoose": "^5.9.25",
+    "morgan": "~1.9.1"
+  }
+}

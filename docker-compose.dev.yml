@@ -5,8 +5,42 @@ services:
     build:
       context: ./
       dockerfile: ./docker/translator/dev.Dockerfile
-    ports:
-      - 8310:3000
     volumes:
       - ./src/translator/:/app/
     restart: always
+
+  mamut-app-backend:
+    build:
+      context: ./
+      dockerfile: ./docker/backend/dev.Dockerfile
+    ports:
+      - 8311:3000
+    volumes:
+      - ./src/backend/:/app/
+    restart: always
+    links:
+      - mamut-app-db:mongo
+
+  mamut-app-db:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    volumes:
+      - ./mongodb:/data/db:rw
+      - ./logs/mongodb:/var/log/mongodb:rw
+      - ./src/mongodb/scripts/:/scripts/:rw
+
+  mamut-app-db-view:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8312:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+    links:
+      - mamut-app-db:mongo
+
+  

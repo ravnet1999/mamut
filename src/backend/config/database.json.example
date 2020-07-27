@@ -1,0 +1,7 @@
+{
+    "host": "mongo",
+    "port": "27017",
+    "username": "admin",
+    "password": "example",
+    "database": "/mamut_app"
+}
