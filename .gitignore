@@ -2,3 +2,5 @@
 /docker-compose.prod.yml
 /src/*/node_modules/
 /src/translator/config/database.json
+/src/backend/config/database.json
+/src/mongodb/scripts/add_user.js
