@@ -1,27 +1,16 @@
 const express = require('express');
 const router = express.Router();
-const query = require('../src/mysql/query');
 const response = require('../src/response');
+const operatorService = require('../src/services/OperatorService');
 
 router.post('/login', (req, res, next) => {
-    query('SELECT * FROM `informatycy` WHERE login=?', [req.body.username], (results, fields) => {
-
-        let user = results[0];
-
-        if(!user) {
-            response(res, true, ['Taki użytkownik nie istnieje.'], []);
-            return;
-        }
-
-        if(user.haslo == req.body.password) {
-            delete user.haslo;
-            response(res, false, ['Logowanie pomyślne.'], [user]);
-            return;
-        }
-
-        response(res, true, ['Taki użytkownik nie istnieje.']);
+    operatorService.login(req.body.username, req.body.password).then((user) => {
+        response(res, false, ['Logowanie pomyślne.'], [user]);
         return;
-    });
+    }).catch((err) => {
+        response(res, true, ['Coś poszło nie tak podczas próby logowania.', JSON.stringify(err)], []);
+        return;
+    })
 });
 
 module.exports = router;

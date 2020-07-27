@@ -3,9 +3,22 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
-const authRouter = require('./routes/auth');
-const assignmentsRouter = require('./routes/assignments');
-const tasksRouter = require('./routes/tasks');
+const endpoints = [
+    'auth',
+    'assignments',
+    'tasks',
+    'users',
+    'companies',
+    'channels',
+    'services',
+    'request_categories',
+    'departments',
+    'priorities'
+];
+
+let routers = endpoints.map((endpoint) => {
+    return [ endpoint, require(`./routes/${endpoint}`) ];
+});
 
 var app = express();
 
@@ -15,9 +28,10 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use('/', express.static(path.join(__dirname, 'public')));
-app.use('/auth', authRouter);
-app.use('/assignments', assignmentsRouter);
-app.use('/tasks', tasksRouter);
+
+routers.map((router) => {
+    app.use(`/${router[0]}`, router[1]);
+});
 
 
 
