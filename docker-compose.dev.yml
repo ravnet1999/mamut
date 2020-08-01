@@ -5,6 +5,8 @@ services:
     build:
       context: ./
       dockerfile: ./docker/translator/dev.Dockerfile
+    ports:
+      - 8315:3000
     volumes:
       - ./src/translator/:/app/
     restart: always

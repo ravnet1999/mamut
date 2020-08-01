@@ -30,20 +30,15 @@ class Service {
         });
     }
 
-    findById = (id) => {
+    findById = (ids) => {
         return new Promise((resolve, reject) => {
-            connection.query('SELECT * FROM `' + this.tableName + '` WHERE `id`=?', [id], (err, results, fields) => {
+            connection.query('SELECT * FROM `' + this.tableName + '` WHERE `id` IN (?)', [ids], (err, results, fields) => {
                 if(err) {
                     reject(err);
                     return;
                 }
 
-                if(!results[0]) {
-                    reject(this.findByIdEmpty);
-                    return;
-                }
-
-                resolve(results[0]);
+                resolve(results);
                 return;
             });
         });

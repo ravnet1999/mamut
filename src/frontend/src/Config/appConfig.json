@@ -1,7 +1,8 @@
 {
     "URLs": {
         "domain": "http://localhost:8311",
-        "login": "operators/login"
+        "login": "operators/login",
+        "clients": "clients"
     },
     "cookies": {
         "auth": {

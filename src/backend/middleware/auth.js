@@ -13,6 +13,7 @@ const auth = (req, res, next) => {
             response(res, true, ['Nie znamy użytkownika, za którego się podajesz.'], [], '/');
             return;
         }
+        req.operatorId = docToken.userId;
         next();
     }).catch((err) => {
         response(res, true, ['Wystąpił problem podczas próby autoryzacji', JSON.stringify(err)], [], '/login');
