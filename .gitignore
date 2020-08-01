@@ -3,5 +3,6 @@
 /src/*/node_modules/
 /src/translator/config/database.json
 /src/backend/config/database.json
+/src/parser/config/email.json
 /src/mongodb/scripts/add_user.js
 /mongodb
