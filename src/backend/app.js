@@ -4,6 +4,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const mongodb = require('mongoose');
 const dbConfig = require('./config/database.json');
+const corsMiddleware = require('./middleware/cors');
 
 this.dbPath = 'mongodb://' + dbConfig.username + ':' + dbConfig.password + '@' + dbConfig.host + ':' + dbConfig.port + dbConfig.database;
 
@@ -32,6 +33,8 @@ let routers = endpoints.map((endpoint) => {
 });
 
 var app = express();
+
+app.use(corsMiddleware);
 
 app.use(logger('dev'));
 app.use(express.json());

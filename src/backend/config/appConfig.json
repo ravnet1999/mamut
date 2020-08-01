@@ -1,5 +1,10 @@
 {
     "URLs": {
         "translator": "http://mamut-app-translator:3000"
+    },
+    "cookies": {
+        "auth": {
+            "name": "mamut_app_auth"
+        }
     }
 }
