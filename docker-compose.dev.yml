@@ -21,6 +21,19 @@ services:
     links:
       - mamut-app-db:mongo
 
+  mamut-app-parser:
+    build:
+      context: ./
+      dockerfile: ./docker/backend/dev.Dockerfile
+    ports:
+      - 8312:3000
+    volumes:
+      - ./src/parser/:/app/
+      - ./scripts/:/scripts/
+    restart: always
+    links:
+      - mamut-app-db:mongo
+
   mamut-app-db:
     image: mongo
     restart: always
@@ -36,11 +49,20 @@ services:
     image: mongo-express
     restart: always
     ports:
-      - 8312:8081
+      - 8314:8081
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: root
       ME_CONFIG_MONGODB_ADMINPASSWORD: example
     links:
       - mamut-app-db:mongo
+
+  mamut-app-frontend:
+    image: node:14.5.0
+    command: /bin/sh /app/scripts/run-react.sh
+    stdin_open: true
+    ports:
+      -  8313:3000
+    volumes:
+      - ./src/frontend/:/app/
 
   

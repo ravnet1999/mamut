@@ -1,0 +1,9 @@
+{
+    "date": {
+        "format": {
+            "hr": "DD-MM-YYYY",
+            "hrWithTime": "HH:mm:ss | DD-MM-YYYY",
+            "system": "YYYY-MM-DDTHH:mm:ss.SSSZ"
+        }
+    }
+}
