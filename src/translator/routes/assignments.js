@@ -17,8 +17,9 @@ router.get('/:operatorId', (req, res, next) => {
     });
 });
 
-router.get('/:clientId/representatives', (req, res, next) => {
-    userService.findByClientId(req.params.clientId).then((clients) => {
+router.get('/:clientIds/representatives', (req, res, next) => {
+    let clientIds = req.params.clientIds.split(',');
+    userService.findByClientId(clientIds).then((clients) => {
         response(res, false, ['Pomyślnie pobrano reprezentantów klienta.'], clients);
         return;
     }).catch((err) => {

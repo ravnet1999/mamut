@@ -12,7 +12,10 @@ const Clients = (props) => {
     useEffect(() => {
         ClientHandler.getClients().then((response) => {
             console.log('logging', response);
-            setClients(response.resources);
+            let sorted = response.resources.sort((a, b) => {
+                return (a.nazwa) > (b.nazwa) ? 1 : ( (a.nazwa) < (b.nazwa) ? -1 : 0 );
+            });
+            setClients(sorted);
             setResponse(response);
         }).catch((err) => {
             setResponse(err);

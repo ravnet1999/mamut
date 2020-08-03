@@ -7,9 +7,9 @@ class UserService extends Service {
         this.findByIdEmpty = 'Taki użytkownik nie istnieje!';
     }
 
-    findByClientId = (clientId) => {
+    findByClientId = (clientIds) => {
         return new Promise((resolve, reject) => {
-            connection.query('SELECT * FROM `' + this.tableName + '` WHERE `id_klienta`=?', [clientId], (err, results, fields) => {
+            connection.query('SELECT * FROM `' + this.tableName + '` WHERE `id_klienta` IN (?)', [clientIds], (err, results, fields) => {
                 if(err) {
                     reject(err);
                     return;
