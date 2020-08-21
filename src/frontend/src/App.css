@@ -52,6 +52,14 @@
     width: 100%;
 }
 
+.margin-top-default {
+    margin-top: 6px;
+}
+
 .margin-bottom-default {
     margin-bottom: 6px;
+}
+
+.btn.large {
+    padding: 50px 50px;
 }

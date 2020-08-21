@@ -26,7 +26,9 @@ db.once('open', () => {
 
 const endpoints = [
     'operators',
-    'clients'
+    'clients',
+    'tasks',
+    'representatives'
 ];
 
 let routers = endpoints.map((endpoint) => {

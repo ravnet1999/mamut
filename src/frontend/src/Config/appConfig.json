@@ -2,7 +2,8 @@
     "URLs": {
         "domain": "http://localhost:8311",
         "login": "operators/login",
-        "clients": "clients"
+        "clients": "clients",
+        "tasks": "tasks"
     },
     "cookies": {
         "auth": {

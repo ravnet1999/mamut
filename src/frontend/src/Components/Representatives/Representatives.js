@@ -23,10 +23,14 @@ const Representatives = (props) => {
         });
     }, []);
 
+    const createTask = () => {
+        console.log(selectedRep);
+    }
+
     const buildClients = () => {
         
         let clientColumns = representatives.map((representative, index) => {
-            return <Col xs="6" key={index}><Button to={`/task/${props.match.params.clientId}/${representative.id}`} className="btn btn-primary full-width margin-bottom-default">{representative.imie} {representative.nazwisko}</Button> </Col>;
+            return <Col xs="6" key={index}><Button onClick={(e) => setSelectedRep(representative)} className={ `full-width margin-bottom-default ${ selectedRep && selectedRep.id === representative.id ? 'active' : ''}` }>{representative.imie} {representative.nazwisko}</Button> </Col>;
         });
 
         return (
@@ -40,6 +44,11 @@ const Representatives = (props) => {
         <Page>
             <Alert response={response}></Alert>
             { buildClients() }
+            <Row>
+                <Col className="text-center">
+                    <Button className="large" onClick={(e) => createTask()} disabled={!selectedRep}>Start</Button>
+                </Col>
+            </Row>
         </Page>
     );
 }
