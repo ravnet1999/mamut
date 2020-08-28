@@ -33,7 +33,6 @@ const Login = (props) => {
         e.preventDefault();
 
         LoginHandler.login(form.username, form.password).then((response) => {
-            console.log('response', response);
             cookies.set(appConfig.cookies.auth.name, {
                 userId: response.resources[0].userId,
                 token: response.resources[0].token

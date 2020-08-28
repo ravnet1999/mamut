@@ -46,7 +46,6 @@ router.get('/:clientId/representatives', [authMiddleware], (req, res, next) => {
         }
 
         companyService.getCompaniesWithRepresentatives([req.params.clientId]).then((companiesWithRepresentatives) => {
-            console.log('compwithrep', companiesWithRepresentatives[0].representatives);
             response(res, false, ['Pomyślnie pobrano reprezentantów klientów.'], companiesWithRepresentatives[0].representatives);
             return;
         }).catch((err) => {

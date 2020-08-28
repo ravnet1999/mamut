@@ -11,7 +11,6 @@ const Clients = (props) => {
 
     useEffect(() => {
         ClientHandler.getClients().then((response) => {
-            console.log('logging', response);
             let sorted = response.resources.sort((a, b) => {
                 return (a.nazwa) > (b.nazwa) ? 1 : ( (a.nazwa) < (b.nazwa) ? -1 : 0 );
             });

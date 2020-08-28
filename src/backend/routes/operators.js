@@ -7,7 +7,6 @@ const response = require('../src/response');
 
 /* GET users listing. */
 router.post('/login', (req, res, next) => {
-    console.log('test');
     Auth.login(req.body.username, req.body.password).then((result) => {
         response(res, false, ['Pomyślnie zalogowano.'], [result], '/clients');
     }).catch((err) => {

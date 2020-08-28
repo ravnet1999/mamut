@@ -22,6 +22,8 @@ router.get('/:limit?/:offset?/:status?', (req, res, next) => {
 
 router.put('/', (req, res, next) => {
 
+    console.log(req.body);
+
     if(!req.body.concernedUser) {
         req.body.concernedUser = req.body.issuer;
         req.body.concernedCompany = req.body.issuerCompany;
@@ -34,8 +36,25 @@ router.put('/', (req, res, next) => {
     let taskQuery = helpers.buildTaskQuery(req.body);
 
     taskService.query(taskQuery.query, taskQuery.values).then((results) => {
-        response(res, false, ['Pomyślnie utworzono nowe zadanie'], [results]);
-        return;
+        taskStampService.stamp('dodanie zg³.', results.insertId, req.body.operatorId).then((stampAddTaskResult) => {
+            taskStampService.stamp('nowy etap', results.insertId, req.body.operatorId).then((stampAddEpisodeResult) => {
+                taskService.updateById(results.insertId, ['komorka', 'informatyk'], [req.body.department, req.body.operatorId]).then((taskUpdateResult) => {
+                    query('INSERT INTO zgloszenia_etapy ( id_zgloszenia , id_informatyka , id_komorki) VALUES ( ?, ?, ? )', [results.insertId, req.body.operatorId, req.body.department], (episodeInsertResult, fields) => {
+                        response(res, false, ['Pomyślnie dodano zadanie.'], [episodeInsertResult]);
+                        return;
+                    });
+                }).catch((err) => {
+                    response(res, true, ['Coś poszło nie tak podczas aktualizacji zadania.', JSON.stringify(err)], []);
+                    return;
+                });
+            }).catch((err) => {
+                response(res, true, ['Coś poszło nie tak podczas próby utworzenia stempla rozpoczynającego nowy etap zadania.', JSON.stringify(err)], [stampResults]);
+                return;
+            });
+        }).catch((err) => {
+            response(res, true, ['Coś poszło nie tak podczas próby utworzenia stempla rozpoczynającego zadanie.', JSON.stringify(err)], [stampResults]);
+            return;
+        });
     }).catch((err) => {
         response(res, true, ['Coś poszło nie tak podczas tworzenia nowego zadania.', JSON.stringify(err)], []);
         return;
@@ -45,14 +64,6 @@ router.put('/', (req, res, next) => {
 
     // query(taskQuery.query, taskQuery.values, (taskInsertResult, fields) => {
     //     console.log(taskInsertResult);
-    //     query('INSERT INTO zgloszenia_stemple ( godzina , nazwa , id_zgloszenia , id_informatyka ) VALUES (NOW(), ?, ?, ?)', ['nowy etap', taskInsertResult.insertId, req.body.operatorId], (stampInsertResult, fields) => {
-    //         query('UPDATE zgloszenia_glowne SET komorka=?, informatyk=? WHERE id=?', [department.id, req.body.operatorId, taskInsertResult.insertId], (taskUpdateResult, fields) => {
-    //             query('INSERT INTO zgloszenia_etapy ( id_zgloszenia , id_informatyka , id_komorki) VALUES ( ?, ?, ? )', [taskInsertResult.insertId, req.body.operatorId, department.id], (episodeInsertResult, fields) => {
-    //                 response(res, false, ['Pomyślnie dodano zadanie.'], [episodeInsertResult]);
-    //                 return;
-    //             });
-    //         });
-    //     });
     // });
 });
 

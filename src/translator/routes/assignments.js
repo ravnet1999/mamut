@@ -6,7 +6,6 @@ const assignmentService = require('../src/services/AssignmentService');
 const userService = require('../src/services/UserService');
 
 router.get('/:operatorId', (req, res, next) => {
-    console.log(req.params.operatorId);
     assignmentService.findByOperatorId(req.params.operatorId).then((assignment) => {
         assignment.klient = assignment.klient.split(',').map((client) => { return Number(client) });
         response(res, false, ['Pomyślnie pobrano kompetencje.'], [assignment]);

@@ -3,8 +3,6 @@ import { Redirect } from 'react-router-dom';
 
 const Alert = (props) => {
 
-    console.log('response in alert', props.response);
-
     const [redirect, setRedirect] = useState(null);
 
     useEffect(() => {
@@ -16,8 +14,6 @@ const Alert = (props) => {
     if(!props.response) return '';
 
     const type = props.response.error ? 'warning' : 'success';
-
-    console.log(props.response);
 
     const messages = props.response.messages.map((message, index) => {
         return <div key={index}>{ message }</div>;

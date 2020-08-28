@@ -12,7 +12,6 @@ const Representatives = (props) => {
 
     useEffect(() => {
         ClientHandler.getRepresentatives(props.match.params.clientId).then((response) => {
-            console.log('logging', response);
             let sorted = response.resources.sort((a, b) => {
                 return (a.imie + a.nazwisko) > (b.imie + b.nazwisko) ? 1 : ( (a.imie + a.nazwisko) < (b.imie + b.nazwisko) ? -1 : 0 );
             });

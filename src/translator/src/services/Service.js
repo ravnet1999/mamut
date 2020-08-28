@@ -53,13 +53,15 @@ class Service {
                 return;
             }
 
+            console.log(columnsString, ...values, id);
+
             connection.query('UPDATE `' + this.tableName + '` SET ' + columnsString +' WHERE `id`=?', [...values, id], (err, results, fields) => {
                 if(err) {
                     reject(err);
                     return;
                 }
 
-                if(!results[0]) {
+                if(!results.affectedRows > 0) {
                     reject(this.findByIdEmpty);
                     return;
                 }
