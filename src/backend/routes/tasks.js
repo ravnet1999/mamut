@@ -56,4 +56,18 @@ router.put('/:clientId/:repId', [authMiddleware, clientRightsMiddleware], (req, 
     });
 });
 
+router.post('/:taskId/reassign', [authMiddleware, clientRightsMiddleware], (req, res, next) => {
+    taskService.reassignTask(req.params.taskId, {
+        departmentId: appConfig.tasks.department,
+        targetOperatorId: req.body.operatorId,
+        operatorId: req.operatorId
+    }).then((result) => {
+        response(res, false, ['Pomyślnie przypisano zadanie do innego operatora.'], [], '/tasks');
+        return;
+    }).catch((err) => {
+        response(res, true, ['Wystąpił błąd podczas próby przypisania zadania do innego operatora.', JSON.stringify(err)], []);
+        return;
+    });
+});
+
 module.exports = router;

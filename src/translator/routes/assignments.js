@@ -1,9 +1,19 @@
 const express = require('express');
 const router = express.Router();
-const query = require('../src/mysql/query');
 const response = require('../src/response');
 const assignmentService = require('../src/services/AssignmentService');
+const operatorService = require('../src/services/OperatorService');
 const userService = require('../src/services/UserService');
+
+router.get('/', (req, res, next) => {
+    operatorService.find(1024, 0, 'imie', 'ASC', "`upr_1` = 'on'").then((operators) => {
+        response(res, false, ['Pomyślnie pobrano operatorów.'], operators);
+        return;
+    }).catch((err) => {
+        response(res, true, ['Wystąpił błąd podczas pobierania operatorów.', JSON.stringify(err)], []);
+        return;
+    });
+});
 
 router.get('/:operatorId', (req, res, next) => {
     assignmentService.findByOperatorId(req.params.operatorId).then((assignment) => {

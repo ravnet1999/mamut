@@ -61,6 +61,8 @@ class Service {
                     return;
                 }
 
+                console.log(results);
+
                 if(!results.affectedRows > 0) {
                     reject(this.findByIdEmpty);
                     return;

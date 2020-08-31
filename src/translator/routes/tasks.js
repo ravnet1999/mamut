@@ -5,6 +5,7 @@ const response = require('../src/response');
 const helpers = require('../src/tasks/helpers');
 const taskService = require('../src/services/Task/TaskService');
 const taskStampService = require('../src/services/Task/TaskStampService');
+const taskEpisodeService = require('../src/services/Task/TaskEpisodeService');
 
 router.get('/:limit?/:offset?/:status?', (req, res, next) => {
     let limit = req.params.limit || 25;
@@ -40,7 +41,7 @@ router.put('/', (req, res, next) => {
             taskStampService.stamp('nowy etap', results.insertId, req.body.operatorId).then((stampAddEpisodeResult) => {
                 taskService.updateById(results.insertId, ['komorka', 'informatyk'], [req.body.department, req.body.operatorId]).then((taskUpdateResult) => {
                     query('INSERT INTO zgloszenia_etapy ( id_zgloszenia , id_informatyka , id_komorki) VALUES ( ?, ?, ? )', [results.insertId, req.body.operatorId, req.body.department], (episodeInsertResult, fields) => {
-                        response(res, false, ['Pomyślnie dodano zadanie.'], [episodeInsertResult]);
+                        response(res, false, ['Pomyślnie dodano zadanie.'], [results]);
                         return;
                     });
                 }).catch((err) => {
@@ -88,16 +89,21 @@ router.post('/:taskId/stop', (req, res, next) => {
 });
 
 router.post('/:taskId/reassign', (req, res, next) => {
-    taskStampService.stamp('Zmiana przypisania', req.params.taskId, req.body.operatorId, '').then((result) => {
-        taskService.updateById(req.params.taskId, ['komorka', 'informatyk'], [req.body.departmentId, req.body.operatorId]).then((result) => {
-            response(res, false, ['Pomyślnie przypisano zadanie do innego użytkownika'], [result]);
-            return;
+    taskStampService.stamp('Zmiana przypisania', req.params.taskId, req.body.operatorId, '').then((stampResult) => {
+        taskService.updateById(req.params.taskId, ['komorka', 'informatyk'], [req.body.departmentId, req.body.targetOperatorId]).then((taskUpdateResult) => {
+            taskEpisodeService.addEpisode(req.params.taskId, req.body.targetOperatorId, req.body.departmentId).then((addEpisodeResult) => {
+                response(res, false, ['Pomyślnie przypisano zadanie do innego operatora'], [taskUpdateResult]);
+                return;
+            }).catch((err) => {
+                response(res, true, ['Coś poszło nie tak podczas próby przypisania zadania do innego operatora', JSON.stringify(err)], []);
+                return;
+            })
         }).catch((err) => {
-            response(res, true, ['Coś poszło nie tak podczas próby przypisania zadania do innego użytkownika', JSON.stringify(err)], []);
+            response(res, true, ['Coś poszło nie tak podczas próby przypisania zadania do innego operatora', JSON.stringify(err)], []);
             return;
         });
     }).catch((err) => {
-        response(res, true, ['Coś poszło nie tak podczas próby przypisania zadania do innego użytkownika', JSON.stringify(err)], []);
+        response(res, true, ['Coś poszło nie tak podczas próby przypisania zadania do innego operatora', JSON.stringify(err)], []);
         return;
     }) 
 });
