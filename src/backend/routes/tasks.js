@@ -6,23 +6,12 @@ const clientRightsMiddleware = require('../middleware/clientRights');
 const companyService = require('../src/service/CompanyService');
 const taskService = require('../src/service/TaskService');
 const serviceService = require('../src/service/ServiceService');
+const appConfig = require('../config/appConfig.json');
 
 router.put('/:clientId/:repId', [authMiddleware, clientRightsMiddleware], (req, res, next) => {
-    let taskObject = {
-        operatorId: req.operatorId,
-        issuer: null,
-        issuerCompany: null,
-        issuerCompanyLocation: null,
-        description: "",
-        emailNotif: "on",
-        channel: 3,
-        serviceId: 15,
-        service: "",
-        type: "zadanie",
-        department: 2,
-        priority: 2,
-        category: 1
-    };
+    let taskObject = appConfig.tasks;
+
+    taskObject.operatorId = req.operatorId;
 
     serviceService.getService(taskObject.serviceId).then((service) => {
         taskObject.service = service.nazwa;
@@ -42,7 +31,8 @@ router.put('/:clientId/:repId', [authMiddleware, clientRightsMiddleware], (req, 
                 companyService.getCompanyLocation(taskObject.issuerCompany.id).then((location) => {
                     taskObject.issuerCompanyLocation = location;
                     taskService.createTask(taskObject).then((result) => {
-                        response(res, false, result.messages, result.resources);
+
+                        response(res, false, result.messages, result.resources, `/task/${result.resources[0].insertId}`);
                         return;                    
                     }).catch((err) => {
                         response(res, true, ['Wystąpił błąd podczas próby utworzenia zadania', JSON.stringify(err)], []);

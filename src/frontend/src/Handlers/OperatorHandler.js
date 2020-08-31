@@ -2,10 +2,10 @@ import axios from 'axios';
 import parseResponse from '../Handlers/ApiParser';
 import appConfig from '../Config/appConfig.json';
 
-const TaskHandler = {
-    createTask: (clientId, repId) => {
+const OperatorHandler = {
+    getOperators: () => {
         return new Promise((resolve, reject) => {
-            axios.put(`${appConfig.URLs.domain}/${appConfig.URLs.tasks}/${clientId}/${repId}`, {}, {
+            axios.get(`${appConfig.URLs.domain}/${appConfig.URLs.operators}`, {
                 withCredentials: true
             }).then((response) => {
                 parseResponse(response).then((response) => {
@@ -24,7 +24,7 @@ const TaskHandler = {
                 return;
             });
         });
-    }
+    },
 }
 
-export default TaskHandler;
+export default OperatorHandler;

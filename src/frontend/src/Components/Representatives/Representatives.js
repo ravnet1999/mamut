@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { NavLink as Link } from 'react-router-dom';
 import Page from '../Page';
 import { Row, Col, Button } from '../bootstrap';
 import Alert from '../Alert/Alert';
 import ClientHandler from '../../Handlers/ClientHandler';
-import { NavLink as Link } from 'react-router-dom';
+import TaskHandler from '../../Handlers/TaskHandler';
 
 const Representatives = (props) => {
     const [representatives, setRepresentatives] = useState([]);
@@ -23,7 +24,15 @@ const Representatives = (props) => {
     }, []);
 
     const createTask = () => {
-        console.log(selectedRep);
+        setResponse({
+            error: false,
+            messages: ['Tworzenie zadania...']
+        });
+        TaskHandler.createTask(props.match.params.clientId, selectedRep.id).then((result) => {
+            setResponse(result);
+        }).catch((err) => {
+            setResponse(err);
+        });
     }
 
     const buildClients = () => {
@@ -45,6 +54,7 @@ const Representatives = (props) => {
             { buildClients() }
             <Row>
                 <Col className="text-center">
+                    <Alert response={response}></Alert>
                     <Button className="large" onClick={(e) => createTask()} disabled={!selectedRep}>Start</Button>
                 </Col>
             </Row>

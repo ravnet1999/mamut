@@ -14,4 +14,12 @@ router.post('/login', (req, res, next) => {
     });
 });
 
+router.get('/', [authMiddleware], (req, res, next) => {
+    Auth.login(req.body.username, req.body.password).then((result) => {
+        response(res, false, ['Pomyślnie zalogowano.'], [result], '/clients');
+    }).catch((err) => {
+        response(res, true, ['Wystąpił problem z logowaniem', JSON.stringify(err)], []);
+    });
+});
+
 module.exports = router;
