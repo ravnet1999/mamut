@@ -8,7 +8,6 @@ import LoginHandler from '../../Handlers/LoginHandler';
 import appConfig from '../../Config/appConfig.json';
 
 const Login = (props) => {
-    let cookies = new Cookie();
 
     const [form, setForm] = useState({
         username: '',
@@ -33,10 +32,8 @@ const Login = (props) => {
         e.preventDefault();
 
         LoginHandler.login(form.username, form.password).then((response) => {
-            cookies.set(appConfig.cookies.auth.name, {
-                userId: response.resources[0].userId,
-                token: response.resources[0].token
-            }, appConfig.cookies.auth.settings);
+            props.removeCookie();
+            props.setCookie(response.resources[0].userId, response.resources[0].token);
             setResponse(response);
             return;
         }).catch((err) => {
