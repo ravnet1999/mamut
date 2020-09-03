@@ -25,6 +25,14 @@ const Task = (props) => {
         });
     }, []);
 
+    const stopTask = () => {
+        TaskHandler.stopTask(task.id).then((response) => {
+            setResponse(response);
+        }).catch((err) => {
+            setResponse(err);
+        });
+    }
+
     if (!task) return <Alert response={response}></Alert>;
 
     return (
@@ -33,7 +41,7 @@ const Task = (props) => {
             <h1>{task.id} - {task.zglaszajacy}</h1>
             <Row>
                 <Col className="text-center">
-                    <Button className="large">
+                    <Button onClick={(e) => stopTask()} className="large">
                         Stop
                     </Button>
                 </Col>

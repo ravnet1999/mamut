@@ -90,6 +90,17 @@ router.post('/:taskId/stop', [authMiddleware, clientRightsMiddleware], (req, res
     });
 });
 
+router.post('/:taskId/start', [authMiddleware, clientRightsMiddleware], (req, res, next) => {
+    taskService.startTask(req.params.taskId, req.operatorId).then((result) => {
+        console.log(result);
+        response(res, false, ['Pomyślnie wznowiono zadanie.'], [], `/task/${req.params.taskId}`);
+        return;
+    }).catch((err) => {
+        response(res, true, ['Wystąpił błąd podczas próby wznowienia zadania.', JSON.stringify(err)], []);
+        return;
+    });
+});
+
 router.post('/:taskId/reassign', [authMiddleware, clientRightsMiddleware], (req, res, next) => {
     taskService.reassignTask(req.params.taskId, {
         departmentId: appConfig.tasks.department,

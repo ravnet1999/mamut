@@ -11,12 +11,7 @@ const Tasks = (props) => {
     const [tasks, setTasks] = useState([]);
     const [pickedTask, setPickedTask] = useState(null);
 
-    useEffect(() => {
-        setResponse({
-            error: false,
-            messages: ['Pobieranie zadań...'],
-            resources: []
-        })
+    const getTasks = () => {
         TaskHandler.getTasks().then((response) => {
             setResponse(response);
             setTasks(response.resources);
@@ -26,6 +21,23 @@ const Tasks = (props) => {
         }).catch((err) => {
             setResponse(err);
         });
+    }
+
+    const startTask = () => {
+        TaskHandler.startTask(pickedTask.id).then((response) => {
+            setResponse(response);
+        }).catch((err) => {
+            setResponse(err);
+        })
+    }
+
+    useEffect(() => {
+        setResponse({
+            error: false,
+            messages: ['Pobieranie zadań...'],
+            resources: []
+        })
+        getTasks();
     }, []);
 
     const buildTaskRadios = () => {
@@ -51,10 +63,10 @@ const Tasks = (props) => {
             {buildTaskRadios()}
             <Row className="margin-top-default margin-bottom-default">
                 <Col className="text-center">
-                    <Button className="large">Start</Button>    
+                    <Button className="large" onClick={(e) => startTask()}>Start</Button>    
                 </Col>
             </Row>
-            { pickedTask ? <TaskReassign taskId={pickedTask.id}></TaskReassign> : ''}
+            { pickedTask ? <TaskReassign taskId={pickedTask.id} reassignFinished={getTasks}></TaskReassign> : ''}
         </Page>
     );
 }

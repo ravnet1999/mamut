@@ -23,6 +23,9 @@ const TaskReassign = (props) => {
     const reassignTask = (operatorId) => {
         TaskHandler.reassignTask(props.taskId, operatorId).then((response) => {
             setResponse(response);
+            if(props.reassignFinished) {
+                props.reassignFinished();
+            }
         }).catch((err) => {
             setResponse(err);
         });
@@ -48,11 +51,11 @@ const TaskReassign = (props) => {
         <Row>
             <Col>
                 <h2>Przekaż do:</h2>
+                <Alert response={response}></Alert>
                 {buildOperatorsList()}
                 <Row className="margin-top-default">
                     <Col className="text-center">
-                        <Alert response={response}></Alert>
-                        <Button onClick={(e) => reassignTask(pickedOperator.id)} disabled={!pickedOperator}>Przekaż</Button>
+                        <Button className="margin-bottom-default margin-top-default large" onClick={(e) => reassignTask(pickedOperator.id)} disabled={!pickedOperator}>Przekaż</Button>
                     </Col>
                 </Row>
             </Col>

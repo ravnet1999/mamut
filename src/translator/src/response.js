@@ -1,8 +1,9 @@
-const buildResponse = (res, errorStatus = true, messages = ['Coś poszło nie tak.'], resources = []) => {
+const buildResponse = (res, errorStatus = true, messages = ['Coś poszło nie tak.'], resources = [], redirect = '') => {
     res.json({
         error: errorStatus,
         messages: messages,
-        resources: resources
+        resources: resources,
+        redirect: redirect
     });
 };
 

@@ -84,21 +84,43 @@ router.put('/', (req, res, next) => {
 });
 
 router.post('/:taskId/start', (req, res, next) => {
-    taskStampService.stamp('START', req.params.taskId, req.body.operatorId, '').then((result) => {
-        response(res, false, ['Poprawnie rozpoczęto zadanie.'], [result]);
-        return;
+    taskStampService.find(1, 0, 'id', 'DESC', "`id_zgloszenia` = '" + req.params.taskId + "'").then((taskStamp) => {
+        if(taskStamp[0].nazwa == 'START') {
+            response(res, false, ['Zadanie już rozpoczęte.'], [], `/task/${req.params.taskId}`);
+            return;
+        }
+
+        taskStampService.stamp('START', req.params.taskId, req.body.operatorId, '').then((result) => {
+            response(res, false, ['Poprawnie rozpoczęto zadanie.'], [result]);
+            return;
+        }).catch((err) => {
+            response(res, true, ['Wystąpił problem podczas próby rozpoczęcia zadania.', JSON.stringify(err)], []);
+            return;
+        });
     }).catch((err) => {
-        response(res, true, ['Wystąpił problem podczas próby rozpoczęcia zadania.', JSON.stringify(err)], []);
+        response(res, true, ['Wystąpił problem podczas próby znalezienia ostatniego stempla zadania.', JSON.stringify(err)], []);
         return;
     });
 });
 
 router.post('/:taskId/stop', (req, res, next) => {
-    taskStampService.stamp('OCZEKUJE', req.params.taskId, req.body.operatorId, 'Pauza w aplikacji mobilnej.').then((result) => {
-        response(res, false, ['Poprawnie wstrzymano zadanie.'], [result]);
-        return;
+    taskStampService.find(1, 0, 'id', 'DESC', "`id_zgloszenia` = '" + req.params.taskId + "'").then((taskStamp) => {
+
+        console.log(taskStamp);
+        if(taskStamp[0].nazwa == 'OCZEKUJE') {
+            response(res, false, ['Zadanie już było wstrzymane.'], [], `/tasks`);
+            return;
+        }
+
+        taskStampService.stamp('OCZEKUJE', req.params.taskId, req.body.operatorId, 'Pauza w aplikacji mobilnej.').then((result) => {
+            response(res, false, ['Poprawnie wstrzymano zadanie.'], [result]);
+            return;
+        }).catch((err) => {
+            response(res, true, ['Wystąpił problem podczas próby wstrzymania zadania.', JSON.stringify(err)], []);
+            return;
+        });
     }).catch((err) => {
-        response(res, true, ['Wystąpił problem podczas próby wstrzymania zadania.', JSON.stringify(err)], []);
+        response(res, true, ['Wystąpił problem podczas próby znalezienia ostatniego stempla zadania.', JSON.stringify(err)], []);
         return;
     });
 });

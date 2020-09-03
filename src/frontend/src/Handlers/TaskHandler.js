@@ -47,6 +47,53 @@ const TaskHandler = {
             });
         });
     },
+
+    stopTask: (taskId) => {
+        return new Promise((resolve, reject) => {
+            axios.post(`${appConfig.URLs.domain}/${appConfig.URLs.tasks}/${taskId}/stop`, {}, {
+                withCredentials: true
+            }).then((response) => {
+                parseResponse(response).then((response) => {
+                    resolve(response);
+                    return;
+                }).catch((err) => {
+                    reject(err);
+                    return;
+                });
+            }).catch((err) => {
+                reject({
+                    error: true,
+                    messages: ['Wystąpił problem z połączeniem z serwerem.', JSON.stringify(err)],
+                    resources: []
+                });
+                return;
+            });
+        });
+    },
+
+    startTask: (taskId) => {
+        return new Promise((resolve, reject) => {
+            axios.post(`${appConfig.URLs.domain}/${appConfig.URLs.tasks}/${taskId}/start`, {}, {
+                withCredentials: true
+            }).then((response) => {
+                parseResponse(response).then((response) => {
+                    resolve(response);
+                    return;
+                }).catch((err) => {
+                    reject(err);
+                    return;
+                });
+            }).catch((err) => {
+                reject({
+                    error: true,
+                    messages: ['Wystąpił problem z połączeniem z serwerem.', JSON.stringify(err)],
+                    resources: []
+                });
+                return;
+            });
+        });
+    },
+
     createTask: (clientId, repId) => {
         return new Promise((resolve, reject) => {
             axios.put(`${appConfig.URLs.domain}/${appConfig.URLs.tasks}/${clientId}/${repId}`, {}, {
