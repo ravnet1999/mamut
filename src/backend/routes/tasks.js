@@ -8,6 +8,26 @@ const taskService = require('../src/service/TaskService');
 const serviceService = require('../src/service/ServiceService');
 const appConfig = require('../config/appConfig.json');
 
+router.get('/', [authMiddleware, clientRightsMiddleware], (req, res, next) => {
+    taskService.getTasks(25, 0, 'open', req.operatorId).then((result) => {
+        response(res, false, ['Pomyślnie pobrano zadania.'], result);
+        return;
+    }).catch((err) => {
+        response(res, true, ['Coś poszło nie tak podczas próby pobrania zadań.', JSON.stringify(err)], []);
+        return;
+    });
+});
+
+router.get('/:taskId', [authMiddleware, clientRightsMiddleware], (req, res, next) => {
+    taskService.getTaskById(req.params.taskId, req.operatorId).then((result) => {
+        response(res, false, ['Pomyślnie pobrano zadanie.'], result);
+        return;
+    }).catch((err) => {
+        response(res, true, ['Coś poszło nie tak podczas próby pobrania zadania po ID.', JSON.stringify(err)], [], '/tasks');
+        return;
+    });;
+});
+
 router.put('/:clientId/:repId', [authMiddleware, clientRightsMiddleware], (req, res, next) => {
     let taskObject = appConfig.tasks;
 
@@ -31,9 +51,13 @@ router.put('/:clientId/:repId', [authMiddleware, clientRightsMiddleware], (req, 
                 companyService.getCompanyLocation(taskObject.issuerCompany.id).then((location) => {
                     taskObject.issuerCompanyLocation = location;
                     taskService.createTask(taskObject).then((result) => {
-
-                        response(res, false, result.messages, result.resources, `/task/${result.resources[0].insertId}`);
-                        return;                    
+                        taskService.startTask(result.resources[0].insertId, req.operatorId).then((taskStartResult) => {
+                            response(res, false, result.messages, result.resources, `/task/${result.resources[0].insertId}`);
+                            return;                    
+                        }).catch((err) => {
+                            response(res, true, ['Wystąpił błąd podczas próby wystartowania utworzonego zadania.', JSON.stringify(err)], []);
+                            return;
+                        });
                     }).catch((err) => {
                         response(res, true, ['Wystąpił błąd podczas próby utworzenia zadania', JSON.stringify(err)], []);
                         return;
@@ -52,6 +76,16 @@ router.put('/:clientId/:repId', [authMiddleware, clientRightsMiddleware], (req, 
         });
     }).catch((err) => {
         response(res, true, ['Wystąpił błąd podczas próby pobrania informacji o usługach.', JSON.stringify(err)], []);
+        return;
+    });
+});
+
+router.post('/:taskId/stop', [authMiddleware, clientRightsMiddleware], (req, res, next) => {
+    taskService.stopTask(req.params.taskId, req.operatorId).then((result) => {
+        response(res, false, ['Pomyślnie zatrzymano zadanie.'], [], '/tasks');
+        return;
+    }).catch((err) => {
+        response(res, true, ['Wystąpił błąd podczas próby zatrzymania zadania.', JSON.stringify(err)], []);
         return;
     });
 });

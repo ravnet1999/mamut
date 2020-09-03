@@ -4,62 +4,41 @@ import Page from '../Page';
 import Alert from '../Alert/Alert';
 import OperatorHandler from '../../Handlers/OperatorHandler';
 import TaskHandler from '../../Handlers/TaskHandler';
+import TaskReassign from './TaskReassign';
 
 const Task = (props) => {
 
-    const [operators, setOperators] = useState([]);
+    const [task, setTask] = useState(null);
     const [response, setResponse] = useState(null);
-    const [pickedOperator, setPickedOperator] = useState(null);
 
     useEffect(() => {
-        OperatorHandler.getOperators().then((response) => {
+        setResponse({
+            error: false,
+            messages: ['Pobieranie zadania...']
+        });
+
+        TaskHandler.getTaskById(props.match.params.taskId).then((response) => {
             setResponse(response);
-            setOperators(response.resources);
+            setTask(response.resources[0]);
         }).catch((err) => {
             setResponse(err);
-            setOperators([]);
-        })
+        });
     }, []);
 
-    const reassignTask = (operatorId) => {
-        TaskHandler.reassignTask(props.match.params.taskId, operatorId).then((response) => {
-            setResponse(response);
-        }).catch((err) => {
-            setResponse(err);
-        });
-    }
-
-    const buildOperatorsList = () => {
-        let operatorsList = operators.map((operator, key) => {
-            return (
-                <Col xs="6" key={key}>
-                    <Button className={`full-width margin-top-default ${pickedOperator ? ( pickedOperator.id == operator.id ? 'active' : '' ) : ''}`} onClick={(e) => setPickedOperator(operator)}>{operator.imie} {operator.nazwisko}</Button>
-                </Col>
-            );
-        });
-
-        return (
-            <Row>
-                {operatorsList}
-            </Row>
-        );
-    }
+    if (!task) return <Alert response={response}></Alert>;
 
     return (
         <Page>
             <Alert response={response}></Alert>
+            <h1>{task.id} - {task.zglaszajacy}</h1>
             <Row>
                 <Col className="text-center">
-                    <Button className="large">Stop</Button>
+                    <Button className="large">
+                        Stop
+                    </Button>
                 </Col>
             </Row>
-            <h1>Przekaż do:</h1>
-            {buildOperatorsList()}
-            <Row className="margin-top-default">
-                <Col className="text-center">
-                    <Button onClick={(e) => reassignTask(pickedOperator.id)} disabled={!pickedOperator}>Przekaż</Button>
-                </Col>
-            </Row>
+            <TaskReassign taskId={props.match.params.taskId}></TaskReassign>
         </Page>
     );
 }

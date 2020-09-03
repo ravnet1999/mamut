@@ -7,16 +7,31 @@ const taskService = require('../src/services/Task/TaskService');
 const taskStampService = require('../src/services/Task/TaskStampService');
 const taskEpisodeService = require('../src/services/Task/TaskEpisodeService');
 
-router.get('/:limit?/:offset?/:status?', (req, res, next) => {
+router.get('/:operatorId/:taskId', (req, res, next) => {
+    taskService.find(1, 0, 'id', 'DESC', '`informatyk` = \'' + req.params.operatorId + '\' AND `id` = \'' + req.params.taskId + '\'').then((task) => {
+        if(task.length <= 0) {
+            response(res, true, ['Takie zadanie nie istnieje!'], [], '/tasks');
+            return;                
+        }
+        response(res, false, ['Pomyślnie pobrano zadania.'], task);
+        return;
+    }).catch((err) => {
+        response(res, true, ['Wystąpił problem podczas próby znalezienia zadania po ID.', JSON.stringify(err)], []);
+        return;    
+    })
+});
+
+router.get('/:operatorId/:limit?/:offset?/:status?', (req, res, next) => {
     let limit = req.params.limit || 25;
     let offset = req.params.offset || 0;
-    let status = req.params.status ? '`status`=\'' + req.params.status + '\'' : ''; 
+    let operator = '`informatyk` = \'' + req.params.operatorId + '\'';
+    let status = req.params.status ? ' AND `status`=\'' + req.params.status + '\'' : ''; 
 
-    taskService.find(limit, offset, 'id', 'DESC', status ).then((tasks) => {
+    taskService.find(limit, offset, 'id', 'DESC', operator + status ).then((tasks) => {
         response(res, false, ['Pomyślnie pobrano zadania.'], tasks);
         return;
     }).catch((err) => {
-        response(res, true, ['Wystąpił problem podczas próby znalezienia zamówień.', JSON.stringify(err)], []);
+        response(res, true, ['Wystąpił problem podczas próby znalezienia zadań.', JSON.stringify(err)], []);
         return;        
     });
 });
@@ -73,7 +88,7 @@ router.post('/:taskId/start', (req, res, next) => {
         response(res, false, ['Poprawnie rozpoczęto zadanie.'], [result]);
         return;
     }).catch((err) => {
-        response(res, true, ['Wystąpił problem podczas próby rozpoczęcia zadania.'], [result]);
+        response(res, true, ['Wystąpił problem podczas próby rozpoczęcia zadania.', JSON.stringify(err)], []);
         return;
     });
 });
@@ -83,7 +98,7 @@ router.post('/:taskId/stop', (req, res, next) => {
         response(res, false, ['Poprawnie wstrzymano zadanie.'], [result]);
         return;
     }).catch((err) => {
-        response(res, true, ['Wystąpił problem podczas próby wstrzymania zadania.'], [result]);
+        response(res, true, ['Wystąpił problem podczas próby wstrzymania zadania.', JSON.stringify(err)], []);
         return;
     });
 });
