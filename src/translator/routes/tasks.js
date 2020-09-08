@@ -107,12 +107,19 @@ router.post('/:taskId/stop', (req, res, next) => {
     taskStampService.find(1, 0, 'id', 'DESC', "`id_zgloszenia` = '" + req.params.taskId + "'").then((taskStamp) => {
 
         console.log(taskStamp);
-        if(taskStamp[0].nazwa == 'OCZEKUJE') {
+        if(taskStamp[0].nazwa == 'STOP') {
             response(res, false, ['Zadanie już było wstrzymane.'], [], `/tasks`);
             return;
         }
 
-        taskStampService.stamp('OCZEKUJE', req.params.taskId, req.body.operatorId, 'Pauza w aplikacji mobilnej.').then((result) => {
+        taskStampService.stamp('STOP', req.params.taskId, req.body.operatorId, 'Pauza w aplikacji mobilnej.').then((result) => {
+            taskStampService.stamp('Zadanie rozwi¹zane', req.params.taskId, req.body.operatorId, 'Pauza w aplikacji mobilnej.').then((result) => {
+                response(res, false, ['Zadanie rozwiązane'], [result]);
+                return;
+            }).catch((err) => {
+                response(res, true, ['Wystąpił problem podczas próby wstrzymania zadania.', JSON.stringify(err)], []);
+                return;
+            });
             response(res, false, ['Poprawnie wstrzymano zadanie.'], [result]);
             return;
         }).catch((err) => {
@@ -127,16 +134,21 @@ router.post('/:taskId/stop', (req, res, next) => {
 
 router.post('/:taskId/reassign', (req, res, next) => {
     taskStampService.stamp('Zmiana przypisania', req.params.taskId, req.body.operatorId, '').then((stampResult) => {
-        taskService.updateById(req.params.taskId, ['komorka', 'informatyk'], [req.body.departmentId, req.body.targetOperatorId]).then((taskUpdateResult) => {
-            taskEpisodeService.addEpisode(req.params.taskId, req.body.targetOperatorId, req.body.departmentId).then((addEpisodeResult) => {
-                response(res, false, ['Pomyślnie przypisano zadanie do innego operatora'], [taskUpdateResult]);
-                return;
+        taskStampService.stamp('OCZEKUJE', req.params.taskId, req.body.operatorId, 'Przekazane do dalszej realizacji.').then((result) => {
+            taskService.updateById(req.params.taskId, ['komorka', 'informatyk'], [req.body.departmentId, req.body.targetOperatorId]).then((taskUpdateResult) => {
+                taskEpisodeService.addEpisode(req.params.taskId, req.body.targetOperatorId, req.body.departmentId).then((addEpisodeResult) => {
+                    response(res, false, ['Pomyślnie przypisano zadanie do innego operatora'], [taskUpdateResult]);
+                    return;
+                }).catch((err) => {
+                    response(res, true, ['Coś poszło nie tak podczas próby przypisania zadania do innego operatora', JSON.stringify(err)], []);
+                    return;
+                })
             }).catch((err) => {
                 response(res, true, ['Coś poszło nie tak podczas próby przypisania zadania do innego operatora', JSON.stringify(err)], []);
                 return;
-            })
+            });
         }).catch((err) => {
-            response(res, true, ['Coś poszło nie tak podczas próby przypisania zadania do innego operatora', JSON.stringify(err)], []);
+            response(res, true, ['Wystąpił problem podczas próby dodania oczekiwania.', JSON.stringify(err)], []);
             return;
         });
     }).catch((err) => {

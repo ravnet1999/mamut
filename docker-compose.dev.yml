@@ -67,4 +67,13 @@ services:
     volumes:
       - ./src/frontend/:/app/
 
+  mamut-app-frontend-parser:
+    image: node:14.5.0
+    command: /bin/sh /app/scripts/run-react.sh
+    stdin_open: true
+    ports:
+      -  8316:3000
+    volumes:
+      - ./src/frontend_parser/:/app/
+
   
