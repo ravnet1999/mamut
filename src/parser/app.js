@@ -6,7 +6,8 @@ const mongodb = require('mongoose');
 const dbConfig = require('./config/database.json');
 
 const endpoints = [
-    'emails'
+    'emails',
+    'auth'
 ];
 
 let routers = endpoints.map((endpoint) => {
