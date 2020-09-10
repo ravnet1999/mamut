@@ -10,6 +10,10 @@ let companyEmailSchema = new mongodb.Schema({
         type: String,
         default: null
     },
+    companyNameLowerCase: {
+        type: String,
+        default: null
+    },
     domains: [String]
 },{
     timestamps: true

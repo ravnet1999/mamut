@@ -5,7 +5,7 @@ import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import Header from './Components/Header';
 import Login from './Components/Login/Login';
-import Domains from './Components/Domains/Domains';
+import CompanyEmails from './Components/CompanyEmails/CompanyEmails';
 import appConfig from './Config/appConfig.json';
 
 const App = () => {
@@ -39,7 +39,7 @@ const App = () => {
 			<Header loggedIn={loggedIn}></Header>
 			<Switch>
 				<Route path='/' exact render={(props) => <Login {...props} removeCookie={removeCookie} setCookie={setCookie}></Login>}></Route>
-				<Route path='/domains' exact render={(props) => <Domains {...props}></Domains>}></Route>
+				<Route path='/domains' exact render={(props) => <CompanyEmails {...props}></CompanyEmails>}></Route>
 			</Switch>
 		</div>
 	);

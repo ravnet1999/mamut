@@ -71,6 +71,12 @@ nav ul li a:hover {
   border: 1px solid #333;
 }
 
+.btn-primary.small {
+  padding: 1px 4px;
+  font-size: 0.9em;
+  border-radius: 2px;
+}
+
 .btn-primary:disabled {
   background-color: #333;
   color: #fff;
@@ -95,6 +101,53 @@ nav ul li a:hover {
   margin-bottom: 6px;
 }
 
+.margin-right-default {
+  margin-right: 4px;
+}
+
 .btn.large {
   padding: 50px 50px;
+}
+
+.pagination-row .pagination-pages-container {
+  padding: 12px 12px;
+  border: 1px solid #ccc;
+}
+
+.pagination-row .pagination-page {
+  margin-right: 4px;
+}
+
+.pagination-row .pagination-page:last-child {
+  margin-right: 0;
+}
+
+.pagination-row select {
+  width: auto;
+  display: inline-block;
+  margin: 0;
+  height: auto;
+  padding: 0;
+  margin-left: 4px;
+}
+
+.error {
+  color: #FF0000;
+}
+
+.form-control.error {
+  box-shadow: 1px 1px 4px rgba(255, 0, 0, .4);
+}
+
+.text-bold {
+  font-weight: bold;
+}
+
+.table-header-container{
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 4px;
+}
+
+.table-header-row > div {
+  cursor: pointer;
 }

@@ -1,7 +1,8 @@
 {
     "URLs": {
         "domain": "http://localhost:8312",
-        "login": "auth/login"
+        "login": "auth/login",
+        "companyEmails": "company_emails"
     },
     "cookies": {
         "auth": {

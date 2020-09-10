@@ -65,7 +65,13 @@ class CompanyService {
                 return {
                     updateOne: {
                         filter: { companyId: companyEmailElement.companyId },
-                        update: { $set: { domains: companyEmailElement.domains, companyName: companyEmailElement.companyName } },
+                        update: {
+                            $set: {
+                                domains: companyEmailElement.domains.map((domain) => { return domain.trim() }),
+                                companyName: companyEmailElement.companyName,
+                                companyNameLowerCase: companyEmailElement.companyName.toLowerCase()
+                            }
+                        },
                         upsert: true
                     }
                 }
@@ -74,6 +80,26 @@ class CompanyService {
             CompanyEmail.bulkWrite(writeObjects).then((result) => {
                 resolve(result);
                 return;
+            }).catch((err) => {
+                reject(err);
+                return;
+            });
+        });
+    }
+
+    getSavedCompanyEmails = (limit = undefined, offset = 0, sortBy = 'companyId', sortWay = 'DESC') => {
+        return new Promise((resolve, reject) => {
+            CompanyEmail.countDocuments({}).then((count) => {
+                CompanyEmail.find({}).sort({ [sortBy]: sortWay }).skip(Number(offset)).limit(Number(limit)).then((companyEmails) => {
+                    resolve({
+                        count: count,
+                        result: companyEmails
+                    });
+                    return;
+                }).catch((err) => {
+                    reject(err);
+                    return;
+                });
             }).catch((err) => {
                 reject(err);
                 return;
