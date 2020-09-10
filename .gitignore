@@ -4,5 +4,6 @@
 /src/translator/config/database.json
 /src/backend/config/database.json
 /src/parser/config/email.json
+/src/parser/config/accounts.json
 /src/mongodb/scripts/add_user.js
 /mongodb
