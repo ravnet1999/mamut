@@ -107,20 +107,13 @@ router.post('/:taskId/stop', (req, res, next) => {
     taskStampService.find(1, 0, 'id', 'DESC', "`id_zgloszenia` = '" + req.params.taskId + "'").then((taskStamp) => {
 
         console.log(taskStamp);
-        if(taskStamp[0].nazwa == 'STOP') {
+        if(taskStamp[0].nazwa == 'OCZEKUJE') {
             response(res, false, ['Zadanie już było wstrzymane.'], [], `/tasks`);
             return;
         }
 
-        taskStampService.stamp('STOP', req.params.taskId, req.body.operatorId, 'Pauza w aplikacji mobilnej.').then((result) => {
-            taskStampService.stamp('Zadanie rozwi¹zane', req.params.taskId, req.body.operatorId, 'Pauza w aplikacji mobilnej.').then((result) => {
-                response(res, false, ['Zadanie rozwiązane'], [result]);
-                return;
-            }).catch((err) => {
-                response(res, true, ['Wystąpił problem podczas próby wstrzymania zadania.', JSON.stringify(err)], []);
-                return;
-            });
-            response(res, false, ['Poprawnie wstrzymano zadanie.'], [result]);
+        taskStampService.stamp('OCZEKUJE', req.params.taskId, req.body.operatorId, 'Oczekiwanie na kolejną czynność.').then((result) => {
+            response(res, false, ['Zadanie rozwiązane'], [result]);
             return;
         }).catch((err) => {
             response(res, true, ['Wystąpił problem podczas próby wstrzymania zadania.', JSON.stringify(err)], []);
