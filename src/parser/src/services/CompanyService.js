@@ -2,6 +2,7 @@ const axios = require('axios');
 const parseResponse = require('../ResponseParser');
 const appConfig = require('../../config/appConfig.json');
 const userService = require('./UserService');
+const CompanyEmail = require('../models/CompanyEmailModel');
 
 class CompanyService {
     getCompanies = () => {
@@ -41,7 +42,7 @@ class CompanyService {
                         });
         
         
-                        return { id: company.id, name: company.nazwa, domains: clientRepsDomains };
+                        return { companyId: company.id, companyName: company.nazwa, domains: clientRepsDomains };
                     });
         
                     resolve(emails);
@@ -50,6 +51,29 @@ class CompanyService {
                     reject(err);
                     return;
                 });
+            }).catch((err) => {
+                reject(err);
+                return;
+            });
+        });
+    }
+
+    saveCompanyEmails = (companyEmailsArray) => {
+        console.log(companyEmailsArray);
+        return new Promise((resolve, reject) => {
+            let writeObjects = companyEmailsArray.map((companyEmailElement) => {
+                return {
+                    updateOne: {
+                        filter: { companyId: companyEmailElement.companyId },
+                        update: { $set: { domains: companyEmailElement.domains, companyName: companyEmailElement.companyName } },
+                        upsert: true
+                    }
+                }
+            });
+
+            CompanyEmail.bulkWrite(writeObjects).then((result) => {
+                resolve(result);
+                return;
             }).catch((err) => {
                 reject(err);
                 return;
