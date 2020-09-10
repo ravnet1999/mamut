@@ -4,6 +4,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const mongodb = require('mongoose');
 const dbConfig = require('./config/database.json');
+const corsMiddleware = require('./middleware/cors');
 
 const endpoints = [
     'emails',
@@ -33,6 +34,8 @@ db.once('open', () => {
 });
 
 var app = express();
+
+app.use(corsMiddleware);
 
 app.use(logger('dev'));
 app.use(express.json());

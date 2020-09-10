@@ -66,6 +66,7 @@ services:
       -  8313:3000
     volumes:
       - ./src/frontend/:/app/
+    restart: always
 
   mamut-app-frontend-parser:
     image: node:14.5.0
@@ -75,5 +76,6 @@ services:
       -  8316:3000
     volumes:
       - ./src/frontend_parser/:/app/
+    restart: always
 
   

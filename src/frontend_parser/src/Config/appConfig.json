@@ -1,0 +1,16 @@
+{
+    "URLs": {
+        "domain": "http://localhost:8314",
+        "login": "auth/login"
+    },
+    "cookies": {
+        "auth": {
+            "name": "mamut_app_parser_auth",
+            "settings": {
+                "maxAge": 28800,
+                "secure": false,
+                "path": "/"
+            }
+        }
+    }
+}
