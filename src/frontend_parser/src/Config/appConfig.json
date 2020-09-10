@@ -1,6 +1,6 @@
 {
     "URLs": {
-        "domain": "http://localhost:8314",
+        "domain": "http://localhost:8312",
         "login": "auth/login"
     },
     "cookies": {

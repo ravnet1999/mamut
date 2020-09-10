@@ -17,7 +17,7 @@ class Service {
             where = 'WHERE ' + where;
         }
 
-        console.log('SELECT * FROM `' + this.tableName + '` ' + where + ' ' + orderBy + ' LIMIT ? OFFSET ?');
+        console.log('SELECT * FROM `' + this.tableName + '` ' + where + ' ' + orderBy + ' LIMIT ' + limit + ' OFFSET ' + offset);
 
         return new Promise((resolve, reject) => {
             connection.query('SELECT * FROM `' + this.tableName + '` ' + where + ' ' + orderBy + ' LIMIT ? OFFSET ?', [Number(limit), Number(offset)], (err, results, fields) => {
@@ -25,7 +25,6 @@ class Service {
                     reject(err);
                     return;
                 }
-
                 resolve(results);
                 return;
             });

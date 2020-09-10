@@ -8,7 +8,8 @@ const corsMiddleware = require('./middleware/cors');
 
 const endpoints = [
     'emails',
-    'auth'
+    'auth',
+    'fetch_emails'
 ];
 
 let routers = endpoints.map((endpoint) => {

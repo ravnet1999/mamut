@@ -1,4 +1,7 @@
 {
+    "URLs": {
+        "translator": "http://mamut-app-translator:3000"
+    },
     "date": {
         "format": {
             "hr": "DD-MM-YYYY",
