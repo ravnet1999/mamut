@@ -106,6 +106,23 @@ class CompanyService {
             });
         });
     }
+
+    getCompanyRepresentatives = (clientId) => {
+        return new Promise((resolve, reject) => {
+            axios.get(`${appConfig.URLs.translator}/assignments/${clientId}/representatives`).then((response) => {
+                parseResponse(response).then((response) => {
+                    resolve(response.resources);
+                    return;
+                }).catch((err) => {
+                    reject(err);
+                    return;
+                });
+            }).catch((err) => {
+                reject(err);
+                return;
+            });
+        });
+    }
 }
 
 module.exports = new CompanyService();

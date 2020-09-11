@@ -1,7 +1,6 @@
 const moment = require('moment');
 const appConfig = require('../config/appConfig.json');
 const mailParser = require('../src/parser/emailParser');
-const emailService = require('../src/services/EmailService');
 const Email = require('../src/models/EmailModel');
 
 const formatDate = (date) => {

@@ -6,6 +6,7 @@ const mongodb = require('mongoose');
 const dbConfig = require('./config/database.json');
 const corsMiddleware = require('./middleware/cors');
 const readEmailsAutomation = require('./automation/readEmails');
+const insertEmailsAutomation = require('./automation/insertEmails');
 
 const endpoints = [
     'emails',
@@ -33,7 +34,8 @@ db.once('error', () => {
 });
 
 let automations = [
-    readEmailsAutomation
+    readEmailsAutomation,
+    insertEmailsAutomation
 ];
 
 let intervals = [];
