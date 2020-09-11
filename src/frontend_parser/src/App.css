@@ -139,6 +139,10 @@ nav ul li a:hover {
   box-shadow: 1px 1px 4px rgba(255, 0, 0, .4);
 }
 
+.form-control.error:focus {
+  color: #FF0000;
+}
+
 .text-bold {
   font-weight: bold;
 }

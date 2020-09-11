@@ -5,6 +5,7 @@ var logger = require('morgan');
 const mongodb = require('mongoose');
 const dbConfig = require('./config/database.json');
 const corsMiddleware = require('./middleware/cors');
+const readEmailsAutomation = require('./automation/readEmails');
 
 const endpoints = [
     'emails',
@@ -31,8 +32,18 @@ db.once('error', () => {
     console.log('MongoDB connection error!');
 });
 
+let automations = [
+    readEmailsAutomation
+];
+
+let intervals = [];
+
 db.once('open', () => {
     console.log('Connected to MongoDB');
+
+    intervals = automations.map((automation) => {
+        return setInterval(automation.method, automation.interval);
+    });
 });
 
 var app = express();

@@ -7,6 +7,10 @@ let emailSchema = new mongodb.Schema({
     inserted: {
         type: Boolean,
         default: false
+    },
+    text: {
+        type: String,
+        default: ''
     }
 },{
     timestamps: true
