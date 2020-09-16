@@ -6,7 +6,7 @@ services:
       context: ./
       dockerfile: ./docker/translator/dev.Dockerfile
     ports:
-      - 8315:3000
+      - 8400:3000
     volumes:
       - ./src/translator/:/app/
     restart: always
@@ -63,7 +63,7 @@ services:
     command: /bin/sh /app/scripts/run-react.sh
     stdin_open: true
     ports:
-      -  8313:3000
+      -  8401:3000
     volumes:
       - ./src/frontend/:/app/
     restart: always
@@ -73,7 +73,7 @@ services:
     command: /bin/sh /app/scripts/run-react.sh
     stdin_open: true
     ports:
-      -  8316:3000
+      -  8501:3000
     volumes:
       - ./src/frontend_parser/:/app/
     restart: always
