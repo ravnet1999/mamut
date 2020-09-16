@@ -23,11 +23,7 @@ const insertEmails = () => {
                     return;
                 } 
 
-                companyService.getCompanyRepresentatives(companyEmail.companyId).then((reps) => {
-                    console.log(reps[0]);
-                }).catch((err) => {
-                    console.log(err);
-                });
+                // console.log(companyEmail.companyName, companyEmail.companyId, companyEmail.selectedRep);
             }).catch((err) => {
                 console.log(err);
                 return;
@@ -41,5 +37,5 @@ const insertEmails = () => {
 
 module.exports = {
     method: insertEmails,
-    interval: 10000
+    interval: 1000
 }
