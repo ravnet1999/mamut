@@ -1,4 +1,4 @@
-use minihubert;
+use mamut_app;
 
 if(db.getUsers({ filter: { 'user': 'admin' } }).length <= 0) {
     print('Installing admin user...');
