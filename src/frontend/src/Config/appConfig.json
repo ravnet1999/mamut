@@ -1,6 +1,6 @@
 {
     "URLs": {
-        "domain": "http://localhost:8311",
+        "domain": "http://157.230.103.248:8311",
         "login": "operators/login",
         "clients": "clients",
         "tasks": "tasks",

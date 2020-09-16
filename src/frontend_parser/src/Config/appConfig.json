@@ -1,6 +1,6 @@
 {
     "URLs": {
-        "domain": "http://localhost:8312",
+        "domain": "http://157.230.103.248:8312",
         "login": "auth/login",
         "companyEmails": "company_emails"
     },
