@@ -24,12 +24,19 @@ class CompanyService {
 
     getCompanyEmails = () => {
         return new Promise((resolve, reject) => {
-            this.getCompanies().then((companies) => {
+            this.getCompaniesWithRepresentatives().then((companies) => {
                 userService.getUsers().then((users) => {
         
                     let emails = companies.map((company) => {
                         let clientReps = users.filter((user) => {
                             return user.id_klienta == company.id && String(user.adres_email).includes('@');
+                        });
+
+                        let clientRepObjects = company.representatives.map((clientRep) => {
+                            return {
+                                repId: clientRep.id,
+                                name: clientRep.imie + ' ' + clientRep.nazwisko
+                            }
                         });
         
                         let clientRepsDomains = [];
@@ -40,9 +47,11 @@ class CompanyService {
                                 clientRepsDomains.push(domain);
                             }
                         });
+
+                        let selectedRep = clientRepObjects[0] ? clientRepObjects[0].repId : null;
         
         
-                        return { companyId: company.id, companyName: company.nazwa, domains: clientRepsDomains };
+                        return { companyId: company.id, companyName: company.nazwa, domains: clientRepsDomains, companyRepresentatives: clientRepObjects, selectedRep: selectedRep};
                     });
         
                     resolve(emails);
@@ -59,7 +68,6 @@ class CompanyService {
     }
 
     saveCompanyEmails = (companyEmailsArray) => {
-        console.log(companyEmailsArray);
         return new Promise((resolve, reject) => {
             let writeObjects = companyEmailsArray.map((companyEmailElement) => {
                 return {
@@ -69,7 +77,9 @@ class CompanyService {
                             $set: {
                                 domains: companyEmailElement.domains.map((domain) => { return domain.trim() }),
                                 companyName: companyEmailElement.companyName,
-                                companyNameLowerCase: companyEmailElement.companyName.toLowerCase()
+                                companyNameLowerCase: companyEmailElement.companyName.toLowerCase(),
+                                companyRepresentatives: companyEmailElement.companyRepresentatives,
+                                selectedRep: companyEmailElement.selectedRep
                             }
                         },
                         upsert: true
@@ -112,6 +122,69 @@ class CompanyService {
             axios.get(`${appConfig.URLs.translator}/assignments/${clientId}/representatives`).then((response) => {
                 parseResponse(response).then((response) => {
                     resolve(response.resources);
+                    return;
+                }).catch((err) => {
+                    reject(err);
+                    return;
+                });
+            }).catch((err) => {
+                reject(err);
+                return;
+            });
+        });
+    }
+
+    // getCompanies = (companyIds) => {
+    //     return new Promise((resolve, reject) => {
+    //         companyIds = companyIds.join(',');
+    //         axios.get(`${appConfig.URLs.translator}/companies/${companyIds}`).then((response) => {
+    //             parseResponse(response).then((response) => {
+    //                 resolve(response.resources);
+    //                 return;
+    //             }).catch((err) => {
+    //                 reject(err);
+    //                 return;
+    //             });
+    //         }).catch((err) => {
+    //             reject(err);
+    //             return;
+    //         });
+    //     });
+    // }
+
+    getRepresentatives = (companyIds) => {
+        return new Promise((resolve, reject) => {
+            companyIds = companyIds.join(',');
+            axios.get(`${appConfig.URLs.translator}/assignments/${companyIds}/representatives`).then((response) => {
+                parseResponse(response).then((response) => {
+                    resolve(response.resources);
+                    return;
+                }).catch((err) => {
+                    reject(err);
+                    return;
+                });
+            }).catch((err) => {
+                reject(err);
+                return;
+            });
+        });   
+    }
+
+    getCompaniesWithRepresentatives = () => {
+        return new Promise((resolve, reject) => {
+            this.getCompanies().then((companies) => {
+                let companyIds = companies.map((company) => {
+                    return company.id;
+                });
+                this.getRepresentatives(companyIds).then((representatives) => {
+                    let companiesWithRepresentatives = companies.map((company) => {
+                        company.representatives = representatives.filter((representative) => {
+                            return representative.id_klienta == company.id;
+                        });
+                        return company;
+                    });
+
+                    resolve(companiesWithRepresentatives);
                     return;
                 }).catch((err) => {
                     reject(err);

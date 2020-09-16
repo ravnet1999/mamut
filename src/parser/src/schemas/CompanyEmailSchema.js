@@ -1,5 +1,6 @@
 
 const mongodb = require('mongoose');
+const companyRepresentativeSchema = require('./CompanyRepresentativeSchema');
 
 let companyEmailSchema = new mongodb.Schema({
     companyId: {
@@ -14,6 +15,11 @@ let companyEmailSchema = new mongodb.Schema({
         type: String,
         default: null
     },
+    selectedRep: {
+        type: Number,
+        default: null
+    },
+    companyRepresentatives: [companyRepresentativeSchema],
     domains: [String]
 },{
     timestamps: true

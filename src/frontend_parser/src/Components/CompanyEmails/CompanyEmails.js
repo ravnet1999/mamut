@@ -69,6 +69,25 @@ const CompanyEmails = (props) => {
         return sortBy == header ? sortWayArrows : '';
     }
 
+    const changeRep = (rep, domainIndex) => {
+        domains[domainIndex].selectedRep = Number(rep);
+        setCurrentField(rep);
+    }
+
+    const buildRepSelect = (domain, domainIndex) => {
+        let repOptions = domain.companyRepresentatives.map((rep, key) => {
+            return (
+                <option key={key} value={rep.repId}>{rep.name}</option>
+            );
+        });
+
+        return (
+            <select className="form-control" value={domain.selectedRep ? domain.selectedRep : 0} onChange={(e) => changeRep(e.target.value, domainIndex)}>
+                {repOptions}
+            </select>
+        );
+    }
+
     const buildDomainList = () => {
         let domainList = domains.map((domain, key) => {
 
@@ -84,6 +103,9 @@ const CompanyEmails = (props) => {
                     <Col xs="1" className={errorClass}>{domain.companyId}</Col>
                     <Col className={errorClass}>{domain.companyName}</Col>
                     <Col>
+                        { buildRepSelect(domain, key) }
+                    </Col>
+                    <Col>
                         <textarea className={`form-control ${errorClass}`} value={domain.domains ? domain.domains.join(', ') : ''} onChange={(e) => updateDomain(key, e.target.value)}></textarea>
                     </Col>
                 </Row>
@@ -97,6 +119,7 @@ const CompanyEmails = (props) => {
                         <Row className="text-left text-bold table-header-row">
                             <Col xs="1" onClick={(e) => sortByHeader('companyId')}>ID {buildSortWayArrows('companyId')}</Col>
                             <Col onClick={(e) => sortByHeader('companyNameLowerCase')}>Nazwa {buildSortWayArrows('companyNameLowerCase')}</Col>
+                            <Col onClick={(e) => sortByHeader('companyNameLowerCase')}>Reprezentant</Col>
                             <Col onClick={(e) => sortByHeader('domains')}>Domeny (oddzielone przecinkiem ze spacją) {buildSortWayArrows('domains')}</Col>
                         </Row>
                     </div>

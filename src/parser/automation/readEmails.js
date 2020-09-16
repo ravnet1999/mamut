@@ -34,7 +34,7 @@ const readEmails = () => {
                         return;
                     })
                 } else {
-                    console.log('Baza maili aktualna.');
+                    // console.log('Baza maili aktualna.');
                     return;
                 }
             }).catch((err) => {

@@ -7,13 +7,15 @@ const authMiddleware = require('../middleware/auth');
 /* GET home page. */
 router.post('/', [authMiddleware], function(req, res, next) {
     companyService.getCompanyEmails().then((emails) => {
+        // response(res, false, ['ok'], []);
+        // return;
         companyService.saveCompanyEmails(emails).then((result) => {
             response(res, false, ['Zapisano powiązania mailowe.'], [result]);
             return;
         }).catch((err) => {
             response(res, true, ['Wystąpił błąd podczas zapisywania powiązań mailowych.', JSON.stringify(err)], []);
             return;            
-        })
+        });
     }).catch((err) => {
         response(res, true, ['Wystąpił błąd podczas pobierania powiązań mailowych.', JSON.stringify(err)], []);
         return;
