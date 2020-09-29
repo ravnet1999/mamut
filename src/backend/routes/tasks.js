@@ -2,13 +2,12 @@ const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../middleware/auth');
 const response = require('../src/response');
-const clientRightsMiddleware = require('../middleware/clientRights');
 const companyService = require('../src/service/CompanyService');
 const taskService = require('../src/service/TaskService');
 const serviceService = require('../src/service/ServiceService');
 const appConfig = require('../config/appConfig.json');
 
-router.get('/', [authMiddleware, clientRightsMiddleware], (req, res, next) => {
+router.get('/', [authMiddleware], (req, res, next) => {
     taskService.getTasks(25, 0, 'open', req.operatorId).then((result) => {
         response(res, false, ['Pomyślnie pobrano zadania.'], result);
         return;
@@ -18,7 +17,7 @@ router.get('/', [authMiddleware, clientRightsMiddleware], (req, res, next) => {
     });
 });
 
-router.get('/:taskId', [authMiddleware, clientRightsMiddleware], (req, res, next) => {
+router.get('/:taskId', [authMiddleware], (req, res, next) => {
     taskService.getTaskById(req.params.taskId, req.operatorId).then((result) => {
         response(res, false, ['Pomyślnie pobrano zadanie.'], result);
         return;
@@ -28,7 +27,7 @@ router.get('/:taskId', [authMiddleware, clientRightsMiddleware], (req, res, next
     });;
 });
 
-router.put('/:clientId/:repId', [authMiddleware, clientRightsMiddleware], (req, res, next) => {
+router.put('/:clientId/:repId', [authMiddleware], (req, res, next) => {
     let taskObject = appConfig.tasks;
 
     taskObject.operatorId = req.operatorId;
@@ -36,11 +35,6 @@ router.put('/:clientId/:repId', [authMiddleware, clientRightsMiddleware], (req, 
     serviceService.getService(taskObject.serviceId).then((service) => {
         taskObject.service = service.nazwa;
         companyService.getRepresentative(req.params.repId).then((rep) => {
-
-            if(!req.clientRights.includes(Number(rep.id_klienta)) || !req.clientRights.includes(Number(req.params.clientId))) {
-                response(res, true, ['Nie masz uprawnień do obsługi tego klienta.'], [], '/clients');
-                return;
-            }
 
             taskObject.issuer = rep;
 
@@ -80,7 +74,7 @@ router.put('/:clientId/:repId', [authMiddleware, clientRightsMiddleware], (req, 
     });
 });
 
-router.post('/:taskId/stop', [authMiddleware, clientRightsMiddleware], (req, res, next) => {
+router.post('/:taskId/stop', [authMiddleware], (req, res, next) => {
     taskService.stopTask(req.params.taskId, req.operatorId).then((result) => {
         response(res, false, ['Pomyślnie zatrzymano zadanie.'], [], '/tasks');
         return;
@@ -90,7 +84,7 @@ router.post('/:taskId/stop', [authMiddleware, clientRightsMiddleware], (req, res
     });
 });
 
-router.post('/:taskId/start', [authMiddleware, clientRightsMiddleware], (req, res, next) => {
+router.post('/:taskId/start', [authMiddleware], (req, res, next) => {
     taskService.startTask(req.params.taskId, req.operatorId).then((result) => {
         console.log(result);
         response(res, false, ['Pomyślnie wznowiono zadanie.'], [], `/task/${req.params.taskId}`);
@@ -101,7 +95,7 @@ router.post('/:taskId/start', [authMiddleware, clientRightsMiddleware], (req, re
     });
 });
 
-router.post('/:taskId/reassign', [authMiddleware, clientRightsMiddleware], (req, res, next) => {
+router.post('/:taskId/reassign', [authMiddleware], (req, res, next) => {
     taskService.reassignTask(req.params.taskId, {
         departmentId: appConfig.tasks.department,
         targetOperatorId: req.body.operatorId,

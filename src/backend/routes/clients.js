@@ -7,8 +7,8 @@ const companyService = require('../src/service/CompanyService');
 
 /* GET users listing. */
 router.get('/', [authMiddleware], (req, res, next) => {
-    clientService.getClients(req.operatorId).then((assignments) => {
-        companyService.getCompanies(assignments.resources[0].klient).then((companies) => {
+    // clientService.getClients(req.operatorId).then((assignments) => {
+        companyService.getCompanies().then((companies) => {
             response(res, false, ['Pomyślnie pobrano klientów.'], companies);
             return;
         }).catch((err) => {
@@ -32,28 +32,18 @@ router.get('/', [authMiddleware], (req, res, next) => {
         //     response(res, true, ['Coś poszło nie tak podczas próby pobrania klientów.', JSON.stringify(err)], []);    
         //     return;
         // });
-    }).catch((err) => {
-        response(res, true, ['Coś poszło nie tak podczas próby pobrania klientów.', JSON.stringify(err)], []);
-        return;
-    });
+    // }).catch((err) => {
+    //     response(res, true, ['Coś poszło nie tak podczas próby pobrania klientów.', JSON.stringify(err)], []);
+    //     return;
+    // });
 });
 
 router.get('/:clientId/representatives', [authMiddleware], (req, res, next) => {
-    clientService.getClients(req.operatorId).then((assignments) => {
-        if(!assignments.resources[0].klient.includes(Number(req.params.clientId))) {
-            response(res, true, ['Nie masz uprawnień do obsługi tego klienta.'], [], '/clients');
-            return;
-        }
-
-        companyService.getCompaniesWithRepresentatives([req.params.clientId]).then((companiesWithRepresentatives) => {
-            response(res, false, ['Pomyślnie pobrano reprezentantów klientów.'], companiesWithRepresentatives[0].representatives);
-            return;
-        }).catch((err) => {
-            console.log(err);
-            response(res, true, ['Coś poszło nie tak podczas próby pobrania reprezentantów klientów.', JSON.stringify(err)], []);
-            return;
-        });
+    companyService.getRepresentatives(req.params.clientId).then((representatives) => {
+        response(res, false, ['Pomyślnie pobrano reprezentantów klientów.'], representatives);
+        return;
     }).catch((err) => {
+        console.log(err);
         response(res, true, ['Coś poszło nie tak podczas próby pobrania reprezentantów klientów.', JSON.stringify(err)], []);
         return;
     });

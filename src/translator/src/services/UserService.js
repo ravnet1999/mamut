@@ -9,7 +9,7 @@ class UserService extends Service {
 
     findByClientId = (clientIds) => {
         return new Promise((resolve, reject) => {
-            connection.query('SELECT * FROM `' + this.tableName + '` WHERE `id_klienta` IN (?)', [clientIds], (err, results, fields) => {
+            connection.query('SELECT * FROM `' + this.tableName + '` WHERE `id_klienta` IN (?) AND `aktywny`=\'on\'', [clientIds], (err, results, fields) => {
                 if(err) {
                     reject(err);
                     return;

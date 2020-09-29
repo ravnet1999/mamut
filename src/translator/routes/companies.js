@@ -5,7 +5,7 @@ const companyLocationService = require('../src/services/Company/CompanyLocationS
 const response = require('../src/response');
 
 router.get('/', (req, res, next) => {
-    companyService.find(9999999, 0, 'id', 'ASC').then((companies) => {
+    companyService.find(9999999, 0, 'id', 'ASC', '`aktywny` = \'on\'').then((companies) => {
         response(res, false, ['Pomyślnie pobrano firmy.'], companies);
         return;
     }).catch((err) => {

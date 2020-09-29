@@ -3,10 +3,26 @@ const parseResponse = require('../ResponseParser');
 const appConfig = require('../../config/appConfig.json');
 
 class CompanyService {
-    getCompanies = (companyIds) => {
+    getCompanies = () => {
         return new Promise((resolve, reject) => {
-            companyIds = companyIds.join(',');
-            axios.get(`${appConfig.URLs.translator}/companies/${companyIds}`).then((response) => {
+            axios.get(`${appConfig.URLs.translator}/companies/`).then((response) => {
+                parseResponse(response).then((response) => {
+                    resolve(response.resources);
+                    return;
+                }).catch((err) => {
+                    reject(err);
+                    return;
+                });
+            }).catch((err) => {
+                reject(err);
+                return;
+            });
+        });
+    }
+
+    getCompany = (companyId) => {
+        return new Promise((resolve, reject) => {
+            axios.get(`${appConfig.URLs.translator}/companies/${companyId}`).then((response) => {
                 parseResponse(response).then((response) => {
                     resolve(response.resources);
                     return;
@@ -38,10 +54,9 @@ class CompanyService {
         });    
     }
 
-    getRepresentatives = (companyIds) => {
+    getRepresentatives = (companyId) => {
         return new Promise((resolve, reject) => {
-            companyIds = companyIds.join(',');
-            axios.get(`${appConfig.URLs.translator}/assignments/${companyIds}/representatives`).then((response) => {
+            axios.get(`${appConfig.URLs.translator}/assignments/${companyId}/representatives`).then((response) => {
                 parseResponse(response).then((response) => {
                     resolve(response.resources);
                     return;
@@ -56,10 +71,10 @@ class CompanyService {
         });   
     }
 
-    getCompaniesWithRepresentatives = (companyIds) => {
+    getCompaniesWithRepresentatives = (companyId) => {
         return new Promise((resolve, reject) => {
-            this.getCompanies(companyIds).then((companies) => {
-                this.getRepresentatives(companyIds).then((representatives) => {
+            this.getCompanies(companyId).then((companies) => {
+                this.getRepresentatives(companyId).then((representatives) => {
                     let companiesWithRepresentatives = companies.map((company) => {
                         company.representatives = representatives.filter((representative) => {
                             return representative.id_klienta == company.id;
