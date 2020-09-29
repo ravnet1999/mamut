@@ -3,7 +3,11 @@
 /src/*/node_modules/
 /src/translator/config/database.json
 /src/backend/config/database.json
+/src/backend/middleware/cors.js
+/src/frontend/src/Config/appConfig.json
+/src/parser/config/database.json
 /src/parser/config/email.json
 /src/parser/config/accounts.json
+/src/parser/middleware/cors.js
 /src/mongodb/scripts/add_user.js
 /mongodb
