@@ -1,0 +1,17 @@
+{
+    "URLs": {
+        "domain": "http://localhost:8312",
+        "login": "auth/login",
+        "companyEmails": "company_emails"
+    },
+    "cookies": {
+        "auth": {
+            "name": "mamut_app_parser_auth",
+            "settings": {
+                "maxAge": 28800,
+                "secure": false,
+                "path": "/"
+            }
+        }
+    }
+}
