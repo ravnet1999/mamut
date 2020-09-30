@@ -14,5 +14,20 @@
             "hrWithTime": "HH:mm:ss | DD-MM-YYYY",
             "system": "YYYY-MM-DDTHH:mm:ss.SSSZ"
         }
+    },
+    "tasks": {
+        "operatorId": null,
+        "issuer": null,
+        "issuerCompany": null,
+        "issuerCompanyLocation": null,
+        "description": "",
+        "emailNotif": "on",
+        "channel": 3,
+        "serviceId": 15,
+        "service": "",
+        "type": "zadanie",
+        "department": 2,
+        "priority": 2,
+        "category": 1
     }
 }

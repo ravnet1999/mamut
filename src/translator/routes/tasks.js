@@ -8,13 +8,19 @@ const taskStampService = require('../src/services/Task/TaskStampService');
 const taskEpisodeService = require('../src/services/Task/TaskEpisodeService');
 
 router.get('/:operatorId/:taskId', (req, res, next) => {
-    taskService.find(1, 0, 'id', 'DESC', '`informatyk` = \'' + req.params.operatorId + '\' AND `id` = \'' + req.params.taskId + '\'').then((task) => {
-        if(task.length <= 0) {
+    taskService.find(1, 0, 'id', 'DESC', '`informatyk` = \'' + req.params.operatorId + '\' AND `id` = \'' + req.params.taskId + '\'').then((tasks) => {
+        if(tasks.length <= 0) {
             response(res, true, ['Takie zadanie nie istnieje!'], [], '/tasks');
             return;                
         }
-        response(res, false, ['Pomyślnie pobrano zadania.'], task);
-        return;
+
+        taskStampService.getLastStamps(tasks).then((tasksWithStamps) => {
+            response(res, false, ['Pomyślnie pobrano zadania.'], tasksWithStamps);
+            return;
+        }).catch((err) => {
+            response(res, true, ['Wystąpił problem podczas próby znalezienia ostatnich stempli zadań.', JSON.stringify(err)], []);
+            return;                
+        });
     }).catch((err) => {
         response(res, true, ['Wystąpił problem podczas próby znalezienia zadania po ID.', JSON.stringify(err)], []);
         return;    
@@ -28,8 +34,13 @@ router.get('/:operatorId/:limit?/:offset?/:status?', (req, res, next) => {
     let status = req.params.status ? ' AND `status`=\'' + req.params.status + '\'' : ''; 
 
     taskService.find(limit, offset, 'id', 'DESC', operator + status ).then((tasks) => {
-        response(res, false, ['Pomyślnie pobrano zadania.'], tasks);
-        return;
+        taskStampService.getLastStamps(tasks).then((tasksWithStamps) => {
+            response(res, false, ['Pomyślnie pobrano zadania.'], tasksWithStamps);
+            return;
+        }).catch((err) => {
+            response(res, true, ['Wystąpił problem podczas próby znalezienia ostatnich stempli zadań.', JSON.stringify(err)], []);
+            return;   
+        });
     }).catch((err) => {
         response(res, true, ['Wystąpił problem podczas próby znalezienia zadań.', JSON.stringify(err)], []);
         return;        

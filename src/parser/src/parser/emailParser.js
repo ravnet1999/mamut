@@ -20,7 +20,6 @@ const readEmails = () => {
                 };
         
                 return connection.search(searchCriteria, fetchOptions).then((results) => {
-                    console.log('-----------------------------------');
                     let contents = results.map((result) => {
                         let parts = result.parts.filter((part) => {
                             return part.which == '';

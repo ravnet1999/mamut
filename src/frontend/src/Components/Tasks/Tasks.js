@@ -42,6 +42,7 @@ const Tasks = (props) => {
 
     const buildTaskRadios = () => {
         return tasks.map((task, key) => {
+            console.log(task);
             return (
                 <Row key={key}>
                     <Col>

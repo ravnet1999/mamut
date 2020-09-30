@@ -2,7 +2,7 @@ const moment = require('moment');
 const appConfig = require('../config/appConfig.json');
 const Email = require('../src/models/EmailModel');
 const CompanyEmail = require('../src/models/CompanyEmailModel');
-const taskService = require('../src/services/TaskService');
+const taskService = require('../src/services/TaskBuilderService');
 const companyService = require('../src/services/CompanyService');
 
 const formatDate = (date) => {
@@ -23,7 +23,17 @@ const insertEmails = () => {
                     return;
                 } 
 
-                // console.log(companyEmail.companyName, companyEmail.companyId, companyEmail.selectedRep);
+                taskService.insertTask(companyEmail.companyId, companyEmail.selectedRep, 30).then((result) => {
+                    console.log('result', result);
+                    if(!result.error) {
+                        databaseEmail.inserted = true;
+                        databaseEmail.save((err, doc) => {
+                            console.log(doc);
+                        });
+                    }
+                }).catch((err) => {
+                    console.log('error', err);
+                });
             }).catch((err) => {
                 console.log(err);
                 return;

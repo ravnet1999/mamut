@@ -38,7 +38,7 @@ router.put('/:clientId/:repId', [authMiddleware], (req, res, next) => {
 
             taskObject.issuer = rep;
 
-            companyService.getCompanies([req.params.clientId]).then((companies) => {
+            companyService.getCompany(req.params.clientId).then((companies) => {
 
                 taskObject.issuerCompany = companies[0];
 

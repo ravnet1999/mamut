@@ -22,6 +22,57 @@ class CompanyService {
         });
     }
 
+    getCompany = (companyId) => {
+        return new Promise((resolve, reject) => {
+            axios.get(`${appConfig.URLs.translator}/companies/${companyId}`).then((response) => {
+                parseResponse(response).then((response) => {
+                    resolve(response.resources);
+                    return;
+                }).catch((err) => {
+                    reject(err);
+                    return;
+                });
+            }).catch((err) => {
+                reject(err);
+                return;
+            });
+        });
+    }
+
+    getRepresentative = (repId) => {
+        return new Promise((resolve, reject) => {
+            axios.get(`${appConfig.URLs.translator}/users/${repId}`).then((response) => {
+                parseResponse(response).then((response) => {
+                    resolve(response.resources[0]);
+                    return;
+                }).catch((err) => {
+                    reject(err);
+                    return;
+                });
+            }).catch((err) => {
+                reject(err);
+                return;
+            });
+        });    
+    }
+
+    getCompanyLocation = (companyId) => {
+        return new Promise((resolve, reject) => {
+            axios.get(`${appConfig.URLs.translator}/companies/${companyId}/location`).then((response) => {
+                parseResponse(response).then((response) => {
+                    resolve(response.resources[0]);
+                    return;
+                }).catch((err) => {
+                    reject(err);
+                    return;
+                });
+            }).catch((err) => {
+                reject(err);
+                return;
+            });
+        });   
+    }
+
     getCompanyEmails = () => {
         return new Promise((resolve, reject) => {
             this.getCompaniesWithRepresentatives().then((companies) => {
