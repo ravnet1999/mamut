@@ -42,16 +42,42 @@ const Tasks = (props) => {
 
     const buildTaskRadios = () => {
         return tasks.map((task, key) => {
-            console.log(task);
+
+            let taskStampClass = '';
+
+            switch(task.lastStamp?.nazwa) {
+                case 'OCZEKUJE':
+                    taskStampClass = 'awaiting';
+                    break;
+                case 'START':
+                    taskStampClass = 'started';
+                    break;
+                case 'STOP':
+                    taskStampClass = 'stopped';
+                    break;
+                case 'nowy etap':
+                    taskStampClass = 'new';
+                    break;
+                default:
+                    taskStampClass = '';
+                    break;
+            }
+
             return (
                 <Row key={key}>
                     <Col>
-                        <Form.Check
-                            type="radio"
-                            label={`${task.id} - ${task.zglaszajacy}`}
-                            onChange={(e) => setPickedTask(task)}
-                            checked={pickedTask ? (pickedTask.id == task.id ? true : false) : false}>
-                        </Form.Check>
+                        <div className={`tasklist-task ${taskStampClass} margin-bottom-default`}>
+                            <Form.Check
+                                type="radio"
+                                label={`${task.id} - ${task.zglaszajacy}`}
+                                id={`task_${task.id}`}
+                                onChange={(e) => setPickedTask(task)}
+                                checked={pickedTask ? (pickedTask.id == task.id ? true : false) : false}
+                                className="d-inline-block vertical-middle-static"
+                            >
+                            </Form.Check>
+                            <span className={`task-description description ${taskStampClass} vertical-middle-static d-inline-block`}> - {task.lastStamp?.nazwa}{task.lastStamp?.opis ? ` (${task.lastStamp.opis})` : ''} </span>
+                        </div>
                     </Col>
                 </Row>
             );
