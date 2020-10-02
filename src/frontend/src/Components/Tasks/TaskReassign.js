@@ -73,7 +73,7 @@ const TaskReassign = (props) => {
             <Col xs="4" sm="3" md="2" className="text-right">
                 <Button className="margin-bottom-default btn-inverted" onClick={(e) => reassignTask(pickedOperator)} disabled={!pickedOperator}>Przekaż</Button>
             </Col>
-            <Col xs="12">
+            <Col xs="12" className="margin-top-default">
                 <Alert response={response}></Alert>
             </Col>
         </Row>

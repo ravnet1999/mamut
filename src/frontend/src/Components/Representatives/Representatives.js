@@ -38,7 +38,7 @@ const Representatives = (props) => {
     const buildClients = () => {
         
         let clientColumns = representatives.map((representative, index) => {
-            return <Col xs="6" key={index}><Button onClick={(e) => setSelectedRep(representative)} className={ `full-width margin-bottom-default ${ selectedRep && selectedRep.id === representative.id ? 'active' : ''}` }>{representative.imie} {representative.nazwisko}</Button> </Col>;
+            return <Col xs="12" sm="12" md="6" lg="4" key={index}><Button onClick={(e) => setSelectedRep(representative)} className={ `full-width margin-bottom-default ${ selectedRep && selectedRep.id === representative.id ? 'active' : ''}` }>{representative.imie} {representative.nazwisko}</Button> </Col>;
         });
 
         return (
@@ -52,12 +52,16 @@ const Representatives = (props) => {
         <Page>
             <Alert response={response}></Alert>
             { buildClients() }
-            <Row>
-                <Col className="text-center">
-                    <Alert response={response}></Alert>
-                    <Button className="large" onClick={(e) => createTask()} disabled={!selectedRep}>Start</Button>
-                </Col>
-            </Row>
+            <div className="bottom-pin-wrapper">
+                <div className="bottom-pin">
+                    <Row className="no-margins">
+                        <Col className="text-right">
+                            {/* <Alert response={response}></Alert> */}
+                            <Button onClick={(e) => createTask()} className="btn-inverted" disabled={!selectedRep}>Start</Button>
+                        </Col>
+                    </Row>
+                </div>
+            </div>
         </Page>
     );
 }

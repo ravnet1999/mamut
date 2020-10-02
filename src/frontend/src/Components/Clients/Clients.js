@@ -23,7 +23,7 @@ const Clients = (props) => {
 
     const buildClients = () => {
         let clientColumns = clients.map((client, index) => {
-            return <Col xs="6" key={index}><Link to={`/representatives/${client.id}`} className="btn btn-primary full-width margin-bottom-default">{client.nazwa}</Link> </Col>;
+            return <Col xs="12" sm="12" md="6" key={index}><Link to={`/representatives/${client.id}`} className="btn btn-primary full-width margin-bottom-default">{client.nazwa}</Link> </Col>;
         });
 
         return (
