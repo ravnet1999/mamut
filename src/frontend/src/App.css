@@ -1,3 +1,7 @@
+h1 {
+    font-size: 2em;
+}
+
 header {
     background-color: #333;
     color: #fff;
@@ -76,15 +80,27 @@ nav ul li a:hover {
 }
 
 .btn-primary:disabled {
-    background-color: #333;
+    background-color: #555;
     color: #fff;
-    border: 1px solid #333;
+    border: 1px solid #fff;
+}
+
+.btn-primary:disabled:hover {
+    background-color: #555;
+    color: #fff;
+    border: 1px solid #fff;
 }
 
 .btn-primary:hover {
     background-color: #fff;
     color: #333;
     border-color: #333;
+}
+
+.btn-inverted {
+    background-color: #333;
+    color: #fff;
+    border-color: #fff;
 }
 
 .full-width {
@@ -130,3 +146,36 @@ nav ul li a:hover {
     background-color: rgba(255, 255, 255, 0.1);
 }
 
+.no-margins {
+    margin: 0 !important;
+}
+
+.bottom-pin {
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    margin: 0 !important;
+    max-width: 1170px;
+    display: block;
+    margin: auto !important;
+}
+
+.bottom-pin .form-control, .bottom-pin .btn {
+    margin-bottom: 0;
+}
+
+.bottom-pin-wrapper {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+    background-color: #333;
+    padding: 12px 0;
+}
+
+.page-container {
+    padding-bottom: 200px;
+}

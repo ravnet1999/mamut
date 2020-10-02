@@ -39,14 +39,18 @@ const Task = (props) => {
         <Page>
             <Alert response={response}></Alert>
             <h1>{task.id} - {task.zglaszajacy}</h1>
-            <Row>
-                <Col className="text-center">
-                    <Button onClick={(e) => stopTask()} className="large">
-                        Stop
-                    </Button>
-                </Col>
-            </Row>
-            <TaskReassign taskId={props.match.params.taskId}></TaskReassign>
+            <div className="bottom-pin-wrapper">
+                <div className="bottom-pin">
+                    <Row className="no-margins">
+                        <Col className="text-right">
+                            <Button onClick={(e) => stopTask()} className="btn-inverted">
+                                Stop
+                            </Button>
+                        </Col>
+                    </Row>
+                    <TaskReassign taskId={props.match.params.taskId}></TaskReassign>
+                </div>
+            </div>
         </Page>
     );
 }

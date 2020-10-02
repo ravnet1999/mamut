@@ -3,7 +3,7 @@ import { Container, Row, Col } from './bootstrap';
 
 const Page = (props) => {
     return (
-        <Container>
+        <Container className="page-container">
             <Row>
                 <Col>
                     {props.children}

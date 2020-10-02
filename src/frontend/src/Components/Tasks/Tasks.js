@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Button, Form } from '../bootstrap';
+import './Tasks.css';
 import Page from '../Page';
 import Alert from '../Alert/Alert';
 import TaskHandler from '../../Handlers/TaskHandler';
@@ -63,6 +64,8 @@ const Tasks = (props) => {
                     break;
             }
 
+            let isChecked = pickedTask ? (pickedTask.id == task.id ? true : false) : false;
+
             return (
                 <Row key={key}>
                     <Col>
@@ -72,8 +75,8 @@ const Tasks = (props) => {
                                 label={`${task.id} - ${task.zglaszajacy}`}
                                 id={`task_${task.id}`}
                                 onChange={(e) => setPickedTask(task)}
-                                checked={pickedTask ? (pickedTask.id == task.id ? true : false) : false}
-                                className="d-inline-block vertical-middle-static"
+                                checked={isChecked}
+                                className={`d-inline-block vertical-middle-static ${isChecked ? 'picked' : ''}`}
                             >
                             </Form.Check>
                             <span className={`task-description description ${taskStampClass} vertical-middle-static d-inline-block`}> - {task.lastStamp?.nazwa}{task.lastStamp?.opis ? ` (${task.lastStamp.opis})` : ''} </span>
@@ -88,12 +91,21 @@ const Tasks = (props) => {
         <Page>
             <Alert response={response}></Alert>
             {buildTaskRadios()}
-            <Row className="margin-top-default margin-bottom-default">
+            {/* <Row className="margin-top-default margin-bottom-default">
                 <Col className="text-center">
                     <Button className="large" onClick={(e) => startTask()}>Start</Button>    
                 </Col>
-            </Row>
-            { pickedTask ? <TaskReassign taskId={pickedTask.id} reassignFinished={getTasks}></TaskReassign> : ''}
+            </Row> */}
+            <div class="bottom-pin-wrapper">
+                <div class="bottom-pin">
+                    <Row className="no-margins">
+                        <Col className="text-right">
+                            <Button onClick={(e) => startTask()} className="btn-inverted">Start</Button>    
+                        </Col>
+                    </Row>
+                    { pickedTask ? <TaskReassign taskId={pickedTask.id} reassignFinished={getTasks}></TaskReassign> : ''}
+                </div>
+            </div>
         </Page>
     );
 }

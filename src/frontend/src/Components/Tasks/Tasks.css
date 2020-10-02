@@ -1,0 +1,11 @@
+.reassign-task h2 {
+    font-size: 1.2em;
+    transform: translate(0, -50%);
+    top: 40%;
+    position: relative;
+    color: #FFF;
+}
+
+.tasklist-task .picked label {
+    color: rgb(12, 141, 0);
+}

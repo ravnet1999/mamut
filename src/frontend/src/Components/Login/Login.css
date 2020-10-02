@@ -1,4 +1,10 @@
 .login-box {
-    width:450px;
+    width: 450px;
     margin: auto;
+}
+
+@media (max-width: 480px) {
+    .login-box {
+        width: 100%;
+    }
 }
