@@ -17,7 +17,7 @@ const Representatives = (props) => {
                 return (a.imie + a.nazwisko) > (b.imie + b.nazwisko) ? 1 : ( (a.imie + a.nazwisko) < (b.imie + b.nazwisko) ? -1 : 0 );
             });
             setRepresentatives(sorted);
-            response.messages = ['Wybierz reprezentanta.']
+            response.messages = ['Wybierz reprezentanta:']
             setResponse(response);
         }).catch((err) => {
             setResponse(err);
