@@ -111,8 +111,10 @@ nav ul li a:hover {
     font-size: 2em;
     text-transform: uppercase;
     z-index: 9999;
-    padding: 50px 30px;
+    /* padding: 50px 30px; */
     border-radius: 50%;
+    width: 130px;
+    height: 130px;
 }
 
 .btn-center-container {
