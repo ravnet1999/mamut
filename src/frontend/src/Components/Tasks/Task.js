@@ -38,12 +38,12 @@ const Task = (props) => {
     return (
         <Page>
             <Alert response={response}></Alert>
-            <h1>{task.id} - {task.zglaszajacy}</h1>
+            <h1>Zadanie: {task.id}<br />{task.zglaszajacy}</h1>
             <div className="bottom-pin-wrapper">
                 <div className="bottom-pin">
                     <Row className="no-margins">
-                        <Col className="text-right">
-                            <Button onClick={(e) => stopTask()} className="btn-inverted">
+                        <Col className="text-right btn-center-container">
+                            <Button onClick={(e) => stopTask()} className="btn-inverted btn-center">
                                 Stop
                             </Button>
                         </Col>

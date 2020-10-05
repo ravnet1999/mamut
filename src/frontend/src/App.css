@@ -103,6 +103,22 @@ nav ul li a:hover {
     border-color: #fff;
 }
 
+.btn-center {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    left: 50%;
+    top: -10px;
+    font-size: 2em;
+    text-transform: uppercase;
+    z-index: 9999;
+    padding: 50px 30px;
+    border-radius: 50%;
+}
+
+.btn-center-container {
+    padding-top: 50px;
+}
+
 .full-width {
     width: 100%;
 }
@@ -173,9 +189,10 @@ nav ul li a:hover {
     right: 0;
     z-index: 9999;
     background-color: #333;
-    padding: 12px 0;
+    padding: 12px;
+    min-height: 100px;
 }
 
 .page-container {
-    padding-bottom: 200px;
+    padding-bottom: 250px;
 }

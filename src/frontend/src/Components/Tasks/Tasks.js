@@ -99,8 +99,8 @@ const Tasks = (props) => {
             <div class="bottom-pin-wrapper">
                 <div class="bottom-pin">
                     <Row className="no-margins">
-                        <Col className="text-right">
-                            <Button onClick={(e) => startTask()} className="btn-inverted">Start</Button>    
+                        <Col className="text-right btn-center-container">
+                            <Button onClick={(e) => startTask()} className="btn-inverted btn-center btn-center">Start</Button>    
                         </Col>
                     </Row>
                     { pickedTask ? <TaskReassign taskId={pickedTask.id} reassignFinished={getTasks}></TaskReassign> : ''}

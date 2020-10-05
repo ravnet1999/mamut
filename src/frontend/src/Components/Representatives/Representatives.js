@@ -55,9 +55,9 @@ const Representatives = (props) => {
             <div className="bottom-pin-wrapper">
                 <div className="bottom-pin">
                     <Row className="no-margins">
-                        <Col className="text-right">
+                        <Col className="text-right btn-center-container">
                             {/* <Alert response={response}></Alert> */}
-                            <Button onClick={(e) => createTask()} className="btn-inverted" disabled={!selectedRep}>Start</Button>
+                            <Button onClick={(e) => createTask()} className="btn-inverted btn-start btn-center" disabled={!selectedRep}>Start</Button>
                         </Col>
                     </Row>
                 </div>
