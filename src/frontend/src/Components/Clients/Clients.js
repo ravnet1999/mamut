@@ -15,6 +15,7 @@ const Clients = (props) => {
                 return (a.nazwa) > (b.nazwa) ? 1 : ( (a.nazwa) < (b.nazwa) ? -1 : 0 );
             });
             setClients(sorted);
+            response.messages = ['Wybierz klienta, którego będziesz obsługiwał.']
             setResponse(response);
         }).catch((err) => {
             setResponse(err);
