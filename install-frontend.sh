@@ -2,7 +2,9 @@
 
 sudo docker-compose -f docker-compose.dev.yml exec $1 /bin/sh /app/scripts/build-frontend.sh
 
+mkdir src/backend/public
 mkdir src/backend/public/admin
+mkdir src/parser/public
 mkdir src/parser/public/admin
 
 sudo rm -rf src/backend/public/admin/*
