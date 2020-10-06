@@ -4,6 +4,8 @@
 /src/translator/config/database.json
 /src/backend/config/database.json
 /src/backend/middleware/cors.js
+/src/backend/public/admin/*
+/src/backend/public/parser/*
 /src/frontend/src/Config/appConfig.json
 /src/parser/config/database.json
 /src/parser/config/email.json
