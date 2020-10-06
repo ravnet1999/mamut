@@ -1,6 +1,6 @@
 {
     "URLs": {
-        "domain": "",
+        "domain": "/api",
         "login": "operators/login",
         "clients": "clients",
         "tasks": "tasks",
