@@ -34,8 +34,8 @@ db.once('error', () => {
 });
 
 let automations = [
-    readEmailsAutomation,
-    insertEmailsAutomation
+    // readEmailsAutomation,
+    // insertEmailsAutomation
 ];
 
 let intervals = [];
