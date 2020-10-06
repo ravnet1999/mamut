@@ -6,6 +6,6 @@ sudo rm -rf src/backend/public/admin/*
 rsync -avz src/frontend/build/* src/backend/public/admin/
 sudo chown -R $2:$3 src/backend/public/admin/*
 
-sudo rm -rf src/backend/public/parser/*
-rsync -avz src/frontend_parser/build/* src/backend/public/parser/
-sudo chown -R $2:$3 src/backend/public/parser/*
+sudo rm -rf src/parser/public/admin/*
+rsync -avz src/frontend_parser/build/* src/parser/public/admin/
+sudo chown -R $2:$3 src/parser/public/admin/*
