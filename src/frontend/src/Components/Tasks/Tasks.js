@@ -96,8 +96,8 @@ const Tasks = (props) => {
                     <Button className="large" onClick={(e) => startTask()}>Start</Button>    
                 </Col>
             </Row> */}
-            <div class="bottom-pin-wrapper">
-                <div class="bottom-pin">
+            <div className="bottom-pin-wrapper">
+                <div className="bottom-pin">
                     <Row className="no-margins">
                         <Col className="text-right btn-center-container">
                             <Button onClick={(e) => startTask()} className="btn-inverted btn-center btn-center">Start</Button>    

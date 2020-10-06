@@ -5,6 +5,7 @@ import appConfig from '../Config/appConfig.json';
 const ClientHandler = {
     getClients: () => {
         return new Promise((resolve, reject) => {
+            console.log(`${appConfig.URLs.domain}/${appConfig.URLs.clients}`);
             axios.get(`${appConfig.URLs.domain}/${appConfig.URLs.clients}`, {
                 withCredentials: true
             }).then((response) => {

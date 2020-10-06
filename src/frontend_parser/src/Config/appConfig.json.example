@@ -1,14 +1,12 @@
 {
     "URLs": {
-        "domain": "",
-        "login": "operators/login",
-        "clients": "clients",
-        "tasks": "tasks",
-        "operators": "operators"
+        "domain": "/api",
+        "login": "auth/login",
+        "companyEmails": "company_emails"
     },
     "cookies": {
         "auth": {
-            "name": "mamut_app_auth",
+            "name": "mamut_app_parser_auth",
             "settings": {
                 "maxAge": 28800,
                 "secure": false,

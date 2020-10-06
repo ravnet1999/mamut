@@ -4,7 +4,8 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const mongodb = require('mongoose');
 const dbConfig = require('./config/database.json');
-const corsMiddleware = require('./middleware/cors');
+const accessMiddleware = require('./middleware/access');
+const jsonMiddleware = require('./middleware/json');
 
 this.dbPath = 'mongodb://' + dbConfig.username + ':' + dbConfig.password + '@' + dbConfig.host + ':' + dbConfig.port + dbConfig.database;
 
@@ -32,21 +33,28 @@ const endpoints = [
 ];
 
 let routers = endpoints.map((endpoint) => {
-    return [ endpoint, require(`./routes/${endpoint}`) ];
+    return [ `/api/${endpoint}`, require(`./routes/${endpoint}`) ];
 });
 
 var app = express();
 
-app.use(corsMiddleware);
+app.use(accessMiddleware);
 
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-app.use('/', express.static(path.join(__dirname, 'public')));
+app.use('/parser', express.static(path.join(__dirname, 'public', 'parser')));
+
 routers.map((router) => {
-    app.use(`/${router[0]}`, router[1]);
+    app.use(`${router[0]}`, [accessMiddleware, jsonMiddleware], router[1]);
 });
+
+app.use('/admin', [accessMiddleware], express.static(path.join(__dirname, 'public', 'admin')));
+app.use('/parser', [accessMiddleware], express.static(path.join(__dirname, 'public', 'parser')));
+
+app.use('/admin/*', [accessMiddleware], express.static(path.join(__dirname, 'public', 'admin')));
+app.use('/parser/*', [accessMiddleware], express.static(path.join(__dirname, 'public', 'parser')));
 
 module.exports = app;
