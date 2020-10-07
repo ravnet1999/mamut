@@ -21,7 +21,7 @@ const LoginHandler = {
             }).catch((err) => {
                 reject({
                     error: true,
-                    messages: ['Wystąpił problem z połączeniem z serwerem.', JSON.stringify(err)],
+                    messages: ['Wystąpił problem z połączeniem z serwerem.'],
                     resources: []
                 });
                 return;

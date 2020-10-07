@@ -19,7 +19,7 @@ router.post('/login', (req, res, next) => {
     Auth.login(req.body.username, req.body.password).then((result) => {
         response(res, false, ['Pomyślnie zalogowano.'], [result], '/clients');
     }).catch((err) => {
-        response(res, true, ['Wystąpił problem z logowaniem', JSON.stringify(err)], []);
+        response(res, true, ['Wystąpił problem z logowaniem.', JSON.stringify(err)], []);
     });
 });
 
