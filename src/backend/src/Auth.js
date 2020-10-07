@@ -23,7 +23,9 @@ class Auth {
                     return;
                 });
             }).catch((err) => {
-                reject(err);
+                reject({
+                    message: 'Wystąpił problem z połączeniem z translatorem.'
+                });
                 return;
             });
         });
