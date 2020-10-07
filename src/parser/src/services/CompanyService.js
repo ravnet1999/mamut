@@ -118,7 +118,7 @@ class CompanyService {
         });
     }
 
-    saveCompanyEmails = (companyEmailsArray) => {
+    updateCompanyEmails = (companyEmailsArray) => {
         return new Promise((resolve, reject) => {
             let writeObjects = companyEmailsArray.map((companyEmailElement) => {
                 return {
@@ -127,6 +127,31 @@ class CompanyService {
                         update: {
                             $set: {
                                 domains: companyEmailElement.domains.map((domain) => { return domain.trim() }),
+                                selectedRep: companyEmailElement.selectedRep
+                            }
+                        },
+                    }
+                }
+            });
+
+            CompanyEmail.bulkWrite(writeObjects).then((result) => {
+                resolve(result);
+                return;
+            }).catch((err) => {
+                reject(err);
+                return;
+            });
+        });
+    }
+
+    saveCompanyEmails = (companyEmailsArray) => {
+        return new Promise((resolve, reject) => {
+            let writeObjects = companyEmailsArray.map((companyEmailElement) => {
+                return {
+                    updateOne: {
+                        filter: { companyId: companyEmailElement.companyId},
+                        update: {
+                            $set: {
                                 companyName: companyEmailElement.companyName,
                                 companyNameLowerCase: companyEmailElement.companyName.toLowerCase(),
                                 companyRepresentatives: companyEmailElement.companyRepresentatives,

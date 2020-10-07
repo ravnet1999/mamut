@@ -12,6 +12,8 @@ cp ./src/frontend_parser/src/Config/appConfig.json.example ./src/frontend_parser
 echo ./src/frontend_parser/src/Config/appConfig.json
 cp ./src/parser/config/database.json.example ./src/parser/config/database.json
 echo ./src/parser/config/database.json
+cp ./src/parser/config/email.json.example ./src/parser/config/email.json
+echo ./src/parser/config/email.json
 cp ./src/parser/middleware/access.js.example ./src/parser/middleware/access.js
 echo ./src/parser/middleware/access.js
 cp ./src/parser/middleware/json.js.example ./src/parser/middleware/json.js

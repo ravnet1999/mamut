@@ -6,11 +6,12 @@ const companyService = require('./CompanyService');
 const taskService = require('./TaskServices/TaskService');
 
 class TaskBuilderService {
-    insertTask = (clientId, repId, operatorId) => {
+    insertTask = (clientId, repId, description, operatorId) => {
         return new Promise((resolve, reject) => {
             let taskObject = appConfig.tasks;
 
             taskObject.operatorId = operatorId;
+            taskObject.description = description;
         
             serviceService.getService(taskObject.serviceId).then((service) => {
                 taskObject.service = service.nazwa;

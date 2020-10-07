@@ -16,7 +16,7 @@ router.get('/:limit?/:offset?/:sortBy?/:sortWay?', [authMiddleware], function(re
 });
 
 router.post('/', [authMiddleware], function(req, res, next) {
-    companyService.saveCompanyEmails(req.body.companyEmails).then((result) => {
+    companyService.updateCompanyEmails(req.body.companyEmails).then((result) => {
         response(res, false, ['Pomyślnie zapisano zmiany w domenach klientów.'], [result]);
         return;
     }).catch((err) => {

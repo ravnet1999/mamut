@@ -39,10 +39,13 @@ let automations = [
     // insertEmailsAutomation
 ];
 
+// readEmailsAutomation.method();
+
 let intervals = [];
 
 db.once('open', () => {
     console.log('Connected to MongoDB');
+    // insertEmailsAutomation.method();
 
     intervals = automations.map((automation) => {
         return setInterval(automation.method, automation.interval);

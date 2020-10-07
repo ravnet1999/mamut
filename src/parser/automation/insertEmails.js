@@ -23,7 +23,7 @@ const insertEmails = () => {
                     return;
                 } 
 
-                taskService.insertTask(companyEmail.companyId, companyEmail.selectedRep, 30).then((result) => {
+                taskService.insertTask(companyEmail.companyId, companyEmail.selectedRep, databaseEmail.text, 30).then((result) => {
                     console.log('result', result);
                     if(!result.error) {
                         databaseEmail.inserted = true;
