@@ -29,19 +29,10 @@ const startAutomations = () => {
 
 /* GET home page. */
 router.get('/', [authMiddleware], function(req, res, next) {
-    let automationStatus = {};
-    Automation.findOne({}).then((automation) => {
-        if(!automation) {
-            automationStatus.automationEnabled = false;
-        } else {
-            automationStatus = automation;
-        }
-        response(res, false, ['Pomyślnie pobrano status automatyzacji.'], [automationStatus]);
-        return;
-    }).catch((err) => {
-        response(res, true, ['Wystąpił błąd podczas próby pobrania statusu automatyzacji.', JSON.stringify(err)], []);
-        return;
-    });
+    let automationStatus = {
+        automationEnabled: intervals.length > 0
+    };
+    response(res, false, ['Pomyślnie pobrano status automatyzacji.'], [automationStatus]);
 });
 
 router.post('/enable', [authMiddleware], function(req, res, next) {
