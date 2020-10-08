@@ -33,6 +33,7 @@ const readEmails = () => {
                     contents.map((content) => {
                         mailParser(content, (err, mail) => {
                             if(err) {
+                                connection.end();
                                 reject(err);
                                 return;
                             }
@@ -40,7 +41,7 @@ const readEmails = () => {
                             parsedEmails.push(mail);
 
                             if(parsedEmails.length == contents.length) {
-                                imap.end();
+                                connection.end();
                                 resolve(parsedEmails);
                                 return;
                             }
