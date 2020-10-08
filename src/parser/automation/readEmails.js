@@ -12,9 +12,7 @@ const getFromAddress = (email) => {
 }
 
 const readEmails = () => {
-
-    mailParser().then((emails) => {
-        
+    mailParser().then((emails) => {        
         emails.map((email) => {
             Email.findOne({
                 from: getFromAddress(email),
@@ -27,7 +25,7 @@ const readEmails = () => {
                         text: email.text,
                         inserted: false
                     }).then((result) => {
-                        console.log('Wprowadzono adresy email do bazy danych.');
+                        console.log(`Wprowadzono email od ${getFromAddress(email)} z dnia ${formatDate(email.date)} do bazy danych.`);
                         return;
                     }).catch((err) => {
                         console.log('Wystąpił błąd podczas próby wprowadzenia maili do bazy danych Mongo');

@@ -6,14 +6,14 @@ const mongodb = require('mongoose');
 const dbConfig = require('./config/database.json');
 const accessMiddleware = require('./middleware/access');
 const jsonMiddleware = require('./middleware/json');
-const readEmailsAutomation = require('./automation/readEmails');
-const insertEmailsAutomation = require('./automation/insertEmails');
+const Automation = require('./src/models/AutomationModel'); 
 
 const endpoints = [
     'emails',
     'auth',
     'fetch_emails',
-    'company_emails'
+    'company_emails',
+    'automation'
 ];
 
 let routers = endpoints.map((endpoint) => {
@@ -34,20 +34,10 @@ db.once('error', () => {
     console.log('MongoDB connection error!');
 });
 
-let automations = [
-    // readEmailsAutomation,
-    // insertEmailsAutomation
-];
-
 let intervals = [];
 
 db.once('open', () => {
     console.log('Connected to MongoDB');
-    // insertEmailsAutomation.method();
-
-    intervals = automations.map((automation) => {
-        return setInterval(automation.method, automation.interval);
-    });
 });
 
 var app = express();

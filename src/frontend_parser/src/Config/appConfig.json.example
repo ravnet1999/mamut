@@ -2,7 +2,9 @@
     "URLs": {
         "domain": "/api",
         "login": "auth/login",
-        "companyEmails": "company_emails"
+        "companyEmails": "company_emails",
+        "fetchEmails": "fetch_emails",
+        "automation" : "automation"
     },
     "cookies": {
         "auth": {
