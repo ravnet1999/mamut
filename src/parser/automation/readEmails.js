@@ -48,5 +48,5 @@ const readEmails = () => {
 
 module.exports = {
     method: readEmails,
-    interval: 10000
+    interval: 60000
 }

@@ -41,6 +41,7 @@ const readEmails = () => {
 
                             if(parsedEmails.length == contents.length) {
                                 resolve(parsedEmails);
+                                imap.end();
                                 return;
                             }
                         });
