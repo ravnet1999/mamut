@@ -7,6 +7,7 @@ import { Row, Col, Button } from '../bootstrap';
 import Alert from '../Alert/Alert';
 import Page from '../Page';
 import CompanyEmailsHandler from '../../Handlers/CompanyEmailsHandler';
+import CompanyHandler from '../../Handlers/CompanyHandler';
 import Pagination from '../Pagination/Pagination';
 
 const CompanyEmails = (props) => {
@@ -19,21 +20,44 @@ const CompanyEmails = (props) => {
     const [sortBy, setSortBy] = useState('companyNameLowerCase');
     const [sortWay, setSortWay] = useState('ASC');
 
-    useEffect(() => {
+    const fetchDomains = () => {
         CompanyEmailsHandler.getCompanyEmails(limit, page * limit, sortBy, sortWay).then((response) => {
             setDomains(response.resources[0].result);
             setDomainCount(response.resources[0].count);
         }).catch((err) => {
             setResponse(err);
-        })
+        });
+    }
+
+    useEffect(() => {
+        fetchDomains();
     }, [page, limit, sortBy, sortWay]);
 
     const saveCompanyEmails = () => {
+        setResponse({
+            error: false,
+            messages: ['Zpisuję domeny...'],
+            resources: []
+        })
         CompanyEmailsHandler.saveCompanyEmails(domains).then((response) => {
             setResponse(response);
         }).catch((err) => {
             setResponse(err);
         });
+    }
+
+    const fetchEmails = () => {
+        setResponse({
+            error: false,
+            messages: ['Aktualizuję...'],
+            resources: []
+        });
+        CompanyHandler.parseCompanies().then((response) => {
+            setResponse(response);
+            fetchDomains();
+        }).catch((err) => {
+            setResponse(err);
+        })
     }
 
     const validateDomains = () => {
@@ -132,6 +156,9 @@ const CompanyEmails = (props) => {
     const buildSaveButton = () => {
         return (
             <Row className="margin-bottom-default">
+                <Col>
+                    <Button onClick={(e) => fetchEmails()}>Aktualizuj firmy</Button>
+                </Col>
                 <Col className="text-right">
                     <Button onClick={(e) => saveCompanyEmails()} disabled={!validateDomains()}>Zapisz</Button>
                 </Col>

@@ -10,7 +10,7 @@ router.post('/', [authMiddleware], function(req, res, next) {
         // response(res, false, ['ok'], []);
         // return;
         companyService.saveCompanyEmails(emails).then((result) => {
-            response(res, false, ['Zapisano powiązania mailowe.'], [result]);
+            response(res, false, ['Aktualizacja firm przeszła pomyślnie.'], [result]);
             return;
         }).catch((err) => {
             response(res, true, ['Wystąpił błąd podczas zapisywania powiązań mailowych.', JSON.stringify(err)], []);

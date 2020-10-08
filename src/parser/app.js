@@ -39,8 +39,6 @@ let automations = [
     // insertEmailsAutomation
 ];
 
-// readEmailsAutomation.method();
-
 let intervals = [];
 
 db.once('open', () => {
