@@ -40,8 +40,8 @@ const readEmails = () => {
                             parsedEmails.push(mail);
 
                             if(parsedEmails.length == contents.length) {
-                                resolve(parsedEmails);
                                 imap.end();
+                                resolve(parsedEmails);
                                 return;
                             }
                         });
