@@ -1,5 +1,6 @@
 const Service = require('../Service');
 const connection = require('../../mysql/connection');
+const charset = require('../../helpers/charset');
 
 class TaskStampService extends Service {
     constructor(tableName) {
@@ -8,8 +9,14 @@ class TaskStampService extends Service {
     }
 
     stamp = (stampName, taskId, operatorId, description = '') => {
+        let stampDetails = {
+            description: description
+        }
+
+        stampDetails = charset.translateOut(stampDetails);
+
         return new Promise((resolve, reject) => {
-            connection.query('INSERT INTO `zgloszenia_stemple` ( `godzina` , `nazwa` , `id_zgloszenia` , `id_informatyka`, `opis` ) VALUES (NOW(), ?, ?, ?, ?)', [stampName, taskId, operatorId, description], (err, results, fields) => {
+            connection.query('INSERT INTO `zgloszenia_stemple` ( `godzina` , `nazwa` , `id_zgloszenia` , `id_informatyka`, `opis` ) VALUES (NOW(), ?, ?, ?, ?)', [stampName, taskId, operatorId, stampDetails.description], (err, results, fields) => {
                 if(err) {
                     reject(err);
                     return;     
@@ -52,6 +59,9 @@ class TaskStampService extends Service {
             let joinedTaskIds = taskIds.join(',');
 
             this.find(999999, 0, 'id', 'DESC', '`id_zgloszenia` IN (' + joinedTaskIds + ')').then((taskStamps) => {
+                taskStamps = taskStamps.map((taskStamp) => {
+                    return charset.translateIn(taskStamp);
+                });
                 resolve(taskStamps);
                 return;
             }).catch((err) => {

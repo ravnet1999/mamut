@@ -23,18 +23,18 @@ services:
     links:
       - mamut-app-db:mongo
 
-  mamut-app-parser:
-    build:
-      context: ./
-      dockerfile: ./docker/backend/dev.Dockerfile
-    ports:
-      - 8312:3000
-    volumes:
-      - ./src/parser/:/app/
-      - ./scripts/:/scripts/
-    restart: always
-    links:
-      - mamut-app-db:mongo
+  # mamut-app-parser:
+  #   build:
+  #     context: ./
+  #     dockerfile: ./docker/backend/dev.Dockerfile
+  #   ports:
+  #     - 8312:3000
+  #   volumes:
+  #     - ./src/parser/:/app/
+  #     - ./scripts/:/scripts/
+  #   restart: always
+  #   links:
+  #     - mamut-app-db:mongo
 
   mamut-app-db:
     image: mongo
@@ -78,4 +78,10 @@ services:
       - ./src/frontend_parser/:/app/
     restart: always
 
-  
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    ports:
+      - 9215:80
+    environment:
+      PMA_HOST: 10.73.32.29
+      PMA_PORT: 3306

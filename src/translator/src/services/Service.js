@@ -1,4 +1,5 @@
 const connection = require('../mysql/connection');
+const charset = require('../helpers/charset');
 
 class Service {
     constructor(tableName) {
@@ -25,6 +26,10 @@ class Service {
                     reject(err);
                     return;
                 }
+
+                results.map((result) => {
+                    return charset.translateIn(result);
+                });
                 resolve(results);
                 return;
             });
