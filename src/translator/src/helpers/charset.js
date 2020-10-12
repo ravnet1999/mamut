@@ -2,6 +2,7 @@ class Charset {
     constructor() {
         this.dictionary = {
             "ą": ["¹"],
+            "Ą": ["¥"],
             "ć": ["æ"],
             "Ć": ["Æ"],
             "ę": ["ê"],
@@ -14,14 +15,16 @@ class Charset {
             "ś": ["œ"],
             "Ś": ["Œ"],
             "ż": ["¿"],
-            "Ż": ["¯"]
+            "Ż": ["¯"],
+            "ź": ["Ÿ"],
+            "Ź": [""]
         }
     }
 
     translateIn = (obj) => {
         for(let key in obj) {
             if(obj.hasOwnProperty(key) && typeof obj[key] == 'string' && obj[key].length > 0) {
-                obj[key] = obj[key].replace(/¹|æ|ê|³|£|ñ|œ|Œ|¿|¯/g, (letter) => {
+                obj[key] = obj[key].replace(/¹|¥|æ|Æ|ê|Ê|³|£|ñ|Ñ|œ|Œ|¿|¯|Ÿ|/g, (letter) => {
                     for(let dictLetter in this.dictionary) {
                         let fittingLetters = this.dictionary[dictLetter].filter((foreignLetter) => {
                             return foreignLetter == letter;
@@ -40,7 +43,7 @@ class Charset {
     translateOut = (obj) => {
         for(let key in obj) {
             if(obj.hasOwnProperty(key) && typeof obj[key] == 'string' && obj[key].length > 0) {
-                obj[key] = obj[key].replace(/ą|ć|ę|ł|Ł|ń|ś|Ś|ż|Ż/g, (letter) => {
+                obj[key] = obj[key].replace(/ą|Ą|ć|Ć|ę|Ę|ł|Ł|ń|Ń|ś|Ś|ż|Ż|ź|Ź/g, (letter) => {
                     return this.dictionary[letter][0];
                 });
             }
