@@ -16,3 +16,4 @@
 /src/parser/public/admin/*
 /src/mongodb/scripts/add_user.js
 /mongodb
+/certs/*
