@@ -9,3 +9,16 @@
 .tasklist-task .picked label {
     color: rgb(12, 141, 0);
 }
+
+.task-episode {
+    background-color: #74a0e2;
+    border-radius: 3px;
+    padding: 6px 6px;
+}
+
+.task-episode-description {
+    min-height: 100px;
+    background-color: #74a0e2;
+    border-radius: 3px;
+    padding: 6px;
+}

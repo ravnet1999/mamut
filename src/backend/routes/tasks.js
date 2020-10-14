@@ -113,4 +113,35 @@ router.post('/:taskId/reassign', [authMiddleware], (req, res, next) => {
     });
 });
 
+router.get('/:taskId/episodes', [authMiddleware], (req, res, next) => {
+    taskService.getEpisodes(req.params.taskId).then((episodes) => {
+        response(res, false, ['Pomyślnie pobrano etapy zadania.'], episodes.resources);
+        return;
+    }).catch((err) => {
+        console.log(err);
+        response(res, true, ['Wystąpił problem podczas próby pobrania etapów zadania.'], []);
+        return;
+    })
+});
+
+router.patch('/:taskId/description', [authMiddleware], (req, res, next) => {
+    taskService.updateDescription(req.params.taskId, req.body.description).then((result) => {
+        response(res, false, ['Pomyślnie zaktualizowano opis zadania.'], result.resources);
+        return;
+    }).catch((err) => {
+        response(res, true, ['Wystąpił błąd poczas próby aktualizacji opisu zadania.', JSON.stringify(err)], []);
+        return;
+    });
+});
+
+router.patch('/:episodeId/lastEpisodeDescription', [authMiddleware], (req, res, next) => {
+    taskService.updateLastEpisodeDescription(req.params.episodeId, req.body.description).then((result) => {
+        response(res, false, ['Pomyślnie zaktualizowano opis etapu.'], result.resources);
+        return;
+    }).catch((err) => {
+        response(res, true, ['Wystąpił błąd poczas próby aktualizacji opisu etapu.', JSON.stringify(err)], []);
+        return;
+    })
+});
+
 module.exports = router;

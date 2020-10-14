@@ -198,3 +198,16 @@ nav ul li a:hover {
 .page-container {
     padding-bottom: 250px;
 }
+
+.task-episode {
+    background-color: #74a0e2;
+    border-radius: 3px;
+    padding: 6px 6px;
+}
+
+.task-episode-description {
+    min-height: 100px;
+    background-color: #74a0e2;
+    border-radius: 3px;
+    padding: 6px;
+}

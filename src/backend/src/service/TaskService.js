@@ -108,6 +108,61 @@ class TaskService {
             });
         });   
     }
+
+    getEpisodes = (taskId) => {
+        return new Promise((resolve, reject) => {
+            axios.get(`${appConfig.URLs.translator}/episodes/all/${taskId}`).then((response) => {
+                parseResponse(response).then((response) => {
+                    resolve(response);
+                    return;
+                }).catch((err) => {
+                    reject(err);
+                    return;
+                });
+            }).catch((err) => {
+                reject(err);
+                return;
+            });
+        });     
+    }
+
+    updateDescription = (taskId, description) => {
+        return new Promise((resolve, reject) => {
+            axios.patch(`${appConfig.URLs.translator}/tasks/${taskId}/description`, {
+                description: description
+            }).then((response) => {
+                parseResponse(response).then((response) => {
+                    resolve(response);
+                    return;
+                }).catch((err) => {
+                    reject(err);
+                    return;
+                });
+            }).catch((err) => {
+                reject(err);
+                return;
+            });
+        });  
+    }
+
+    updateLastEpisodeDescription = (episodeId, description) => {
+        return new Promise((resolve, reject) => {
+            axios.patch(`${appConfig.URLs.translator}/episodes/${episodeId}/description`, {
+                description: description
+            }).then((response) => {
+                parseResponse(response).then((response) => {
+                    resolve(response);
+                    return;
+                }).catch((err) => {
+                    reject(err);
+                    return;
+                });
+            }).catch((err) => {
+                reject(err);
+                return;
+            });
+        }); 
+    }
 }
 
 module.exports = new TaskService();

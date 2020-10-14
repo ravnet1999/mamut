@@ -164,4 +164,14 @@ router.post('/:taskId/reassign', (req, res, next) => {
     }) 
 });
 
+router.patch('/:taskId/description', (req, res, next) => {
+    taskService.updateById(req.params.taskId, ['opis'], [req.body.description]).then((result) => {
+        response(res, false, ['Pomyślnie zmodyfikowano opis zadania.'], [result]);
+        return;
+    }).catch((err) => {
+        response(res, true, ['Wystąpił błąd podczas próby modyfikacji opisu zadania', JSON.stringify(err)], []);
+        return;
+    });
+});
+
 module.exports = router;

@@ -13,7 +13,8 @@ const endpoints = [
     'services',
     'request_categories',
     'departments',
-    'priorities'
+    'priorities',
+    'episodes'
 ];
 
 let routers = endpoints.map((endpoint) => {
