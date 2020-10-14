@@ -43,7 +43,11 @@ const Task = (props) => {
         TaskHandler.stopTask(task.id).then((response) => {
             setResponse(response);
             TaskHandler.updateLastEpisodeDescription(lastEpisode.id, lastEpisodeDescription).then((result) => {
-                console.log(result);
+                TaskHandler.updateTaskDescription(task.id, taskDescription).then((result) => {
+                    console.log(result);
+                }).catch((err) => {
+                    console.log(err);
+                });
             }).catch((err) => {
                 console.log(err);
             })
