@@ -20,6 +20,7 @@ class TaskEpisodeService extends Service {
             });
         });
     }
+
 }
 
 module.exports = new TaskEpisodeService('zgloszenia_etapy');

@@ -13,7 +13,6 @@ router.get('/:operatorId/:taskId', (req, res, next) => {
             response(res, true, ['Takie zadanie nie istnieje!'], [], '/tasks');
             return;                
         }
-
         taskStampService.getLastStamps(tasks).then((tasksWithStamps) => {
             response(res, false, ['Pomyślnie pobrano zadania.'], tasksWithStamps);
             return;
@@ -138,26 +137,27 @@ router.post('/:taskId/stop', (req, res, next) => {
 
 router.post('/:taskId/reassign', (req, res, next) => {
     taskStampService.stamp('Zmiana przypisania', req.params.taskId, req.body.operatorId, '').then((stampResult) => {
-        taskStampService.stamp('OCZEKUJE', req.params.taskId, req.body.operatorId, 'Przekazane do dalszej realizacji.').then((result) => {
+        taskEpisodeService.addEpisode(req.params.taskId, req.body.targetOperatorId, req.body.departmentId).then((addEpisodeResult) => {
             taskService.updateById(req.params.taskId, ['komorka', 'informatyk'], [req.body.departmentId, req.body.targetOperatorId]).then((taskUpdateResult) => {
-                taskEpisodeService.addEpisode(req.params.taskId, req.body.targetOperatorId, req.body.departmentId).then((addEpisodeResult) => {
+                taskStampService.stamp('OCZEKUJE', req.params.taskId, req.body.operatorId, 'Przekazane do dalszej realizacji.').then((result) => {
                     response(res, false, ['Pomyślnie przypisano zadanie do innego operatora'], [taskUpdateResult]);
                     return;
                 }).catch((err) => {
-                    response(res, true, ['Coś poszło nie tak podczas próby przypisania zadania do innego operatora', JSON.stringify(err)], []);
+                    response(res, true, ['Wystąpił problem podczas próby dodania oczekiwania.', JSON.stringify(err)], []);
                     return;
-                })
+                });
             }).catch((err) => {
                 response(res, true, ['Coś poszło nie tak podczas próby przypisania zadania do innego operatora', JSON.stringify(err)], []);
                 return;
             });
         }).catch((err) => {
-            response(res, true, ['Wystąpił problem podczas próby dodania oczekiwania.', JSON.stringify(err)], []);
+            response(res, true, ['Coś poszło nie tak podczas próby przypisania zadania do innego operatora', JSON.stringify(err)], []);
             return;
-        });
+        })
     }).catch((err) => {
         response(res, true, ['Coś poszło nie tak podczas próby przypisania zadania do innego operatora', JSON.stringify(err)], []);
         return;
     }) 
 });
+
 module.exports = router;
