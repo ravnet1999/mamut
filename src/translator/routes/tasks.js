@@ -34,7 +34,11 @@ router.get('/:operatorId/:limit?/:offset?/:status?', (req, res, next) => {
 
     taskService.find(limit, offset, 'id', 'DESC', operator + status ).then((tasks) => {
         taskStampService.getLastStamps(tasks).then((tasksWithStamps) => {
-            response(res, false, ['Pomyślnie pobrano zadania.'], tasksWithStamps);
+            let message = 'Pomyślnie pobrano zadania';
+            if(tasks.length == 0) {
+                message = 'Dobra robota. Brak zadań! Proponuję kawę.'
+            }
+            response(res, false, [message], tasksWithStamps);
             return;
         }).catch((err) => {
             response(res, true, ['Wystąpił problem podczas próby znalezienia ostatnich stempli zadań.', JSON.stringify(err)], []);

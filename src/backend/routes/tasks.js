@@ -9,7 +9,11 @@ const appConfig = require('../config/appConfig.json');
 
 router.get('/', [authMiddleware], (req, res, next) => {
     taskService.getTasks(25, 0, 'open', req.operatorId).then((result) => {
-        response(res, false, ['Pomyślnie pobrano zadania.'], result);
+        let message = 'Pomyślnie pobrano zadania';
+        if(result.length == 0) {
+            message = 'Dobra robota. Brak zadań! Proponuję kawę.'
+        }
+        response(res, false, [message], result);
         return;
     }).catch((err) => {
         response(res, true, ['Coś poszło nie tak podczas próby pobrania zadań.', JSON.stringify(err)], []);

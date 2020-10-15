@@ -56,6 +56,10 @@ class TaskStampService extends Service {
 
     stampsForTasks = (taskIds) => {
         return new Promise((resolve, reject) => {
+            if(taskIds.length == 0) {
+                resolve([]);
+                return;
+            }
             let joinedTaskIds = taskIds.join(',');
 
             this.find(999999, 0, 'id', 'DESC', '`id_zgloszenia` IN (' + joinedTaskIds + ')').then((taskStamps) => {
