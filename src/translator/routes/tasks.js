@@ -6,6 +6,7 @@ const helpers = require('../src/tasks/helpers');
 const taskService = require('../src/services/Task/TaskService');
 const taskStampService = require('../src/services/Task/TaskStampService');
 const taskEpisodeService = require('../src/services/Task/TaskEpisodeService');
+const charset = require('../src/helpers/charset');
 
 router.get('/:operatorId/:taskId', (req, res, next) => {
     taskService.find(1, 0, 'id', 'DESC', '`informatyk` = \'' + req.params.operatorId + '\' AND `id` = \'' + req.params.taskId + '\'').then((tasks) => {
@@ -13,6 +14,11 @@ router.get('/:operatorId/:taskId', (req, res, next) => {
             response(res, true, ['Takie zadanie nie istnieje!'], [], '/tasks');
             return;                
         }
+
+        tasks = tasks.map((task) => {
+            return charset.translateIn(task);
+        });
+
         taskStampService.getLastStamps(tasks).then((tasksWithStamps) => {
             response(res, false, ['Pomyślnie pobrano zadania.'], tasksWithStamps);
             return;
@@ -165,7 +171,13 @@ router.post('/:taskId/reassign', (req, res, next) => {
 });
 
 router.patch('/:taskId/description', (req, res, next) => {
-    taskService.updateById(req.params.taskId, ['opis'], [req.body.description]).then((result) => {
+    let translate = {
+        description: req.body.description
+    };
+
+    let description = charset.translateOut(translate).description;
+
+    taskService.updateById(req.params.taskId, ['opis'], [description]).then((result) => {
         response(res, false, ['Pomyślnie zmodyfikowano opis zadania.'], [result]);
         return;
     }).catch((err) => {

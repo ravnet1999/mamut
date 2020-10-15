@@ -94,9 +94,11 @@ const Task = (props) => {
         <Page>
             <Alert response={response}></Alert>
             <h1>Zadanie: {task.id}<br />{task.zglaszajacy}</h1>
-            <div className="form-group">
+            <div className="form-group task-description-container margin-bottom-default">
                 <label for="task_description">Opis zadania:</label>
-                <textarea id="task_description" className={'form-control'} value={taskDescription} onChange={(e) => setTaskDescription(e.target.value)}></textarea>
+                <div className="task-description-content">
+                    <textarea id="task_description" className={'form-control'} value={taskDescription} onChange={(e) => setTaskDescription(e.target.value)}></textarea>
+                </div>
             </div>
             {buildLastEpisode()}
             {buildNonLastEpisodes()}
