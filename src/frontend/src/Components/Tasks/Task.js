@@ -61,7 +61,7 @@ const Task = (props) => {
 
         return (
             <div className="form-group task-episode margin-bottom-default">
-                <div><strong>Ostatni etap</strong>:</div>
+                <div><strong>Bieżący etap</strong>:</div>
                 <div>Opis:</div>
                 <textarea className="form-control" value={lastEpisodeDescription} onChange={(e) => {setLastEpisodeDescription(e.target.value)}}></textarea>
             </div>
@@ -95,7 +95,7 @@ const Task = (props) => {
             <Alert response={response}></Alert>
             <h1>Zadanie: {task.id}<br />{task.zglaszajacy}</h1>
             <div className="form-group task-description-container margin-bottom-default">
-                <label for="task_description">Opis zadania:</label>
+                <label for="task_description">Opis problemu:</label>
                 <div className="task-description-content">
                     <textarea id="task_description" className={'form-control'} value={taskDescription} onChange={(e) => setTaskDescription(e.target.value)}></textarea>
                 </div>
