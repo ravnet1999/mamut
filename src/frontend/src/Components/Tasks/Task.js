@@ -61,7 +61,7 @@ const Task = (props) => {
 
         return (
             <div className="form-group task-episode margin-bottom-default">
-                <div><strong>Ostatni etap</strong> (ID: {lastEpisode.id}):</div>
+                <div><strong>Ostatni etap</strong>:</div>
                 <div>Opis:</div>
                 <textarea className="form-control" value={lastEpisodeDescription} onChange={(e) => {setLastEpisodeDescription(e.target.value)}}></textarea>
             </div>
@@ -78,7 +78,7 @@ const Task = (props) => {
         let taskEpisodeList = nonLastEpisodes.map((taskEpisode, key) => {
             return (
                 <div className="task-episode margin-bottom-default">
-                    <div><strong>Etap {(taskEpisodes.length - 1) - key}</strong> (ID: {taskEpisode.id}):</div>
+                    <div><strong>Etap {(taskEpisodes.length - 1) - key}</strong>:</div>
                     <div>Opis etapu:</div>
                     <div className="task-episode-description">{taskEpisode.rozwiazanie}</div>
                 </div>
