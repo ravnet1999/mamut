@@ -21,6 +21,9 @@ const TaskReassign = (props) => {
     }, []);
 
     const reassignTask = (operatorId) => {
+        if(props.updateDescriptions) {
+            props.updateDescriptions();
+        }
         TaskHandler.reassignTask(props.taskId, operatorId).then((response) => {
             setResponse(response);
             if(props.reassignFinished) {

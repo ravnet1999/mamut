@@ -15,6 +15,26 @@ const Task = (props) => {
     const [taskEpisodes, setTaskEpisodes] = useState(null);
     const [lastEpisode, setLastEpisode] = useState(null);
     const [lastEpisodeDescription, setLastEpisodeDescription] = useState('');
+    const [appState, setAppState] = useState({
+        taskDescription: '',
+        episodeDescription: ''
+    })
+
+    const updateDescriptions = () => {
+        TaskHandler.updateLastEpisodeDescription(lastEpisode.id, appState.episodeDescription).then((result) => {
+            TaskHandler.updateTaskDescription(task.id, appState.taskDescription).then((result) => {
+                
+            }).catch((err) => {
+                console.log(err);
+            });
+        }).catch((err) => {
+            console.log(err);
+        })
+    }
+
+    const getTaskDescription = () => {
+        return taskDescription;
+    }
 
     useEffect(() => {
         setResponse({
@@ -25,12 +45,12 @@ const Task = (props) => {
         TaskHandler.getTaskById(props.match.params.taskId).then((response) => {
             setResponse(response);
             setTask(response.resources[0]);
-            setTaskDescription(response.resources[0].opis)
+            modifyTaskDescription(response.resources[0].opis)
             TaskHandler.getEpisodes(props.match.params.taskId).then((episodes) => {
                 setResponse(episodes);
                 setTaskEpisodes(episodes.resources);
                 setLastEpisode(episodes.resources[0]);
-                setLastEpisodeDescription(episodes.resources[0].rozwiazanie);
+                modifyEpisodeDescription(episodes.resources[0].rozwiazanie);
             }).catch((err) => {
                 setResponse(err);
             })
@@ -39,21 +59,35 @@ const Task = (props) => {
         });
     }, []);
 
+    useEffect(() => {
+        return () => {
+            if(lastEpisode && task && (taskDescription !== null || lastEpisodeDescription !== null)) {
+                updateDescriptions();
+            }
+        };
+    }, [lastEpisode, task]);
+
     const stopTask = () => {
         TaskHandler.stopTask(task.id).then((response) => {
             setResponse(response);
-            TaskHandler.updateLastEpisodeDescription(lastEpisode.id, lastEpisodeDescription).then((result) => {
-                TaskHandler.updateTaskDescription(task.id, taskDescription).then((result) => {
-                    console.log(result);
-                }).catch((err) => {
-                    console.log(err);
-                });
-            }).catch((err) => {
-                console.log(err);
-            })
+            updateDescriptions();
         }).catch((err) => {
             setResponse(err);
         });
+    }
+
+    const modifyTaskDescription = (value) => {
+        let newState = appState;
+        newState.taskDescription = value;
+        setAppState(newState);
+        setTaskDescription(value);
+    }
+
+    const modifyEpisodeDescription = (value) => {
+        let newState = appState;
+        newState.episodeDescription = value;
+        setAppState(newState);
+        setLastEpisodeDescription(value);
     }
 
     const buildLastEpisode = () => {;
@@ -63,7 +97,7 @@ const Task = (props) => {
             <div className="form-group task-episode margin-bottom-default">
                 <div><strong>Bieżący etap</strong>:</div>
                 <div>Opis:</div>
-                <textarea className="form-control" value={lastEpisodeDescription} onChange={(e) => {setLastEpisodeDescription(e.target.value)}}></textarea>
+                <textarea className="form-control" value={lastEpisodeDescription} onChange={(e) => modifyEpisodeDescription(e.target.value)}></textarea>
             </div>
         )
     }
@@ -97,7 +131,7 @@ const Task = (props) => {
             <div className="form-group task-description-container margin-bottom-default">
                 <label for="task_description">Opis problemu:</label>
                 <div className="task-description-content">
-                    <textarea id="task_description" className={'form-control'} value={taskDescription} onChange={(e) => setTaskDescription(e.target.value)}></textarea>
+                    <textarea id="task_description" className={'form-control'} value={taskDescription} onChange={(e) => modifyTaskDescription(e.target.value)} disabled={!taskEpisodes || taskEpisodes.length > 1}></textarea>
                 </div>
             </div>
             {buildLastEpisode()}
