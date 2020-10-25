@@ -8,7 +8,32 @@ const serviceService = require('../src/service/ServiceService');
 const appConfig = require('../config/appConfig.json');
 
 router.get('/', [authMiddleware], (req, res, next) => {
-    taskService.getTasks(25, 0, 'open', req.operatorId).then((result) => {
+    taskService.getTasks(25, 0, 'open', appConfig.tasks.department, req.operatorId).then((result) => {
+        let message = 'Pomyślnie pobrano zadania';
+        if(result.length == 0) {
+            message = 'Dobra robota. Brak zadań! Proponuję kawę.'
+        }
+        response(res, false, [message], result);
+        return;
+    }).catch((err) => {
+        response(res, true, ['Coś poszło nie tak podczas próby pobrania zadań.', JSON.stringify(err)], []);
+        return;
+    });
+    // taskService.getTasks(25, 0, 'open', 0, 0).then((result) => {
+    //     let message = 'Pomyślnie pobrano zadania';
+    //     if(result.length == 0) {
+    //         message = 'Dobra robota. Brak zadań! Proponuję kawę.'
+    //     }
+    //     response(res, false, [message], result);
+    //     return;
+    // }).catch((err) => {
+    //     response(res, true, ['Coś poszło nie tak podczas próby pobrania zadań.', JSON.stringify(err)], []);
+    //     return;
+    // });
+});
+
+router.get('/general', [authMiddleware], (req, res, next) => {
+    taskService.getTasks(25, 0, 'open', 0, 0).then((result) => {
         let message = 'Pomyślnie pobrano zadania';
         if(result.length == 0) {
             message = 'Dobra robota. Brak zadań! Proponuję kawę.'
@@ -101,7 +126,7 @@ router.post('/:taskId/start', [authMiddleware], (req, res, next) => {
 
 router.post('/:taskId/reassign', [authMiddleware], (req, res, next) => {
     taskService.reassignTask(req.params.taskId, {
-        departmentId: appConfig.tasks.department,
+        departmentId: req.body.operatorId == '0' ? req.body.operatorId : appConfig.tasks.department,
         targetOperatorId: req.body.operatorId,
         operatorId: req.operatorId
     }).then((result) => {

@@ -9,7 +9,7 @@ const taskEpisodeService = require('../src/services/Task/TaskEpisodeService');
 const charset = require('../src/helpers/charset');
 
 router.get('/:operatorId/:taskId', (req, res, next) => {
-    taskService.find(1, 0, 'id', 'DESC', '`informatyk` = \'' + req.params.operatorId + '\' AND `id` = \'' + req.params.taskId + '\'').then((tasks) => {
+    taskService.find(1, 0, 'id', 'DESC', '`id` = \'' + req.params.taskId + '\'').then((tasks) => {
         if(tasks.length <= 0) {
             response(res, true, ['Takie zadanie nie istnieje!'], [], '/tasks');
             return;                
@@ -32,13 +32,14 @@ router.get('/:operatorId/:taskId', (req, res, next) => {
     })
 });
 
-router.get('/:operatorId/:limit?/:offset?/:status?', (req, res, next) => {
+router.get('/:departmentId/:operatorId/:limit?/:offset?/:status?', (req, res, next) => {
     let limit = req.params.limit || 25;
     let offset = req.params.offset || 0;
     let operator = '`informatyk` = \'' + req.params.operatorId + '\'';
     let status = req.params.status ? ' AND `status`=\'' + req.params.status + '\'' : ''; 
+    let department = req.params.departmentId ? ' AND `komorka`=\'' + req.params.departmentId + '\'' : '';
 
-    taskService.find(limit, offset, 'id', 'DESC', operator + status ).then((tasks) => {
+    taskService.find(limit, offset, 'id', 'DESC', operator + status + department ).then((tasks) => {
         taskStampService.getLastStamps(tasks).then((tasksWithStamps) => {
             let message = 'Pomyślnie pobrano zadania';
             if(tasks.length == 0) {
@@ -146,6 +147,7 @@ router.post('/:taskId/stop', (req, res, next) => {
 });
 
 router.post('/:taskId/reassign', (req, res, next) => {
+    console.log(req.body.targetOperatorId, req.body.departmentId);
     taskStampService.stamp('Zmiana przypisania', req.params.taskId, req.body.operatorId, '').then((stampResult) => {
         taskEpisodeService.addEpisode(req.params.taskId, req.body.targetOperatorId, req.body.departmentId).then((addEpisodeResult) => {
             taskService.updateById(req.params.taskId, ['komorka', 'informatyk'], [req.body.departmentId, req.body.targetOperatorId]).then((taskUpdateResult) => {

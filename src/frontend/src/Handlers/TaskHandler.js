@@ -119,9 +119,15 @@ const TaskHandler = {
 
     reassignTask: (taskId, operatorId) => {
         return new Promise((resolve, reject) => {
-            axios.post(`${appConfig.URLs.domain}/${appConfig.URLs.tasks}/${taskId}/reassign`, {
+            let reassignObject = {
                 operatorId: operatorId
-            }, {
+            }
+
+            if(operatorId === 0) reassignObject.departmentId = 0;
+
+            console.log(reassignObject);
+
+            axios.post(`${appConfig.URLs.domain}/${appConfig.URLs.tasks}/${taskId}/reassign`, reassignObject, {
                 withCredentials: true
             }).then((response) => {
                 parseResponse(response).then((response) => {

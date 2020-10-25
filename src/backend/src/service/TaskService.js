@@ -3,9 +3,9 @@ const parseResponse = require('../ResponseParser');
 const appConfig = require('../../config/appConfig.json');
 
 class TaskService {
-    getTasks = (limit = 25, offset = 0, status = '', operatorId) => {
+    getTasks = (limit = 25, offset = 0, status = '', departmentId, operatorId) => {
         return new Promise((resolve, reject) => {
-            axios.get(`${appConfig.URLs.translator}/tasks/${operatorId}/${limit}/${offset}/${status}`).then((response) => {
+            axios.get(`${appConfig.URLs.translator}/tasks/${departmentId}/${operatorId}/${limit}/${offset}/${status}`).then((response) => {
                 parseResponse(response).then((response) => {
                     resolve(response.resources);
                     return;
