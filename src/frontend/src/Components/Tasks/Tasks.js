@@ -13,7 +13,8 @@ const Tasks = (props) => {
     const [pickedTask, setPickedTask] = useState(null);
 
     const getTasks = () => {
-        TaskHandler.getTasks().then((response) => {
+        TaskHandler.getTasks(props.match.params.general ? true : false).then((response) => {
+            console.log(response);
             setResponse(response);
             setTasks(response.resources);
             if(response.resources.length > 0) {
@@ -39,7 +40,9 @@ const Tasks = (props) => {
             resources: []
         })
         getTasks();
-    }, []);
+
+        return props.updateTaskCount;
+    }, [props.match.params.general]);
 
     const buildTaskRadios = () => {
         return tasks.map((task, key) => {
@@ -79,7 +82,7 @@ const Tasks = (props) => {
                                 className={`d-inline-block vertical-middle-static ${isChecked ? 'picked' : ''}`}
                             >
                             </Form.Check>
-                            <span className={`task-description description ${taskStampClass} vertical-middle-static d-inline-block`}> - {task.lastStamp?.nazwa}{task.lastStamp?.opis ? ` (${task.lastStamp.opis})` : ''} </span>
+                            <span className={`task-description description ${taskStampClass} vertical-middle-static d-inline-block`}> - {task.lastStamp?.nazwa} {task.opis ? `(${task.opis.substring(0, 50)}${task.opis.length > 50 ? '...' : ''})` : ''} </span>
                         </div>
                     </Col>
                 </Row>
@@ -103,7 +106,7 @@ const Tasks = (props) => {
                             <Button onClick={(e) => startTask()} className="btn-inverted btn-center btn-center">Start</Button>    
                         </Col>
                     </Row>
-                    { pickedTask ? <TaskReassign taskId={pickedTask.id} reassignFinished={getTasks}></TaskReassign> : ''}
+                    { pickedTask ? <TaskReassign taskId={pickedTask.id} reassignFinished={getTasks} redirect='/admin/tasks/general'></TaskReassign> : ''}
                 </div>
             </div>
         </Page>

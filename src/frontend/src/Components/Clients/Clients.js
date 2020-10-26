@@ -20,6 +20,8 @@ const Clients = (props) => {
         }).catch((err) => {
             setResponse(err);
         });
+
+        return props.updateTaskCount;
     }, []);
 
     const buildClients = () => {

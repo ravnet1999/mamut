@@ -22,6 +22,8 @@ const Representatives = (props) => {
         }).catch((err) => {
             setResponse(err);
         });
+
+        return props.updateTaskCount;
     }, []);
 
     const createTask = () => {

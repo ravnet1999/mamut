@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Row, Col, Button } from '../bootstrap';
+import { Redirect } from 'react-router-dom';
 import './Tasks.css';
 import Alert from '../Alert/Alert';
 import OperatorHandler from '../../Handlers/OperatorHandler';
@@ -10,6 +11,7 @@ const TaskReassign = (props) => {
     const [operators, setOperators] = useState([]);
     const [response, setResponse] = useState(null);
     const [pickedOperator, setPickedOperator] = useState(0);
+    const [redirect, setRedirect] = useState(null);
 
     useEffect(() => {
         OperatorHandler.getOperators().then((response) => {
@@ -29,6 +31,7 @@ const TaskReassign = (props) => {
             if(props.reassignFinished) {
                 props.reassignFinished();
             }
+            setRedirect(operatorId == 0 ? '/tasks/general' : '/tasks');
         }).catch((err) => {
             setResponse(err);
         });
@@ -62,6 +65,10 @@ const TaskReassign = (props) => {
                 {operatorsList}
             </Row>
         );
+    }
+
+    if(redirect) {
+        window.location.replace('/admin' + redirect);
     }
 
     return (

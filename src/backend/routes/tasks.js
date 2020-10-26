@@ -130,7 +130,7 @@ router.post('/:taskId/reassign', [authMiddleware], (req, res, next) => {
         targetOperatorId: req.body.operatorId,
         operatorId: req.operatorId
     }).then((result) => {
-        response(res, false, ['Pomyślnie przypisano zadanie do innego operatora.'], [], '/tasks');
+        response(res, false, ['Pomyślnie przypisano zadanie do innego operatora.'], []);
         return;
     }).catch((err) => {
         response(res, true, ['Wystąpił błąd podczas próby przypisania zadania do innego operatora.', JSON.stringify(err)], []);

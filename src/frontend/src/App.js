@@ -8,6 +8,7 @@ import Tasks from './Components/Tasks/Tasks';
 import Header from './Components/Header';
 import appConfig from './Config/appConfig.json';
 import { Switch, Route } from 'react-router-dom';
+import TaskHandler from '../src/Handlers/TaskHandler';
 import Representatives from './Components/Representatives/Representatives';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
@@ -16,6 +17,8 @@ function App() {
 
 	const [cookies, setCookies] = useState(new Cookies());
 	const [loggedIn, setLoggedIn] = useState(false);
+	const [generalTasksCount, setGeneralTasksCount] = useState(0);
+	const [taskCountInterval, setTaskCountInterval] = useState(null);
 
 	const getCookie = () => {
 		return cookies.get(appConfig.cookies.auth.name);
@@ -30,9 +33,23 @@ function App() {
 		getCookie() ? setLoggedIn(true) : setLoggedIn(false);
 	}
 
+    const updateTaskCount = () => {
+        TaskHandler.getTasks(true).then((response) => {
+			console.log('updating count...');
+			setGeneralTasksCount(response.resources.length);
+        }).catch((err) => {
+			console.log(err);
+        });
+    }
+
 	useEffect(() => {
+		updateTaskCount();
 		getCookie() ? setLoggedIn(true) : setLoggedIn(false);
 	}, []);
+
+	useEffect(() => {
+		console.log(generalTasksCount);
+	}, [generalTasksCount])
 
 	const removeCookie = () => {
 		cookies.remove(appConfig.cookies.auth.name, appConfig.cookies.auth.settings);
@@ -42,14 +59,14 @@ function App() {
 	if(!cookies) return '';
 	return (
 		<div className="App">
-			<Header loggedIn={loggedIn}></Header>
+			<Header loggedIn={loggedIn} generalTasksCount={generalTasksCount}></Header>
 			<Switch>
 				<Route path='/' exact render={(props) => <Login cookies={cookies} setCookie={setCookie} removeCookie={removeCookie} {...props}></Login>}></Route>
 				<Route path='/logout' exact render={(props) => <Logout {...props} removeCookie={removeCookie}></Logout>}></Route>
-				<Route path='/clients' exact component={Clients}></Route>
-				<Route path='/representatives/:clientId' exact component={Representatives}></Route>
-				<Route path='/task/:taskId' exact component={Task}></Route>
-				<Route path='/tasks' exact component={Tasks}></Route>
+				<Route path='/clients' exact render={(props) => <Clients {...props} updateTaskCount={updateTaskCount}></Clients>}></Route>
+				<Route path='/representatives/:clientId' exact render={(props) => <Representatives {...props} updateTaskCount={updateTaskCount}></Representatives>}></Route>
+				<Route path='/task/:taskId' exact render={(props) => <Task {...props} updateTaskCount={updateTaskCount}></Task>}></Route>
+				<Route path='/tasks/:general?' exact render={(props) => <Tasks {...props} updateTaskCount={updateTaskCount}></Tasks>}></Route>
 			</Switch>
 		</div>
 	);

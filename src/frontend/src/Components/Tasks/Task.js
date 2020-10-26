@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Button } from '../bootstrap';
+import { Redirect } from 'react-router-dom';
 import Page from '../Page';
 import Alert from '../Alert/Alert';
 import OperatorHandler from '../../Handlers/OperatorHandler';
@@ -19,6 +20,7 @@ const Task = (props) => {
         taskDescription: '',
         episodeDescription: ''
     })
+    const [redirect, setRedirect] = useState(null);
 
     const updateDescriptions = () => {
         TaskHandler.updateLastEpisodeDescription(lastEpisode.id, appState.episodeDescription).then((result) => {
@@ -61,6 +63,7 @@ const Task = (props) => {
 
     useEffect(() => {
         return () => {
+            props.updateTaskCount();
             if(lastEpisode && task && (taskDescription !== null || lastEpisodeDescription !== null)) {
                 updateDescriptions();
             }
@@ -69,8 +72,9 @@ const Task = (props) => {
 
     const stopTask = () => {
         TaskHandler.stopTask(task.id).then((response) => {
-            setResponse(response);
+            // setResponse(response);
             updateDescriptions();
+            setRedirect(task.informatyk == 0 ? '/tasks/general' : '/tasks');
         }).catch((err) => {
             setResponse(err);
         });
@@ -123,6 +127,10 @@ const Task = (props) => {
     }
 
     if (!task) return <Alert response={response}></Alert>;
+
+    if (redirect) {
+        return <Redirect to={redirect}></Redirect>;
+    }
 
     return (
         <Page>

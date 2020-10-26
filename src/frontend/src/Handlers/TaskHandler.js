@@ -25,9 +25,9 @@ const TaskHandler = {
             });
         });
     },
-    getTasks: () => {
+    getTasks: (general = false) => {
         return new Promise((resolve, reject) => {
-            axios.get(`${appConfig.URLs.domain}/${appConfig.URLs.tasks}`, {
+            axios.get(`${appConfig.URLs.domain}/${appConfig.URLs.tasks}/${general ? 'general' : ''}`, {
                 withCredentials: true
             }).then((response) => {
                 parseResponse(response).then((response) => {
