@@ -18,7 +18,7 @@ function App() {
 	const [cookies, setCookies] = useState(new Cookies());
 	const [loggedIn, setLoggedIn] = useState(false);
 	const [generalTasksCount, setGeneralTasksCount] = useState(0);
-	const [taskCountInterval, setTaskCountInterval] = useState(null);
+	const [currentPage, setCurrentPage] = useState('/');
 
 	const getCookie = () => {
 		return cookies.get(appConfig.cookies.auth.name);
@@ -48,6 +48,10 @@ function App() {
 	}, []);
 
 	useEffect(() => {
+		console.log(currentPage);
+	}, [currentPage])
+
+	useEffect(() => {
 		console.log(generalTasksCount);
 	}, [generalTasksCount])
 
@@ -59,14 +63,14 @@ function App() {
 	if(!cookies) return '';
 	return (
 		<div className="App">
-			<Header loggedIn={loggedIn} generalTasksCount={generalTasksCount}></Header>
+			<Header loggedIn={loggedIn} generalTasksCount={generalTasksCount} currentPage={currentPage}></Header>
 			<Switch>
 				<Route path='/' exact render={(props) => <Login cookies={cookies} setCookie={setCookie} removeCookie={removeCookie} {...props}></Login>}></Route>
 				<Route path='/logout' exact render={(props) => <Logout {...props} removeCookie={removeCookie}></Logout>}></Route>
-				<Route path='/clients' exact render={(props) => <Clients {...props} updateTaskCount={updateTaskCount}></Clients>}></Route>
-				<Route path='/representatives/:clientId' exact render={(props) => <Representatives {...props} updateTaskCount={updateTaskCount}></Representatives>}></Route>
-				<Route path='/task/:taskId' exact render={(props) => <Task {...props} updateTaskCount={updateTaskCount}></Task>}></Route>
-				<Route path='/tasks/:general?' exact render={(props) => <Tasks {...props} updateTaskCount={updateTaskCount}></Tasks>}></Route>
+				<Route path='/clients' exact render={(props) => <Clients {...props} updateTaskCount={updateTaskCount} setCurrentPage={setCurrentPage}></Clients>}></Route>
+				<Route path='/representatives/:clientId' exact render={(props) => <Representatives {...props} updateTaskCount={updateTaskCount} setCurrentPage={setCurrentPage}></Representatives>}></Route>
+				<Route path='/task/:taskId' exact render={(props) => <Task {...props} updateTaskCount={updateTaskCount} setCurrentPage={setCurrentPage}></Task>}></Route>
+				<Route path='/tasks/:general?' exact render={(props) => <Tasks {...props} updateTaskCount={updateTaskCount} setCurrentPage={setCurrentPage}></Tasks>}></Route>
 			</Switch>
 		</div>
 	);

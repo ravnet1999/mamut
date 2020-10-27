@@ -10,6 +10,7 @@ const Clients = (props) => {
     const [response, setResponse] = useState(null);
 
     useEffect(() => {
+        props.setCurrentPage(props.history.location.pathname);
         ClientHandler.getClients().then((response) => {
             let sorted = response.resources.sort((a, b) => {
                 return (a.nazwa) > (b.nazwa) ? 1 : ( (a.nazwa) < (b.nazwa) ? -1 : 0 );

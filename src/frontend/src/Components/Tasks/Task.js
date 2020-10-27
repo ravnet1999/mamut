@@ -153,7 +153,7 @@ const Task = (props) => {
                             </Button>
                         </Col>
                     </Row>
-                    <TaskReassign taskId={props.match.params.taskId}></TaskReassign>
+                    <TaskReassign taskId={props.match.params.taskId} updateDescriptions={updateDescriptions}></TaskReassign>
                 </div>
             </div>
         </Page>

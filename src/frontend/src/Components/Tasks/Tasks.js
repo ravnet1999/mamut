@@ -13,6 +13,7 @@ const Tasks = (props) => {
     const [pickedTask, setPickedTask] = useState(null);
 
     const getTasks = () => {
+        props.setCurrentPage(props.history.location.pathname);
         TaskHandler.getTasks(props.match.params.general ? true : false).then((response) => {
             console.log(response);
             setResponse(response);
@@ -82,7 +83,8 @@ const Tasks = (props) => {
                                 className={`d-inline-block vertical-middle-static ${isChecked ? 'picked' : ''}`}
                             >
                             </Form.Check>
-                            <span className={`task-description description ${taskStampClass} vertical-middle-static d-inline-block`}> - {task.lastStamp?.nazwa} {task.opis ? `(${task.opis.substring(0, 50)}${task.opis.length > 50 ? '...' : ''})` : ''} </span>
+                            <span className={`task-description description ${taskStampClass} vertical-middle-static d-inline-block`}> - {task.lastStamp?.nazwa}</span><br />
+                            {task.opis ? <div className="task-main-description">{task.opis.substring(0, 50)}{task.opis.length > 50 ? '...' : ''}</div> : '' }
                         </div>
                     </Col>
                 </Row>

@@ -12,6 +12,7 @@ const Representatives = (props) => {
     const [response, setResponse] = useState(null);
 
     useEffect(() => {
+        props.setCurrentPage(props.history.location.pathname);
         ClientHandler.getRepresentatives(props.match.params.clientId).then((response) => {
             let sorted = response.resources.sort((a, b) => {
                 return (a.imie + a.nazwisko) > (b.imie + b.nazwisko) ? 1 : ( (a.imie + a.nazwisko) < (b.imie + b.nazwisko) ? -1 : 0 );
