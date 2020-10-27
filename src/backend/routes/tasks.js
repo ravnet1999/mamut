@@ -114,13 +114,40 @@ router.post('/:taskId/stop', [authMiddleware], (req, res, next) => {
 });
 
 router.post('/:taskId/start', [authMiddleware], (req, res, next) => {
-    taskService.startTask(req.params.taskId, req.operatorId).then((result) => {
-        console.log(result);
-        response(res, false, ['Pomyślnie wznowiono zadanie.'], [], `/task/${req.params.taskId}`);
-        return;
-    }).catch((err) => {
-        response(res, true, ['Wystąpił błąd podczas próby wznowienia zadania.', JSON.stringify(err)], []);
-        return;
+    taskService.getTaskById(req.params.taskId, req.operatorId).then((task) => {
+        if(!task) {
+            response(res, true, ['Takie zadanie nie istnieje!'], []);
+            return;
+        }
+        console.log('stats: ', task[0].informatyk, task[0].komorka);
+        if(task[0].informatyk == 0 && task[0].komorka == 0) {
+            taskService.reassignTask(req.params.taskId, {
+                departmentId: appConfig.tasks.department,
+                targetOperatorId: req.operatorId,
+                operatorId: req.operatorId
+            }).then((result) => {
+                taskService.startTask(req.params.taskId, req.operatorId).then((result) => {
+                    console.log(result);
+                    response(res, false, ['Pomyślnie wznowiono zadanie.'], [], `/task/${req.params.taskId}`);
+                    return;
+                }).catch((err) => {
+                    response(res, true, ['Wystąpił błąd podczas próby wznowienia zadania.', JSON.stringify(err)], []);
+                    return;
+                });
+            }).catch((err) => {
+                response(res, true, ['Wystąpił błąd podczas próby przypisania zadania do innego operatora.', JSON.stringify(err)], []);
+                return;
+            });   
+        } else {
+            taskService.startTask(req.params.taskId, req.operatorId).then((result) => {
+                console.log(result);
+                response(res, false, ['Pomyślnie wznowiono zadanie.'], [], `/task/${req.params.taskId}`);
+                return;
+            }).catch((err) => {
+                response(res, true, ['Wystąpił błąd podczas próby wznowienia zadania.', JSON.stringify(err)], []);
+                return;
+            });
+        }
     });
 });
 

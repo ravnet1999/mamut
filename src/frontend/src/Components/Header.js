@@ -11,7 +11,7 @@ const Header = (props) => {
                         <nav>
                             <ul>
                                 <li><Link to='/clients' className={props.currentPage.includes('/clients') || props.currentPage.includes('/representatives')  ? 'active' : ''}>Klienci</Link></li>
-                                <li><Link to='/tasks/general' className={props.currentPage.includes('/tasks/general') ? 'active' : ''}>Kolejka ({props.generalTasksCount})</Link></li>
+                                <li><Link to='/tasks/general' className={props.currentPage.includes('/tasks/general') ? 'active' : ''}>ToDo ({props.generalTasksCount})</Link></li>
                                 <li><Link to='/tasks' className={props.currentPage.includes('/tasks') && !props.currentPage.includes('/tasks/general') ? 'active' : ''}>W trakcie</Link></li>
                                 <li><Link to='/logout'>Wyloguj</Link></li>
                             </ul>
