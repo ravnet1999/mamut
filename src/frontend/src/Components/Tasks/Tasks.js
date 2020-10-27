@@ -105,10 +105,10 @@ const Tasks = (props) => {
                 <div className="bottom-pin">
                     <Row className="no-margins">
                         <Col className="text-right btn-center-container">
-                            <Button onClick={(e) => startTask()} className="btn-inverted btn-center btn-center">Start</Button>    
+                            <Button onClick={(e) => startTask()} className="btn-inverted btn-center btn-center" disabled={tasks ? tasks.length == 0 : true}>Start</Button>    
                         </Col>
                     </Row>
-                    { pickedTask ? <TaskReassign taskId={pickedTask.id} reassignFinished={getTasks} redirect='/admin/tasks/general'></TaskReassign> : ''}
+                    { pickedTask && tasks.length > 0 ? <TaskReassign taskId={pickedTask.id} reassignFinished={getTasks} redirect='/admin/tasks/general'></TaskReassign> : ''}
                 </div>
             </div>
         </Page>

@@ -8,7 +8,7 @@ const serviceService = require('../src/service/ServiceService');
 const appConfig = require('../config/appConfig.json');
 
 router.get('/', [authMiddleware], (req, res, next) => {
-    taskService.getTasks(25, 0, 'open', appConfig.tasks.department, req.operatorId).then((result) => {
+    taskService.getTasks(9999, 0, 'open', appConfig.tasks.department, req.operatorId).then((result) => {
         let message = 'Pomyślnie pobrano zadania';
         if(result.length == 0) {
             message = 'Dobra robota. Brak zadań! Proponuję kawę.'
@@ -33,7 +33,7 @@ router.get('/', [authMiddleware], (req, res, next) => {
 });
 
 router.get('/general', [authMiddleware], (req, res, next) => {
-    taskService.getTasks(25, 0, 'open', 0, 0).then((result) => {
+    taskService.getTasks(9999, 0, 'open', 0, 0).then((result) => {
         let message = 'Pomyślnie pobrano zadania';
         if(result.length == 0) {
             message = 'Dobra robota. Brak zadań! Proponuję kawę.'
