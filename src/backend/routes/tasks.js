@@ -151,6 +151,16 @@ router.post('/:taskId/start', [authMiddleware], (req, res, next) => {
     });
 });
 
+router.post('/:taskId/close', [authMiddleware], (req, res, next) => {
+    taskService.closeTask(req.params.taskId, req.operatorId).then((result) => {
+        response(res, false, result.messages, result.resources);
+        return;
+    }).catch((err) => {
+        response(res, true, ['Wystąpił problem podczas próby zamknięcia zadania', JSON.stringify(err)], []);
+        return;
+    })
+});
+
 router.post('/:taskId/reassign', [authMiddleware], (req, res, next) => {
     taskService.reassignTask(req.params.taskId, {
         departmentId: req.body.operatorId == '0' ? req.body.operatorId : appConfig.tasks.department,

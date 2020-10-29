@@ -5,12 +5,15 @@ import Page from '../Page';
 import Alert from '../Alert/Alert';
 import TaskHandler from '../../Handlers/TaskHandler';
 import TaskReassign from './TaskReassign';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
 
 const Tasks = (props) => {
     
     const [response, setResponse] = useState(null);
     const [tasks, setTasks] = useState([]);
     const [pickedTask, setPickedTask] = useState(null);
+    const [closeDisabledId, setCloseDisabledId] = useState(null);
 
     const getTasks = () => {
         props.setCurrentPage(props.history.location.pathname);
@@ -21,6 +24,7 @@ const Tasks = (props) => {
             if(response.resources.length > 0) {
                 setPickedTask(response.resources[0]);
             }
+            setCloseDisabledId(null);
         }).catch((err) => {
             setResponse(err);
         });
@@ -44,6 +48,14 @@ const Tasks = (props) => {
 
         return props.updateTaskCount;
     }, [props.match.params.general]);
+
+    const closeTask = (taskId) => {
+        setCloseDisabledId(taskId);
+        TaskHandler.closeTask(taskId).then((response) => {
+            setResponse(response);
+            getTasks();
+        });
+    }
 
     const buildTaskRadios = () => {
         return tasks.map((task, key) => {
@@ -72,7 +84,7 @@ const Tasks = (props) => {
 
             return (
                 <Row key={key}>
-                    <Col>
+                    <Col xs="12">
                         <div className={`tasklist-task ${taskStampClass} margin-bottom-default`}>
                             <Form.Check
                                 type="radio"
@@ -85,6 +97,7 @@ const Tasks = (props) => {
                             </Form.Check>
                             <span className={`task-description description ${taskStampClass} vertical-middle-static d-inline-block`}> - {task.lastStamp?.nazwa}</span><br />
                             {task.opis ? <div className="task-main-description">{task.opis.substring(0, 50)}{task.opis.length > 50 ? '...' : ''}</div> : '' }
+                            <Button className="position-right-middle small circular" onClick={(e) => closeTask(task.id)} disabled={closeDisabledId == task.id}><FontAwesomeIcon icon={faTimes}></FontAwesomeIcon></Button>
                         </div>
                     </Col>
                 </Row>

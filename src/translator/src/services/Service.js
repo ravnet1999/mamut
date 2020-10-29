@@ -50,6 +50,31 @@ class Service {
         });
     }
 
+    insert = (columns, values) => {
+        return new Promise((resolve, reject) => {
+            if(columns.length != values.length) {
+                reject('Liczba kolumn musi odpowiadać liczbie wartości');
+                return;
+            }
+
+            let set = {};
+
+            columns.map((column, key) => {
+                set[column] = values[key];
+            });
+
+            connection.query(`INSERT INTO \`${this.tableName}\` SET ?`, [set], (err, results, fields) => {
+                if(err) {
+                    reject(err);
+                    return;
+                }
+
+                resolve(results);
+                return;
+            });
+        });
+    }
+
     updateById = (id, columns, values) => {
         return new Promise((resolve, reject) => {
             let columnsString = this.parseColumnsForUpdate(columns);

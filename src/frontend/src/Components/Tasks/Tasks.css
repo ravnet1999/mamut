@@ -6,6 +6,10 @@
     color: #FFF;
 }
 
+.tasklist-task {
+    position: relative;
+}
+
 .tasklist-task .picked label {
     color: rgb(12, 141, 0);
 }

@@ -218,3 +218,37 @@ nav ul li a:hover {
     border-radius: 3px;
     padding: 6px;
 } */
+
+.no-padding-right {
+    padding-right: 0;
+}
+
+.no-padding-left {
+    padding-left: 0;
+}
+
+.small-padding-left {
+    padding-left: 4px;
+}
+
+.position-right-middle {
+    position: absolute;
+    transform: translate(0, -50%);
+    top: 50%;
+    right: 4px;
+}
+
+.btn-primary.small {
+    font-size: 0.85em;
+    padding: 2px;
+}
+
+.btn-primary.circular {
+    border-radius: 50%;
+}
+
+.btn-primary.small.circular {
+    width: 27px;
+    height: 27px;
+    font-weight: bold;
+}

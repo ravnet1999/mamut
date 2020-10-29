@@ -6,6 +6,9 @@ const helpers = require('../src/tasks/helpers');
 const taskService = require('../src/services/Task/TaskService');
 const taskStampService = require('../src/services/Task/TaskStampService');
 const taskEpisodeService = require('../src/services/Task/TaskEpisodeService');
+const taskClosureService = require('../src/services/Task/TaskClosureService');
+const taskInvoiceService = require('../src/services/Task/TaskInvoiceService');
+const changeHistoryService = require('../src/services/ChangeHistoryService');
 const charset = require('../src/helpers/charset');
 
 router.get('/:operatorId/:taskId', (req, res, next) => {
@@ -170,6 +173,33 @@ router.post('/:taskId/reassign', (req, res, next) => {
         response(res, true, ['Coś poszło nie tak podczas próby przypisania zadania do innego operatora', JSON.stringify(err)], []);
         return;
     }) 
+});
+
+router.post('/:taskId/close', (req, res, next) => {
+    taskStampService.stamp('Zamknij', req.params.taskId, req.body.operatorId).then((stampCloseResult) => {
+        changeHistoryService.insert([`id_sp` , `tabela_sp` , `pole` , `wartosc` , `data` , `user`], [req.params.taskId, 'zgloszenia_glowne', 'status', 'open', 'NOW()', req.body.operatorId]).then((historyInsertResult) => {
+            taskService.updateById(req.params.taskId, ['status'], ['close']).then((taskUpdateResult) => {
+                taskInvoiceService.insert(['id_zgloszenia', 'osoba_odpowiedzialna'], [req.params.taskId, req.body.operatorId]).then((invoiceInsertResult) => {
+                    response(res, false, ['Poprawnie zamknięto zadanie.'], [taskUpdateResult]);
+                    return;
+                }).catch((err) => {
+                    response(res, true, ['Wystąpił problem podczas próby wstawienia wpisu rozliczenia zadania', JSON.stringify(err)], []);
+                    return;
+                })
+                // taskClosureService.insert(['kat_zamk', 'dot_usl', 'dot_apli', 'dot_sys', 'zakonczenie', 'id_stempla', 'id_zgloszenia'], ['','','','','', ,'72034'])
+            }).catch((err) => {
+                response(res, true, ['Wystąpił problem podczas próby aktualizacji statusu zadania.', JSON.stringify(err)], []);
+                return;
+            });
+        }).catch((err) => {
+            response(res, true, ['Wystąpił problem podczas próby wstawienia wpisu do historii zmian.', JSON.stringify(err)], []);
+            return;            
+        });
+    }).catch((err) => {
+        response(res, true, ['Wystąpił problem podczas próby wstawienia stempla zamknięcia.', JSON.stringify(err)], []);
+        return;
+    });
+
 });
 
 router.patch('/:taskId/description', (req, res, next) => {

@@ -92,6 +92,25 @@ class TaskService {
         });   
     }
 
+    closeTask = (taskId, operatorId) => {
+        return new Promise((resolve, reject) => {
+            axios.post(`${appConfig.URLs.translator}/tasks/${taskId}/close`, {
+                operatorId: operatorId
+            }).then((response) => {
+                parseResponse(response).then((response) => {
+                    resolve(response);
+                    return;
+                }).catch((err) => {
+                    reject(err);
+                    return;
+                });
+            }).catch((err) => {
+                reject(err);
+                return;
+            });
+        });
+    }
+
     reassignTask = (taskId, reassignObject) => {
         return new Promise((resolve, reject) => {
             axios.post(`${appConfig.URLs.translator}/tasks/${taskId}/reassign`, reassignObject).then((response) => {
