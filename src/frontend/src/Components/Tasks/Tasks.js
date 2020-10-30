@@ -105,7 +105,7 @@ const Tasks = (props) => {
                             <span className={`task-description description ${taskStampClass} vertical-middle-static d-inline-block`}> - {task.lastStamp?.nazwa}</span><br />
                             {task.opis ? <div className="task-main-description">{task.opis.substring(0, 50)}{task.opis.length > 50 ? '...' : ''}</div> : '' }
                             { task.lastStamp?.nazwa == 'OCZEKUJE' && !task.informatyk == 0 ? <Button className="position-right-middle small circular" onClick={(e) => { setModal({
-                                title: 'Czy na pewno chcesz zamknąć zadanie?',
+                                title: `Czy na pewno chcesz zamknąć zadanie ${task.id} - ${task.zglaszajacy}?`,
                                 description: '',
                                 buttons: [
                                     {
