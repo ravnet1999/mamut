@@ -7,6 +7,7 @@ import TaskHandler from '../../Handlers/TaskHandler';
 import TaskReassign from './TaskReassign';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import Modal from '../Modal/Modal';
 
 const Tasks = (props) => {
     
@@ -14,6 +15,12 @@ const Tasks = (props) => {
     const [tasks, setTasks] = useState([]);
     const [pickedTask, setPickedTask] = useState(null);
     const [closeDisabledId, setCloseDisabledId] = useState(null);
+    const [modal, setModal] = useState({
+        title: '',
+        description: '',
+        buttons: []
+    });
+    const [modalVisible, setModalVisible] = useState(false);
 
     const getTasks = () => {
         props.setCurrentPage(props.history.location.pathname);
@@ -97,7 +104,19 @@ const Tasks = (props) => {
                             </Form.Check>
                             <span className={`task-description description ${taskStampClass} vertical-middle-static d-inline-block`}> - {task.lastStamp?.nazwa}</span><br />
                             {task.opis ? <div className="task-main-description">{task.opis.substring(0, 50)}{task.opis.length > 50 ? '...' : ''}</div> : '' }
-                            <Button className="position-right-middle small circular" onClick={(e) => closeTask(task.id)} disabled={closeDisabledId == task.id}><FontAwesomeIcon icon={faTimes}></FontAwesomeIcon></Button>
+                            { task.lastStamp?.nazwa == 'OCZEKUJE' ? <Button className="position-right-middle small circular" onClick={(e) => { setModal({
+                                title: 'Czy na pewno chcesz zamknąć zadanie?',
+                                description: '',
+                                buttons: [
+                                    {
+                                        name: 'Potwierdź',
+                                        method: () => {
+                                            closeTask(task.id);
+                                            setModalVisible(false);
+                                        }
+                                    }
+                                ]
+                            }); setModalVisible(true); } } disabled={closeDisabledId == task.id}><FontAwesomeIcon icon={faTimes}></FontAwesomeIcon></Button> : '' }
                         </div>
                     </Col>
                 </Row>
@@ -107,6 +126,7 @@ const Tasks = (props) => {
 
     return (
         <Page>
+            <Modal title={modal.title} description={modal.description} buttons={modal.buttons} visible={modalVisible} onClose={() => setModalVisible(false)}></Modal>
             <Alert response={response}></Alert>
             {buildTaskRadios()}
             {/* <Row className="margin-top-default margin-bottom-default">
