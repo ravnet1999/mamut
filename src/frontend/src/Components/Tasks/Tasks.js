@@ -6,7 +6,7 @@ import Alert from '../Alert/Alert';
 import TaskHandler from '../../Handlers/TaskHandler';
 import TaskReassign from './TaskReassign';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import Modal from '../Modal/Modal';
 
 const Tasks = (props) => {
@@ -104,7 +104,7 @@ const Tasks = (props) => {
                             </Form.Check>
                             <span className={`task-description description ${taskStampClass} vertical-middle-static d-inline-block`}> - {task.lastStamp?.nazwa}</span><br />
                             {task.opis ? <div className="task-main-description">{task.opis.substring(0, 50)}{task.opis.length > 50 ? '...' : ''}</div> : '' }
-                            { task.lastStamp?.nazwa == 'OCZEKUJE' ? <Button className="position-right-middle small circular" onClick={(e) => { setModal({
+                            { task.lastStamp?.nazwa == 'OCZEKUJE' && !task.informatyk == 0 ? <Button className="position-right-middle small circular" onClick={(e) => { setModal({
                                 title: 'Czy na pewno chcesz zamknąć zadanie?',
                                 description: '',
                                 buttons: [
@@ -116,7 +116,7 @@ const Tasks = (props) => {
                                         }
                                     }
                                 ]
-                            }); setModalVisible(true); } } disabled={closeDisabledId == task.id}><FontAwesomeIcon icon={faTimes}></FontAwesomeIcon></Button> : '' }
+                            }); setModalVisible(true); } } disabled={closeDisabledId == task.id}><FontAwesomeIcon icon={faCheck}></FontAwesomeIcon></Button> : '' }
                         </div>
                     </Col>
                 </Row>
