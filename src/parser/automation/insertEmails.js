@@ -9,6 +9,21 @@ const formatDate = (date) => {
     return moment(date, appConfig.date.format.system).format(appConfig.date.format.system)
 }
 
+const insertEmail = (rep, databaseEmail) => {
+    rep.adres_email = databaseEmail.from;
+    console.log(rep.adres_email);
+    taskService.insertTask(rep.id_klienta, rep.id, databaseEmail.subject, rep).then((result) => {
+        if(!result.error) {
+            databaseEmail.inserted = true;
+            databaseEmail.save((err, doc) => {
+               console.log(`Dodano zadanie nr. ${result.resources[0].insertId} dla klienta o ID ${rep.id_klienta} i reprezentanta o id ${rep.id}.`);
+            });
+        }
+    }).catch((err) => {
+        console.log('error', err);
+    });
+}
+
 const insertEmails = () => {
     Email.find({
         inserted: false
@@ -17,30 +32,40 @@ const insertEmails = () => {
             console.log(`Znaleziono ${databaseEmails.length} maili, z których nie utworzono jeszcze zadań.`);
         }
         databaseEmails.map((databaseEmail) => {
-            let domain = databaseEmail.from.split('@')[1];
+            let fullEmail = databaseEmail.from;
+            let domain = fullEmail.split('@')[1];
 
-            CompanyEmail.findOne({
-                domains: domain
-            }).then((companyEmail) => {
-                if(!companyEmail) {
+            companyService.getRepByEmail(fullEmail).then((rep) => {
+                if(rep.length == 0) {
+                    
+                    CompanyEmail.findOne({
+                        domains: domain
+                    }).then((companyEmail) => {
+                        if(!companyEmail) {
+                            return;
+                        } 
+                        companyService.getUnknownRep(companyEmail.companyId).then((rep) => {
+                            if(rep.length == 0) {
+                                console.log(`Użytkownik nieznany nie jest przypisany do klienta o id ${companyEmail.companyId}.`);
+                                return;
+                            };
+                            insertEmail(rep[0], databaseEmail);
+                        }).catch((err) => {
+                            console.log(err);
+                            return;
+                        })
+                    }).catch((err) => {
+                        console.log(err);
+                        return;
+                    });
+
                     return;
-                } 
+                }
 
-                console.log(`Znaleziono email z domeny ${domain} dla ${companyEmail.companyName}`);
+                insertEmail(rep[0], databaseEmail);
 
-                taskService.insertTask(companyEmail.companyId, companyEmail.selectedRep, databaseEmail.text, 30).then((result) => {
-                    if(!result.error) {
-                        databaseEmail.inserted = true;
-                        databaseEmail.save((err, doc) => {
-                           console.log(`Dodano zadanie nr. ${result.resources[0].insertId} dla ${companyEmail.companyName}.`) 
-                        });
-                    }
-                }).catch((err) => {
-                    console.log('error', err);
-                });
             }).catch((err) => {
                 console.log(err);
-                return;
             });
         })
     }).catch((err) => {

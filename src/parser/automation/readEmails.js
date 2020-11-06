@@ -23,6 +23,7 @@ const readEmails = () => {
                         from: getFromAddress(email),
                         date: formatDate(email.date),
                         text: email.text,
+                        subject: email.subject,
                         inserted: false
                     }).then((result) => {
                         console.log(`Wprowadzono email od ${getFromAddress(email)} z dnia ${formatDate(email.date)} do bazy danych.`);

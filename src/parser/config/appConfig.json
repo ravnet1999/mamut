@@ -16,17 +16,17 @@
         }
     },
     "tasks": {
-        "operatorId": null,
+        "operatorId": 0,
         "issuer": null,
         "issuerCompany": null,
         "issuerCompanyLocation": null,
         "description": "",
         "emailNotif": "on",
         "channel": 3,
-        "serviceId": 15,
+        "serviceId": 91,
         "service": "",
         "type": "zadanie",
-        "department": 2,
+        "department": 0,
         "priority": 2,
         "category": 1
     }

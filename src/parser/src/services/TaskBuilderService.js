@@ -6,18 +6,17 @@ const companyService = require('./CompanyService');
 const taskService = require('./TaskServices/TaskService');
 
 class TaskBuilderService {
-    insertTask = (clientId, repId, description, operatorId) => {
+    insertTask = (clientId, repId, description, customRep = null) => {
         return new Promise((resolve, reject) => {
             let taskObject = appConfig.tasks;
 
-            taskObject.operatorId = operatorId;
             taskObject.description = description;
         
             serviceService.getService(taskObject.serviceId).then((service) => {
                 taskObject.service = service.nazwa;
                 companyService.getRepresentative(repId).then((rep) => {
         
-                    taskObject.issuer = rep;
+                    taskObject.issuer = customRep ? customRep : rep;
         
                     companyService.getCompany(clientId).then((companies) => {
         

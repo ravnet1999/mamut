@@ -272,6 +272,40 @@ class CompanyService {
             });
         });
     }
+
+    getRepByEmail = (email) => {
+        return new Promise((resolve, reject) => {
+            axios.get(`${appConfig.URLs.translator}/users/findByEmail/${email}`).then((response) => {
+                parseResponse(response).then((response) => {
+                    resolve(response.resources);
+                    return;
+                }).catch((err) => {
+                    reject(err);
+                    return;
+                });
+            }).catch((err) => {
+                reject(err);
+                return;
+            });
+        });   
+    }
+
+    getUnknownRep = (clientId) => {
+        return new Promise((resolve, reject) => {
+            axios.get(`${appConfig.URLs.translator}/users/${clientId}/findUnknownUser`).then((response) => {
+                parseResponse(response).then((response) => {
+                    resolve(response.resources);
+                    return;
+                }).catch((err) => {
+                    reject(err);
+                    return;
+                });
+            }).catch((err) => {
+                reject(err);
+                return;
+            });
+        });   
+    }
 }
 
 module.exports = new CompanyService();

@@ -8,6 +8,10 @@ let emailSchema = new mongodb.Schema({
         type: Boolean,
         default: false
     },
+    subject: {
+        type: String,
+        default: ''
+    },
     text: {
         type: String,
         default: ''

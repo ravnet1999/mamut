@@ -21,4 +21,25 @@ router.get('/:userId', (req, res, next) => {
         response(res, true, [`Wystąpił błąd podczas próby pobrania użytkownika.`, JSON.stringify(err)], [])
     });
 });
+
+router.get('/findByEmail/:email', (req, res, next) => {
+    userService.find(1, 0, 'id', 'DESC', '`adres_email` = \'' + req.params.email + '\'').then((users) => {
+        response(res, false, ['Pomyślnie pobrano użytkownika za pomocą adresu email.'], users);
+        return;
+    }).catch((err) => {
+        response(res, true, ['Wystąpił błąd podczas próby pobrania użytkownika za pomocą email.', JSON.stringify(err)], []);
+        return;
+    })
+});
+
+router.get('/:clientId/findUnknownUser', (req, res, next) => {
+    userService.find(1, 0, 'id', 'DESC', '`nazwisko` = \'Nieznany\' AND `id_klienta` = \'' + req.params.clientId + '\'').then((users) => {
+        response(res, false, ['Pomyślnie pobrano nieznanego użytkownika.'], users);
+        return;
+    }).catch((err) => {
+        response(res, true, ['Wystąpił błąd podczas próby pobrania nieznanego użytkownika.', JSON.stringify(err)], []);
+        return;
+    })
+});
+
 module.exports = router;
