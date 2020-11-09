@@ -2,6 +2,7 @@ const moment = require('moment');
 const appConfig = require('../config/appConfig.json');
 const mailParser = require('../src/parser/emailParser');
 const Email = require('../src/models/EmailModel');
+const stripHtml = require('string-strip-html');
 
 const formatDate = (date) => {
     return moment(date, appConfig.date.format.system).format(appConfig.date.format.system)
@@ -19,11 +20,12 @@ const readEmails = () => {
                 date: formatDate(email.date)
             }).then((databaseEmail) => {
                 if(!databaseEmail) {
+                    console.log(stripHtml(email.text).result);
                     Email.create({
                         from: getFromAddress(email),
                         date: formatDate(email.date),
-                        text: email.text,
-                        subject: email.subject,
+                        text: stripHtml(email.text).result,
+                        subject: stripHtml(email.subject).result,
                         inserted: false
                     }).then((result) => {
                         console.log(`Wprowadzono email od ${getFromAddress(email)} z dnia ${formatDate(email.date)} do bazy danych.`);
@@ -49,5 +51,5 @@ const readEmails = () => {
 
 module.exports = {
     method: readEmails,
-    interval: 30000
+    interval: 5000
 }

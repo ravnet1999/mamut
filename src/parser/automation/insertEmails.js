@@ -2,7 +2,9 @@ const moment = require('moment');
 const appConfig = require('../config/appConfig.json');
 const Email = require('../src/models/EmailModel');
 const CompanyEmail = require('../src/models/CompanyEmailModel');
-const taskService = require('../src/services/TaskBuilderService');
+const taskBuilderService = require('../src/services/TaskBuilderService');
+const taskService = require('../src/services/TaskServices/TaskService');
+const episodeService = require('../src/services/TaskServices/EpisodeService');
 const companyService = require('../src/services/CompanyService');
 
 const formatDate = (date) => {
@@ -12,11 +14,17 @@ const formatDate = (date) => {
 const insertEmail = (rep, databaseEmail) => {
     rep.adres_email = databaseEmail.from;
     console.log(rep.adres_email);
-    taskService.insertTask(rep.id_klienta, rep.id, databaseEmail.subject, rep).then((result) => {
+    taskBuilderService.insertTask(rep.id_klienta, rep.id, databaseEmail.subject, rep).then((result) => {
         if(!result.error) {
             databaseEmail.inserted = true;
             databaseEmail.save((err, doc) => {
                console.log(`Dodano zadanie nr. ${result.resources[0].insertId} dla klienta o ID ${rep.id_klienta} i reprezentanta o id ${rep.id}.`);
+
+                episodeService.getEpisodes(result.resources[0].insertId).then((episodeFetchResult) => {
+                    episodeService.updateDescription(episodeFetchResult.resources[0].id, databaseEmail.text.length > 2500 ? databaseEmail.text.substr(0, 2500) + '...' : databaseEmail.text).then((descriptionUpdateResult) => {
+                        console.log('Update result: ', descriptionUpdateResult);
+                    });
+                });
             });
         }
     }).catch((err) => {
