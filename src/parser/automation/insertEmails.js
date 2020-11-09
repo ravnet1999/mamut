@@ -13,7 +13,6 @@ const formatDate = (date) => {
 
 const insertEmail = (rep, databaseEmail) => {
     rep.adres_email = databaseEmail.from;
-    console.log(rep.adres_email);
     taskBuilderService.insertTask(rep.id_klienta, rep.id, databaseEmail.subject, rep).then((result) => {
         if(!result.error) {
             databaseEmail.inserted = true;
@@ -22,7 +21,7 @@ const insertEmail = (rep, databaseEmail) => {
 
                 episodeService.getEpisodes(result.resources[0].insertId).then((episodeFetchResult) => {
                     episodeService.updateDescription(episodeFetchResult.resources[0].id, databaseEmail.text.length > 2500 ? databaseEmail.text.substr(0, 2500) + '...' : databaseEmail.text).then((descriptionUpdateResult) => {
-                        console.log('Update result: ', descriptionUpdateResult);
+                        console.log('Pomyślnie zaktualizowano opis pierwszego etapu dla zadania: ', result.resources[0].insertId);
                     });
                 });
             });
@@ -40,6 +39,7 @@ const insertEmails = () => {
             console.log(`Znaleziono ${databaseEmails.length} maili, z których nie utworzono jeszcze zadań.`);
         }
         databaseEmails.map((databaseEmail) => {
+            console.log('Email subject', databaseEmail.subject);
             let fullEmail = databaseEmail.from;
             let domain = fullEmail.split('@')[1];
 
