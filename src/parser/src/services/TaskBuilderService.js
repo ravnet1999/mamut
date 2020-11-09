@@ -8,7 +8,7 @@ const taskService = require('./TaskServices/TaskService');
 class TaskBuilderService {
     insertTask = (clientId, repId, description, customRep = null) => {
         return new Promise((resolve, reject) => {
-            let taskObject = appConfig.tasks;
+            let taskObject = JSON.parse(JSON.stringify(appConfig.tasks));
 
             taskObject.description = description;
         
@@ -24,7 +24,9 @@ class TaskBuilderService {
         
                         companyService.getCompanyLocation(taskObject.issuerCompany.id).then((location) => {
                             taskObject.issuerCompanyLocation = location;
+                            taskObject.description = description;
                             taskService.createTask(taskObject).then((result) => {
+                                console.log('final subject', taskObject.description);
                                 resolve(result);
                                 return;
                             }).catch((err) => {
