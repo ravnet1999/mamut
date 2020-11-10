@@ -162,9 +162,9 @@ const CompanyEmails = (props) => {
                 <Row key={key} className="domain-edit-row">
                     <Col xs="1" className={errorClass}>{domain.companyId}</Col>
                     <Col className={errorClass}>{domain.companyName}</Col>
-                    <Col>
+                    {/* <Col>
                         { buildRepSelect(domain, key) }
-                    </Col>
+                    </Col> */}
                     <Col>
                         <textarea className={`form-control ${errorClass}`} value={domain.domains ? domain.domains.join(', ') : ''} onChange={(e) => updateDomain(key, e.target.value)}></textarea>
                     </Col>
@@ -179,7 +179,7 @@ const CompanyEmails = (props) => {
                         <Row className="text-left text-bold table-header-row">
                             <Col xs="1" onClick={(e) => sortByHeader('companyId')}>ID {buildSortWayArrows('companyId')}</Col>
                             <Col onClick={(e) => sortByHeader('companyNameLowerCase')}>Nazwa {buildSortWayArrows('companyNameLowerCase')}</Col>
-                            <Col onClick={(e) => sortByHeader('companyNameLowerCase')}>Reprezentant</Col>
+                            {/* <Col onClick={(e) => sortByHeader('companyNameLowerCase')}>Reprezentant</Col> */}
                             <Col onClick={(e) => sortByHeader('domains')}>Domeny (oddzielone przecinkiem ze spacją) {buildSortWayArrows('domains')}</Col>
                         </Row>
                     </div>

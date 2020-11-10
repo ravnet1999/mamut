@@ -31,7 +31,7 @@ const readEmails = () => {
                         console.log(`Wprowadzono email od ${getFromAddress(email)} z dnia ${formatDate(email.date)} do bazy danych.`);
                         return;
                     }).catch((err) => {
-                        console.log('Wystąpił błąd podczas próby wprowadzenia maili do bazy danych Mongo');
+                        console.log('Wystąpił błąd podczas próby wprowadzenia maili do bazy danych Mongo', err);
                         return;
                     })
                 } else {
