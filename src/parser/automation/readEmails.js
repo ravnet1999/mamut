@@ -35,7 +35,7 @@ const readEmails = () => {
                         return;
                     })
                 } else {
-                    // console.log('Baza maili aktualna.');
+                    console.log('Baza maili aktualna.');
                     return;
                 }
             }).catch((err) => {
@@ -51,5 +51,5 @@ const readEmails = () => {
 
 module.exports = {
     method: readEmails,
-    interval: 5000
+    interval: 20000
 }
