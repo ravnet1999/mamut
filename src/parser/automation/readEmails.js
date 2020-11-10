@@ -14,6 +14,9 @@ const getFromAddress = (email) => {
 const readEmails = () => {
     mailParser().then((emails) => {        
         emails.map((email) => {
+            if(!email.date) {
+                return;
+            }
             Email.findOne({
                 from: getFromAddress(email),
                 date: formatDate(email.date)
@@ -49,5 +52,5 @@ const readEmails = () => {
 
 module.exports = {
     method: readEmails,
-    interval: 20000
+    interval: 5000
 }
