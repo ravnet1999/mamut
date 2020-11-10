@@ -16,7 +16,7 @@ const readEmails = () => {
                         'TEXT',
                         ''
                     ],
-                    markSeen: false
+                    markSeen: true
                 };
         
                 return connection.search(searchCriteria, fetchOptions).then((results) => {
