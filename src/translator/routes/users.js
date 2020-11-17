@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const userService = require('../src/services/UserService');
 const response = require('../src/response');
+const charset = require('../src/helpers/charset');
 
 router.get('/', (req, res, next) => {
     userService.find(999999, 0, 'id', 'ASC').then((users) => {
@@ -15,6 +16,9 @@ router.get('/', (req, res, next) => {
 
 router.get('/:userId', (req, res, next) => {
     userService.findById(req.params.userId).then((users) => {
+        users = users.map((user) => {
+            return charset.translateIn(user);
+        });
         response(res, false, ['Pomyślnie pobrano użytkownika.'], users);
         return;
     }).catch((err) => {

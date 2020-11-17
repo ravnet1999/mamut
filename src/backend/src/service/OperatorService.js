@@ -19,6 +19,23 @@ class OperatorService {
             });
         });   
     }
+
+    getOperator = (operatorId) => {
+        return new Promise((resolve, reject) => {
+            axios.get(`${appConfig.URLs.translator}/assignments/${operatorId}`).then((response) => {
+                parseResponse(response).then((response) => {
+                    resolve(response.resources);
+                    return;
+                }).catch((err) => {
+                    reject(err);
+                    return;
+                });
+            }).catch((err) => {
+                reject(err);
+                return;
+            });
+        });
+    }
 }
 
 module.exports = new OperatorService();

@@ -17,14 +17,22 @@ router.get('/', (req, res, next) => {
 });
 
 router.get('/:operatorId', (req, res, next) => {
-    assignmentService.findByOperatorId(req.params.operatorId).then((assignment) => {
-        assignment.klient = assignment.klient.split(',').map((client) => { return Number(client) });
-        response(res, false, ['Pomyślnie pobrano kompetencje.'], [assignment]);
+    operatorService.findById(req.params.operatorId).then((result) => {
+        result = charset.translateIn(result);
+        response(res, false, ['Pomyślnie pobrano operatora.'], result);
         return;
     }).catch((err) => {
-        response(res, true, ['Coś poszło nie tak podczas próby pobrania kompetencji.', JSON.stringify(err)], []);
+        response(res, true, ['Coś poszło nie tak podczas próby pobrania operatora.', JSON.stringify(err)], []);
         return;
     });
+    // assignmentService.findByOperatorId(req.params.operatorId).then((assignment) => {
+    //     assignment.klient = assignment.klient.split(',').map((client) => { return Number(client) });
+    //     response(res, false, ['Pomyślnie pobrano kompetencje.'], [assignment]);
+    //     return;
+    // }).catch((err) => {
+    //     response(res, true, ['Coś poszło nie tak podczas próby pobrania kompetencji.', JSON.stringify(err)], []);
+    //     return;
+    // });
 });
 
 router.get('/:clientIds/representatives', (req, res, next) => {
