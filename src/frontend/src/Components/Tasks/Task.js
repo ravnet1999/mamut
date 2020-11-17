@@ -5,6 +5,7 @@ import Page from '../Page';
 import Alert from '../Alert/Alert';
 import OperatorHandler from '../../Handlers/OperatorHandler';
 import TaskHandler from '../../Handlers/TaskHandler';
+import ClientHandler from '../../Handlers/ClientHandler';
 import TaskReassign from './TaskReassign';
 import './Tasks.css';
 
@@ -16,6 +17,9 @@ const Task = (props) => {
     const [taskEpisodes, setTaskEpisodes] = useState(null);
     const [lastEpisode, setLastEpisode] = useState(null);
     const [lastEpisodeDescription, setLastEpisodeDescription] = useState('');
+    const [repPhone, setRepPhone] = useState('');
+    const [repEmail, setRepEmail] = useState('');
+    const [rep, setRep] = useState(null);
     const [appState, setAppState] = useState({
         taskDescription: '',
         episodeDescription: ''
@@ -34,6 +38,16 @@ const Task = (props) => {
         })
     }
 
+    const updateRep = () => {
+        if(!rep) return;
+
+        ClientHandler.changeRepresentative(rep.id, rep).then((result) => {
+            console.log(result);
+        }).catch((err) => {
+            console.log(err);
+        });
+    }
+
     const getTaskDescription = () => {
         return taskDescription;
     }
@@ -45,17 +59,25 @@ const Task = (props) => {
         });
 
         TaskHandler.getTaskById(props.match.params.taskId).then((response) => {
-            setResponse(response);
-            setTask(response.resources[0]);
-            modifyTaskDescription(response.resources[0].opis)
-            TaskHandler.getEpisodes(props.match.params.taskId).then((episodes) => {
-                setResponse(episodes);
-                setTaskEpisodes(episodes.resources);
-                setLastEpisode(episodes.resources[0]);
-                modifyEpisodeDescription(episodes.resources[0].rozwiazanie);
-            }).catch((err) => {
-                setResponse(err);
-            })
+            ClientHandler.getRepresentative(response.resources[0].id_zglaszajacy).then((rep) => {
+                let representative = rep.resources[0];
+
+                setRep(representative);
+                setRepPhone(representative.tel_komorkowy);
+                setRepEmail(representative.adres_email);
+
+                setResponse(response);
+                setTask(response.resources[0]);
+                modifyTaskDescription(response.resources[0].opis)
+                TaskHandler.getEpisodes(props.match.params.taskId).then((episodes) => {
+                    setResponse(episodes);
+                    setTaskEpisodes(episodes.resources);
+                    setLastEpisode(episodes.resources[0]);
+                    modifyEpisodeDescription(episodes.resources[0].rozwiazanie);
+                }).catch((err) => {
+                    setResponse(err);
+                })
+            });
         }).catch((err) => {
             setResponse(err);
         });
@@ -69,6 +91,12 @@ const Task = (props) => {
             }
         };
     }, [lastEpisode, task]);
+
+    useEffect(() => {
+        return () => {
+            updateRep();
+        }
+    }, [rep])
 
     const stopTask = () => {
         TaskHandler.stopTask(task.id).then((response) => {
@@ -106,6 +134,36 @@ const Task = (props) => {
         )
     }
 
+    const changeRepDetails = (changes) => {
+        for(let key in changes) {
+            rep[key] = changes[key];
+        }
+
+        setRep(rep);
+
+        setRepEmail(rep.adres_email);
+        setRepPhone(rep.tel_komorkowy);
+    }
+
+    const buildRepForm = () => {
+        if(!rep) return '';
+
+        if(rep) console.log('rep is there');
+
+        return (
+            <div className="margin-bottom-default">
+                <div className="form-gorup">
+                    <label for="task-phone">Telefon: </label>
+                    <input id="task-phone" type="text" className="form-control" onChange={(e) => changeRepDetails({ tel_komorkowy: e.target.value })} value={repPhone}></input>
+                </div>
+                <div className="form-gorup">
+                    <label for="task-email">Email: </label>
+                    <input id="task-email" type="text" className="form-control" onChange={(e) => changeRepDetails({ adres_email: e.target.value })} value={repEmail}></input>
+                </div>
+            </div>
+        );
+    }
+
     const buildNonLastEpisodes = () => {
         if(!taskEpisodes) return '';
 
@@ -136,6 +194,7 @@ const Task = (props) => {
         <Page>
             <Alert response={response}></Alert>
             <h1>Zadanie: {task.id}<br />{task.zglaszajacy}</h1>
+            {buildRepForm()}
             <div className="form-group task-description-container margin-bottom-default">
                 <label for="task_description">Opis problemu:</label>
                 <div className="task-description-content">

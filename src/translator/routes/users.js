@@ -26,6 +26,26 @@ router.get('/:userId', (req, res, next) => {
     });
 });
 
+router.patch('/:userId', (req, res, next) => {
+    let body = charset.translateOut(req.body);
+
+    let columns = [];
+    let values = [];
+
+    for(let column in body) {
+        columns.push(column);
+        values.push(req.body[column]);
+    }
+
+    userService.updateById(req.params.userId, columns, values).then((result) => {
+        response(res, false, ['Pomyślnie zaktualizowano użytkownika.'], result);
+        return;
+    }).catch((err) => {
+        response(res, true, [`Wystąpił błąd podczas próby aktualizacji użytkownika.`, JSON.stringify(err)], []);
+        return;
+    })
+});
+
 router.get('/findByEmail/:email', (req, res, next) => {
     userService.find(1, 0, 'id', 'DESC', '`adres_email` = \'' + req.params.email + '\'').then((users) => {
         response(res, false, ['Pomyślnie pobrano użytkownika za pomocą adresu email.'], users);

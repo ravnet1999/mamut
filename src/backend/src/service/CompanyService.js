@@ -54,6 +54,23 @@ class CompanyService {
         });    
     }
 
+    changeRepresentative = (repId, rep) => {
+        return new Promise((resolve, reject) => {
+            axios.patch(`${appConfig.URLs.translator}/users/${repId}`, rep).then((response) => {
+                parseResponse(response).then((response) => {
+                    resolve(response.resources[0]);
+                    return;
+                }).catch((err) => {
+                    reject(err);
+                    return;
+                });
+            }).catch((err) => {
+                reject(err);
+                return;
+            });
+        });    
+    }
+
     getRepresentatives = (companyId) => {
         return new Promise((resolve, reject) => {
             axios.get(`${appConfig.URLs.translator}/assignments/${companyId}/representatives`).then((response) => {
