@@ -38,6 +38,10 @@ router.get('/general', [authMiddleware], (req, res, next) => {
         if(result.length == 0) {
             message = 'Dobra robota. Brak zadań! Proponuję kawę.'
         }
+        result = result.sort((a, b) => {
+            return a.id - b.id;
+        });
+        console.log(result);
         response(res, false, [message], result);
         return;
     }).catch((err) => {
