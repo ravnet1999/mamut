@@ -6,7 +6,6 @@
 /src/backend/config/mailer.json
 /src/backend/middleware/access.js
 /src/backend/middleware/json.js
-/src/backend/config/mailer.json
 /src/backend/public/admin/*
 /src/frontend/src/Config/appConfig.json
 /src/frontend_parser/src/Config/appConfig.json
