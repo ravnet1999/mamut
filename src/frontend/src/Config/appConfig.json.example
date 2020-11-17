@@ -4,7 +4,8 @@
         "login": "operators/login",
         "clients": "clients",
         "tasks": "tasks",
-        "operators": "operators"
+        "operators": "operators",
+        "representatives": "representatives"
     },
     "cookies": {
         "auth": {

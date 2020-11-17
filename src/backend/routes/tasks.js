@@ -41,7 +41,6 @@ router.get('/general', [authMiddleware], (req, res, next) => {
         result = result.sort((a, b) => {
             return a.id - b.id;
         });
-        console.log(result);
         response(res, false, [message], result);
         return;
     }).catch((err) => {
