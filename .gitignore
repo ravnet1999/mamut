@@ -3,6 +3,7 @@
 /src/*/node_modules/
 /src/translator/config/database.json
 /src/backend/config/database.json
+/src/backend/config/mailer.json
 /src/backend/middleware/access.js
 /src/backend/middleware/json.js
 /src/backend/config/mailer.json
