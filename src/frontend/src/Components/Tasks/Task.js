@@ -92,11 +92,11 @@ const Task = (props) => {
         };
     }, [lastEpisode, task]);
 
-    useEffect(() => {
-        return () => {
-            updateRep();
-        }
-    }, [rep])
+    // useEffect(() => {
+    //     return () => {
+    //         updateRep();
+    //     }
+    // }, [rep])
 
     const stopTask = () => {
         TaskHandler.stopTask(task.id).then((response) => {
@@ -194,7 +194,7 @@ const Task = (props) => {
         <Page>
             <Alert response={response}></Alert>
             <h1>Zadanie: {task.id}<br />{task.zglaszajacy}</h1>
-            {buildRepForm()}
+            {/* {buildRepForm()} */}
             <div className="form-group task-description-container margin-bottom-default">
                 <label for="task_description">Opis problemu:</label>
                 <div className="task-description-content">
