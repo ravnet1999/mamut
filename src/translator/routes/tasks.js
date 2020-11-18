@@ -61,7 +61,14 @@ router.get('/:departmentId/:operatorId/:limit?/:offset?/:status?', (req, res, ne
 });
 
 router.put('/', (req, res, next) => {
-    req.body.issuer = charset.translateOut(req.body.issuer);
+    req.body = charset.translateOut(req.body);
+
+    for(let key in req.body) {
+        if(req.body.hasOwnProperty(key)) {
+            if(typeof req.body[key] === 'object')
+            req.body[key] = charset.translateOut(req.body[key]);
+        }
+    }
 
     if(!req.body.concernedUser) {
         req.body.concernedUser = req.body.issuer;
