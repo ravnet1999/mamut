@@ -1,5 +1,5 @@
 {
-    "from": "user@server.com"
+    "from": "user@server.com",
     "host": "smtp.ethereal.email",
     "port": 587,
     "secure": false,
