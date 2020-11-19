@@ -4,6 +4,8 @@ cp ./src/backend/config/database.json.example ./src/backend/config/database.json
 echo ./src/backend/config/database.json
 cp ./src/backend/middleware/access.js.example ./src/backend/middleware/access.js
 cp ./src/backend/middleware/json.js.example ./src/backend/middleware/json.js
+cp ./src/backend/config/mailer.json.example ./src/backend/config/mailer.json
+echo cp ./src/backend/config/mailer.json
 cp ./src/frontend/src/Config/appConfig.json.example ./src/frontend/src/Config/appConfig.json
 cp ./src/frontend_parser/src/Config/appConfig.json.example ./src/frontend_parser/src/Config/appConfig.json
 cp ./src/parser/config/database.json.example ./src/parser/config/database.json

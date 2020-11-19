@@ -5,6 +5,7 @@ const response = require('../src/response');
 const companyService = require('../src/service/CompanyService');
 const taskService = require('../src/service/TaskService');
 const serviceService = require('../src/service/ServiceService');
+const operatorService = require('../src/service/OperatorService');
 const appConfig = require('../config/appConfig.json');
 
 router.get('/', [authMiddleware], (req, res, next) => {
@@ -122,7 +123,6 @@ router.post('/:taskId/start', [authMiddleware], (req, res, next) => {
             response(res, true, ['Takie zadanie nie istnieje!'], []);
             return;
         }
-        console.log('stats: ', task[0].informatyk, task[0].komorka);
         if(task[0].informatyk == 0 && task[0].komorka == 0) {
             taskService.reassignTask(req.params.taskId, {
                 departmentId: appConfig.tasks.department,
@@ -130,7 +130,6 @@ router.post('/:taskId/start', [authMiddleware], (req, res, next) => {
                 operatorId: req.operatorId
             }).then((result) => {
                 taskService.startTask(req.params.taskId, req.operatorId).then((result) => {
-                    console.log(result);
                     response(res, false, ['Pomyślnie wznowiono zadanie.'], [], `/task/${req.params.taskId}`);
                     return;
                 }).catch((err) => {
@@ -143,7 +142,6 @@ router.post('/:taskId/start', [authMiddleware], (req, res, next) => {
             });   
         } else {
             taskService.startTask(req.params.taskId, req.operatorId).then((result) => {
-                console.log(result);
                 response(res, false, ['Pomyślnie wznowiono zadanie.'], [], `/task/${req.params.taskId}`);
                 return;
             }).catch((err) => {
@@ -170,8 +168,38 @@ router.post('/:taskId/reassign', [authMiddleware], (req, res, next) => {
         targetOperatorId: req.body.operatorId,
         operatorId: req.operatorId
     }).then((result) => {
-        response(res, false, ['Pomyślnie przypisano zadanie do innego operatora.'], []);
-        return;
+        operatorService.getOperator(req.operatorId).then((operators) => {
+            let operator = operators[0];
+            taskService.getTaskById(req.params.taskId).then((tasks) => {
+                let task = tasks[0];
+                taskService.getEpisodes(req.params.taskId).then((result) => {
+                    let episodes = result.resources;
+                    companyService.getRepresentative(task.id_zglaszajacy).then((rep) => {
+                        companyService.getCompany(rep.id_klienta).then((companies) => {
+                            let company = companies[0];
+                            taskService.notifyReassign(task, rep, company, episodes, operator);
+                            response(res, false, ['Pomyślnie przypisano zadanie do innego operatora.'], []);
+                            return;
+                        }).catch((err) => {
+                            response(res, true, ['Wystąpił błąd podczas próby pobrania firmy.', JSON.stringify(err)], []);
+                            return;
+                        });
+                    }).catch((err) => {
+                        response(res, true, ['Wystąpił błąd podczas próby pobrania reprezentanta.', JSON.stringify(err)], []);
+                        return;
+                    });
+                }).catch((err) => {
+                    response(res, true, ['Wystąpił błąd podczas próby pobrania etapów.', JSON.stringify(err)], []);
+                    return;
+                });
+            }).catch((err) => {
+                response(res, true, ['Wystąpił błąd podczas próby pobrania zadania.', JSON.stringify(err)], []);
+                return;
+            });
+        }).catch((err) => {
+            response(res, true, ['Wystąpił błąd podczas próby pobrania operatora.', JSON.stringify(err)], []);
+            return;
+        });
     }).catch((err) => {
         response(res, true, ['Wystąpił błąd podczas próby przypisania zadania do innego operatora.', JSON.stringify(err)], []);
         return;

@@ -21,6 +21,9 @@ router.get('/', (req, res, next) => {
 router.get('/:companyIds', (req, res, next) => {
     let companyIds = req.params.companyIds.split(',');
     companyService.findById(companyIds).then((companies) => {
+        companies = companies.map((company) => {
+            return charset.translateIn(company);
+        });
         response(res, false, ['Pomyślnie pobrano firmę.'], companies);
         return;
     }).catch((err) => {
