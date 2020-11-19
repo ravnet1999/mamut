@@ -169,33 +169,39 @@ router.post('/:taskId/reassign', [authMiddleware], (req, res, next) => {
         operatorId: req.operatorId
     }).then((result) => {
         operatorService.getOperator(req.operatorId).then((operators) => {
-            let operator = operators[0];
-            taskService.getTaskById(req.params.taskId).then((tasks) => {
-                let task = tasks[0];
-                taskService.getEpisodes(req.params.taskId).then((result) => {
-                    let episodes = result.resources;
-                    companyService.getRepresentative(task.id_zglaszajacy).then((rep) => {
-                        companyService.getCompany(rep.id_klienta).then((companies) => {
-                            let company = companies[0];
-                            taskService.notifyReassign(task, rep, company, episodes, operator);
-                            response(res, false, ['Pomyślnie przypisano zadanie do innego operatora.'], []);
-                            return;
+            let operatorFrom = operators[0];
+            operatorService.getOperator(req.body.operatorId).then((operators) => {
+                let operatorTo = operators[0];
+                taskService.getTaskById(req.params.taskId).then((tasks) => {
+                    let task = tasks[0];
+                    taskService.getEpisodes(req.params.taskId).then((result) => {
+                        let episodes = result.resources;
+                        companyService.getRepresentative(task.id_zglaszajacy).then((rep) => {
+                            companyService.getCompany(rep.id_klienta).then((companies) => {
+                                let company = companies[0];
+                                taskService.notifyReassign(task, rep, company, episodes, operatorFrom, operatorTo);
+                                response(res, false, ['Pomyślnie przypisano zadanie do innego operatora.'], []);
+                                return;
+                            }).catch((err) => {
+                                response(res, true, ['Wystąpił błąd podczas próby pobrania firmy.', JSON.stringify(err)], []);
+                                return;
+                            });
                         }).catch((err) => {
-                            response(res, true, ['Wystąpił błąd podczas próby pobrania firmy.', JSON.stringify(err)], []);
+                            response(res, true, ['Wystąpił błąd podczas próby pobrania reprezentanta.', JSON.stringify(err)], []);
                             return;
                         });
                     }).catch((err) => {
-                        response(res, true, ['Wystąpił błąd podczas próby pobrania reprezentanta.', JSON.stringify(err)], []);
+                        response(res, true, ['Wystąpił błąd podczas próby pobrania etapów.', JSON.stringify(err)], []);
                         return;
                     });
                 }).catch((err) => {
-                    response(res, true, ['Wystąpił błąd podczas próby pobrania etapów.', JSON.stringify(err)], []);
+                    response(res, true, ['Wystąpił błąd podczas próby pobrania zadania.', JSON.stringify(err)], []);
                     return;
                 });
             }).catch((err) => {
-                response(res, true, ['Wystąpił błąd podczas próby pobrania zadania.', JSON.stringify(err)], []);
+                response(res, true, ['Wystąpił błąd podczas próby pobrania operatora docelowego.', JSON.stringify(err)], []);
                 return;
-            });
+            })
         }).catch((err) => {
             response(res, true, ['Wystąpił błąd podczas próby pobrania operatora.', JSON.stringify(err)], []);
             return;

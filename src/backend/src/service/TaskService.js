@@ -129,10 +129,10 @@ class TaskService {
         });   
     }
 
-    notifyReassign = (task, rep, company, episodes, operator) => {
-        // console.log('notifying...', task, rep, company, episodes, operator);
+    notifyReassign = (task, rep, company, episodes, operatorFrom, operatorTo) => {
+        console.log('notifying...', task, rep, company, episodes, operatorFrom, operatorTo);
         let subject =  `Przekazano ci zadanie ${task.id}.`;
-        let message = `${operator.imie} ${operator.nazwisko} przekazał Ci zadanie ${task.id}.[lineBreak][lineBreak]`;
+        let message = `${operatorFrom.imie} ${operatorFrom.nazwisko} przekazał Ci zadanie ${task.id}.[lineBreak][lineBreak]`;
         message += `Dotyczy ono:[lineBreak][lineBreak]`;
         message += `Klient: ${company.nazwa}[lineBreak]`;
         message += `Użytkownik: ${rep.imie} ${rep.nazwisko}[lineBreak]`
@@ -145,7 +145,7 @@ class TaskService {
 
         console.log(message.replace(/\[lineBreak\]/g, '<br />'));
 
-        mailer.send(mailer.getConfig().from, operator.adres_email, subject, message.replace(/\[lineBreak\]/g, '\r\n'), message.replace(/\[lineBreak\]/g, '<br />'));
+        mailer.send(mailer.getConfig().from, operatorTo.adres_email, subject, message.replace(/\[lineBreak\]/g, '\r\n'), message.replace(/\[lineBreak\]/g, '<br />'));
     }
 
     getEpisodes = (taskId) => {

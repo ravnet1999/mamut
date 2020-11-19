@@ -18,7 +18,7 @@ router.get('/', (req, res, next) => {
 
 router.get('/:operatorId', (req, res, next) => {
     operatorService.findById(req.params.operatorId).then((result) => {
-        result = charset.translateIn(result);
+        result[0] = charset.translateIn(result[0]);
         response(res, false, ['Pomyślnie pobrano operatora.'], result);
         return;
     }).catch((err) => {
