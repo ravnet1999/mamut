@@ -19,6 +19,7 @@ function App() {
 	const [loggedIn, setLoggedIn] = useState(false);
 	const [generalTasksCount, setGeneralTasksCount] = useState(0);
 	const [currentPage, setCurrentPage] = useState('/');
+	const [generalTasksInterval, setGeneralTasksInterval] = useState(null);
 
 	const getCookie = () => {
 		return cookies.get(appConfig.cookies.auth.name);
@@ -35,16 +36,16 @@ function App() {
 
     const updateTaskCount = () => {
         TaskHandler.getTasks(true).then((response) => {
-			console.log('updating count...');
 			setGeneralTasksCount(response.resources.length);
         }).catch((err) => {
-			console.log(err);
         });
     }
 
 	useEffect(() => {
 		updateTaskCount();
 		getCookie() ? setLoggedIn(true) : setLoggedIn(false);
+		let interval = setInterval(updateTaskCount, 5000);
+		setGeneralTasksInterval(interval);
 	}, []);
 
 	useEffect(() => {
