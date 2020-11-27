@@ -10,6 +10,7 @@ const Representatives = (props) => {
     const [representatives, setRepresentatives] = useState([]);
     const [selectedRep, setSelectedRep] = useState(null);
     const [response, setResponse] = useState(null);
+    const [taskStarted, setTaskStarted] = useState(false);
 
     useEffect(() => {
         props.setCurrentPage(props.history.location.pathname);
@@ -28,6 +29,7 @@ const Representatives = (props) => {
     }, []);
 
     const createTask = () => {
+        setTaskStarted(true);
         setResponse({
             error: false,
             messages: ['Tworzenie zadania...']
@@ -61,7 +63,7 @@ const Representatives = (props) => {
                     <Row className="no-margins">
                         <Col className="text-right btn-center-container">
                             {/* <Alert response={response}></Alert> */}
-                            <Button onClick={(e) => createTask()} className="btn-inverted btn-start btn-center" disabled={!selectedRep}>Start</Button>
+                            <Button onClick={(e) => createTask()} className="btn-inverted btn-start btn-center" disabled={!selectedRep || taskStarted}>Start</Button>
                         </Col>
                     </Row>
                 </div>

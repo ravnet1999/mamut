@@ -15,6 +15,7 @@ const Tasks = (props) => {
     const [tasks, setTasks] = useState([]);
     const [pickedTask, setPickedTask] = useState(null);
     const [closeDisabledId, setCloseDisabledId] = useState(null);
+    const [taskStarted, setTaskStarted] = useState(false);
     const [modal, setModal] = useState({
         title: '',
         description: '',
@@ -38,6 +39,7 @@ const Tasks = (props) => {
     }
 
     const startTask = () => {
+        setTaskStarted(true);
         TaskHandler.startTask(pickedTask.id).then((response) => {
             setResponse(response);
         }).catch((err) => {
@@ -138,7 +140,7 @@ const Tasks = (props) => {
                 <div className="bottom-pin">
                     <Row className="no-margins">
                         <Col className="text-right btn-center-container">
-                            <Button onClick={(e) => startTask()} className="btn-inverted btn-center btn-center" disabled={tasks ? tasks.length == 0 : true}>Start</Button>    
+                            <Button onClick={(e) => startTask()} className="btn-inverted btn-center btn-center" disabled={(tasks ? tasks.length == 0 : true) || taskStarted}>Start</Button>    
                         </Col>
                     </Row>
                     { pickedTask && tasks.length > 0 ? <TaskReassign taskId={pickedTask.id} reassignFinished={getTasks} redirect='/admin/tasks/general'></TaskReassign> : ''}
