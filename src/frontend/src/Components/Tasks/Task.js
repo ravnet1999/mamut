@@ -40,6 +40,7 @@ const Task = (props) => {
         buttons: []
     });
     const [modalVisible, setModalVisible] = useState(false);
+    const [lastEpisodeInput, setLastEpisodeInput] = useState(null);
 
     const updateDescriptions = (callback = null) => {
         TaskHandler.updateLastEpisodeDescription(lastEpisode.id, appState.episodeDescription).then((result) => {
@@ -131,6 +132,12 @@ const Task = (props) => {
         }
     }, [travel]);
 
+    useEffect(() => {
+        if(lastEpisodeInput) {
+            lastEpisodeInput.focus();
+        }
+    }, [lastEpisodeInput])
+
     const stopTask = () => {
         TaskHandler.stopTask(task.id).then((response) => {
             // setResponse(response);
@@ -205,7 +212,6 @@ const Task = (props) => {
                                         name: 'Potwierdź',
                                         method: () => {
                                             createEpisode(() => {
-                                                setModalVisible(false);
                                                 setEpisodeCreateStarted({
                                                     status: false
                                                 });
@@ -213,6 +219,7 @@ const Task = (props) => {
                                                 window.location.replace(window.location.href);
                                                 return;
                                             });
+                                            setModalVisible(false);
                                         },
                                         disabled: episodeCreateStarted
                                     }
@@ -232,7 +239,7 @@ const Task = (props) => {
                     </Col>
                 </Row>
                 <div>Opis:</div>
-                <textarea className="form-control" value={lastEpisodeDescription} onChange={(e) => modifyEpisodeDescription(e.target.value)}></textarea>
+                <textarea ref={(textarea) => setLastEpisodeInput(textarea)} className="form-control" value={lastEpisodeDescription} onChange={(e) => modifyEpisodeDescription(e.target.value)}></textarea>
             </div>
         )
     }
@@ -277,7 +284,19 @@ const Task = (props) => {
         let taskEpisodeList = nonLastEpisodes.map((taskEpisode, key) => {
             return (
                 <div className="task-episode margin-bottom-default">
-                    <div><strong>Etap {(taskEpisodes.length - 1) - key}</strong>:</div>
+                    <Row>
+                        <Col xs="4">
+                            <div><strong>Etap {(taskEpisodes.length - 1) - key}</strong>:</div>
+                        </Col>
+                        <Col xs="8" className="text-right">
+                            <div className="travel-box no-switch">
+                                <div>
+                                    <strong>Dojazd:</strong>
+                                </div>
+                                <div>{taskEpisode.forma_interwencji ? 'Tak' : 'Nie'}</div>
+                            </div>
+                        </Col>
+                    </Row>
                     <div>Opis etapu:</div>
                     <div className="task-episode-description">{taskEpisode.rozwiazanie}</div>
                 </div>

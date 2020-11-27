@@ -44,6 +44,10 @@
     text-align: left;
 }
 
+.travel-box.no-switch {
+    padding-right: 56px;
+}
+
 .episode-create-button {
     margin-top: 5px;
 }
