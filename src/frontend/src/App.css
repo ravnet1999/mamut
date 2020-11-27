@@ -265,3 +265,7 @@ nav ul li a:hover {
     border-radius: 6px;
     border: 1px solid #212529;
 }
+
+.margin-top-reduced {
+    margin-top: -10px;
+}

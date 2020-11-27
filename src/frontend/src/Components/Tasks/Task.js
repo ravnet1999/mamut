@@ -245,7 +245,7 @@ const Task = (props) => {
                         </div>
                     </Col>
                 </Row>
-                <div>Opis:</div>
+                <div className="margin-top-reduced">Opis:</div>
                 <textarea ref={(textarea) => setLastEpisodeInput(textarea)} className="form-control" value={lastEpisodeDescription} onChange={(e) => modifyEpisodeDescription(e.target.value)}></textarea>
             </div>
         )
@@ -304,7 +304,7 @@ const Task = (props) => {
                             </div>
                         </Col>
                     </Row>
-                    <div>Opis etapu:</div>
+                    <div className="margin-top-reduced">Opis etapu:</div>
                     <div className="task-episode-description">{taskEpisode.rozwiazanie}</div>
                 </div>
             )
