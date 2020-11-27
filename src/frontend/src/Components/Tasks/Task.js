@@ -13,7 +13,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
 const Task = (props) => {
-
+    const [options, setOptions] = useState(null);
     const [task, setTask] = useState(null);
     const [response, setResponse] = useState(null);
     const [taskDescription, setTaskDescription] = useState(null);
@@ -133,10 +133,17 @@ const Task = (props) => {
     }, [travel]);
 
     useEffect(() => {
-        if(lastEpisodeInput) {
+        if(props.match.params.options) {
+            setOptions(props.match.params.options.split(','));
+        }
+    }, [props.match.params.options])
+
+
+    useEffect(() => {
+        if(lastEpisodeInput && options && options.includes('focusLastEpisode')) {
             lastEpisodeInput.focus();
         }
-    }, [lastEpisodeInput])
+    }, [lastEpisodeInput, options])
 
     const stopTask = () => {
         TaskHandler.stopTask(task.id).then((response) => {
