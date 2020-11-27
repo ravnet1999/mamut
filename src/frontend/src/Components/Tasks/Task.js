@@ -246,7 +246,7 @@ const Task = (props) => {
                     </Col>
                 </Row>
                 <div className="margin-top-reduced">Opis:</div>
-                <textarea ref={(textarea) => setLastEpisodeInput(textarea)} className="form-control" value={lastEpisodeDescription} onChange={(e) => modifyEpisodeDescription(e.target.value)}></textarea>
+                <textarea rows="3" ref={(textarea) => setLastEpisodeInput(textarea)} className="form-control" value={lastEpisodeDescription} onChange={(e) => modifyEpisodeDescription(e.target.value)}></textarea>
             </div>
         )
     }
