@@ -156,6 +156,7 @@ router.post('/:taskId/stop', (req, res, next) => {
 });
 
 router.post('/:taskId/reassign', (req, res, next) => {
+    console.log(req.body);
     console.log(req.body.targetOperatorId, req.body.departmentId);
     taskStampService.stamp('Zmiana przypisania', req.params.taskId, req.body.operatorId, '').then((stampResult) => {
         taskEpisodeService.addEpisode(req.params.taskId, req.body.targetOperatorId, req.body.departmentId).then((addEpisodeResult) => {

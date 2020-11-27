@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Button } from '../bootstrap';
+import { Container, Row, Col, Button, Form } from '../bootstrap';
 import { Redirect } from 'react-router-dom';
 import Page from '../Page';
 import Alert from '../Alert/Alert';
@@ -7,7 +7,10 @@ import OperatorHandler from '../../Handlers/OperatorHandler';
 import TaskHandler from '../../Handlers/TaskHandler';
 import ClientHandler from '../../Handlers/ClientHandler';
 import TaskReassign from './TaskReassign';
+import Modal from '../Modal/Modal';
 import './Tasks.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
 const Task = (props) => {
 
@@ -20,16 +23,30 @@ const Task = (props) => {
     const [repPhone, setRepPhone] = useState('');
     const [repEmail, setRepEmail] = useState('');
     const [rep, setRep] = useState(null);
+    const [travel, setTravel] = useState(false);
+    const [episodeCreateStarted, setEpisodeCreateStarted] = useState({
+        status: false
+    });
+    const [episodeCreateChanged, setEpisodeCreateChanged] = useState(false);
     const [appState, setAppState] = useState({
         taskDescription: '',
-        episodeDescription: ''
-    })
+        episodeDescription: '',
+        travel: false
+    });
     const [redirect, setRedirect] = useState(null);
+    const [modal, setModal] = useState({
+        title: '',
+        description: '',
+        buttons: []
+    });
+    const [modalVisible, setModalVisible] = useState(false);
 
-    const updateDescriptions = () => {
+    const updateDescriptions = (callback = null) => {
         TaskHandler.updateLastEpisodeDescription(lastEpisode.id, appState.episodeDescription).then((result) => {
             TaskHandler.updateTaskDescription(task.id, appState.taskDescription).then((result) => {
-                
+                if(callback) {
+                    callback();
+                }
             }).catch((err) => {
                 console.log(err);
             });
@@ -73,6 +90,10 @@ const Task = (props) => {
                     setResponse(episodes);
                     setTaskEpisodes(episodes.resources);
                     setLastEpisode(episodes.resources[0]);
+                    let newAppState = appState;
+                    newAppState.travel = episodes.resources[0].forma_interwencji;
+                    setTravel(episodes.resources[0].forma_interwencji);
+                    setAppState(newAppState);
                     modifyEpisodeDescription(episodes.resources[0].rozwiazanie);
                 }).catch((err) => {
                     setResponse(err);
@@ -98,6 +119,18 @@ const Task = (props) => {
         }
     }, [rep])
 
+    useEffect(() => {
+        if(!lastEpisode) return;
+
+        return () => {
+            TaskHandler.updateEpisodeTravel(lastEpisode.id, appState.travel ? 1 : 0).then((result) => {
+                console.log(result);
+            }).catch((err) => {
+                console.log(err);
+            });
+        }
+    }, [travel]);
+
     const stopTask = () => {
         TaskHandler.stopTask(task.id).then((response) => {
             // setResponse(response);
@@ -122,12 +155,82 @@ const Task = (props) => {
         setLastEpisodeDescription(value);
     }
 
+    const toggleTravel = () => {
+        let newState = appState;
+        newState.travel = !travel;
+        setAppState(newState);
+        setTravel(newState.travel);
+        console.log('Switching...');
+    }
+
+    const createEpisode = (callback = null) => {
+        setEpisodeCreateStarted({
+            status: true
+        });
+        setEpisodeCreateChanged(true);
+        TaskHandler.reassignTask(task.id).then((result) => {
+            props.updateTaskCount();
+            if(lastEpisode && task && (taskDescription !== null || lastEpisodeDescription !== null)) {
+                updateDescriptions(() => {
+                    TaskHandler.updateEpisodeTravel(lastEpisode.id, appState.travel ? 1 : 0).then((result) => {
+                        if(callback) {
+                            callback();
+                        }
+                    }).catch((err) => {
+                        console.log(err);
+                    });
+                });
+            }
+        }).catch((err) => {
+            console.log(err);
+        });
+    }
+
     const buildLastEpisode = () => {;
         if(!lastEpisode) return '';
 
         return (
             <div className="form-group task-episode margin-bottom-default">
-                <div><strong>Bieżący etap</strong>:</div>
+                <Modal title={modal.title} description={modal.description} buttons={modal.buttons} visible={modalVisible} onClose={() => setModalVisible(false)}></Modal>
+                <Row>
+                    <Col xs="4">
+                        <strong>Bieżący etap</strong>:
+                    </Col>
+                    <Col xs="4" md="5" className="text-right">
+                        <Button className="episode-create-button" onClick={(e) => { setModal({
+                                title: `Czy na pewno chcesz utworzyć nowy etap?`,
+                                description: '',
+                                buttons: [
+                                    {
+                                        name: 'Potwierdź',
+                                        method: () => {
+                                            createEpisode(() => {
+                                                setModalVisible(false);
+                                                setEpisodeCreateStarted({
+                                                    status: false
+                                                });
+                                                setEpisodeCreateChanged(false);
+                                                window.location.replace(window.location.href);
+                                                return;
+                                            });
+                                        },
+                                        disabled: episodeCreateStarted
+                                    }
+                                ]
+                        }); setModalVisible(true); } } disabled={episodeCreateStarted.status || modalVisible}><FontAwesomeIcon icon={faPlus}></FontAwesomeIcon></Button>
+                    </Col>
+                    <Col xs="4" md="3" className="text-right">
+                        <div className="travel-box">
+                            <div>
+                                <strong>Dojazd:</strong>
+                            </div>
+                            <div className="travel-switch">
+                                <Form.Check inline label="Tak" type="radio" id="travel-yes" onChange={(e) => toggleTravel()} checked={travel}></Form.Check>
+                                <Form.Check inline label="Nie" type="radio" id="travel-no" onChange={(e) => toggleTravel()} checked={!travel}></Form.Check>
+                            </div>
+                        </div>
+                    </Col>
+                </Row>
                 <div>Opis:</div>
                 <textarea className="form-control" value={lastEpisodeDescription} onChange={(e) => modifyEpisodeDescription(e.target.value)}></textarea>
             </div>

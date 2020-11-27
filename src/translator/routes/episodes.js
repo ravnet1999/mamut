@@ -38,4 +38,12 @@ router.patch('/:episodeId/description', (req, res, next) => {
     });
 });
 
+router.patch('/:episodeId/travel', (req, res, next) => {
+
+    taskEpisodeService.updateById(req.params.episodeId, ['forma_interwencji'], [req.body.travel ? req.body.travel : 0]).then((taskEpisode) => {
+        response(res, false, ['Pomyślnie pobrano ostatni etap zadania.'], taskEpisode);
+        return;
+    });
+});
+
 module.exports = router;

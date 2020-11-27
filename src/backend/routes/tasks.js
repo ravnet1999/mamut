@@ -163,9 +163,12 @@ router.post('/:taskId/close', [authMiddleware], (req, res, next) => {
 });
 
 router.post('/:taskId/reassign', [authMiddleware], (req, res, next) => {
+    let self = typeof req.body.operatorId === 'undefined';
+    let targetOperatorId = self ? req.operatorId : req.body.operatorId;
+
     taskService.reassignTask(req.params.taskId, {
-        departmentId: req.body.operatorId == '0' ? req.body.operatorId : appConfig.tasks.department,
-        targetOperatorId: req.body.operatorId,
+        departmentId: req.body.operatorId === '0' ? req.body.operatorId : appConfig.tasks.department,
+        targetOperatorId: targetOperatorId,
         operatorId: req.operatorId
     }).then((result) => {
         operatorService.getOperator(req.operatorId).then((operators) => {
@@ -179,9 +182,20 @@ router.post('/:taskId/reassign', [authMiddleware], (req, res, next) => {
                         companyService.getRepresentative(task.id_zglaszajacy).then((rep) => {
                             companyService.getCompany(rep.id_klienta).then((companies) => {
                                 let company = companies[0];
-                                taskService.notifyReassign(task, rep, company, episodes, operatorFrom, operatorTo);
-                                response(res, false, ['Pomyślnie przypisano zadanie do innego operatora.'], []);
-                                return;
+                                if(self) {
+                                    taskService.startTask(req.params.taskId, req.operatorId).then((result) => {
+                                        response(res, false, ['Pomyślnie przypisano zadanie do innego operatora.'], []);
+                                        return;
+                                    }).catch((err) => {
+                                        response(res, true, ['Wystąpił błąd podczas próby wystartowania zadania po przepisaniu.', JSON.stringify(err)], []);
+                                        return;
+                                    })
+                                } else {
+                                    taskService.notifyReassign(task, rep, company, episodes, operatorFrom, operatorTo);
+
+                                    response(res, false, ['Pomyślnie przypisano zadanie do innego operatora.'], []);
+                                    return;
+                                }
                             }).catch((err) => {
                                 response(res, true, ['Wystąpił błąd podczas próby pobrania firmy.', JSON.stringify(err)], []);
                                 return;
@@ -235,6 +249,16 @@ router.patch('/:taskId/description', [authMiddleware], (req, res, next) => {
 
 router.patch('/:episodeId/lastEpisodeDescription', [authMiddleware], (req, res, next) => {
     taskService.updateLastEpisodeDescription(req.params.episodeId, req.body.description).then((result) => {
+        response(res, false, ['Pomyślnie zaktualizowano opis etapu.'], result.resources);
+        return;
+    }).catch((err) => {
+        response(res, true, ['Wystąpił błąd poczas próby aktualizacji opisu etapu.', JSON.stringify(err)], []);
+        return;
+    })
+});
+
+router.patch('/:episodeId/travel', [authMiddleware], (req, res, next) => {
+    taskService.updateEpisodeTravel(req.params.episodeId, req.body.travel).then((result) => {
         response(res, false, ['Pomyślnie zaktualizowano opis etapu.'], result.resources);
         return;
     }).catch((err) => {

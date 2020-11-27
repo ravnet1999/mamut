@@ -5,7 +5,7 @@ const Modal = (props) => {
 
     const buildButtons = (buttons) => {
         return buttons.map((button, key) => {
-            return <Col className={key == 0 ? 'text-left' : 'text-center'}><Button key={key} onClick={(e) => button.method()}>{button.name}</Button></Col>;
+            return <Col className={key == 0 ? 'text-left' : 'text-center'}><Button key={key} onClick={(e) => button.method()} disabled={button.disabled ? button.disabled.status : false}>{button.name}</Button></Col>;
         })
     }
 

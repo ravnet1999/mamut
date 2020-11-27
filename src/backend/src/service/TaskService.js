@@ -116,9 +116,11 @@ class TaskService {
         return new Promise((resolve, reject) => {
             axios.post(`${appConfig.URLs.translator}/tasks/${taskId}/reassign`, reassignObject).then((response) => {
                 parseResponse(response).then((response) => {
+                    console.log(response);
                     resolve(response);
                     return;
                 }).catch((err) => {
+                    console.log(err);
                     reject(err);
                     return;
                 });
@@ -130,7 +132,6 @@ class TaskService {
     }
 
     notifyReassign = (task, rep, company, episodes, operatorFrom, operatorTo) => {
-        console.log('notifying...', task, rep, company, episodes, operatorFrom, operatorTo);
         let subject =  `Przekazano ci zadanie ${task.id}.`;
         let message = `${operatorFrom.imie} ${operatorFrom.nazwisko} przekazał Ci zadanie ${task.id}.[lineBreak][lineBreak]`;
         message += `Dotyczy ono:[lineBreak][lineBreak]`;
@@ -188,6 +189,25 @@ class TaskService {
         return new Promise((resolve, reject) => {
             axios.patch(`${appConfig.URLs.translator}/episodes/${episodeId}/description`, {
                 description: description
+            }).then((response) => {
+                parseResponse(response).then((response) => {
+                    resolve(response);
+                    return;
+                }).catch((err) => {
+                    reject(err);
+                    return;
+                });
+            }).catch((err) => {
+                reject(err);
+                return;
+            });
+        }); 
+    }
+
+    updateEpisodeTravel = (episodeId, travel) => {
+        return new Promise((resolve, reject) => {
+            axios.patch(`${appConfig.URLs.translator}/episodes/${episodeId}/travel`, {
+                travel: travel
             }).then((response) => {
                 parseResponse(response).then((response) => {
                     resolve(response);
