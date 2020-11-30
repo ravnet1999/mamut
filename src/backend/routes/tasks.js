@@ -167,7 +167,7 @@ router.post('/:taskId/reassign', [authMiddleware], (req, res, next) => {
     let targetOperatorId = self ? req.operatorId : req.body.operatorId;
 
     taskService.reassignTask(req.params.taskId, {
-        departmentId: req.body.operatorId === '0' ? req.body.operatorId : appConfig.tasks.department,
+        departmentId: req.body.operatorId === 0 ? req.body.operatorId : appConfig.tasks.department,
         targetOperatorId: targetOperatorId,
         operatorId: req.operatorId
     }).then((result) => {
