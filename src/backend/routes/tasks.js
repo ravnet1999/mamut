@@ -154,8 +154,26 @@ router.post('/:taskId/start', [authMiddleware], (req, res, next) => {
 
 router.post('/:taskId/close', [authMiddleware], (req, res, next) => {
     taskService.closeTask(req.params.taskId, req.operatorId).then((result) => {
-        response(res, false, result.messages, result.resources);
-        return;
+        taskService.getTaskById(req.params.taskId, req.operatorId).then((tasks) => {
+            console.log(tasks[0]);
+            companyService.getRepresentative(tasks[0].id_zglaszajacy).then((rep) => {
+                    operatorService.getOperator(tasks[0].informatyk).then((operator) => {
+                        taskService.notifyClose(tasks[0], rep, operator[0]);
+                        response(res, false, result.messages, result.resources);
+                        return;
+                    }).catch((err) => {
+                        response(res, true, ['Wystąpił problem podczas próby pobrania operatora', JSON.stringify(err)], []);
+                        return;            
+                    });
+            }).catch((err) => {
+                    response(res, true, ['Wystąpił problem podczas próby pobrania reprezentanta', JSON.stringify(err)], []);
+                    return;            
+            });
+        }).catch((err) => {
+            console.log(err);
+            response(res, true, ['Wystąpił problem podczas próby pobrania zadania po ID', JSON.stringify(err)], []);
+            return;            
+        })
     }).catch((err) => {
         response(res, true, ['Wystąpił problem podczas próby zamknięcia zadania', JSON.stringify(err)], []);
         return;
