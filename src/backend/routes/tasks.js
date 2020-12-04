@@ -114,7 +114,7 @@ router.post('/:taskId/stop', [authMiddleware], (req, res, next) => {
             companyService.getRepresentative(tasks[0].id_zglaszajacy).then((rep) => {
                     operatorService.getOperator(tasks[0].informatyk).then((operator) => {
                         taskService.verifyFirstStop(req.params.taskId, (startStamp) => {
-                            startStamp.godzina = moment(startStamp.godzina).format('DD-MM-YYYY');
+                            startStamp.godzina = moment(startStamp.godzina).format('DD-MM-YYYY HH:mm:ss');
                             taskService.notifyStop(tasks[0], rep, operator[0], startStamp);
                         }, (err) => {
                             if(err) {
@@ -229,7 +229,7 @@ router.post('/:taskId/reassign', [authMiddleware], (req, res, next) => {
                             companyService.getCompany(rep.id_klienta).then((companies) => {
                                 let company = companies[0];
                                 taskService.verifyFirstStop(req.params.taskId, (startStamp) => {
-                                    startStamp.godzina = moment(startStamp.godzina).format('DD-MM-YYYY');
+                                    startStamp.godzina = moment(startStamp.godzina).format('DD-MM-YYYY HH:mm:ss');
                                     taskService.notifyStop(tasks[0], rep, operators[0], startStamp);
                                 }, (err) => {
                                     if(err) {

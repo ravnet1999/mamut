@@ -149,7 +149,7 @@ class TaskService {
 
     notifyStop = (task, rep, operator, startStamp) => {
         let subject =  `Zarejestrowano zgłoszenie numer: ${task.id}.`;
-        let message = `Data zgłoszenia: ${startStamp.godzina}[lineBreak][lineBreak]`;
+        let message = `Data i godzina zgłoszenia: ${startStamp.godzina}[lineBreak][lineBreak]`;
         message += `Opis problemu: ${task.opis}[lineBreak][lineBreak]`;
         message += `Informatyk obsługujący zgłoszenie: ${operator.imie} ${operator.nazwisko}[lineBreak]`;
         message += `Telefon kontaktowy: 22 868 75 00[lineBreak][lineBreak]`
