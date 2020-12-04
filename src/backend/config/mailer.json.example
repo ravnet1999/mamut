@@ -1,10 +1,22 @@
 {
-    "from": "user@server.com",
-    "host": "smtp.ethereal.email",
-    "port": 587,
-    "secure": false,
-    "auth": {
-        "user": "testAccount.user",
-        "pass": "testAccount.pass" 
+    "reassign": {
+        "from": "user@server.com",
+        "host": "smtp.ethereal.email",
+        "port": 587,
+        "secure": false,
+        "auth": {
+            "user": "testAccount.user",
+            "pass": "testAccount.pass" 
+        }        
+    },
+    "register": {
+        "from": "user@server.com",
+        "host": "smtp.ethereal.email",
+        "port": 587,
+        "secure": false,
+        "auth": {
+            "user": "testAccount.user",
+            "pass": "testAccount.pass" 
+        }
     }
 }

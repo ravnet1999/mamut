@@ -1,7 +1,9 @@
 const axios = require('axios');
 const parseResponse = require('../ResponseParser');
 const appConfig = require('../../config/appConfig.json');
-const mailer = require('../classess/Mailer');
+const Mailer = require('../classess/Mailer');
+let mailerReassign = new Mailer('reassign');
+let mailerRegister = new Mailer('register');
 
 class TaskService {
     getTasks = (limit = 25, offset = 0, status = '', departmentId, operatorId) => {
@@ -143,8 +145,7 @@ class TaskService {
         message += `Etapy, które wykonano:[lineBreak][lineBreak]${episodes.map((episode, key) => {
             return `Etap ${episodes.length - key}: ${episode.rozwiazanie}.`
         }).join('[lineBreak][lineBreak]')}`;
-
-        mailer.send(mailer.getConfig().from, operatorTo.adres_email, subject, message.replace(/\[lineBreak\]/g, '\r\n'), message.replace(/\[lineBreak\]/g, '<br />'));
+        mailerReassign.send(mailerReassign.getConfig().from, operatorTo.adres_email, subject, message.replace(/\[lineBreak\]/g, '\r\n'), message.replace(/\[lineBreak\]/g, '<br />'));
     }
 
     notifyStop = (task, rep, operator, startStamp) => {
@@ -158,7 +159,7 @@ class TaskService {
 
         console.log(task, rep, operator);
 
-        mailer.send(mailer.getConfig().from, rep.adres_email, subject, message.replace(/\[lineBreak\]/g, '\r\n'), message.replace(/\[lineBreak\]/g, '<br />'));
+        mailerRegister.send(mailerRegister.getConfig().from, rep.adres_email, subject, message.replace(/\[lineBreak\]/g, '\r\n'), message.replace(/\[lineBreak\]/g, '<br />'));
     }
 
     notifyClose = (task, rep, operator) => {
@@ -169,7 +170,7 @@ class TaskService {
         message += `Zespół[lineBreak]`
         message += `RavNet`;
 
-        mailer.send(mailer.getConfig().from, rep.adres_email, subject, message.replace(/\[lineBreak\]/g, '\r\n'), message.replace(/\[lineBreak\]/g, '<br />'));
+        mailerRegister.send(mailerRegister.getConfig().from, rep.adres_email, subject, message.replace(/\[lineBreak\]/g, '\r\n'), message.replace(/\[lineBreak\]/g, '<br />'));
     }
 
     verifyFirstStop = (taskId, firstStopCallback, callback) => {

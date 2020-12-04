@@ -2,8 +2,9 @@ const nodemailer = require('nodemailer');
 const mailerConfig = require('../../config/mailer.json');
 
 class Mailer {
-    constructor() {
-        this.transporter = nodemailer.createTransport(mailerConfig);
+    constructor(type) {
+        this.type = type;
+        this.transporter = nodemailer.createTransport(mailerConfig[this.type]);
     }
 
     send = (from, to, subject, text, html) => {
@@ -17,8 +18,8 @@ class Mailer {
     }
 
     getConfig = () => {
-        return mailerConfig;
+        return mailerConfig[this.type];
     }
 }
 
-module.exports = new Mailer();
+module.exports = Mailer;
