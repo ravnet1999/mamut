@@ -7,6 +7,7 @@ const taskService = require('../src/service/TaskService');
 const serviceService = require('../src/service/ServiceService');
 const operatorService = require('../src/service/OperatorService');
 const appConfig = require('../config/appConfig.json');
+const moment = require('moment');
 
 router.get('/', [authMiddleware], (req, res, next) => {
     taskService.getTasks(9999, 0, 'open', appConfig.tasks.department, req.operatorId).then((result) => {
@@ -109,8 +110,39 @@ router.put('/:clientId/:repId', [authMiddleware], (req, res, next) => {
 
 router.post('/:taskId/stop', [authMiddleware], (req, res, next) => {
     taskService.stopTask(req.params.taskId, req.operatorId).then((result) => {
-        response(res, false, ['Pomyślnie zatrzymano zadanie.'], [], '/tasks');
-        return;
+        taskService.getTaskById(req.params.taskId, req.operatorId).then((tasks) => {
+            companyService.getRepresentative(tasks[0].id_zglaszajacy).then((rep) => {
+                    operatorService.getOperator(tasks[0].informatyk).then((operator) => {
+                        taskService.getStamps(req.params.taskId).then((stamps) => {
+                            let startStamps = stamps.filter((stamp) => {
+                                return stamp.nazwa == 'START';
+                            })
+
+                            if(startStamps.length < 2) {
+
+                                startStamps[0].godzina = moment(startStamps[0].godzina).format('DD-MM-YYYY');
+                                taskService.notifyStop(tasks[0], rep, operator[0], startStamps[0]);
+                            }
+
+                            response(res, false, result.messages, result.resources);
+                            return;
+                        }).catch((err) => {
+                            response(res, true, ['Wystąpił problem podczas próby pobrania stempli zadania.', JSON.stringify(err)], []);
+                            return;    
+                        });
+                    }).catch((err) => {
+                        response(res, true, ['Wystąpił problem podczas próby pobrania operatora', JSON.stringify(err)], []);
+                        return;            
+                    });
+            }).catch((err) => {
+                    response(res, true, ['Wystąpił problem podczas próby pobrania reprezentanta', JSON.stringify(err)], []);
+                    return;            
+            });
+        }).catch((err) => {
+            console.log(err);
+            response(res, true, ['Wystąpił problem podczas próby pobrania zadania po ID', JSON.stringify(err)], []);
+            return;            
+        });
     }).catch((err) => {
         response(res, true, ['Wystąpił błąd podczas próby zatrzymania zadania.', JSON.stringify(err)], []);
         return;

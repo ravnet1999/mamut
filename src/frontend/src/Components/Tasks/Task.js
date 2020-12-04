@@ -59,6 +59,8 @@ const Task = (props) => {
     const updateRep = () => {
         if(!rep) return;
 
+        console.log(rep);
+
         ClientHandler.changeRepresentative(rep.id, rep).then((result) => {
             console.log(result);
         }).catch((err) => {
@@ -105,20 +107,20 @@ const Task = (props) => {
         });
     }, []);
 
-    useEffect(() => {
-        return () => {
-            props.updateTaskCount();
-            if(lastEpisode && task && (taskDescription !== null || lastEpisodeDescription !== null)) {
-                updateDescriptions();
-            }
-        };
-    }, [lastEpisode, task]);
+    // useEffect(() => {
+    //     return () => {
+    //         props.updateTaskCount();
+    //         if(lastEpisode && task && (taskDescription !== null || lastEpisodeDescription !== null)) {
+    //             updateDescriptions();
+    //         }
+    //     };
+    // }, [lastEpisode, task]);
 
-    useEffect(() => {
-        return () => {
-            updateRep();
-        }
-    }, [rep])
+    // useEffect(() => {
+    //     return () => {
+    //         updateRep();
+    //     }
+    // }, [rep])
 
     useEffect(() => {
         if(!lastEpisode) return;
@@ -160,6 +162,11 @@ const Task = (props) => {
         newState.taskDescription = value;
         setAppState(newState);
         setTaskDescription(value);
+
+        props.updateTaskCount();
+        if(lastEpisode && task && (taskDescription !== null || lastEpisodeDescription !== null)) {
+            updateDescriptions();
+        }
     }
 
     const modifyEpisodeDescription = (value) => {
@@ -167,6 +174,11 @@ const Task = (props) => {
         newState.episodeDescription = value;
         setAppState(newState);
         setLastEpisodeDescription(value);
+
+        props.updateTaskCount();
+        if(lastEpisode && task && (taskDescription !== null || lastEpisodeDescription !== null)) {
+            updateDescriptions();
+        }
     }
 
     const toggleTravel = () => {
@@ -260,6 +272,8 @@ const Task = (props) => {
 
         setRepEmail(rep.adres_email);
         setRepPhone(rep.tel_komorkowy);
+
+        updateRep();
     }
 
     const buildRepForm = () => {

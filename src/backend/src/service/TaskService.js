@@ -147,15 +147,46 @@ class TaskService {
         mailer.send(mailer.getConfig().from, operatorTo.adres_email, subject, message.replace(/\[lineBreak\]/g, '\r\n'), message.replace(/\[lineBreak\]/g, '<br />'));
     }
 
+    notifyStop = (task, rep, operator, startStamp) => {
+        let subject =  `Zarejestrowano zgłoszenie numer: ${task.id}.`;
+        let message = `Data zgłoszenia: ${startStamp.godzina}[lineBreak][lineBreak]`;
+        message += `Opis problemu: ${task.opis}[lineBreak][lineBreak]`;
+        message += `Informatyk obsługujący zgłoszenie:[lineBreak]`;
+        message += `${operator.tel_komorkowy}[lineBreak][lineBreak]`
+        message += `Zespół[lineBreak]`;
+        message += `RavNet`;
+
+        console.log(task, rep, operator);
+
+        mailer.send(mailer.getConfig().from, rep.adres_email, subject, message.replace(/\[lineBreak\]/g, '\r\n'), message.replace(/\[lineBreak\]/g, '<br />'));
+    }
+
     notifyClose = (task, rep, operator) => {
         let subject =  `Zamknęliśmy Twoje zgłoszenie, numer: ${task.id}.`;
         let message = `Informatyk zamykający zadanie: ${operator.imie} ${operator.nazwisko}.[lineBreak][lineBreak]`;
-        message += `Jeśli nie rozwiązaliśmy Twojego problemu kliknij w <a href="mailto:${operator.adres_email}?subject=Reklamacja:%20Zadanie%20nr%20${task.id}">link</a> (otworzy się email>>kliknij: Wyślij). Twoje zadanie zostanie przywrócone i oznaczone najwyższym priorytetem![lineBreak][lineBreak]`;
+        message += `Jeśli nie rozwiązaliśmy Twojego problemu kliknij w <a href="mailto:support@ravnet.pl?subject=Reklamacja:%20Zadanie%20nr%20${task.id}&body=Nie%20musisz%20już%20nic%20pisać.%20Kliknij%20WYŚLIJ%20a%20zadanie%20zostanie%20automatycznie%20przywrócone%20jako%20zadanie%20priorytetowe.">link</a> (otworzy się email>>kliknij: Wyślij). Twoje zadanie zostanie przywrócone i oznaczone najwyższym priorytetem![lineBreak][lineBreak]`;
         message += `Jeśli rozwiązaliśmy zgłoszony problem to bardzo się cieszymy i życzymy miłego dnia.[lineBreak]`;
         message += `Zespół[lineBreak]`
         message += `RavNet`;
 
         mailer.send(mailer.getConfig().from, rep.adres_email, subject, message.replace(/\[lineBreak\]/g, '\r\n'), message.replace(/\[lineBreak\]/g, '<br />'));
+    }
+
+    getStamps = (taskId) => {
+        return new Promise((resolve, reject) => {
+            axios.get(`${appConfig.URLs.translator}/tasks/stamps/${taskId}`).then((response) => {
+                parseResponse(response).then((response) => {
+                    resolve(response.resources);
+                    return;
+                }).catch((err) => {
+                    reject(err);
+                    return;
+                });
+            }).catch((err) => {
+                reject(err);
+                return;
+            });
+        }); 
     }
 
     getEpisodes = (taskId) => {

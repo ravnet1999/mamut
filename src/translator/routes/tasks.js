@@ -11,6 +11,16 @@ const taskInvoiceService = require('../src/services/Task/TaskInvoiceService');
 const changeHistoryService = require('../src/services/ChangeHistoryService');
 const charset = require('../src/helpers/charset');
 
+router.get('/stamps/:taskId', (req, res, next) => {
+    taskStampService.stampsForTasks([req.params.taskId]).then((stamps) => {
+        response(res, false, ['Pomyślnie pobrano stemple dla zadania.'], stamps);
+        return;  
+    }).catch((err) => {
+        response(res, true, ['Coś poszło nie tak podczas próby pobrania stempli dla zadania', JSON.stringify(err)], [], '/tasks');
+        return;                        
+    });
+});
+
 router.get('/:operatorId/:taskId', (req, res, next) => {
     taskService.find(1, 0, 'id', 'DESC', '`id` = \'' + req.params.taskId + '\'').then((tasks) => {
         if(tasks.length <= 0) {

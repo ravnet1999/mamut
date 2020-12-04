@@ -62,6 +62,8 @@ class TaskStampService extends Service {
             }
             let joinedTaskIds = taskIds.join(',');
 
+            console.log('stampsfortasks', joinedTaskIds);
+
             this.find(999999, 0, 'id', 'DESC', '`id_zgloszenia` IN (' + joinedTaskIds + ')').then((taskStamps) => {
                 taskStamps = taskStamps.map((taskStamp) => {
                     return charset.translateIn(taskStamp);
