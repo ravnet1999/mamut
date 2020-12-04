@@ -151,8 +151,8 @@ class TaskService {
         let subject =  `Zarejestrowano zgłoszenie numer: ${task.id}.`;
         let message = `Data zgłoszenia: ${startStamp.godzina}[lineBreak][lineBreak]`;
         message += `Opis problemu: ${task.opis}[lineBreak][lineBreak]`;
-        message += `Informatyk obsługujący zgłoszenie:[lineBreak]`;
-        message += `${operator.tel_komorkowy}[lineBreak][lineBreak]`
+        message += `Informatyk obsługujący zgłoszenie: ${operator.imie} ${operator.nazwisko}[lineBreak]`;
+        message += `22 868 75 00[lineBreak][lineBreak]`
         message += `Zespół[lineBreak]`;
         message += `RavNet`;
 
@@ -180,19 +180,12 @@ class TaskService {
                 return stamp.nazwa == 'START';
             })
 
-            console.log('correct 2')
-
-            console.log(startStamps);
-
             if(startStamps.length == 1) {
-                console.log('length less than 2');
                 if(firstStopCallback) firstStopCallback(startStamps[0]);
             }
 
-            console.log('correct 3');
             if(callback) callback(null);
         }).catch((err) => {
-            console.log('an error');
             callback(err);
         });
     }
