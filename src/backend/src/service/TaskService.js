@@ -172,6 +172,31 @@ class TaskService {
         mailer.send(mailer.getConfig().from, rep.adres_email, subject, message.replace(/\[lineBreak\]/g, '\r\n'), message.replace(/\[lineBreak\]/g, '<br />'));
     }
 
+    verifyFirstStop = (taskId, firstStopCallback, callback) => {
+        this.getStamps(taskId).then((stamps) => {
+            console.log('correct 1');
+
+            let startStamps = stamps.filter((stamp) => {
+                return stamp.nazwa == 'START';
+            })
+
+            console.log('correct 2')
+
+            console.log(startStamps);
+
+            if(startStamps.length == 1) {
+                console.log('length less than 2');
+                if(firstStopCallback) firstStopCallback(startStamps[0]);
+            }
+
+            console.log('correct 3');
+            if(callback) callback(null);
+        }).catch((err) => {
+            console.log('an error');
+            callback(err);
+        });
+    }
+
     getStamps = (taskId) => {
         return new Promise((resolve, reject) => {
             axios.get(`${appConfig.URLs.translator}/tasks/stamps/${taskId}`).then((response) => {

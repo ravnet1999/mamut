@@ -113,22 +113,18 @@ router.post('/:taskId/stop', [authMiddleware], (req, res, next) => {
         taskService.getTaskById(req.params.taskId, req.operatorId).then((tasks) => {
             companyService.getRepresentative(tasks[0].id_zglaszajacy).then((rep) => {
                     operatorService.getOperator(tasks[0].informatyk).then((operator) => {
-                        taskService.getStamps(req.params.taskId).then((stamps) => {
-                            let startStamps = stamps.filter((stamp) => {
-                                return stamp.nazwa == 'START';
-                            })
-
-                            if(startStamps.length < 2) {
-
-                                startStamps[0].godzina = moment(startStamps[0].godzina).format('DD-MM-YYYY');
-                                taskService.notifyStop(tasks[0], rep, operator[0], startStamps[0]);
+                        taskService.verifyFirstStop(req.params.taskId, (startStamp) => {
+                            startStamp.godzina = moment(startStamp.godzina).format('DD-MM-YYYY');
+                            taskService.notifyStop(tasks[0], rep, operator[0], startStamp);
+                        }, (err) => {
+                            if(err) {
+                                console.log(err);
+                                response(res, true, ['Wystąpił problem podczas próby pobrania stempli zadania.', JSON.stringify(err)], []);
+                                return;    
                             }
 
                             response(res, false, result.messages, result.resources);
                             return;
-                        }).catch((err) => {
-                            response(res, true, ['Wystąpił problem podczas próby pobrania stempli zadania.', JSON.stringify(err)], []);
-                            return;    
                         });
                     }).catch((err) => {
                         response(res, true, ['Wystąpił problem podczas próby pobrania operatora', JSON.stringify(err)], []);
@@ -232,20 +228,30 @@ router.post('/:taskId/reassign', [authMiddleware], (req, res, next) => {
                         companyService.getRepresentative(task.id_zglaszajacy).then((rep) => {
                             companyService.getCompany(rep.id_klienta).then((companies) => {
                                 let company = companies[0];
-                                if(self) {
-                                    taskService.startTask(req.params.taskId, req.operatorId).then((result) => {
+                                taskService.verifyFirstStop(req.params.taskId, (startStamp) => {
+                                    startStamp.godzina = moment(startStamp.godzina).format('DD-MM-YYYY');
+                                    taskService.notifyStop(tasks[0], rep, operators[0], startStamp);
+                                }, (err) => {
+                                    if(err) {
+                                        response(res, true, ['Wystąpił problem podczas próby pobrania stempli zadania.', JSON.stringify(err)], []);
+                                        return;    
+                                    }
+        
+                                    if(self) {
+                                        taskService.startTask(req.params.taskId, req.operatorId).then((result) => {
+                                            response(res, false, ['Pomyślnie przypisano zadanie do innego operatora.'], []);
+                                            return;
+                                        }).catch((err) => {
+                                            response(res, true, ['Wystąpił błąd podczas próby wystartowania zadania po przepisaniu.', JSON.stringify(err)], []);
+                                            return;
+                                        })
+                                    } else {
+                                        taskService.notifyReassign(task, rep, company, episodes, operatorFrom, operatorTo);
+    
                                         response(res, false, ['Pomyślnie przypisano zadanie do innego operatora.'], []);
                                         return;
-                                    }).catch((err) => {
-                                        response(res, true, ['Wystąpił błąd podczas próby wystartowania zadania po przepisaniu.', JSON.stringify(err)], []);
-                                        return;
-                                    })
-                                } else {
-                                    taskService.notifyReassign(task, rep, company, episodes, operatorFrom, operatorTo);
-
-                                    response(res, false, ['Pomyślnie przypisano zadanie do innego operatora.'], []);
-                                    return;
-                                }
+                                    }
+                                });
                             }).catch((err) => {
                                 response(res, true, ['Wystąpił błąd podczas próby pobrania firmy.', JSON.stringify(err)], []);
                                 return;
