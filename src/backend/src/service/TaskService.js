@@ -152,7 +152,7 @@ class TaskService {
         let message = `Data zgłoszenia: ${startStamp.godzina}[lineBreak][lineBreak]`;
         message += `Opis problemu: ${task.opis}[lineBreak][lineBreak]`;
         message += `Informatyk obsługujący zgłoszenie: ${operator.imie} ${operator.nazwisko}[lineBreak]`;
-        message += `22 868 75 00[lineBreak][lineBreak]`
+        message += `Telefon kontaktowy: 22 868 75 00[lineBreak][lineBreak]`
         message += `Zespół[lineBreak]`;
         message += `RavNet`;
 
