@@ -25,15 +25,17 @@ class TaskService {
 
     getTaskById = (taskId, operatorId) => {
         return new Promise((resolve, reject) => {
-            axios.get(`${appConfig.URLs.translator}/tasks/${operatorId}/${taskId}`).then((response) => {
+            axios.get(`${appConfig.URLs.translator}/tasks/${taskId}`).then((response) => {
                 parseResponse(response).then((response) => {
                     resolve(response.resources);
                     return;
                 }).catch((err) => {
+                    console.log(err);
                     reject(err);
                     return;
                 });
             }).catch((err) => {
+                console.log(err);
                 reject(err);
                 return;
             });
@@ -100,14 +102,17 @@ class TaskService {
             axios.post(`${appConfig.URLs.translator}/tasks/${taskId}/close`, {
                 operatorId: operatorId
             }).then((response) => {
+                console.log('successful close', response);
                 parseResponse(response).then((response) => {
                     resolve(response);
                     return;
                 }).catch((err) => {
+                    console.log('close error', err);
                     reject(err);
                     return;
                 });
             }).catch((err) => {
+                console.log('close error', err);
                 reject(err);
                 return;
             });

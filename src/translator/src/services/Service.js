@@ -44,6 +44,10 @@ class Service {
                     return;
                 }
 
+                results = results.map((result) => {
+                    return charset.translateIn(result);
+                })
+
                 resolve(results);
                 return;
             });

@@ -28,43 +28,13 @@ class TaskStampService extends Service {
         });
     }
 
-    getLastStamps = (tasks) => {
-        return new Promise((resolve, reject) => {
-            let taskIds = tasks.map((task) => {
-                return task.id;
-            });
-
-            this.stampsForTasks(taskIds).then((taskStamps) => {
-                let tasksWithStamps = tasks.map((task) => {
-                    let stampsForTask = taskStamps.filter((taskStamp) => {
-                        return taskStamp.id_zgloszenia == task.id;
-                    });
-
-                    task.lastStamp = stampsForTask[0];
-    
-                    return task;
-                })
-    
-                resolve(tasksWithStamps);
-                return;
-            }).catch((err) => {
-                reject(err);
-                return;
-            });
-        });
+    stampsForTasks = (taskIds) => {
+        return this.find(99999999, 0, 'id', 'DESC', '`id_zgloszenia` IN (' + taskIds.join(',') + ')');
     }
 
-    stampsForTasks = (taskIds) => {
+    stampsForTask = (taskId, limit = 999999) => {
         return new Promise((resolve, reject) => {
-            if(taskIds.length == 0) {
-                resolve([]);
-                return;
-            }
-            let joinedTaskIds = taskIds.join(',');
-
-            console.log('stampsfortasks', joinedTaskIds);
-
-            this.find(999999, 0, 'id', 'DESC', '`id_zgloszenia` IN (' + joinedTaskIds + ')').then((taskStamps) => {
+            this.find(limit, 0, 'id', 'DESC', '`id_zgloszenia` = \'' + taskId + '\'').then((taskStamps) => {
                 taskStamps = taskStamps.map((taskStamp) => {
                     return charset.translateIn(taskStamp);
                 });
