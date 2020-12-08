@@ -5,7 +5,8 @@
         "clients": "clients",
         "tasks": "tasks",
         "operators": "operators",
-        "representatives": "representatives"
+        "representatives": "representatives",
+        "services": "services"
     },
     "cookies": {
         "auth": {
@@ -16,5 +17,8 @@
                 "path": "/"
             }
         }
+    },
+    "errorTypes": {
+        "allowed": [89, 90, 91, 73, 93, 36]
     }
 }

@@ -140,6 +140,29 @@ const TaskHandler = {
         });
     },
 
+    patchTask: (taskId, taskObject) => {
+        return new Promise((resolve, reject) => {
+            axios.patch(`${appConfig.URLs.domain}/${appConfig.URLs.tasks}/${taskId}`, taskObject, {
+                withCredentials: true
+            }).then((response) => {
+                parseResponse(response).then((response) => {
+                    resolve(response);
+                    return;
+                }).catch((err) => {
+                    reject(err);
+                    return;
+                });
+            }).catch((err) => {
+                reject({
+                    error: true,
+                    messages: ['Wystąpił problem z połączeniem z serwerem.', JSON.stringify(err)],
+                    resources: []
+                });
+                return;
+            });
+        });
+    },
+
     reassignTask: (taskId, operatorId) => {
         return new Promise((resolve, reject) => {
             let reassignObject = {

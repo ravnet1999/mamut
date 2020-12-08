@@ -55,6 +55,7 @@ router.get('/:departmentId/:operatorId/:limit?/:offset?/:status?', (req, res, ne
 
 router.put('/', (req, res, next) => {
     let task = new Task();
+    req.body.task = charset.translateOut(req.body.task);
     task.createTask(req.body.task, req.body.operatorId).then((task) => {
         query('INSERT INTO zgloszenia_etapy ( id_zgloszenia , id_informatyka , id_komorki) VALUES ( ?, ?, ? )', [task.body.id, req.body.operatorId, task.body.komorka], (episodeInsertResult, fields) => {
             response(res, false, ['Pomyślnie utworzono zadanie.'], [task.body]);
@@ -124,6 +125,7 @@ router.post('/:taskId/close', (req, res, next) => {
 
 router.patch('/:taskId', (req, res, next) => {
     new Task(req.params.taskId).fetchTask().then((task) => {
+        req.body = charset.translateOut(req.body);
         return task.patchTask(req.body);
     }).then((task) => {
         response(res, false, ['Pomyślnie zaktualizowano zadanie.'], [task.body]);

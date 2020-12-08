@@ -5,12 +5,14 @@ import Page from '../Page';
 import Alert from '../Alert/Alert';
 import OperatorHandler from '../../Handlers/OperatorHandler';
 import TaskHandler from '../../Handlers/TaskHandler';
+import ServiceHandler from '../../Handlers/ServiceHandler';
 import ClientHandler from '../../Handlers/ClientHandler';
 import TaskReassign from './TaskReassign';
 import Modal from '../Modal/Modal';
 import './Tasks.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import appConfig from '../../Config/appConfig.json';
 
 const Task = (props) => {
     const [options, setOptions] = useState(null);
@@ -41,6 +43,8 @@ const Task = (props) => {
     });
     const [modalVisible, setModalVisible] = useState(false);
     const [lastEpisodeInput, setLastEpisodeInput] = useState(null);
+    const [errorTypes, setErrorTypes] = useState([]);
+    const [pickedErrorType, setPickedErrorType] = useState(null);
 
     const updateDescriptions = (callback = null) => {
         TaskHandler.updateLastEpisodeDescription(lastEpisode.id, appState.episodeDescription).then((result) => {
@@ -59,10 +63,8 @@ const Task = (props) => {
     const updateRep = () => {
         if(!rep) return;
 
-        console.log(rep);
-
         ClientHandler.changeRepresentative(rep.id, rep).then((result) => {
-            console.log(result);
+
         }).catch((err) => {
             console.log(err);
         });
@@ -107,6 +109,14 @@ const Task = (props) => {
         });
     }, []);
 
+    useEffect(() => {
+        ServiceHandler.getServices().then((response) => {
+            setErrorTypes(response.resources);
+        }).catch((err) => {
+            console.log(err);
+        })
+    }, [errorTypes.length])
+
     // useEffect(() => {
     //     return () => {
     //         props.updateTaskCount();
@@ -127,7 +137,7 @@ const Task = (props) => {
 
         return () => {
             TaskHandler.updateEpisodeTravel(lastEpisode.id, appState.travel ? 1 : 0).then((result) => {
-                console.log(result);
+
             }).catch((err) => {
                 console.log(err);
             });
@@ -186,7 +196,6 @@ const Task = (props) => {
         newState.travel = !travel;
         setAppState(newState);
         setTravel(newState.travel);
-        console.log('Switching...');
     }
 
     const createEpisode = (callback = null) => {
@@ -279,8 +288,6 @@ const Task = (props) => {
     const buildRepForm = () => {
         if(!rep) return '';
 
-        if(rep) console.log('rep is there');
-
         return (
             <div className="margin-bottom-default">
                 <div className="form-gorup">
@@ -290,6 +297,42 @@ const Task = (props) => {
                 <div className="form-gorup">
                     <label for="task-email">Email: </label>
                     <input id="task-email" type="text" className="form-control" onChange={(e) => changeRepDetails({ adres_email: e.target.value })} value={repEmail}></input>
+                </div>
+            </div>
+        );
+    }
+
+    const updateTask = (taskObject) => {
+        for(let taskKey in taskObject) {
+            task[taskKey] = taskObject[taskKey];
+        }
+
+        setTask(task);
+
+        TaskHandler.patchTask(task.id, task).then((task) => {
+        }).catch((err) => {
+            console.log(err);
+        });
+    }
+
+    const buildErrorType = () => {
+        let allowedErrorTypes = appConfig.errorTypes.allowed;
+        
+        let filteredErrorTypes = errorTypes.filter((errorType) => {
+            return allowedErrorTypes.includes(errorType.id);
+        });
+
+        let errorTypesRadios = filteredErrorTypes.map((errorType) => {
+            return (
+                <Form.Check inline label={errorType.nazwa} type='radio' onChange={(e) => { updateTask({ id_uslugi: errorType.id, usluga: errorType.nazwa }); setPickedErrorType(errorType.id); } } checked={(pickedErrorType || (task ? task.id_uslugi : 0) ) == errorType.id}></Form.Check>
+            );
+        });
+
+        return (
+            <div>
+                <label><strong>Typ błędu:</strong></label>
+                <div>
+                    {errorTypesRadios}
                 </div>
             </div>
         );
@@ -337,6 +380,7 @@ const Task = (props) => {
         <Page>
             <Alert response={response}></Alert>
             <h1>Zadanie: {task.id}<br />{task.zglaszajacy}</h1>
+            {buildErrorType()}
             {buildRepForm()}
             <div className="form-group task-description-container margin-bottom-default">
                 <label for="task_description">Opis problemu:</label>
