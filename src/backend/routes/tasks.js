@@ -69,6 +69,7 @@ router.put('/:clientId/:repId', [authMiddleware], (req, res, next) => {
         response(res, false, ['Pomyślnie utworzono zadanie'], [task.body], `/task/${task.body.id}`);
         return;
     }).catch((err) => {
+        console.log(err);
         response(res, true, ['Wystąpił błąd podczas tworzenia zadania'], []);
         return;
     });

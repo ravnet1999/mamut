@@ -64,7 +64,7 @@ class Task {
     }
 
     createTask = (operatorId) => {
-        return this.buildTask(this.repId, this.clientId, operatorId).then((task) => {
+        return this.buildTask(this.clientId, this.repId, operatorId).then((task) => {
             return taskService.createTask({ task: this.body, operatorId: operatorId });
         }).then((result) => {
             let task = new Task().parseTask(result.resources[0]);
