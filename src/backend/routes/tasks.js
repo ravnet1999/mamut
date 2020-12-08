@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../middleware/auth');
 const response = require('../src/response');
+const Task = require('../src/classess/Task');
 const companyService = require('../src/service/CompanyService');
 const taskService = require('../src/service/TaskService');
 const serviceService = require('../src/service/ServiceService');
@@ -10,7 +11,7 @@ const appConfig = require('../config/appConfig.json');
 const moment = require('moment');
 
 router.get('/', [authMiddleware], (req, res, next) => {
-    taskService.getTasks(9999, 0, 'open', appConfig.tasks.department, req.operatorId).then((result) => {
+    taskService.getTasks(9999, 0, 'open', appConfig.tasks.komorka, req.operatorId).then((result) => {
         let message = 'Pomyślnie pobrano zadania';
         if(result.length == 0) {
             message = 'Dobra robota. Brak zadań! Proponuję kawę.'
@@ -62,48 +63,13 @@ router.get('/:taskId', [authMiddleware], (req, res, next) => {
 });
 
 router.put('/:clientId/:repId', [authMiddleware], (req, res, next) => {
-    let taskObject = appConfig.tasks;
+    let task = new Task(req.params.clientId, req.params.repId);
 
-    taskObject.operatorId = req.operatorId;
-
-    serviceService.getService(taskObject.serviceId).then((service) => {
-        taskObject.service = service.nazwa;
-        companyService.getRepresentative(req.params.repId).then((rep) => {
-
-            taskObject.issuer = rep;
-
-            companyService.getCompany(req.params.clientId).then((companies) => {
-
-                taskObject.issuerCompany = companies[0];
-
-                companyService.getCompanyLocation(taskObject.issuerCompany.id).then((location) => {
-                    taskObject.issuerCompanyLocation = location;
-                    taskService.createTask(taskObject).then((result) => {
-                        taskService.startTask(result.resources[0].insertId, req.operatorId).then((taskStartResult) => {
-                            response(res, false, result.messages, result.resources, `/task/${result.resources[0].insertId}`);
-                            return;                    
-                        }).catch((err) => {
-                            response(res, true, ['Wystąpił błąd podczas próby wystartowania utworzonego zadania.', JSON.stringify(err)], []);
-                            return;
-                        });
-                    }).catch((err) => {
-                        response(res, true, ['Wystąpił błąd podczas próby utworzenia zadania', JSON.stringify(err)], []);
-                        return;
-                    });
-                }).catch((err) => {
-                    response(res, true, ['Wystąpił błąd podczas próby pobrania informacji o lokalizacji firmy.', JSON.stringify(err)], []);
-                    return;
-                });
-            }).catch((err) => {
-                response(res, true, ['Wystąpił błąd podczas próby pobrania informacji o klientach.', JSON.stringify(err)], []);
-                return;
-            });
-        }).catch((err) => {
-            response(res, true, ['Wystąpił błąd podczas próby pobrania informacji o reprezentantach.', JSON.stringify(err)], []);
-            return;
-        });
+    task.createTask(req.operatorId).then((task) => {
+        response(res, false, ['Pomyślnie utworzono zadanie'], [task.body], `/task/${task.body.id}`);
+        return;
     }).catch((err) => {
-        response(res, true, ['Wystąpił błąd podczas próby pobrania informacji o usługach.', JSON.stringify(err)], []);
+        response(res, true, ['Wystąpił błąd podczas tworzenia zadania'], []);
         return;
     });
 });
@@ -153,7 +119,7 @@ router.post('/:taskId/start', [authMiddleware], (req, res, next) => {
         }
         if(task[0].informatyk == 0 && task[0].komorka == 0) {
             taskService.reassignTask(req.params.taskId, {
-                departmentId: appConfig.tasks.department,
+                departmentId: appConfig.tasks.komorka,
                 targetOperatorId: req.operatorId,
                 operatorId: req.operatorId
             }).then((result) => {
@@ -213,7 +179,7 @@ router.post('/:taskId/reassign', [authMiddleware], (req, res, next) => {
     let targetOperatorId = self ? req.operatorId : req.body.operatorId;
 
     taskService.reassignTask(req.params.taskId, {
-        departmentId: req.body.operatorId === 0 ? req.body.operatorId : appConfig.tasks.department,
+        departmentId: req.body.operatorId === 0 ? req.body.operatorId : appConfig.tasks.komorka,
         targetOperatorId: targetOperatorId,
         operatorId: req.operatorId
     }).then((result) => {
@@ -226,8 +192,7 @@ router.post('/:taskId/reassign', [authMiddleware], (req, res, next) => {
                     taskService.getEpisodes(req.params.taskId).then((result) => {
                         let episodes = result.resources;
                         companyService.getRepresentative(task.id_zglaszajacy).then((rep) => {
-                            companyService.getCompany(rep.id_klienta).then((companies) => {
-                                let company = companies[0];
+                            companyService.getCompany(rep.id_klienta).then((company) => {
                                 taskService.verifyFirstStop(req.params.taskId, (startStamp) => {
                                     startStamp.godzina = moment(startStamp.godzina).format('DD-MM-YYYY HH:mm:ss');
                                     taskService.notifyStop(tasks[0], rep, operators[0], startStamp);
@@ -291,6 +256,10 @@ router.get('/:taskId/episodes', [authMiddleware], (req, res, next) => {
         response(res, true, ['Wystąpił problem podczas próby pobrania etapów zadania.'], []);
         return;
     })
+});
+
+router.patch('/:taskId', [authMiddleware], (req, res, next) => {
+    
 });
 
 router.patch('/:taskId/description', [authMiddleware], (req, res, next) => {

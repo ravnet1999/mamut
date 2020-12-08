@@ -2,6 +2,8 @@ const taskService = require('../services/Task/TaskService');
 const taskEpisodeService = require('../services/Task/TaskEpisodeService');
 const changeHistoryService = require('../services/ChangeHistoryService');
 const taskInvoiceService = require('../services/Task/TaskInvoiceService');
+const taskStampService = require('../services/Task/TaskStampService');
+const charset = require('../helpers/charset');
 
 class Task {
     constructor(id = null) {
@@ -74,7 +76,7 @@ class Task {
         });
     }
 
-    createTask = (taskObject) => {
+    createTask = (taskObject, operatorId) => {
         if(taskObject && taskObject.id) delete taskObject.id;
 
         let columns = [];
@@ -85,13 +87,22 @@ class Task {
             values.push(taskObject[taskObjectKey]);
         }
 
+        console.log(columns, values);
+
         return taskService.insert(columns, values).then((result) => {
+            console.log('inserted');
             this.body.id = result.insertId;
 
             for(let taskObjectKey in taskObject) {
                 this.body[taskObjectKey] = taskObject[taskObjectKey];
             }
 
+            return taskStampService.stamp('dodanie zgł.', this.body.id, operatorId);
+        }).then((stampAddTaskResult) => {
+            return taskStampService.stamp('nowy etap', this.body.id, operatorId);
+        }).then((stampAddEpisodeResult) => {
+            return taskService.updateById(this.body.id, ['komorka', 'informatyk'], [this.body.komorka, operatorId]);
+        }).then((updateResult) => {
             return this;
         });
     }

@@ -24,7 +24,7 @@ class CompanyService {
         return new Promise((resolve, reject) => {
             axios.get(`${appConfig.URLs.translator}/companies/${companyId}`).then((response) => {
                 parseResponse(response).then((response) => {
-                    resolve(response.resources);
+                    resolve(response.resources[0]);
                     return;
                 }).catch((err) => {
                     reject(err);

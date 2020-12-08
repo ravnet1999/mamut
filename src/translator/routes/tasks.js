@@ -5,6 +5,7 @@ const Task = require('../src/classes/TaskClass');
 const TaskStamps = require('../src/classes/TaskStampsClass');
 const taskService = require('../src/services/Task/TaskService');
 const charset = require('../src/helpers/charset');
+const query = require('../src/mysql/query')
 
 router.get('/:taskId', (req, res, next) => {
     new Task(req.params.taskId).fetchTask().then((task) => {
@@ -54,9 +55,13 @@ router.get('/:departmentId/:operatorId/:limit?/:offset?/:status?', (req, res, ne
 
 router.put('/', (req, res, next) => {
     let task = new Task();
-    task.createTask(req.body.task).then((createdTask) => {
-        response(res, false, ['Pomyślnie utworzono zadanie.'], [createdTask]);
+    task.createTask(req.body.task, req.body.operatorId).then((task) => {
+        query('INSERT INTO zgloszenia_etapy ( id_zgloszenia , id_informatyka , id_komorki) VALUES ( ?, ?, ? )', [task.body.id, req.body.operatorId, task.body.komorka], (episodeInsertResult, fields) => {
+            response(res, false, ['Pomyślnie utworzono zadanie.'], [task.body]);
+            return;
+        });
     }).catch((err) => {
+        console.log(err);
         response(res, true, ['Coś poszło nie tak podczas próby utworzenia zadania.', JSON.stringify(err)], []);
         return;
     });

@@ -10,13 +10,14 @@ class TaskStampService extends Service {
 
     stamp = (stampName, taskId, operatorId, description = '') => {
         let stampDetails = {
-            description: description
+            description: description,
+            stampName: stampName
         }
 
         stampDetails = charset.translateOut(stampDetails);
 
         return new Promise((resolve, reject) => {
-            connection.query('INSERT INTO `zgloszenia_stemple` ( `godzina` , `nazwa` , `id_zgloszenia` , `id_informatyka`, `opis` ) VALUES (NOW(), ?, ?, ?, ?)', [stampName, taskId, operatorId, stampDetails.description], (err, results, fields) => {
+            connection.query('INSERT INTO `zgloszenia_stemple` ( `godzina` , `nazwa` , `id_zgloszenia` , `id_informatyka`, `opis` ) VALUES (NOW(), ?, ?, ?, ?)', [stampDetails.stampName, taskId, operatorId, stampDetails.description], (err, results, fields) => {
                 if(err) {
                     reject(err);
                     return;     

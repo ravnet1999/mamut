@@ -67,6 +67,8 @@ class Service {
                 set[column] = values[key];
             });
 
+            console.log(set);
+
             connection.query(`INSERT INTO \`${this.tableName}\` SET ?`, [set], (err, results, fields) => {
                 if(err) {
                     reject(err);
