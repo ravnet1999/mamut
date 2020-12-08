@@ -122,6 +122,19 @@ router.post('/:taskId/close', (req, res, next) => {
 
 });
 
+router.patch('/:taskId', (req, res, next) => {
+    new Task(req.params.taskId).fetchTask().then((task) => {
+        return task.patchTask(req.body);
+    }).then((task) => {
+        response(res, false, ['Pomyślnie zaktualizowano zadanie.'], [task.body]);
+        return;
+    }).catch((err) => {
+        console.log(err);
+        response(res, true, ['Coś poszło nie tak podczas próby aktualizacji zadania.', JSON.stringify(err)], []);
+        return;
+    })
+});
+
 router.patch('/:taskId/description', (req, res, next) => {
     let translate = {
         description: req.body.description

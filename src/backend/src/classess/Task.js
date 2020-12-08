@@ -4,15 +4,33 @@ const serviceService = require('../service/ServiceService');
 const companyService = require('../service/CompanyService');
 
 class Task {
-    constructor(clientId, repId) {
+    constructor(clientId = null, repId = null) {
         this.clientId = clientId;
         this.repId = repId;
         this.body = {}
         this.buildDefaults();
     }
 
-    createTask = (operatorId) => {
-        return companyService.getRepresentative(this.repId).then((rep) => {
+    copyToConcernedIssuer = () => {
+        for(let key in this.body) {
+            if(key.includes('_dot')) {
+                this.body[key] = this.body[key.replace(/_dot/gi, '')];
+            }
+        }
+    }
+
+    fetchTask = (taskId, operatorId) => {
+        return taskService.getTaskById(taskId, operatorId).then((task) => {
+            for(let taskKey in task[0]) {
+                this.body[taskKey] = task[0][taskKey];
+            }
+
+            return this;
+        });
+    }
+
+    buildTask = (clientId, repId, operatorId) => {
+        return companyService.getRepresentative(repId).then((rep) => {
             this.body.id_zglaszajacy = rep.id;
             this.body.zglaszajacy = rep.imie + ' ' + rep.nazwisko;
             this.body.vip = rep.vip;
@@ -22,7 +40,7 @@ class Task {
             this.body.tel_komorkowy = rep.tel_komorkowy;
             this.body.adres_email = rep.adres_email;
 
-            return companyService.getCompany(this.clientId);
+            return companyService.getCompany(clientId);
         }).then((company) => {
             this.body.id_klienta = company.id;
             this.body.klient = company.nazwa;
@@ -39,18 +57,33 @@ class Task {
             this.body.usluga = service.nazwa;
             this.body.informatyk = operatorId;
 
-            for(let key in this.body) {
-                if(key.includes('_dot')) {
-                    this.body[key] = this.body[key.replace(/_dot/gi, '')];
-                }
-            }
+            this.copyToConcernedIssuer();
 
+            return this;
+        });
+    }
+
+    createTask = (operatorId) => {
+        return this.buildTask(this.repId, this.clientId, operatorId).then((task) => {
             return taskService.createTask({ task: this.body, operatorId: operatorId });
         }).then((result) => {
             let task = new Task().parseTask(result.resources[0]);
             return task;
         });
+    }
 
+    patchTask = (taskId, taskObject, operatorId) => {
+        return this.fetchTask(taskId, operatorId).then((task) => {
+            for(let key in taskObject) {
+                this.body[key] = taskObject[key];
+            }
+
+            if(this.body && this.body.lastStamp) delete this.body.lastStamp;
+
+            this.copyToConcernedIssuer();
+
+            return taskService.patchTask(this.body.id, this.body);  
+        })
     }
 
     parseTask = (taskObject) => {

@@ -259,7 +259,13 @@ router.get('/:taskId/episodes', [authMiddleware], (req, res, next) => {
 });
 
 router.patch('/:taskId', [authMiddleware], (req, res, next) => {
-    
+    console.log('test');
+    new Task().patchTask(req.params.taskId, req.body, req.operatorId).then((result) => {
+        res.json(result);
+    }).catch((err) => {
+        console.log(err);
+        res.json(err);
+    });
 });
 
 router.patch('/:taskId/description', [authMiddleware], (req, res, next) => {

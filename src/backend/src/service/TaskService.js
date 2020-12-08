@@ -230,6 +230,23 @@ class TaskService {
         });     
     }
 
+    patchTask = (taskId, taskObject) => {
+        return new Promise((resolve, reject) => {
+            axios.patch(`${appConfig.URLs.translator}/tasks/${taskId}`, taskObject).then((response) => {
+                parseResponse(response).then((response) => {
+                    resolve(response);
+                    return;
+                }).catch((err) => {
+                    reject(err);
+                    return;
+                });
+            }).catch((err) => {
+                reject(err);
+                return;
+            });
+        });     
+    }
+
     updateDescription = (taskId, description) => {
         return new Promise((resolve, reject) => {
             axios.patch(`${appConfig.URLs.translator}/tasks/${taskId}/description`, {
