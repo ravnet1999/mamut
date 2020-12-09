@@ -22,7 +22,7 @@ class TaskService {
 
     getTaskById = (taskId, operatorId) => {
         return new Promise((resolve, reject) => {
-            axios.get(`${appConfig.URLs.translator}/tasks/${operatorId}/${taskId}`).then((response) => {
+            axios.get(`${appConfig.URLs.translator}/tasks/${taskId}`).then((response) => {
                 parseResponse(response).then((response) => {
                     resolve(response.resources);
                     return;
