@@ -55,3 +55,9 @@
 .errorTypeRadios {
     font-weight: bold;
 }
+
+.errorTypeRadios span {
+    display: inline-block;
+    top: -2px;
+    position: relative;
+}
