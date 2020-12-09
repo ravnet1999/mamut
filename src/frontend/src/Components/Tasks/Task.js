@@ -322,18 +322,28 @@ const Task = (props) => {
             return allowedErrorTypes.includes(errorType.id);
         });
 
-        let errorTypesRadios = filteredErrorTypes.map((errorType) => {
+        let renamedErrorTypes = filteredErrorTypes.map((errorType) => {
+            return {
+                id: errorType.id,
+                name: appConfig.errorTypeNames[String(errorType.id)]
+            }
+        });
+
+        console.log(renamedErrorTypes);
+
+        renamedErrorTypes.sort((a, b) => {
+            return a.name.localeCompare(b.name)
+        });
+
+        let errorTypesRadios = renamedErrorTypes.map((errorType, key) => {
             return (
-                <Form.Check inline label={errorType.nazwa} type='radio' onChange={(e) => { updateTask({ id_uslugi: errorType.id, usluga: errorType.nazwa }); setPickedErrorType(errorType.id); } } checked={(pickedErrorType || (task ? task.id_uslugi : 0) ) == errorType.id}></Form.Check>
+                <Form.Check key={key} id={`errorType-radio-${key}`} inline label={appConfig.errorTypeNames[String(errorType.id)]} type='radio' onChange={(e) => { updateTask({ id_uslugi: errorType.id, usluga: errorType.nazwa }); setPickedErrorType(errorType.id); } } checked={(pickedErrorType || (task ? task.id_uslugi : 0) ) == errorType.id}></Form.Check>
             );
         });
 
         return (
-            <div>
-                <label><strong>Typ błędu:</strong></label>
-                <div>
-                    {errorTypesRadios}
-                </div>
+            <div className="errorTypeRadios text-right">
+                <span><strong>Błąd typu:</strong></span> {errorTypesRadios}
             </div>
         );
     }
@@ -380,13 +390,13 @@ const Task = (props) => {
         <Page>
             <Alert response={response}></Alert>
             <h1>Zadanie: {task.id}<br />{task.zglaszajacy}</h1>
-            {buildErrorType()}
             {buildRepForm()}
             <div className="form-group task-description-container margin-bottom-default">
                 <label for="task_description">Opis problemu:</label>
                 <div className="task-description-content">
                     <textarea id="task_description" className={'form-control'} value={taskDescription} onChange={(e) => modifyTaskDescription(e.target.value)} disabled={!taskEpisodes || taskEpisodes.length > 1}></textarea>
                 </div>
+                {buildErrorType()}
             </div>
             {buildLastEpisode()}
             {buildNonLastEpisodes()}

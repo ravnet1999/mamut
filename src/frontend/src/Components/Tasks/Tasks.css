@@ -51,3 +51,7 @@
 .episode-create-button {
     margin-top: 5px;
 }
+
+.errorTypeRadios {
+    font-weight: bold;
+}
