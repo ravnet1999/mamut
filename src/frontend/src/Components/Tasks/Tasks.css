@@ -56,6 +56,18 @@
     font-weight: bold;
 }
 
+.errorTypeRadios .form-check-inline {
+    margin-right: 6px;
+}
+
+.errorTypeRadios .form-check-inline.errorType-margin-right {
+    margin-right: 20px;
+}
+
+.errorTypeRadios .form-check-input {
+    margin-right: 1px;
+}
+
 .errorTypeRadios span {
     display: inline-block;
     top: -2px;

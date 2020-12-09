@@ -331,13 +331,22 @@ const Task = (props) => {
 
         console.log(renamedErrorTypes);
 
+        let sortOrder = {
+            "C": 0,
+            "B": 1,
+            "A": 2,
+            "Z": 3,
+            "K": 4,
+            "W": 5
+        }
+
         renamedErrorTypes.sort((a, b) => {
-            return a.name.localeCompare(b.name)
+            return sortOrder[a.name] - sortOrder[b.name];
         });
 
         let errorTypesRadios = renamedErrorTypes.map((errorType, key) => {
             return (
-                <Form.Check key={key} id={`errorType-radio-${key}`} inline label={appConfig.errorTypeNames[String(errorType.id)]} type='radio' onChange={(e) => { updateTask({ id_uslugi: errorType.id, usluga: errorType.nazwa }); setPickedErrorType(errorType.id); } } checked={(pickedErrorType || (task ? task.id_uslugi : 0) ) == errorType.id}></Form.Check>
+                <Form.Check className={key == 2 ? 'errorType-margin-right' : ''} key={key} id={`errorType-radio-${key}`} inline label={appConfig.errorTypeNames[String(errorType.id)]} type='radio' onChange={(e) => { updateTask({ id_uslugi: errorType.id, usluga: errorType.nazwa }); setPickedErrorType(errorType.id); } } checked={(pickedErrorType || (task ? task.id_uslugi : 0) ) == errorType.id}></Form.Check>
             );
         });
 
