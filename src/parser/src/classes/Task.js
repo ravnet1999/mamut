@@ -41,7 +41,8 @@ class Task {
             this.body.adres_email = rep.adres_email;
 
             return companyService.getCompany(clientId);
-        }).then((company) => {
+        }).then((companies) => {
+            let company = companies[0];
             this.body.id_klienta = company.id;
             this.body.klient = company.nazwa;
             this.body.telefon = company.nr_telefonu1;
