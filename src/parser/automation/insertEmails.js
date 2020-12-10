@@ -14,40 +14,25 @@ const formatDate = (date) => {
 
 const insertEmail = (rep, databaseEmail) => {
     rep.adres_email = databaseEmail.from;
+    let newTask;
     
-    let task = new Task(rep.id_klienta, rep.id).createTask(0, {
+    new Task(rep.id_klienta, rep.id).createTask(0, {
         opis: databaseEmail.subject
-    }).then((result) => {
-        console.log(result);
-        // episodeService.getEpisodes(result.resources[0].insertId).then((episodeFetchResult) => {
-        //     episodeService.updateDescription(episodeFetchResult.resources[0].id, databaseEmail.text.length > 2500 ? databaseEmail.text.substr(0, 2500) + '...' : databaseEmail.text).then((descriptionUpdateResult) => {
-        //         console.log('Pomyślnie zaktualizowano opis pierwszego etapu dla zadania: ', result.resources[0].insertId);
-        //     });
-        // });
+    }).then((task) => {
+        console.log(task);
+        newTask = task;
+        return episodeService.getEpisodes(task.body.id);
+    }).then((episodeFetchResult) => {
+        return episodeService.updateDescription(episodeFetchResult.resources[0].id, databaseEmail.text.length > 2500 ? databaseEmail.text.substr(0, 2500) + '...' : databaseEmail.text);
+    }).then((descriptionUpdateResult) => {
+        databaseEmail.inserted = true;
+        return databaseEmail.save();
+    }).then((doc) => {
+        console.log('Pomyślnie zaktualizowano opis pierwszego etapu dla zadania: ', newTask.body.id);
+    }).catch((err) => {
+        console.log('Wystąpił błąd podczas próby wprowadzenia maila jako zadanie.');
+        console.log(err);
     });
-
-    // taskBuilderService.insertTask(rep.id_klienta, rep.id, databaseEmail.subject, rep).then((task) => {
-    //     console.log(task);
-    //     return;
-    // }).catch((err) => {
-    //     console.log(err);
-    // });
-    return;
-    //     if(!result.error) {
-    //         databaseEmail.inserted = true;
-    //         databaseEmail.save((err, doc) => {
-    //            console.log(`Dodano zadanie nr. ${result.resources[0].insertId} dla klienta o ID ${rep.id_klienta} i reprezentanta o id ${rep.id}.`);
-
-    //             episodeService.getEpisodes(result.resources[0].insertId).then((episodeFetchResult) => {
-    //                 episodeService.updateDescription(episodeFetchResult.resources[0].id, databaseEmail.text.length > 2500 ? databaseEmail.text.substr(0, 2500) + '...' : databaseEmail.text).then((descriptionUpdateResult) => {
-    //                     console.log('Pomyślnie zaktualizowano opis pierwszego etapu dla zadania: ', result.resources[0].insertId);
-    //                 });
-    //             });
-    //         });
-    //     }
-    // }).catch((err) => {
-    //     console.log('error', err);
-    // });
 }
 
 const insertEmails = () => {
