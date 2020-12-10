@@ -72,6 +72,12 @@ class Task {
         });
     }
 
+    startTask = (operatorId) => {
+        return taskService.startTask(this.body.id, operatorId).then((result) => {
+            return this;
+        });
+    }
+
     patchTask = (taskId, taskObject, operatorId) => {
         return this.fetchTask(taskId, operatorId).then((task) => {
             for(let key in taskObject) {

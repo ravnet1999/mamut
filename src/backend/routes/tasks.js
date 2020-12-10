@@ -66,6 +66,8 @@ router.put('/:clientId/:repId', [authMiddleware], (req, res, next) => {
     let task = new Task(req.params.clientId, req.params.repId);
 
     task.createTask(req.operatorId).then((task) => {
+        return task.startTask(req.operatorId);
+    }).then((task) => {
         response(res, false, ['Pomyślnie utworzono zadanie'], [task.body], `/task/${task.body.id}`);
         return;
     }).catch((err) => {
@@ -150,7 +152,6 @@ router.post('/:taskId/start', [authMiddleware], (req, res, next) => {
 router.post('/:taskId/close', [authMiddleware], (req, res, next) => {
     taskService.closeTask(req.params.taskId, req.operatorId).then((result) => {
         taskService.getTaskById(req.params.taskId, req.operatorId).then((tasks) => {
-            console.log(tasks[0]);
             companyService.getRepresentative(tasks[0].id_zglaszajacy).then((rep) => {
                     operatorService.getOperator(tasks[0].informatyk).then((operator) => {
                         taskService.notifyClose(tasks[0], rep, operator[0]);
