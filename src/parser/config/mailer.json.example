@@ -1,5 +1,5 @@
 {
-    "notify_error": {
+    "errors": {
         "from": "user@domain.com",
         "host": "host",
         "port": 465,

@@ -51,6 +51,7 @@ const readEmails = () => {
             });
         }).catch((err) => {
             console.log(err);
+            reject(err);
         });
     });
 }
