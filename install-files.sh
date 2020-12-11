@@ -14,6 +14,8 @@ cp ./src/parser/config/email.json.example ./src/parser/config/email.json
 echo ./src/parser/config/email.json
 cp ./src/parser/config/accounts.json.example ./src/parser/config/accounts.json
 echo ./src/parser/config/accounts.json
+cp ./src/parser/config/mailer.json.example ./src/parser/config/mailer.json
+echo ./src/parser/config/email.json
 cp ./src/parser/middleware/access.js.example ./src/parser/middleware/access.js
 cp ./src/parser/middleware/json.js.example ./src/parser/middleware/json.js
 cp ./src/translator/config/database.json.example ./src/translator/config/database.json

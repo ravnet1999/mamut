@@ -1,0 +1,12 @@
+{
+    "notify_error": {
+        "from": "user@domain.com",
+        "host": "host",
+        "port": 465,
+        "secure": true,
+        "auth": {
+            "user": "user@domain.com",
+            "pass": "example" 
+        }
+    }
+}

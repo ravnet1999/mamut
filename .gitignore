@@ -13,6 +13,7 @@
 /src/parser/config/database.json
 /src/parser/config/email.json
 /src/parser/config/accounts.json
+/src/parser/config/mailer.json
 /src/parser/middleware/access.js
 /src/parser/middleware/json.js
 /src/parser/public/admin/*
