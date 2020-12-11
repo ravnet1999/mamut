@@ -2,7 +2,6 @@ const moment = require('moment');
 const appConfig = require('../config/appConfig.json');
 const mailParser = require('../src/parser/emailParser');
 const Email = require('../src/models/EmailModel');
-const Mailer = require('../src/classes/Mailer');
 
 const formatDate = (date) => {
     return moment(date, appConfig.date.format.system).format(appConfig.date.format.system)
@@ -47,14 +46,6 @@ const readEmails = () => {
         });
 
     }).catch((err) => {
-
-        mailer.send(
-            mailer.getConfig().from,
-            'p.jankowski@imagho.pl',
-            `Wystąpił błąd połączenia ze skrzynką pocztową w Parserze.`,
-            `Wystąpił poniższy problem:\n\r ${JSON.stringify(err)}.`,
-            `Wystąpił poniższy problem:<br /> ${JSON.stringify(err)}.`
-        );
         console.log(err);
     });
 }

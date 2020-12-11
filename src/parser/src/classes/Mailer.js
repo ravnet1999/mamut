@@ -8,6 +8,7 @@ class Mailer {
     }
 
     send = (from, to, subject, text, html) => {
+        console.log('executed');
         this.transporter.sendMail({
             from: from,
             to: to,
