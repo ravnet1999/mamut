@@ -5,12 +5,19 @@ import { Row, Col, Button } from '../bootstrap';
 import Alert from '../Alert/Alert';
 import ClientHandler from '../../Handlers/ClientHandler';
 import TaskHandler from '../../Handlers/TaskHandler';
+import Modal from '../Modal/Modal';
+import './Representatives.css';
 
 const Representatives = (props) => {
     const [representatives, setRepresentatives] = useState([]);
     const [selectedRep, setSelectedRep] = useState(null);
     const [response, setResponse] = useState(null);
     const [taskStarted, setTaskStarted] = useState(false);
+    const [tasksVisible, setTasksVisible] = useState(false);
+    const [activeTasksModal, setActiveTasksModal] = useState({
+        title: '',
+        description: ''
+    });
 
     useEffect(() => {
         props.setCurrentPage(props.history.location.pathname);
@@ -41,10 +48,59 @@ const Representatives = (props) => {
         });
     }
 
+    const sortTasks = (activeTasks) => {
+        let operators = {};
+        activeTasks.map((activeTask) => {
+            operators[activeTask.operator.inicjaly ? activeTask.operator.inicjaly : 'Brak inicjałów'] = [];
+        });
+        for(let operator in operators) {
+            operators[operator] = activeTasks.filter((activeTask) => {
+                return activeTask.operator.inicjaly == operator;
+            });
+        }
+
+        let sortedInitials = Object.keys(operators).sort((a, b) => {
+            return a.localeCompare(b)
+        });
+
+        let sortedOperators = {};
+
+        sortedInitials.map((initials) => {
+            sortedOperators[initials] = operators[initials];
+        });
+
+        return sortedOperators;
+    }
+
+    const showTasks = (representative) => {
+        let sortedTasks = sortTasks(representative.activeTasks);
+        let sortedInitials = Object.keys(sortedTasks).sort((a, b) => {
+            return a.localeCompare(b)
+        });
+
+        let taskList = [];
+
+        for(let operator in sortedTasks) {
+            taskList.push(
+                <div key={operator}>
+                    <strong className="operator-header">{operator}: {sortedTasks[operator].length}</strong>
+                    {sortedTasks[operator].map((task, key) => {
+                        return <div key={key}><strong>ID:</strong> {task.id}, <strong>Opis:</strong> {task.opis ? task.opis.substr(0, 150) + (task.opis.length > 150 ? '...' : '') : 'Brak opisu'}</div>
+                    })}
+                </div>
+            )
+        }
+        setActiveTasksModal({
+            title: `Aktywne zadania dla ${representative.imie} ${representative.nazwisko}`,
+            description: taskList
+        });
+        setTasksVisible(true);
+    }
+
     const buildClients = () => {
         
         let clientColumns = representatives.map((representative, index) => {
-            return <Col xs="12" sm="12" md="6" lg="4" key={index}><Button onClick={(e) => setSelectedRep(representative)} className={ `full-width margin-bottom-default ${ selectedRep && selectedRep.id === representative.id ? 'active' : ''}` }>{representative.imie} {representative.nazwisko}</Button> </Col>;
+        return <Col xs="12" sm="12" md="6" lg="4" key={index}><Button onClick={(e) => setSelectedRep(representative)} className={ `full-width margin-bottom-default ${ selectedRep && selectedRep.id === representative.id ? 'active' : ''}` }>{representative.imie} {representative.nazwisko} <span onClick={() => showTasks(representative)}>({representative.activeTasks.length})</span></Button> </Col>;
         });
 
         return (
@@ -56,6 +112,7 @@ const Representatives = (props) => {
 
     return (
         <Page>
+            <Modal buttons={[]} closeButtonName={'Zamknij'} title={activeTasksModal.title} description={activeTasksModal.description} visible={tasksVisible} onClose={() => setTasksVisible(false)}></Modal>
             <Alert response={response}></Alert>
             { buildClients() }
             <div className="bottom-pin-wrapper">

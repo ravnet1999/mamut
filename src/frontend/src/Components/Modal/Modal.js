@@ -14,6 +14,9 @@ const Modal = (props) => {
     return (
         <div className="mamut-modal">
             <Row>
+                <Col className="text-right"><span className="close-button" onClick={(e) => props.onClose()}>x</span></Col>
+            </Row>
+            <Row>
                 <Col>
                     <h4>{props.title}</h4>
                     <p>{props.description}</p>
@@ -22,7 +25,7 @@ const Modal = (props) => {
             <Row>
                 {buildButtons(props.buttons)}
                 <Col className="text-right">
-                    <Button onClick={(e) => props.onClose()}>Anuluj</Button>
+                    <Button onClick={(e) => props.onClose()}>{props.closeButtonName ? props.closeButtonName : 'Anuluj'}</Button>
                 </Col>
             </Row>
         </div>
