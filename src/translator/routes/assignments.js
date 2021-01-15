@@ -5,6 +5,7 @@ const assignmentService = require('../src/services/AssignmentService');
 const operatorService = require('../src/services/OperatorService');
 const userService = require('../src/services/UserService');
 const taskService = require('../src/services/Task/TaskService');
+const episodeService = require('../src/services/Task/TaskEpisodeService');
 const charset = require('../src/helpers/charset');
 
 router.get('/', (req, res, next) => {
@@ -40,16 +41,30 @@ router.get('/:clientIds/representatives', (req, res, next) => {
     let clientIds = req.params.clientIds.split(',');
 
     let allTasks = [];
+    let allTasksIds = [];
+    let allOperatorIds = [];
 
     taskService.find(9999999, 0, 'id', 'DESC', '`status` = \'open\'').then((tasks) => {
         let operatorIds = tasks.map((task) => {
             return task.informatyk;
         });
-        operatorIds = operatorIds.filter((operatorId, index, self) => {
+        allOperatorIds = operatorIds.filter((operatorId, index, self) => {
             return self.indexOf(operatorId) === index;
         });
+        allTasksIds = tasks.map((task) => {
+            return task.id;
+        });
         allTasks = tasks;
-        return operatorService.findById(operatorIds);
+        return episodeService.find(99999999, 0, 'id', 'DESC', 'id_zgloszenia IN (' + allTasksIds.join(',') + ')');
+    }).then((episodes) => {
+        allTasks.map((task) => {
+            task.lastEpisode = episodes.filter((episode) => {
+                return episode.id_zgloszenia == task.id;
+            })[0];
+
+            return task;
+        });
+        return operatorService.findById(allOperatorIds);
     }).then((operators) => {
         allTasks = allTasks.map((task) => {
             task.operator = {};

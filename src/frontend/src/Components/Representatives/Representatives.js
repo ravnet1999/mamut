@@ -78,18 +78,29 @@ const Representatives = (props) => {
             return a.localeCompare(b)
         });
 
-        let taskList = [];
+        // let taskList = [];
 
-        for(let operator in sortedTasks) {
-            taskList.push(
-                <div key={operator}>
-                    <strong className="operator-header">{operator}: {sortedTasks[operator].length}</strong>
-                    {sortedTasks[operator].map((task, key) => {
-                        return <div key={key}><strong>ID:</strong> {task.id}, <strong>Opis:</strong> {task.opis ? task.opis.substr(0, 150) + (task.opis.length > 150 ? '...' : '') : 'Brak opisu'}</div>
-                    })}
+        // for(let operator in sortedTasks) {
+        //     taskList.push(
+        //         <div key={operator}>
+        //             <strong className="operator-header">{operator}: {sortedTasks[operator].length}</strong>
+        //             {sortedTasks[operator].map((task, key) => {
+        //                 return <div key={key}><strong>ID:</strong> {task.id}, <strong>Opis:</strong> {task.opis ? task.opis.substr(0, 150) + (task.opis.length > 150 ? '...' : '') : 'Brak opisu'}, <strong>Ostatni etap:</strong> {task.lastEpisode ? task.lastEpisode.rozwiazanie : ''}</div>
+        //             })}
+        //         </div>
+        //     )
+        // }
+
+        let taskList = representative.activeTasks.map((task, key) => {
+            return ( 
+                <div key={key}>
+                    <span className="operator-header"></span>
+                    <div key={key}>
+                        <div><strong>Operator: </strong>{task.operator.inicjaly}</div><div><strong>ID:</strong> {task.id}</div><div><strong>Opis:</strong> {task.opis ? task.opis.substr(0, 150) + (task.opis.length > 150 ? '...' : '') : 'Brak opisu'}</div><div><strong>Ostatni etap:</strong> {task.lastEpisode ? task.lastEpisode.rozwiazanie.substr(0, 150) + (task.lastEpisode.rozwiazanie.length > 150 ? '...' : '') : 'Brak opisu etapu.'} </div>
+                    </div>
                 </div>
-            )
-        }
+            );
+        });
         setActiveTasksModal({
             title: `Aktywne zadania dla ${representative.imie} ${representative.nazwisko}`,
             description: taskList
