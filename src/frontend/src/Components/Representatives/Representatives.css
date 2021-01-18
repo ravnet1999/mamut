@@ -17,3 +17,7 @@
 .active-task:first-child {
     margin-top: 6px;
 }
+
+.task-count {
+    margin-left: 8px;
+}

@@ -116,7 +116,7 @@ const Representatives = (props) => {
     const buildClients = () => {
         
         let clientColumns = representatives.map((representative, index) => {
-        return <Col xs="12" sm="12" md="6" lg="4" key={index}><Button onClick={(e) => setSelectedRep(representative)} className={ `full-width margin-bottom-default ${ selectedRep && selectedRep.id === representative.id ? 'active' : ''}` }>{representative.imie} {representative.nazwisko} <span onClick={() => showTasks(representative)}>({representative.activeTasks.length})</span></Button> </Col>;
+        return <Col xs="12" sm="12" md="6" lg="4" key={index}><Button onClick={(e) => setSelectedRep(representative)} className={ `full-width margin-bottom-default ${ selectedRep && selectedRep.id === representative.id ? 'active' : ''}` }>{representative.imie} {representative.nazwisko} <span className="task-count" onClick={() => showTasks(representative)}>({representative.activeTasks.length})</span></Button> </Col>;
         });
 
         return (
