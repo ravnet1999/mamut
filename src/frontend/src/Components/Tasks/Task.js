@@ -56,6 +56,7 @@ const Task = (props) => {
     });
     const [datePickerEnabled, enableDatePicker] = useState(false);
     const [dateConfirmEnabled, enableDateConfirm] = useState(true);
+    const [pickerInput, setPickerInput] = useState(null);
 
     const updateDescriptions = (callback = null) => {
         TaskHandler.updateLastEpisodeDescription(lastEpisode.id, appState.episodeDescription).then((result) => {
@@ -425,9 +426,14 @@ const Task = (props) => {
     const formatDate = (date) => {
         if (!date) return '';
         let mDate = moment(date);
-        console.log(mDate.format('YYYY-MM-DD - HH.mm.ss'));
-        return mDate.format('YYYY-MM-DD - HH.mm.ss');
+        return mDate.format('YYYY-MM-DD HH.mm.ss');
         // return date.getDate() + '.' + (date.getMonth() + 1) + '.' + date.getFullYear() + ' - ' + date.toLocaleTimeString();
+    }
+
+    const pickDate = () => {
+        enableDatePicker(true);
+        console.log(pickerInput);
+        if(pickerInput) pickerInput.setOpen(true);
     }
 
     return (
@@ -454,11 +460,12 @@ const Task = (props) => {
                                     className="form-control"
                                     selected={awaitDate.date}
                                     onChange={(date) => setAwaitDate({ date: date })}
-                                    dateFormat='dd/MM/yyyy - HH:mm'
+                                    dateFormat='dd/MM/yyyy HH:mm'
                                     timeFormat='HH:mm'
                                     placeholderText='Wybierz datę...'
                                     showTimeSelect
                                     timeIntervals={15}
+                                    ref={(picker) => setPickerInput(picker)}
                                 >
                                 </DatePicker>
                             </Col>
@@ -476,11 +483,11 @@ const Task = (props) => {
                                 <Button onClick={(e) => awaitTask('OCZEKUJE', 'Zasoby')}><FontAwesomeIcon icon={faBoxOpen}></FontAwesomeIcon></Button>
                                 <Button onClick={(e) => awaitTask('OCZEKUJE', 'Kompetencje')}><FontAwesomeIcon icon={faBookReader}></FontAwesomeIcon></Button>
                                 <Button onClick={(e) => awaitTask('OCZEKUJE', 'Osoba')}><FontAwesomeIcon icon={faUserClock}></FontAwesomeIcon></Button>
-                                <Button onClick={(e) => enableDatePicker(true)}><FontAwesomeIcon icon={faCalendarDay}></FontAwesomeIcon></Button>
+                                <Button onClick={(e) => pickDate()}><FontAwesomeIcon icon={faCalendarDay}></FontAwesomeIcon></Button>
                                 <Button onClick={(e) => awaitTask('OCZEKUJE', 'Transport')}><FontAwesomeIcon icon={faTruck}></FontAwesomeIcon></Button>
                                 <Button onClick={(e) =>  setAwaitClicked(false)} className={'btn-close-menu'}><FontAwesomeIcon icon={faWindowClose}></FontAwesomeIcon></Button>
                             </div>
-                            <Button onClick={(e) => awaitClicked ? stopTask() : setAwaitClicked(true)} className="btn-inverted btn-center btn-await">
+                            <Button onClick={(e) => awaitClicked ? awaitTask('OCZEKUJE', 'STOP') : setAwaitClicked(true)} className="btn-inverted btn-center btn-await">
                                 { awaitClicked ? 'STOP' : 'Oczekuje'}
                             </Button>
                             {/* <Button onClick={(e) => stopTask()} className="btn-inverted btn-center">

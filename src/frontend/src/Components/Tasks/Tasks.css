@@ -129,3 +129,7 @@
 .datepicker-column > * {
     width: 100%;
 }
+
+.react-datepicker {
+    width: 333px;
+}
