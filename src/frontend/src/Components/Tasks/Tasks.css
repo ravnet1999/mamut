@@ -73,3 +73,34 @@
     top: -2px;
     position: relative;
 }
+
+.floating-buttons {
+    position: absolute;
+    top: -105px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.floating-buttons > * {
+    display:inline-block;
+    margin-right: 4px;
+}
+
+.btn-center.btn-await {
+    font-size: 1.3em;
+}
+
+.floating-datepicker {
+    position: fixed;
+    transform: translate(-50%, -50%);
+    top: 20%;
+    left: 50%;
+    padding: 20px;
+    background-color: #fff;
+    width: 60%;
+    border: 1px solid #212529;
+}
+
+.datepicker-column > * {
+    width: 100%;
+}

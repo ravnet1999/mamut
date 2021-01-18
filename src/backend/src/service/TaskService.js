@@ -78,6 +78,26 @@ class TaskService {
         });   
     }
 
+    awaitTask = (taskId, type, description, operatorId) => {
+        return new Promise((resolve, reject) => {
+            axios.post(`${appConfig.URLs.translator}/tasks/${taskId}/await/${type}`, {
+                operatorId: operatorId,
+                description: description
+            }).then((response) => {
+                parseResponse(response).then((response) => {
+                    resolve(response);
+                    return;
+                }).catch((err) => {
+                    reject(err);
+                    return;
+                });
+            }).catch((err) => {
+                reject(err);
+                return;
+            });
+        });
+    }
+
     stopTask = (taskId, operatorId) => {
         return new Promise((resolve, reject) => {
             axios.post(`${appConfig.URLs.translator}/tasks/${taskId}/stop`, {

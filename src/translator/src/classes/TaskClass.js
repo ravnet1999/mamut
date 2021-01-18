@@ -117,6 +117,16 @@ class Task {
         });
     }
 
+    awaitTask = (type, description, operatorId) => {
+        return taskStampService.find(1, 0, 'id', 'DESC', "`id_zgloszenia` = '" + this.body.id + "'").then((taskStamp) => {
+            if(taskStamp[0].nazwa == type) {
+                return;
+            } else {
+                return taskStampService.stamp(type, this.body.id, operatorId, description);
+            }
+        })
+    }
+
     stopTask = (operatorId) => {
         return taskStampService.find(1, 0, 'id', 'DESC', "`id_zgloszenia` = '" + this.body.id + "'").then((taskStamp) => {
             if(taskStamp[0].nazwa == 'OCZEKUJE') {

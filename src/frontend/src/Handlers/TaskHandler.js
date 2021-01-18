@@ -71,6 +71,32 @@ const TaskHandler = {
         });
     },
 
+    awaitTask: (taskId, type, description) => {
+        return new Promise((resolve, reject) => {
+            axios.post(`${appConfig.URLs.domain}/${appConfig.URLs.tasks}/${taskId}/await/${type}`, {
+                description: description
+            }, {
+                withCredentials: true
+            }).then((response) => {
+                console.log('task handler recieved description: ', description);
+                parseResponse(response).then((response) => {
+                    resolve(response);
+                    return;
+                }).catch((err) => {
+                    reject(err);
+                    return;
+                });
+            }).catch((err) => {
+                reject({
+                    error: true,
+                    messages: ['Wystąpił problem z połączeniem z serwerem.', JSON.stringify(err)],
+                    resources: []
+                });
+                return;
+            });
+        });
+    },
+
     startTask: (taskId) => {
         return new Promise((resolve, reject) => {
             axios.post(`${appConfig.URLs.domain}/${appConfig.URLs.tasks}/${taskId}/start`, {}, {

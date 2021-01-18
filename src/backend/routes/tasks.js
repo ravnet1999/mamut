@@ -77,6 +77,17 @@ router.put('/:clientId/:repId', [authMiddleware], (req, res, next) => {
     });
 });
 
+router.post('/:taskId/await/:type', [authMiddleware], (req, res, next) => {
+    taskService.awaitTask(req.params.taskId, req.params.type, req.body.description, req.operatorId).then((result) => {
+        response(res, false, ['Pomyślnie wstrzymano zadanie.'], result);
+        return;
+    }).catch((err) => {
+        console.log(err);
+        response(res, true, ['Coś poszło nie tak podczas próby wstrzymania zadania.', JSON.stringify(err)], []);
+        return;
+    });
+});
+
 router.post('/:taskId/stop', [authMiddleware], (req, res, next) => {
     taskService.stopTask(req.params.taskId, req.operatorId).then((result) => {
         taskService.getTaskById(req.params.taskId, req.operatorId).then((tasks) => {

@@ -81,6 +81,19 @@ router.post('/:taskId/start', (req, res, next) => {
     });
 });
 
+router.post('/:taskId/await/:type', (req, res, next) => {
+    new Task(req.params.taskId).fetchTask().then((task) => {
+        return task.awaitTask(req.params.type, req.body.description, req.body.operatorId);
+    }).then((result) => {
+        response(res, false, ['Pomyślnie wstrzymano zadanie.'], [result], `/tasks`);
+        return;
+    }).catch((err) => {
+        console.log(err);
+        response(res, true, ['Wystąpił błąd podczas próby wstrzymania zadania.', JSON.stringify(err)], []);
+        return;
+    })
+});
+
 router.post('/:taskId/stop', (req, res, next) => {
     new Task(req.params.taskId).fetchTask().then((task) => {
         return task.stopTask(req.body.operatorId);

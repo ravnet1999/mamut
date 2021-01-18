@@ -13,6 +13,10 @@ import './Tasks.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import appConfig from '../../Config/appConfig.json';
+import DatePicker, { registerLocale } from 'react-datepicker';
+import pl from 'date-fns/locale/pl';
+import 'react-datepicker/dist/react-datepicker.css';
+registerLocale('pl', pl);
 
 const Task = (props) => {
     const [options, setOptions] = useState(null);
@@ -45,6 +49,12 @@ const Task = (props) => {
     const [lastEpisodeInput, setLastEpisodeInput] = useState(null);
     const [errorTypes, setErrorTypes] = useState([]);
     const [pickedErrorType, setPickedErrorType] = useState(null);
+    const [awaitClicked, setAwaitClicked] = useState(false);
+    const [awaitDate, setAwaitDate] = useState({
+        date: null
+    });
+    const [datePickerEnabled, enableDatePicker] = useState(false);
+    const [dateConfirmEnabled, enableDateConfirm] = useState(true);
 
     const updateDescriptions = (callback = null) => {
         TaskHandler.updateLastEpisodeDescription(lastEpisode.id, appState.episodeDescription).then((result) => {
@@ -165,6 +175,19 @@ const Task = (props) => {
         }).catch((err) => {
             setResponse(err);
         });
+    }
+
+    const awaitTask = (type, description) => {
+        enableDateConfirm(false);
+        TaskHandler.awaitTask(task.id, type, description).then((response) => {
+            console.log('sent description', description);
+            setResponse(response);
+            setAwaitClicked(false);
+            enableDatePicker(false);
+            enableDateConfirm(true);
+        }).catch((err) => {
+            setResponse(err);
+        })
     }
 
     const modifyTaskDescription = (value) => {
@@ -395,6 +418,15 @@ const Task = (props) => {
         return <Redirect to={redirect}></Redirect>;
     }
 
+    if(awaitDate.date) {
+        console.log(awaitDate.date.getDate(), awaitDate.date.getMonth() + 1, awaitDate.date.getFullYear());
+    }
+
+    const formatDate = (date) => {
+        if (!date) return '';
+        return date.getDate() + '.' + (date.getMonth() + 1) + '.' + date.getFullYear();
+    }
+
     return (
         <Page>
             <Alert response={response}></Alert>
@@ -411,11 +443,41 @@ const Task = (props) => {
             {buildNonLastEpisodes()}
             <div className="bottom-pin-wrapper">
                 <div className="bottom-pin">
+                    <div className={`floating-datepicker ${datePickerEnabled ? 'd-block' : 'd-none'}`}>
+                        <Row>
+                            <Col xs="8" className="datepicker-column">
+                                <DatePicker
+                                    locale='pl'
+                                    className="form-control"
+                                    selected={awaitDate.date}
+                                    onChange={(date) => setAwaitDate({ date: date })}
+                                    dateFormat='dd/MM/yyyy'
+                                >
+                                </DatePicker>
+                            </Col>
+                            <Col xs="2">
+                                <Button onClick={(e) => awaitTask(`Termin ${formatDate(awaitDate.date)}`, 'Test')} disabled={!dateConfirmEnabled}>Potwierdź</Button>
+                            </Col>
+                            <Col xs="2">
+                                <Button onClick={(e) => enableDatePicker(false)}>Anuluj</Button>
+                            </Col>
+                        </Row>
+                    </div>
                     <Row className="no-margins">
                         <Col className="text-right btn-center-container">
-                            <Button onClick={(e) => stopTask()} className="btn-inverted btn-center">
-                                Stop
+                            <div className={`floating-buttons ${awaitClicked ? 'd-block' : 'd-none'}`}>
+                                <Button onClick={(e) => awaitTask('Zasoby', 'Zasoby')}>Zasoby</Button>
+                                <Button onClick={(e) => awaitTask('Kompetencje', 'Kompetencje')}>Kompetencje</Button>
+                                <Button onClick={(e) => awaitTask('Uzytkownika', 'Uzytkownika')}>Użytkownika</Button>
+                                <Button onClick={(e) => enableDatePicker('Termin', 'Termin')}>Termin</Button>
+                                <Button onClick={(e) => awaitTask('Transport', 'Transport')}>Transport</Button>
+                            </div>
+                            <Button onClick={(e) => setAwaitClicked(true)} className="btn-inverted btn-center btn-await">
+                                Oczekuje
                             </Button>
+                            {/* <Button onClick={(e) => stopTask()} className="btn-inverted btn-center">
+                                Stop
+                            </Button> */}
                         </Col>
                     </Row>
                     <TaskReassign taskId={props.match.params.taskId} updateDescriptions={updateDescriptions}></TaskReassign>

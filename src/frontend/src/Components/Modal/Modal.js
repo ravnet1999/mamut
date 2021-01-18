@@ -19,7 +19,7 @@ const Modal = (props) => {
             <Row>
                 <Col>
                     <h4>{props.title}</h4>
-                    <p>{props.description}</p>
+                    <p className="mamut-modal-description">{props.description}</p>
                 </Col>
             </Row>
             <Row>
