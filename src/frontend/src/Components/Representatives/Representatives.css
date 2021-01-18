@@ -2,3 +2,18 @@
     display: block;
     border-bottom: 1px solid #212529;
 }
+
+.active-task {
+    background-color: #dedede;
+    padding: 6px 10px;
+    margin-top: 3px;
+    border-radius:8px;
+}
+
+.active-task:nth-child(2n) {
+    background-color: #eee;
+}
+
+.active-task:first-child {
+    margin-top: 6px;
+}
