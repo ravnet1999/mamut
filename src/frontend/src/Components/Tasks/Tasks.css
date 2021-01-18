@@ -79,6 +79,12 @@
     top: -105px;
     left: 50%;
     transform: translate(-50%, -50%);
+    width: 100%;
+    text-align: center;
+}
+
+.floating-buttons .btn {
+    padding: 2px 10px;
 }
 
 .floating-buttons > * {

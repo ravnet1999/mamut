@@ -11,7 +11,7 @@ import TaskReassign from './TaskReassign';
 import Modal from '../Modal/Modal';
 import './Tasks.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faBoxOpen, faUserClock, faCalendarDay, faTruck, faBookReader, faWindowClose } from '@fortawesome/free-solid-svg-icons';
 import appConfig from '../../Config/appConfig.json';
 import DatePicker, { registerLocale } from 'react-datepicker';
 import pl from 'date-fns/locale/pl';
@@ -465,12 +465,12 @@ const Task = (props) => {
                     <Row className="no-margins">
                         <Col className="text-right btn-center-container">
                             <div className={`floating-buttons ${awaitClicked ? 'd-block' : 'd-none'}`}>
-                                <Button onClick={(e) => awaitTask('Zasoby', 'Zasoby')}>Zasoby</Button>
-                                <Button onClick={(e) => awaitTask('Kompetencje', 'Kompetencje')}>Kompetencje</Button>
-                                <Button onClick={(e) => awaitTask('Uzytkownika', 'Uzytkownika')}>Użytkownika</Button>
-                                <Button onClick={(e) => enableDatePicker('Termin', 'Termin')}>Termin</Button>
-                                <Button onClick={(e) => awaitTask('Transport', 'Transport')}>Transport</Button>
-                                <Button onClick={(e) =>  setAwaitClicked(false)} className={'btn-close-menu'}>X</Button>
+                                <Button onClick={(e) => awaitTask('Zasoby', 'Zasoby')}><FontAwesomeIcon icon={faBoxOpen}></FontAwesomeIcon></Button>
+                                <Button onClick={(e) => awaitTask('Kompetencje', 'Kompetencje')}><FontAwesomeIcon icon={faBookReader}></FontAwesomeIcon></Button>
+                                <Button onClick={(e) => awaitTask('Uzytkownika', 'Uzytkownika')}><FontAwesomeIcon icon={faUserClock}></FontAwesomeIcon></Button>
+                                <Button onClick={(e) => enableDatePicker('Termin', 'Termin')}><FontAwesomeIcon icon={faCalendarDay}></FontAwesomeIcon></Button>
+                                <Button onClick={(e) => awaitTask('Transport', 'Transport')}><FontAwesomeIcon icon={faTruck}></FontAwesomeIcon></Button>
+                                <Button onClick={(e) =>  setAwaitClicked(false)} className={'btn-close-menu'}><FontAwesomeIcon icon={faWindowClose}></FontAwesomeIcon></Button>
                             </div>
                             <Button onClick={(e) => awaitClicked ? stopTask() : setAwaitClicked(true)} className="btn-inverted btn-center btn-await">
                                 { awaitClicked ? 'STOP' : 'Oczekuje'}
