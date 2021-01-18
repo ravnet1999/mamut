@@ -105,6 +105,25 @@
     background-color: #fff;
     width: 60%;
     border: 1px solid #212529;
+    border-radius: 6px;
+}
+
+@media (min-width: 768px) {
+    .floating-datepicker {
+        width: 660px;
+    }
+}
+
+@media (max-width: 767px) {
+    .floating-datepicker {
+        width: 75%;
+    }
+}
+
+@media (max-width: 575px) {
+    .floating-datepicker {
+        width: 98%;
+    }
 }
 
 .datepicker-column > * {

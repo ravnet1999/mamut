@@ -16,6 +16,7 @@ import appConfig from '../../Config/appConfig.json';
 import DatePicker, { registerLocale } from 'react-datepicker';
 import pl from 'date-fns/locale/pl';
 import 'react-datepicker/dist/react-datepicker.css';
+import moment from 'moment';
 registerLocale('pl', pl);
 
 const Task = (props) => {
@@ -423,7 +424,10 @@ const Task = (props) => {
 
     const formatDate = (date) => {
         if (!date) return '';
-        return date.getDate() + '.' + (date.getMonth() + 1) + '.' + date.getFullYear();
+        let mDate = moment(date);
+        console.log(mDate.format('YYYY-MM-DD - HH.mm.ss'));
+        return mDate.format('YYYY-MM-DD - HH.mm.ss');
+        // return date.getDate() + '.' + (date.getMonth() + 1) + '.' + date.getFullYear() + ' - ' + date.toLocaleTimeString();
     }
 
     return (
@@ -444,20 +448,24 @@ const Task = (props) => {
                 <div className="bottom-pin">
                     <div className={`floating-datepicker ${datePickerEnabled ? 'd-block' : 'd-none'}`}>
                         <Row>
-                            <Col xs="8" className="datepicker-column">
+                            <Col xs="6" md="8" className="datepicker-column">
                                 <DatePicker
                                     locale='pl'
                                     className="form-control"
                                     selected={awaitDate.date}
                                     onChange={(date) => setAwaitDate({ date: date })}
-                                    dateFormat='dd/MM/yyyy'
+                                    dateFormat='dd/MM/yyyy - HH:mm'
+                                    timeFormat='HH:mm'
+                                    placeholderText='Wybierz datę...'
+                                    showTimeSelect
+                                    timeIntervals={15}
                                 >
                                 </DatePicker>
                             </Col>
-                            <Col xs="2">
-                                <Button onClick={(e) => awaitTask(`Termin ${formatDate(awaitDate.date)}`, 'Test')} disabled={!dateConfirmEnabled}>Potwierdź</Button>
+                            <Col xs="3" md="2">
+                                <Button onClick={(e) => awaitTask(`OCZEKUJE`, `Termin ${formatDate(awaitDate.date)}`)} disabled={!dateConfirmEnabled || !awaitDate.date}>Potwierdź</Button>
                             </Col>
-                            <Col xs="2">
+                            <Col xs="3" md="2">
                                 <Button onClick={(e) => enableDatePicker(false)}>Anuluj</Button>
                             </Col>
                         </Row>
@@ -465,11 +473,11 @@ const Task = (props) => {
                     <Row className="no-margins">
                         <Col className="text-right btn-center-container">
                             <div className={`floating-buttons ${awaitClicked ? 'd-block' : 'd-none'}`}>
-                                <Button onClick={(e) => awaitTask('Zasoby', 'Zasoby')}><FontAwesomeIcon icon={faBoxOpen}></FontAwesomeIcon></Button>
-                                <Button onClick={(e) => awaitTask('Kompetencje', 'Kompetencje')}><FontAwesomeIcon icon={faBookReader}></FontAwesomeIcon></Button>
-                                <Button onClick={(e) => awaitTask('Uzytkownika', 'Uzytkownika')}><FontAwesomeIcon icon={faUserClock}></FontAwesomeIcon></Button>
-                                <Button onClick={(e) => enableDatePicker('Termin', 'Termin')}><FontAwesomeIcon icon={faCalendarDay}></FontAwesomeIcon></Button>
-                                <Button onClick={(e) => awaitTask('Transport', 'Transport')}><FontAwesomeIcon icon={faTruck}></FontAwesomeIcon></Button>
+                                <Button onClick={(e) => awaitTask('OCZEKUJE', 'Zasoby')}><FontAwesomeIcon icon={faBoxOpen}></FontAwesomeIcon></Button>
+                                <Button onClick={(e) => awaitTask('OCZEKUJE', 'Kompetencje')}><FontAwesomeIcon icon={faBookReader}></FontAwesomeIcon></Button>
+                                <Button onClick={(e) => awaitTask('OCZEKUJE', 'Osoba')}><FontAwesomeIcon icon={faUserClock}></FontAwesomeIcon></Button>
+                                <Button onClick={(e) => enableDatePicker(true)}><FontAwesomeIcon icon={faCalendarDay}></FontAwesomeIcon></Button>
+                                <Button onClick={(e) => awaitTask('OCZEKUJE', 'Transport')}><FontAwesomeIcon icon={faTruck}></FontAwesomeIcon></Button>
                                 <Button onClick={(e) =>  setAwaitClicked(false)} className={'btn-close-menu'}><FontAwesomeIcon icon={faWindowClose}></FontAwesomeIcon></Button>
                             </div>
                             <Button onClick={(e) => awaitClicked ? stopTask() : setAwaitClicked(true)} className="btn-inverted btn-center btn-await">
