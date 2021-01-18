@@ -79,7 +79,7 @@ router.put('/:clientId/:repId', [authMiddleware], (req, res, next) => {
 
 router.post('/:taskId/await/:type', [authMiddleware], (req, res, next) => {
     taskService.awaitTask(req.params.taskId, req.params.type, req.body.description, req.operatorId).then((result) => {
-        response(res, false, ['Pomyślnie wstrzymano zadanie.'], result);
+        response(res, false, ['Pomyślnie wstrzymano zadanie.'], result, '/tasks');
         return;
     }).catch((err) => {
         console.log(err);

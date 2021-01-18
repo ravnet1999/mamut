@@ -180,11 +180,10 @@ const Task = (props) => {
     const awaitTask = (type, description) => {
         enableDateConfirm(false);
         TaskHandler.awaitTask(task.id, type, description).then((response) => {
-            console.log('sent description', description);
-            setResponse(response);
             setAwaitClicked(false);
             enableDatePicker(false);
             enableDateConfirm(true);
+            setResponse(response);
         }).catch((err) => {
             setResponse(err);
         })
@@ -471,9 +470,10 @@ const Task = (props) => {
                                 <Button onClick={(e) => awaitTask('Uzytkownika', 'Uzytkownika')}>Użytkownika</Button>
                                 <Button onClick={(e) => enableDatePicker('Termin', 'Termin')}>Termin</Button>
                                 <Button onClick={(e) => awaitTask('Transport', 'Transport')}>Transport</Button>
+                                <Button onClick={(e) =>  setAwaitClicked(false)} className={'btn-close-menu'}>X</Button>
                             </div>
-                            <Button onClick={(e) => setAwaitClicked(true)} className="btn-inverted btn-center btn-await">
-                                Oczekuje
+                            <Button onClick={(e) => awaitClicked ? stopTask() : setAwaitClicked(true)} className="btn-inverted btn-center btn-await">
+                                { awaitClicked ? 'STOP' : 'Oczekuje'}
                             </Button>
                             {/* <Button onClick={(e) => stopTask()} className="btn-inverted btn-center">
                                 Stop

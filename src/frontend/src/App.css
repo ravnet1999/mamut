@@ -289,6 +289,17 @@ nav ul li a:hover {
 
 .close-button:hover {
     color: #212529;
-    background-color: #FFF;
-    
+    background-color: #FFF;   
+}
+
+.btn-close-menu {
+    background-color: #FF0000;
+    border-color: #FF0000;
+    color: #FFFFFF;
+}
+
+.btn-close-menu:hover {
+    background-color: #FFFFFF;
+    border-color: #FF0000;
+    color: #FF0000;
 }
