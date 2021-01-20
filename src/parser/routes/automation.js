@@ -27,6 +27,8 @@ const startAutomations = () => {
     });    
 }
 
+startAutomations();
+
 /* GET home page. */
 router.get('/', [authMiddleware], function(req, res, next) {
     let automationStatus = {
