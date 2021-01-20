@@ -67,6 +67,12 @@ const Tasks = (props) => {
         });
     }
 
+    const parseStampDescription = (stampDescription) => {
+        if(!stampDescription) return '';
+
+        return stampDescription.substr(0, 6) == 'Termin' ? 'Termin' : stampDescription;
+    }
+
     const buildTaskRadios = () => {
         return tasks.map((task, key) => {
 
@@ -105,7 +111,7 @@ const Tasks = (props) => {
                                 className={`d-inline-block vertical-middle-static ${isChecked ? 'picked' : ''}`}
                             >
                             </Form.Check>
-                            <span className={`task-description description ${taskStampClass} vertical-middle-static d-inline-block`}> - {task.lastStamp?.nazwa}</span><br />
+                            <span className={`task-description description ${taskStampClass} vertical-middle-static d-inline-block`}> - {task.lastStamp?.nazwa} {task.lastStamp && task.lastStamp.nazwa == 'OCZEKUJE' ? `: ${parseStampDescription(task.lastStamp?.opis)}` : ''}</span><br />
                             { task.klient ? <div className="task-main-description">Klient: {task.klient}</div> : '' }
                             { task.klient ? <br /> : '' }
                             { task.terminowe == 1 && task.termin ? ( <div className="task-main-description">Termin: {moment(task.termin).zone(0).format('DD-MM-YYYY HH:mm:ss')}</div> ) : '' }
