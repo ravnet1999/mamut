@@ -206,6 +206,8 @@ class TaskService {
         this.getStamps(taskId).then((stamps) => {
             console.log('correct 1');
 
+            console.log('stamps for stop: ', stamps);
+
             let startStamps = stamps.filter((stamp) => {
                 return stamp.nazwa == 'START';
             })
