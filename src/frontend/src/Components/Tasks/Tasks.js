@@ -106,9 +106,11 @@ const Tasks = (props) => {
                             >
                             </Form.Check>
                             <span className={`task-description description ${taskStampClass} vertical-middle-static d-inline-block`}> - {task.lastStamp?.nazwa}</span><br />
-                            { task.terminowe == 1 && task.termin ? ( <div className="task-main-description">Termin {moment(task.termin).zone(0).format('DD-MM-YYYY HH:mm:ss')}</div> ) : '' }
+                            { task.klient ? <div className="task-main-description">Klient: {task.klient}</div> : '' }
+                            { task.klient ? <br /> : '' }
+                            { task.terminowe == 1 && task.termin ? ( <div className="task-main-description">Termin: {moment(task.termin).zone(0).format('DD-MM-YYYY HH:mm:ss')}</div> ) : '' }
                             { task.terminowe == 1 && task.termin ? <br /> : ''}
-                            {task.opis ? <div className="task-main-description">{task.opis.substring(0, 50)}{task.opis.length > 50 ? '...' : ''}</div> : '' }
+                            {task.opis ? <div className="task-main-description">Opis: {task.opis.substring(0, 50)}{task.opis.length > 50 ? '...' : ''}</div> : '' }
                             { task.lastStamp?.nazwa == 'OCZEKUJE' && !task.informatyk == 0 ? <Button className="position-right-middle small circular" onClick={(e) => { setModal({
                                 title: `Czy na pewno chcesz zamknąć zadanie ${task.id} - ${task.zglaszajacy}?`,
                                 description: '',
