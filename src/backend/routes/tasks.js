@@ -175,26 +175,29 @@ router.post('/:taskId/start', [authMiddleware], (req, res, next) => {
 });
 
 router.post('/:taskId/close', [authMiddleware], (req, res, next) => {
+    let closeResult;
+    let fetchedTask;
+    let fetchedLastEpisode;
+    let fetchedRep;
+    let fetchedOperator;
+
     taskService.closeTask(req.params.taskId, req.operatorId).then((result) => {
-        taskService.getTaskById(req.params.taskId, req.operatorId).then((tasks) => {
-            companyService.getRepresentative(tasks[0].id_zglaszajacy).then((rep) => {
-                    operatorService.getOperator(tasks[0].informatyk).then((operator) => {
-                        taskService.notifyClose(tasks[0], rep, operator[0]);
-                        response(res, false, result.messages, result.resources);
-                        return;
-                    }).catch((err) => {
-                        response(res, true, ['Wystąpił problem podczas próby pobrania operatora', JSON.stringify(err)], []);
-                        return;            
-                    });
-            }).catch((err) => {
-                    response(res, true, ['Wystąpił problem podczas próby pobrania reprezentanta', JSON.stringify(err)], []);
-                    return;            
-            });
-        }).catch((err) => {
-            console.log(err);
-            response(res, true, ['Wystąpił problem podczas próby pobrania zadania po ID', JSON.stringify(err)], []);
-            return;            
-        })
+        closeResult = result;
+        return taskService.getTaskById(req.params.taskId, req.operatorId);
+    }).then((tasks) => {
+        fetchedTask = tasks[0];
+        return taskService.getEpisodes(req.params.taskId);
+    }).then((episodes) => {
+        fetchedLastEpisode = episodes.resources[0];
+        return companyService.getRepresentative(fetchedTask.id_zglaszajacy);
+    }).then((rep) => {
+        fetchedRep = rep;
+        return operatorService.getOperator(fetchedTask.informatyk);
+    }).then((operator) => {
+        fetchedOperator = operator[0];
+        taskService.notifyClose(fetchedTask, fetchedLastEpisode, fetchedRep, fetchedOperator);
+        response(res, false, closeResult.messages, closeResult.resources);
+        return;
     }).catch((err) => {
         response(res, true, ['Wystąpił problem podczas próby zamknięcia zadania', JSON.stringify(err)], []);
         return;

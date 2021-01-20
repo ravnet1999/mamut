@@ -187,10 +187,14 @@ class TaskService {
         mailerRegister.send(mailerRegister.getConfig().from, rep.adres_email, subject, message.replace(/\[lineBreak\]/g, '\r\n'), message.replace(/\[lineBreak\]/g, '<br />'));
     }
 
-    notifyClose = (task, rep, operator) => {
+    notifyClose = (task, lastEpisode, rep, operator) => {
+        console.log(task, 'task contents from notifyClose');
         let subject =  `Zamknęliśmy Twoje zgłoszenie, numer: ${task.id}.`;
-        let message = `Informatyk zamykający zadanie: ${operator.imie} ${operator.nazwisko}.[lineBreak][lineBreak]`;
-        message += `Jeśli nie rozwiązaliśmy Twojego problemu kliknij w <a href="mailto:support@ravnet.pl?subject=Reklamacja:%20Zadanie%20nr%20${task.id}&body=Nie%20musisz%20już%20nic%20pisać.%20Kliknij%20WYŚLIJ%20a%20zadanie%20zostanie%20automatycznie%20przywrócone%20jako%20zadanie%20priorytetowe.">link</a> (otworzy się email>>kliknij: Wyślij). Twoje zadanie zostanie przywrócone i oznaczone najwyższym priorytetem![lineBreak][lineBreak]`;
+        let message = `Opis problemu: ${task.opis}[lineBreak][lineBreak]`;
+        message += `Ostatni etap: ${lastEpisode.rozwiazanie}[lineBreak][lineBreak]`;
+        message += `Informatyk zamykający zadanie: ${operator.imie} ${operator.nazwisko}.[lineBreak][lineBreak]`;
+        message += `Jeśli nie rozwiązaliśmy Twojego problemu kliknij w <a href="mailto:support@ravnet.pl?subject=Reklamacja:%20Zadanie%20nr%20${task.id}&body=Nie%20musisz%20już%20nic%20pisać.%20Kliknij%20WYŚLIJ%20a%20zadanie%20zostanie%20automatycznie%20przywrócone%20jako%20zadanie%20priorytetowe.">link</a>.[lineBreak]`;
+        message += `Twoje zadanie zostanie przywrócone i oznaczone najwyższym priorytetem!`;
         message += `Jeśli rozwiązaliśmy zgłoszony problem to bardzo się cieszymy i życzymy miłego dnia.[lineBreak]`;
         message += `Zespół[lineBreak]`
         message += `RavNet`;
