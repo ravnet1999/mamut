@@ -138,7 +138,9 @@ router.post('/:taskId/close', (req, res, next) => {
 
 router.patch('/:taskId', (req, res, next) => {
     new Task(req.params.taskId).fetchTask().then((task) => {
+        console.log(task, 'fetched when patching');
         req.body = charset.translateOut(req.body);
+        task.body = charset.translateOut(task.body);
         return task.patchTask(req.body);
     }).then((task) => {
         response(res, false, ['Pomyślnie zaktualizowano zadanie.'], [task.body]);

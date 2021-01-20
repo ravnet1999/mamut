@@ -79,8 +79,22 @@ router.put('/:clientId/:repId', [authMiddleware], (req, res, next) => {
 
 router.post('/:taskId/await/:type', [authMiddleware], (req, res, next) => {
     taskService.awaitTask(req.params.taskId, req.params.type, req.body.description, req.operatorId).then((result) => {
-        response(res, false, ['Pomyślnie wstrzymano zadanie.'], result, '/tasks');
-        return;
+        if(req.body.description.substr(0, 6) == 'Termin') {
+            let date = req.body.description.substr(7, req.body.description.length);
+            let datetime = moment(date, 'YYYY-MM-DD HH.mm.ss').format('YYYY-MM-DD HH:mm:ss');
+            console.log(datetime);
+            taskService.patchTask(req.params.taskId, { termin: datetime, terminowe: 1 }).then((result) => {
+                console.log(result);
+                response(res, false, ['Pomyślnie wstrzymano zadanie.'], [], '/tasks');
+                return;
+            }).catch((err) => {
+                response(res, true, ['Coś poszło nie tak podczas próby wstrzymania zadania.', JSON.stringify(err)], []);
+                return;
+            });
+        } else {
+            response(res, false, ['Pomyślnie wstrzymano zadanie.'], [], '/tasks');
+            return;            
+        }
     }).catch((err) => {
         console.log(err);
         response(res, true, ['Coś poszło nie tak podczas próby wstrzymania zadania.', JSON.stringify(err)], []);
