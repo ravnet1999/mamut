@@ -57,7 +57,9 @@ const readEmails = () => {
 
     }).catch((err) => {
         taskRunning = null;
-        console.log(err);
+        if(err != null) {
+            console.log(err);
+        }
     });
 }
 

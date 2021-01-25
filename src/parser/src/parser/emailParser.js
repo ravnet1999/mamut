@@ -36,7 +36,7 @@ const readEmails = () => {
 
         return new Promise((resolve, reject) => {
             if(contents.length == 0) {
-                reject('No emails to parse.');
+                reject(null);
                 return;
             }
             contents.map((content) => {

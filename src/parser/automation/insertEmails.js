@@ -58,19 +58,23 @@ const insertEmails = () => {
                         domains: domain
                     }).then((companyEmail) => {
                         if(!companyEmail) {
+                            taskRunning = null;
                             return;
                         } 
                         companyService.getUnknownRep(companyEmail.companyId).then((rep) => {
                             if(rep.length == 0) {
+                                taskRunning = null;
                                 console.log(`Użytkownik nieznany nie jest przypisany do klienta o id ${companyEmail.companyId}.`);
                                 return;
                             };
                             insertEmail(rep[0], databaseEmail);
                         }).catch((err) => {
+                            taskRunning = null;
                             console.log(err);
                             return;
                         })
                     }).catch((err) => {
+                        taskRunning = null;
                         console.log(err);
                         return;
                     });
@@ -81,10 +85,12 @@ const insertEmails = () => {
                 insertEmail(rep[0], databaseEmail);
 
             }).catch((err) => {
+                taskRunning = null;
                 console.log(err);
             });
         })
     }).catch((err) => {
+        taskRunning = null;
         console.log('Wystąpił błąd podczas próby pobrania maili z bazy danych Mongo.');
         return;
     });
