@@ -8,6 +8,8 @@ const episodeService = require('../src/services/TaskServices/EpisodeService');
 const companyService = require('../src/services/CompanyService');
 const Task = require('../src/classes/Task');
 
+let taskRunning = null;
+
 const formatDate = (date) => {
     return moment(date, appConfig.date.format.system).format(appConfig.date.format.system)
 }
@@ -28,22 +30,25 @@ const insertEmail = (rep, databaseEmail) => {
         databaseEmail.inserted = true;
         return databaseEmail.save();
     }).then((doc) => {
+        taskRunning = null;
         console.log('Pomyślnie zaktualizowano opis pierwszego etapu dla zadania: ', newTask.body.id);
     }).catch((err) => {
+        taskRunning = null;
         console.log('Wystąpił błąd podczas próby wprowadzenia maila jako zadanie.');
         console.log(err);
     });
 }
 
 const insertEmails = () => {
+    if(taskRunning) {
+        console.log(`Previous (${taskRunning}) insertEmails task is still running...`);
+    };
+    taskRunning = moment().format('DD-MM-YYYY HH:mm:ss');
+
     Email.find({
         inserted: false
     }).then((databaseEmails) => {
-        if(databaseEmails.length > 0) {
-            console.log(`Znaleziono ${databaseEmails.length} maili, z których nie utworzono jeszcze zadań.`);
-        }
         databaseEmails.map((databaseEmail) => {
-            console.log('Email subject', databaseEmail.subject);
             let fullEmail = databaseEmail.from;
             let domain = fullEmail.split('@')[1];
 

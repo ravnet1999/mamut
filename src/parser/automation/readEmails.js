@@ -3,6 +3,8 @@ const appConfig = require('../config/appConfig.json');
 const mailParser = require('../src/parser/emailParser');
 const Email = require('../src/models/EmailModel');
 
+let taskRunning = null;
+
 const formatDate = (date) => {
     return moment(date, appConfig.date.format.system).format(appConfig.date.format.system)
 }
@@ -12,8 +14,17 @@ const getFromAddress = (email) => {
 }
 
 const readEmails = () => {
+    if(taskRunning) {
+        console.log(`Previous ${taskRunning} readEmails task is still running...`);
+        return;
+    }
+    taskRunning = moment().format('DD-MM-YYYY HH:mm:ss');
+
     mailParser().then((emails) => {        
+        console.log('Got emails:', emails);
+
         emails.map((email) => {
+            console.log('Reading email:', email);
             if(!email.date) {
                 return;
             }
@@ -36,7 +47,6 @@ const readEmails = () => {
                         return;
                     })
                 } else {
-                    console.log('Baza maili aktualna.');
                     return;
                 }
             }).catch((err) => {
@@ -45,7 +55,11 @@ const readEmails = () => {
             });
         });
 
+        console.log('Terminating readEmails...');
+        taskRunning = null;
+
     }).catch((err) => {
+        taskRunning = null;
         console.log(err);
     });
 }
