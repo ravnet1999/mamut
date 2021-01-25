@@ -40,7 +40,6 @@ const readEmails = () => {
                 return;
             }
             contents.map((content) => {
-                console.log('Parsing: ', content);
                 mailParser(content, (err, mail) => {
                     if(err) {
                         conn.end();

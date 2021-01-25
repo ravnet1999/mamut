@@ -21,10 +21,7 @@ const readEmails = () => {
     taskRunning = moment().format('DD-MM-YYYY HH:mm:ss');
 
     mailParser().then((emails) => {        
-        console.log('Got emails:', emails);
-
         emails.map((email) => {
-            console.log('Reading email:', email);
             if(!email.date) {
                 return;
             }

@@ -21,7 +21,6 @@ const insertEmail = (rep, databaseEmail) => {
     new Task(rep.id_klienta, rep.id).createTask(0, {
         opis: databaseEmail.subject
     }).then((task) => {
-        console.log(task);
         newTask = task;
         return episodeService.getEpisodes(task.body.id);
     }).then((episodeFetchResult) => {
