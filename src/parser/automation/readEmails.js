@@ -52,7 +52,7 @@ const readEmails = () => {
             });
         });
 
-        console.log('Terminating readEmails...');
+        console.log(moment().format('DD-MM-YYYY, HH:mm:ss'), 'Terminating readEmails...');
         taskRunning = null;
 
     }).catch((err) => {
