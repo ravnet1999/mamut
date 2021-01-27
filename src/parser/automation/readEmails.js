@@ -15,18 +15,22 @@ const getFromAddress = (email) => {
 
 const readEmails = () => {
     if(taskRunning) {
-        console.log(moment().format('DD-MM-YYYY, HH:mm:ss'), `Previous ${taskRunning} readEmails task is still running...`);
+        console.log(moment().format('DD-MM-YYYY HH:mm:ss'), `Poprzednie zadanie czytania maili jest aktywne. Uruchomione: ${taskRunning}. (readEmails)`);
         return;
     }
     taskRunning = moment().format('DD-MM-YYYY HH:mm:ss');
 
-    mailParser().then((emails) => {        
+    mailParser().then((emails) => {   
+        if(emails.length == 0) { 
+            taskRunning = null;
+            return;
+        }
         emails.map((email) => {
             if(!email.date) {
                 return;
             }
 
-            console.log('Found in inbox: ', 'From: ', getFromAddress(email), 'On: ', formatDate(email.date), 'Subject:', email.subject );
+            console.log(moment().format('DD-MM-YYYY, HH:mm:ss'), 'Znalazłem wiadomość email.\n\nOd: ', getFromAddress(email), '\nData: ', formatDate(email.date), '\nTemat: ', email.subject, '\n\n' );
             Email.findOne({
                 from: getFromAddress(email),
                 date: formatDate(email.date)
@@ -54,7 +58,6 @@ const readEmails = () => {
             });
         });
 
-        console.log(moment().format('DD-MM-YYYY, HH:mm:ss'), 'Terminating readEmails...');
         taskRunning = null;
 
     }).catch((err) => {

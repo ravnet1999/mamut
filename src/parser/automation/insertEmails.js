@@ -18,7 +18,7 @@ const formatDate = (date) => {
 }
 
 const insertEmail = (rep, databaseEmail) => {
-    console.log(moment().format('DD-MM-YYYY, HH:mm:ss'), 'Running insertEmail (singular) function.', 'Email from: ', databaseEmail.from);
+    console.log(moment().format('DD-MM-YYYY, HH:mm:ss'), 'Przetwarzam email.\n\nOd:', databaseEmail.from, '\nData: ', databaseEmail.date, '\nTemat: ', databaseEmail.subject, '\n\n');
 
     rep.adres_email = databaseEmail.from;
     let newTask;
@@ -45,7 +45,7 @@ const insertEmail = (rep, databaseEmail) => {
 
 const insertEmails = () => {
     if(taskRunning) {
-        console.log(`Previous (${taskRunning}) insertEmails task is still running...`);
+        console.log(moment().format('DD-MM-YYYY HH:mm:ss'), `Poprzednie zadanie przetwarzania jest aktywne. Uruchomione: ${taskRunning}. (insertEmails)`);
         return;
     };
     taskRunning = moment().format('DD-MM-YYYY HH:mm:ss');
@@ -93,7 +93,6 @@ const insertEmails = () => {
                                     console.log(moment().format('DD-MM-YYYY, HH:mm:ss'), `Użytkownik nieznany nie jest przypisany do klienta o id ${companyEmail.companyId}.`);
                                     return;
                                 };
-                                console.log(moment().format('DD-MM-YYYY, HH:mm:ss'), 'Found email (unknown rep):', databaseEmail.from);
                                 insertEmail(rep[0], databaseEmail);
                             }).catch((err) => {
                                 taskRunning = null;
@@ -108,8 +107,7 @@ const insertEmails = () => {
     
                         return;
                     }
-    
-                    console.log(moment().format('DD-MM-YYYY, HH:mm:ss'), 'Found email:', databaseEmail.from);
+
                     insertEmail(rep[0], databaseEmail);
     
                 }).catch((err) => {
