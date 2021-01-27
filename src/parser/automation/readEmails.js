@@ -25,6 +25,8 @@ const readEmails = () => {
             if(!email.date) {
                 return;
             }
+
+            console.log('Found in inbox: ', 'From: ', getFromAddress(email), 'On: ', formatDate(email.date), 'Subject:', email.subject );
             Email.findOne({
                 from: getFromAddress(email),
                 date: formatDate(email.date)

@@ -5,6 +5,7 @@ const response = require('../src/response');
 const Automation = require('../src/models/AutomationModel');
 const readEmailsAutomation = require('../automation/readEmails');
 const insertEmailsAutomation = require('../automation/insertEmails');
+const moment = require('moment');
 
 let automations = [
     readEmailsAutomation,
@@ -21,6 +22,7 @@ const stopAutomations = () => {
 }
 
 const startAutomations = () => {
+    console.log(moment().format('DD-MM-YYYY, HH:mm:ss'), 'Starting automation.');
     stopAutomations();
     intervals = automations.map((automation) => {
         return setInterval(automation.method, automation.interval);

@@ -11,6 +11,7 @@ const Task = require('../src/classes/Task');
 console.log(moment().format('DD-MM-YYYY, HH:mm:ss'), 'Initializing insertEmails.');
 
 let taskRunning = null;
+let lastRemind = null;
 
 const formatDate = (date) => {
     return moment(date, appConfig.date.format.system).format(appConfig.date.format.system)
@@ -43,59 +44,82 @@ const insertEmail = (rep, databaseEmail) => {
 }
 
 const insertEmails = () => {
-
     if(taskRunning) {
         console.log(`Previous (${taskRunning}) insertEmails task is still running...`);
+        return;
     };
     taskRunning = moment().format('DD-MM-YYYY HH:mm:ss');
 
+
     Email.find({
+        initialized: true,
+        inserted: false
+    }).then((emails) => {
+        if(emails.length == 0) return;
+        if(lastRemind != moment().format('DD-MM-YYYY HH')) {
+            console.log('Znalazłem maile, które nie zostały w pełni zapisane jako zadania. ID obiektów w bazie danych: ', emails.map((email) => { return email._id }).join(', '));
+            lastRemind = moment().format('DD-MM-YYYY HH');
+        }
+    }).catch((err) => {
+        console.log(err);
+    });
+
+    Email.find({
+        initialized: false,
         inserted: false
     }).then((databaseEmails) => {
+        if(databaseEmails.length == 0) {
+            taskRunning = null;
+            return;
+        }
         databaseEmails.map((databaseEmail) => {
-
-            let fullEmail = databaseEmail.from;
-            let domain = fullEmail.split('@')[1];
-
-            companyService.getRepByEmail(fullEmail).then((rep) => {
-                if(rep.length == 0) {
-                    
-                    CompanyEmail.findOne({
-                        domains: domain
-                    }).then((companyEmail) => {
-                        if(!companyEmail) {
-                            taskRunning = null;
-                            return;
-                        } 
-                        companyService.getUnknownRep(companyEmail.companyId).then((rep) => {
-                            if(rep.length == 0) {
+            databaseEmail.initialized = true;
+            databaseEmail.save().then((doc) => {
+                let fullEmail = databaseEmail.from;
+                let domain = fullEmail.split('@')[1];
+    
+                companyService.getRepByEmail(fullEmail).then((rep) => {
+                    if(rep.length == 0) {
+                        CompanyEmail.findOne({
+                            domains: domain
+                        }).then((companyEmail) => {
+                            if(!companyEmail) {
                                 taskRunning = null;
-                                console.log(moment().format('DD-MM-YYYY, HH:mm:ss'), `Użytkownik nieznany nie jest przypisany do klienta o id ${companyEmail.companyId}.`);
                                 return;
-                            };
-                            console.log(moment().format('DD-MM-YYYY, HH:mm:ss'), 'Found email (unknown rep):', databaseEmail.from);
-                            insertEmail(rep[0], databaseEmail);
+                            } 
+                            companyService.getUnknownRep(companyEmail.companyId).then((rep) => {
+                                if(rep.length == 0) {
+                                    taskRunning = null;
+                                    console.log(moment().format('DD-MM-YYYY, HH:mm:ss'), `Użytkownik nieznany nie jest przypisany do klienta o id ${companyEmail.companyId}.`);
+                                    return;
+                                };
+                                console.log(moment().format('DD-MM-YYYY, HH:mm:ss'), 'Found email (unknown rep):', databaseEmail.from);
+                                insertEmail(rep[0], databaseEmail);
+                            }).catch((err) => {
+                                taskRunning = null;
+                                console.log(err);
+                                return;
+                            })
                         }).catch((err) => {
                             taskRunning = null;
                             console.log(err);
                             return;
-                        })
-                    }).catch((err) => {
-                        taskRunning = null;
-                        console.log(err);
+                        });
+    
                         return;
-                    });
-
-                    return;
-                }
-
-                console.log(moment().format('DD-MM-YYYY, HH:mm:ss'), 'Found email:', databaseEmail.from);
-                insertEmail(rep[0], databaseEmail);
-
+                    }
+    
+                    console.log(moment().format('DD-MM-YYYY, HH:mm:ss'), 'Found email:', databaseEmail.from);
+                    insertEmail(rep[0], databaseEmail);
+    
+                }).catch((err) => {
+                    taskRunning = null;
+                    console.log(err);
+                }); 
             }).catch((err) => {
                 taskRunning = null;
                 console.log(err);
-            });
+            }); 
         })
     }).catch((err) => {
         taskRunning = null;
@@ -106,5 +130,5 @@ const insertEmails = () => {
 
 module.exports = {
     method: insertEmails,
-    interval: 10000
+    interval: 5000
 }
