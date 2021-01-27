@@ -15,7 +15,7 @@ const getFromAddress = (email) => {
 
 const readEmails = () => {
     if(taskRunning) {
-        console.log(`Previous ${taskRunning} readEmails task is still running...`);
+        console.log(moment().format('DD-MM-YYYY, HH:mm:ss'), `Previous ${taskRunning} readEmails task is still running...`);
         return;
     }
     taskRunning = moment().format('DD-MM-YYYY HH:mm:ss');
@@ -37,17 +37,17 @@ const readEmails = () => {
                         subject: email.subject,
                         inserted: false
                     }).then((result) => {
-                        console.log(`Wprowadzono email od ${getFromAddress(email)} z dnia ${formatDate(email.date)} do bazy danych.`);
+                        console.log(moment().format('DD-MM-YYYY, HH:mm:ss'), `Wprowadzono email od ${getFromAddress(email)} z dnia ${formatDate(email.date)} do bazy danych.`);
                         return;
                     }).catch((err) => {
-                        console.log('Wystąpił błąd podczas próby wprowadzenia maili do bazy danych Mongo', err);
+                        console.log(moment().format('DD-MM-YYYY, HH:mm:ss'), 'Wystąpił błąd podczas próby wprowadzenia maili do bazy danych Mongo', err);
                         return;
                     })
                 } else {
                     return;
                 }
             }).catch((err) => {
-                console.log('Wystąpił błąd podczas próby znalezienia maili w bazie danych Mongo', err);
+                console.log(moment().format('DD-MM-YYYY, HH:mm:ss'), 'Wystąpił błąd podczas próby znalezienia maili w bazie danych Mongo', err);
                 return;
             });
         });

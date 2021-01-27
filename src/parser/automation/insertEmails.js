@@ -8,6 +8,8 @@ const episodeService = require('../src/services/TaskServices/EpisodeService');
 const companyService = require('../src/services/CompanyService');
 const Task = require('../src/classes/Task');
 
+console.log(moment().format('DD-MM-YYYY, HH:mm:ss'), 'Initializing insertEmails.');
+
 let taskRunning = null;
 
 const formatDate = (date) => {
@@ -15,6 +17,8 @@ const formatDate = (date) => {
 }
 
 const insertEmail = (rep, databaseEmail) => {
+    console.log(moment().format('DD-MM-YYYY, HH:mm:ss'), 'Running insertEmail (singular) function.', 'Email from: ', databaseEmail.from);
+
     rep.adres_email = databaseEmail.from;
     let newTask;
     
@@ -30,15 +34,16 @@ const insertEmail = (rep, databaseEmail) => {
         return databaseEmail.save();
     }).then((doc) => {
         taskRunning = null;
-        console.log('Pomyślnie zaktualizowano opis pierwszego etapu dla zadania: ', newTask.body.id);
+        console.log(moment().format('DD-MM-YYYY, HH:mm:ss'), 'Pomyślnie zaktualizowano opis pierwszego etapu dla zadania: ', newTask.body.id);
     }).catch((err) => {
         taskRunning = null;
-        console.log('Wystąpił błąd podczas próby wprowadzenia maila jako zadanie.');
+        console.log(moment().format('DD-MM-YYYY, HH:mm:ss'), 'Wystąpił błąd podczas próby wprowadzenia maila jako zadanie.');
         console.log(err);
     });
 }
 
 const insertEmails = () => {
+
     if(taskRunning) {
         console.log(`Previous (${taskRunning}) insertEmails task is still running...`);
     };
@@ -48,6 +53,7 @@ const insertEmails = () => {
         inserted: false
     }).then((databaseEmails) => {
         databaseEmails.map((databaseEmail) => {
+
             let fullEmail = databaseEmail.from;
             let domain = fullEmail.split('@')[1];
 
@@ -64,9 +70,10 @@ const insertEmails = () => {
                         companyService.getUnknownRep(companyEmail.companyId).then((rep) => {
                             if(rep.length == 0) {
                                 taskRunning = null;
-                                console.log(`Użytkownik nieznany nie jest przypisany do klienta o id ${companyEmail.companyId}.`);
+                                console.log(moment().format('DD-MM-YYYY, HH:mm:ss'), `Użytkownik nieznany nie jest przypisany do klienta o id ${companyEmail.companyId}.`);
                                 return;
                             };
+                            console.log(moment().format('DD-MM-YYYY, HH:mm:ss'), 'Found email (unknown rep):', databaseEmail.from);
                             insertEmail(rep[0], databaseEmail);
                         }).catch((err) => {
                             taskRunning = null;
@@ -82,6 +89,7 @@ const insertEmails = () => {
                     return;
                 }
 
+                console.log(moment().format('DD-MM-YYYY, HH:mm:ss'), 'Found email:', databaseEmail.from);
                 insertEmail(rep[0], databaseEmail);
 
             }).catch((err) => {
@@ -91,7 +99,7 @@ const insertEmails = () => {
         })
     }).catch((err) => {
         taskRunning = null;
-        console.log('Wystąpił błąd podczas próby pobrania maili z bazy danych Mongo.');
+        console.log(moment().format('DD-MM-YYYY, HH:mm:ss'), 'Wystąpił błąd podczas próby pobrania maili z bazy danych Mongo.');
         return;
     });
 }

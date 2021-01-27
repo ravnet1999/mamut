@@ -482,7 +482,7 @@ const Task = (props) => {
                             <div className={`floating-buttons ${awaitClicked ? 'd-block' : 'd-none'}`}>
                                 <Button onClick={(e) => awaitTask('OCZEKUJE', 'Zasoby')}><FontAwesomeIcon icon={faBoxOpen}></FontAwesomeIcon></Button>
                                 <Button onClick={(e) => awaitTask('OCZEKUJE', 'Kompetencje')}><FontAwesomeIcon icon={faBookReader}></FontAwesomeIcon></Button>
-                                <Button onClick={(e) => awaitTask('OCZEKUJE', 'Osoba')}><FontAwesomeIcon icon={faUserClock}></FontAwesomeIcon></Button>
+                                <Button onClick={(e) => awaitTask('OCZEKUJE', 'Uzytkownik')}><FontAwesomeIcon icon={faUserClock}></FontAwesomeIcon></Button>
                                 <Button onClick={(e) => pickDate()}><FontAwesomeIcon icon={faCalendarDay}></FontAwesomeIcon></Button>
                                 <Button onClick={(e) => awaitTask('OCZEKUJE', 'Transport')}><FontAwesomeIcon icon={faTruck}></FontAwesomeIcon></Button>
                                 <Button onClick={(e) =>  setAwaitClicked(false)} className={'btn-close-menu'}><FontAwesomeIcon icon={faWindowClose}></FontAwesomeIcon></Button>
