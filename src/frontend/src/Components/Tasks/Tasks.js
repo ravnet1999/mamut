@@ -9,6 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import Modal from '../Modal/Modal';
 import moment from 'moment';
+import TaskPreview from './TaskPreview';
 
 const Tasks = (props) => {
     
@@ -23,6 +24,8 @@ const Tasks = (props) => {
         buttons: []
     });
     const [modalVisible, setModalVisible] = useState(false);
+    const [previewedTask, setPreviewedTask] = useState(null);
+    const [taskPreviewVisible, setTaskPreviewVisible] = useState(false);
 
     const getTasks = () => {
         props.setCurrentPage(props.history.location.pathname);
@@ -73,6 +76,15 @@ const Tasks = (props) => {
         return stampDescription.substr(0, 6) == 'Termin' ? 'Termin' : stampDescription;
     }
 
+    const previewTask = (task) => {
+        setPreviewedTask(task);
+        setTaskPreviewVisible(true);
+    }
+
+    const closeTaskPreview = () => {
+        setTaskPreviewVisible(false);
+    }
+
     const buildTaskRadios = () => {
         return tasks.map((task, key) => {
 
@@ -102,6 +114,7 @@ const Tasks = (props) => {
                 <Row key={key}>
                     <Col xs="12">
                         <div className={`tasklist-task ${taskStampClass} margin-bottom-default`}>
+                            <Button onClick={(e) => previewTask(task)} className="small circular info">i</Button>
                             <Form.Check
                                 type="radio"
                                 label={`${task.id} - ${task.zglaszajacy}`}
@@ -114,7 +127,7 @@ const Tasks = (props) => {
                             <span className={`task-description description ${taskStampClass} vertical-middle-static d-inline-block`}> - {task.lastStamp?.nazwa} {task.lastStamp && task.lastStamp.nazwa == 'OCZEKUJE' ? `: ${parseStampDescription(task.lastStamp?.opis)}` : ''}</span><br />
                             { task.klient ? <div className="task-main-description">Klient: {task.klient}</div> : '' }
                             { task.klient ? <br /> : '' }
-                            { task.terminowe == 1 && task.termin ? ( <div className="task-main-description">Termin: {moment(task.termin).zone(0).format('DD-MM-YYYY HH:mm:ss')}</div> ) : '' }
+                            { task.terminowe == 1 && task.termin ? ( <div className="task-main-description">Termin: {moment(task.termin).utcOffset(0).format('DD-MM-YYYY HH:mm:ss')}</div> ) : '' }
                             { task.terminowe == 1 && task.termin ? <br /> : ''}
                             {task.opis ? <div className="task-main-description">Opis: {task.opis.substring(0, 50)}{task.opis.length > 50 ? '...' : ''}</div> : '' }
                             { task.lastStamp?.nazwa == 'OCZEKUJE' && !task.informatyk == 0 ? <Button className="position-right-middle small circular" onClick={(e) => { setModal({
@@ -139,6 +152,7 @@ const Tasks = (props) => {
 
     return (
         <Page>
+            { taskPreviewVisible ? <TaskPreview task={previewedTask} onClose={closeTaskPreview}></TaskPreview> : '' }
             <Modal title={modal.title} description={modal.description} buttons={modal.buttons} visible={modalVisible} onClose={() => setModalVisible(false)}></Modal>
             <Alert response={response}></Alert>
             {buildTaskRadios()}

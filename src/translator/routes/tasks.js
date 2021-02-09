@@ -4,6 +4,8 @@ const response = require('../src/response');
 const Task = require('../src/classes/TaskClass');
 const TaskStamps = require('../src/classes/TaskStampsClass');
 const taskService = require('../src/services/Task/TaskService');
+const taskEpisodeService = require('../src/services/Task/TaskEpisodeService');
+const operatorService = require('../src/services/OperatorService');
 const charset = require('../src/helpers/charset');
 const query = require('../src/mysql/query')
 
@@ -33,6 +35,39 @@ router.get('/stamps/:taskId', (req, res, next) => {
         response(res, true, ['Coś poszło nie tak podczas próby pobrania stempli.', JSON.stringify(err)], []);
         return;
     });
+});
+
+router.get('/details/:taskId', (req, res, next) => {
+    let fetchedTask;
+    let operatorPromises;
+
+    new Task(req.params.taskId).fetchTask().then((task) => {
+        fetchedTask = task;
+        return TaskStamps.fetchTasksStamps([task]);
+    }).then((tasks) => {
+        fetchedTask.body.stamps = tasks[0].stamps;
+        return taskEpisodeService.find(999999, 0, 'id', 'DESC', '`id_zgloszenia` = ' + req.params.taskId);
+    }).then((episodes) => {
+        fetchedTask.body.episodes = episodes;
+        let operatorIds = episodes.map((episode) => {
+            return episode.id_informatyka;
+        });
+        return operatorService.find(99999999, 0, 'id', 'DESC', '`id` IN (' + operatorIds.join(',') + ')');
+    }).then((operators) => {
+        fetchedTask.body.episodes = fetchedTask.body.episodes.map((episode) => {
+            episode.informatyk = operators.filter((operator) => {
+                delete operator.haslo;
+                return operator.id == episode.id_informatyka;
+            })[0];
+            return episode;
+        });
+        response(res, false, ['Pomyslnie pobrano zadanie.'], [fetchedTask.body]);
+        return;
+    }).catch((err) => {
+        console.log(err, 'error thing');
+        response(res, true, ['Coś poszło nie tak podczas próby pobrania szczegółów zadania.', JSON.stringify(err)], []);
+        return;
+    }); 
 });
 
 

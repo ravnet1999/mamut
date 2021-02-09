@@ -62,6 +62,16 @@ router.get('/:taskId', [authMiddleware], (req, res, next) => {
     });;
 });
 
+router.get('/details/:taskId', [authMiddleware], (req, res, next) => {
+    taskService.getTaskDetails(req.params.taskId).then((result) => {
+        response(res, false, ['Pomyślnie pobrano szczegóły zadania.'], result.resources);
+        return;
+    }).catch((err) => {
+        response(res, true, ['Coś poszło nie tak podczas próby pobrania szczegółów zadania.', JSON.stringify(err)], []);
+        return;
+    });
+});
+
 router.put('/:clientId/:repId', [authMiddleware], (req, res, next) => {
     let task = new Task(req.params.clientId, req.params.repId);
 

@@ -243,6 +243,19 @@ nav ul li a:hover {
     padding: 2px;
 }
 
+.btn-primary.info {
+    background-color: #2222FF;
+    color: #FFF;
+    border: 1px solid #2222FF;
+    margin-right: 8px;
+}
+
+.btn-primary.info:hover {
+    background-color: #FFF;
+    color: #2222FF;
+}
+
+
 .btn-primary.circular {
     border-radius: 50%;
 }
@@ -302,4 +315,18 @@ nav ul li a:hover {
     background-color: #FFFFFF;
     border-color: #FF0000;
     color: #FF0000;
+}
+
+.bottom-separator {
+    border-bottom: 1px solid #212529;
+}
+
+span.initials {
+    background-color: #2222FF;
+    color: #FFF;
+    line-height: 1;
+    font-size: 0.9em;
+    padding: 1px 4px 1px 4px;
+    font-weight: bold;
+    border-radius: 6px;
 }

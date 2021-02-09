@@ -133,3 +133,48 @@
 .react-datepicker {
     width: 333px;
 }
+
+.task-preview {
+    position: fixed;
+    width: 90%;
+    height: 90%;
+    background-color: #FFF;
+    border: 1px solid #212529;
+    max-height: 525px;
+    padding: 10px 20px;
+    border-radius: 6px;
+    z-index:9999;
+    transform: translate(-50%, 0%);
+    left: 50%;
+}
+
+.task-preview .task-preview-header {
+    margin-top: 7px;
+}
+
+.task-preview .bottom-separator {
+    padding-bottom: 10px;
+}
+
+.task-preview-details-row {
+    padding-top: 15px;
+    background-color:#FFF9EF;
+    border: 2px dashed #E6CB86;
+    padding-bottom: 15px;
+    border-radius: 6px;
+}
+
+.task-preview-episode-row {
+    background-color: #F0F0F0;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    border-radius: 6px;
+    margin-left: -15px;
+    margin-right: -15px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.task-preview .tab-content {
+    margin-top: 6px;
+}

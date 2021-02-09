@@ -42,6 +42,23 @@ class TaskService {
         });
     }
 
+    getTaskDetails = (taskId) => {
+        return new Promise((resolve, reject) => {
+            axios.get(`${appConfig.URLs.translator}/tasks/details/${taskId}`).then((response) => {
+                parseResponse(response).then((response) => {
+                    resolve(response);
+                    return;
+                }).catch((err) => {
+                    reject(err);
+                    return;
+                });
+            }).catch((err) => {
+                reject(err);
+                return;
+            });
+        });   
+    }
+
     createTask = (taskObject) => {
         return new Promise((resolve, reject) => {
             axios.put(`${appConfig.URLs.translator}/tasks/`, taskObject).then((response) => {
