@@ -6,6 +6,7 @@ import Alert from '../Alert/Alert';
 import ClientHandler from '../../Handlers/ClientHandler';
 import TaskHandler from '../../Handlers/TaskHandler';
 import Modal from '../Modal/Modal';
+import TaskPreview from '../Tasks/TaskPreview';
 import './Representatives.css';
 
 const Representatives = (props) => {
@@ -18,6 +19,8 @@ const Representatives = (props) => {
         title: '',
         description: ''
     });
+    const [taskPreviewVisible, setTaskPreviewVisible] = useState(false);
+    const [previewedTask, setPreviewedTask] = useState(null);
 
     useEffect(() => {
         props.setCurrentPage(props.history.location.pathname);
@@ -72,6 +75,11 @@ const Representatives = (props) => {
         return sortedOperators;
     }
 
+    const previewTask = (task) => {
+        setPreviewedTask(task);
+        setTaskPreviewVisible(true);
+    }
+
     const showTasks = (representative) => {
         let sortedTasks = sortTasks(representative.activeTasks);
         let sortedInitials = Object.keys(sortedTasks).sort((a, b) => {
@@ -88,7 +96,7 @@ const Representatives = (props) => {
                         // return <div key={key}><strong>ID:</strong> {task.id}, <strong>Opis:</strong> {task.opis ? task.opis.substr(0, 150) + (task.opis.length > 150 ? '...' : '') : 'Brak opisu'}, <strong>Ostatni etap:</strong> {task.lastEpisode ? task.lastEpisode.rozwiazanie : ''}</div>
                         return (
                             <div key={key} className="active-task">
-                                <div><strong>ID:</strong> {task.id}</div><div><strong>Opis:</strong> {task.opis ? task.opis.substr(0, 150) + (task.opis.length > 150 ? '...' : '') : 'Brak opisu'}</div><div><strong>Ostatni etap:</strong> {task.lastEpisode ? task.lastEpisode.rozwiazanie.substr(0, 150) + (task.lastEpisode.rozwiazanie.length > 150 ? '...' : '') : 'Brak opisu etapu.'} </div>
+                                <div><strong onClick={(e) => previewTask(task)}>ID:</strong> {task.id}</div><div><strong>Opis:</strong> {task.opis ? task.opis.substr(0, 150) + (task.opis.length > 150 ? '...' : '') : 'Brak opisu'}</div><div><strong>Ostatni etap:</strong> {task.lastEpisode ? task.lastEpisode.rozwiazanie.substr(0, 150) + (task.lastEpisode.rozwiazanie.length > 150 ? '...' : '') : 'Brak opisu etapu.'} </div>
                             </div>
                         )
                     })}
@@ -135,6 +143,7 @@ const Representatives = (props) => {
 
     return (
         <Page>
+            { taskPreviewVisible ? <TaskPreview task={previewedTask} onClose={() => setTaskPreviewVisible(false)}></TaskPreview> : '' }
             <Modal buttons={[]} closeButtonName={'Zamknij'} title={activeTasksModal.title} description={activeTasksModal.description} visible={tasksVisible} onClose={() => setTasksVisible(false)}></Modal>
             <Alert response={response}></Alert>
             { buildClients() }

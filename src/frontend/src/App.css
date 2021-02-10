@@ -273,7 +273,7 @@ nav ul li a:hover {
     width: 80%;
     transform: translate(-50%, -50%);
     background-color: #FFF;
-    z-index: 9999;
+    z-index: 9990;
     padding: 20px;
     border-radius: 6px;
     border: 1px solid #212529;
