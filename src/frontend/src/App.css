@@ -338,3 +338,15 @@ span.initials {
 .hover-cursor:hover {
     cursor: pointer;
 }
+.top-right {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.icon-center {
+    transform: translate(-50%, -50%);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+}

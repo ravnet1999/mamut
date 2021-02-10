@@ -9,12 +9,17 @@ import Modal from '../Modal/Modal';
 import TaskPreview from '../Tasks/TaskPreview';
 import './Representatives.css';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlay } from '@fortawesome/free-solid-svg-icons';
 const Representatives = (props) => {
     const [representatives, setRepresentatives] = useState([]);
     const [selectedRep, setSelectedRep] = useState(null);
     const [response, setResponse] = useState(null);
     const [taskStarted, setTaskStarted] = useState(false);
     const [tasksVisible, setTasksVisible] = useState(false);
+    const [takeOverStarted, setTakeOverStarted] = useState(false);
+    const [viewedOperator, setViewedOperator] = useState(null);
+    const [viewedTaskList, setViewedTaskList] = useState([]);
     const [activeTasksModal, setActiveTasksModal] = useState({
         title: '',
         description: ''
@@ -37,6 +42,47 @@ const Representatives = (props) => {
 
         return props.updateTaskCount;
     }, []);
+
+    useEffect(() => {
+        if(!viewedOperator) return () => {
+
+        };
+
+        let sortedTasks = sortTasks(viewedOperator.activeTasks);
+
+        let taskList = [];
+
+        for(let operator in sortedTasks) {
+            taskList.push(
+                <div key={operator}>
+                    <strong className="operator-header">{operator == '--' ? 'ToDo' : operator}: {sortedTasks[operator].length}</strong>
+                    {sortedTasks[operator].map((task, key) => {
+                        // return <div key={key}><strong>ID:</strong> {task.id}, <strong>Opis:</strong> {task.opis ? task.opis.substr(0, 150) + (task.opis.length > 150 ? '...' : '') : 'Brak opisu'}, <strong>Ostatni etap:</strong> {task.lastEpisode ? task.lastEpisode.rozwiazanie : ''}</div>
+                        return (
+                            <div key={key} className="active-task">
+                                <div className="hover-cursor hover-underline" onClick={(e) => previewTask(task)}><strong>ID:</strong> {task.id}</div><div><strong>Opis:</strong> {task.opis ? task.opis.substr(0, 150) + (task.opis.length > 150 ? '...' : '') : 'Brak opisu'}</div><div><strong>Ostatni etap:</strong> {task.lastEpisode ? task.lastEpisode.rozwiazanie.substr(0, 150) + (task.lastEpisode.rozwiazanie.length > 150 ? '...' : '') : 'Brak opisu etapu.'} </div>
+                                <div className="text-right top-right takeover-button"><Button className="small circular task-takeover" onClick={(e) => takeOverTask(task)} disabled={takeOverStarted}><span className="icon-center takeover"><FontAwesomeIcon icon={faPlay}></FontAwesomeIcon></span></Button></div>
+                            </div>
+                        )
+                    })}
+                </div>
+            )
+        }
+
+        setViewedTaskList(taskList);        
+    }, [viewedOperator, takeOverStarted])
+
+    useEffect(() => {
+        if(!viewedOperator) return () => {
+
+        };
+
+        setActiveTasksModal({
+            title: `Aktywne zadania dla ${viewedOperator.imie} ${viewedOperator.nazwisko}`,
+            description: viewedTaskList
+        });
+        setTasksVisible(true);
+    }, [viewedTaskList]);
 
     const createTask = () => {
         setTaskStarted(true);
@@ -79,46 +125,22 @@ const Representatives = (props) => {
         setPreviewedTask(task);
         setTaskPreviewVisible(true);
     }
+    
+    const takeOverTask = (task) => {
+        setTakeOverStarted(true);
+        TaskHandler.reassignTask(task.id, undefined).then((result) => {
+            window.location.replace(`/admin/task/${task.id}`);
+            setTakeOverStarted(false);
+        }).catch((err) => {
+            console.log(err);
+            setTakeOverStarted(false);
+        })
+    }
 
     const showTasks = (representative) => {
-        let sortedTasks = sortTasks(representative.activeTasks);
-        let sortedInitials = Object.keys(sortedTasks).sort((a, b) => {
-            return a.localeCompare(b)
-        });
-
-        let taskList = [];
-
-        for(let operator in sortedTasks) {
-            taskList.push(
-                <div key={operator}>
-                    <strong className="operator-header">{operator == '--' ? 'ToDo' : operator}: {sortedTasks[operator].length}</strong>
-                    {sortedTasks[operator].map((task, key) => {
-                        // return <div key={key}><strong>ID:</strong> {task.id}, <strong>Opis:</strong> {task.opis ? task.opis.substr(0, 150) + (task.opis.length > 150 ? '...' : '') : 'Brak opisu'}, <strong>Ostatni etap:</strong> {task.lastEpisode ? task.lastEpisode.rozwiazanie : ''}</div>
-                        return (
-                            <div key={key} className="active-task">
-                                <div><strong className="hover-underline hover-cursor" onClick={(e) => previewTask(task)}>ID:</strong> {task.id}</div><div><strong>Opis:</strong> {task.opis ? task.opis.substr(0, 150) + (task.opis.length > 150 ? '...' : '') : 'Brak opisu'}</div><div><strong>Ostatni etap:</strong> {task.lastEpisode ? task.lastEpisode.rozwiazanie.substr(0, 150) + (task.lastEpisode.rozwiazanie.length > 150 ? '...' : '') : 'Brak opisu etapu.'} </div>
-                            </div>
-                        )
-                    })}
-                </div>
-            )
-        }
-
-        // let taskList = representative.activeTasks.map((task, key) => {
-        //     return ( 
-        //         <div key={key}>
-        //             <span className="operator-header"></span>
-        //             <div key={key}>
-        //                 <div><strong>Operator: </strong>{task.operator.inicjaly}</div><div><strong>ID:</strong> {task.id}</div><div><strong>Opis:</strong> {task.opis ? task.opis.substr(0, 150) + (task.opis.length > 150 ? '...' : '') : 'Brak opisu'}</div><div><strong>Ostatni etap:</strong> {task.lastEpisode ? task.lastEpisode.rozwiazanie.substr(0, 150) + (task.lastEpisode.rozwiazanie.length > 150 ? '...' : '') : 'Brak opisu etapu.'} </div>
-        //             </div>
-        //         </div>
-        //     );
-        // });
-        setActiveTasksModal({
-            title: `Aktywne zadania dla ${representative.imie} ${representative.nazwisko}`,
-            description: taskList
-        });
-        setTasksVisible(true);
+        console.log('test');
+        console.log(representative);
+        setViewedOperator(representative);
     }
 
     const buildClients = () => {

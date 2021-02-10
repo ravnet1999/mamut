@@ -4,6 +4,7 @@
 }
 
 .active-task {
+    position: relative;
     background-color: #dedede;
     padding: 6px 10px;
     margin-top: 3px;
@@ -20,4 +21,25 @@
 
 .task-count {
     margin-left: 8px;
+}
+
+.top-right.takeover-button {
+    top: 5px;
+    right: 5px;
+}
+
+.icon-center.takeover {
+    left: 52%;
+    font-size: 0.8em;
+}
+
+.btn.task-takeover {
+    background-color: rgb(0, 146, 0);
+    border: 1px solid rgb(0, 146, 0);
+}
+
+.btn.task-takeover:hover {
+    color: rgb(0, 146, 0);
+    background-color: #FFF;
+    border-color: rgb(0, 146, 0);
 }
