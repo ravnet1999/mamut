@@ -12,7 +12,7 @@ const Modal = (props) => {
     if(!props.visible) return '';
 
     return (
-        <div className="mamut-modal">
+        <div className={`mamut-modal ${props.className ? props.className : ''}`}>
             <Row>
                 <Col className="text-right"><span className="close-button" onClick={(e) => props.onClose()}>x</span></Col>
             </Row>

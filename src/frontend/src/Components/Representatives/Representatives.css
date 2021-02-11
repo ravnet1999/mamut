@@ -43,3 +43,7 @@
     background-color: #FFF;
     border-color: rgb(0, 146, 0);
 }
+
+.mamut-modal.takeover-modal {
+    z-index: 10000
+}

@@ -24,6 +24,16 @@ const Representatives = (props) => {
         title: '',
         description: ''
     });
+    const [taskForTakeOver, setTaskForTakeOver] = useState(null);
+    const [takeOverModalVisible, setTakeOverModalVisible] = useState(false);
+    const [takeOverButtonDisabled, setTakeOverButtonDisabled] = useState({
+        status: false
+    });
+    const [takeOverModal, setTakeOverModal] = useState({
+        title: '',
+        description: '',
+        buttons: []
+    });
     const [taskPreviewVisible, setTaskPreviewVisible] = useState(false);
     const [previewedTask, setPreviewedTask] = useState(null);
 
@@ -84,6 +94,40 @@ const Representatives = (props) => {
         setTasksVisible(true);
     }, [viewedTaskList]);
 
+    useEffect(() => {
+        if(!takeOverModalVisible || !taskForTakeOver) return () => {
+
+        };
+
+        console.log('refreshing modal');
+
+        setTakeOverModal({
+            title: `Przejęcie zadania ${taskForTakeOver.id} - ${taskForTakeOver.zglaszajacy}`,
+            description: `Czy na pewno chcesz przejąć zadanie ${taskForTakeOver.id} - ${taskForTakeOver.zglaszajacy} klienta ${taskForTakeOver.klient}?`,
+            buttons: [
+                {
+                    name: 'Potwierdź',
+                    method: () => {
+                        setTakeOverStarted(true);
+                        TaskHandler.reassignTask(taskForTakeOver.id, undefined).then((result) => {
+                            setTakeOverStarted(false);
+                            setTakeOverModalVisible(false);
+                            window.location.replace(`/admin/task/${taskForTakeOver.id}`);
+                        }).catch((err) => {
+                            console.log(err);
+                            setTakeOverStarted(false);
+                            setTakeOverModalVisible(false);
+                        });
+                    },
+                    disabled: {
+                        status: takeOverStarted
+                    }
+                }
+            ]
+        })
+
+    }, [takeOverModalVisible, taskForTakeOver, takeOverStarted]);
+
     const createTask = () => {
         setTaskStarted(true);
         setResponse({
@@ -127,14 +171,8 @@ const Representatives = (props) => {
     }
     
     const takeOverTask = (task) => {
-        setTakeOverStarted(true);
-        TaskHandler.reassignTask(task.id, undefined).then((result) => {
-            window.location.replace(`/admin/task/${task.id}`);
-            setTakeOverStarted(false);
-        }).catch((err) => {
-            console.log(err);
-            setTakeOverStarted(false);
-        })
+        setTaskForTakeOver(task);
+        setTakeOverModalVisible(true);
     }
 
     const showTasks = (representative) => {
@@ -166,6 +204,7 @@ const Representatives = (props) => {
     return (
         <Page>
             { taskPreviewVisible ? <TaskPreview task={previewedTask} onClose={() => setTaskPreviewVisible(false)}></TaskPreview> : '' }
+            <Modal className="takeover-modal" buttons={takeOverModal.buttons} closeButtonName={'Zamknij'} title={takeOverModal.title} description={takeOverModal.description} visible={takeOverModalVisible} onClose={() => setTakeOverModalVisible(false)}></Modal>
             <Modal buttons={[]} closeButtonName={'Zamknij'} title={activeTasksModal.title} description={activeTasksModal.description} visible={tasksVisible} onClose={() => setTasksVisible(false)}></Modal>
             <Alert response={response}></Alert>
             { buildClients() }
