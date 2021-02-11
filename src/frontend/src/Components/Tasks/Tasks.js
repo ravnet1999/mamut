@@ -165,7 +165,7 @@ const Tasks = (props) => {
                 <div className="bottom-pin">
                     <Row className="no-margins">
                         <Col className="text-right btn-center-container">
-                            <Button onClick={(e) => startTask()} className="btn-inverted btn-center btn-center" disabled={(tasks ? tasks.length == 0 : true) || taskStarted}>Start</Button>    
+                            <Button onClick={(e) => startTask()} className="btn-inverted btn-center btn-center" disabled={(tasks ? tasks.length == 0 : true) || taskStarted || taskPreviewVisible}>Start</Button>    
                         </Col>
                     </Row>
                     { pickedTask && tasks.length > 0 ? <TaskReassign taskId={pickedTask.id} reassignFinished={getTasks} redirect='/admin/tasks/general'></TaskReassign> : ''}

@@ -83,7 +83,7 @@ const TaskPreview = (props) => {
                         {console.log(task.stamps)}
                         <strong>Data przyjęcia:</strong> {moment(task.stamps[task.stamps.length - 1].godzina).utcOffset(0).format('DD-MM-YYYY HH:mm:ss')}<br />
                         <strong>Opis problemu:</strong> {task.opis}<br />
-                        <strong>Typ błędu:</strong> {task.usluga}<br />
+                        <strong>Typ błędu:</strong> {task.service.nazwa}<br />
                     </div>
                 </Col>
             </Row>

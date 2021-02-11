@@ -6,6 +6,7 @@ const TaskStamps = require('../src/classes/TaskStampsClass');
 const taskService = require('../src/services/Task/TaskService');
 const taskEpisodeService = require('../src/services/Task/TaskEpisodeService');
 const operatorService = require('../src/services/OperatorService');
+const serviceService = require('../src/services/ServiceService');
 const charset = require('../src/helpers/charset');
 const query = require('../src/mysql/query')
 
@@ -61,6 +62,9 @@ router.get('/details/:taskId', (req, res, next) => {
             })[0];
             return episode;
         });
+        return serviceService.findById(fetchedTask.body.id_uslugi);
+    }).then((service) => {
+        fetchedTask.body.service = service[0];
         response(res, false, ['Pomyslnie pobrano zadanie.'], [fetchedTask.body]);
         return;
     }).catch((err) => {

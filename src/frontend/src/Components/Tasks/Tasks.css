@@ -146,6 +146,7 @@
     z-index:9999;
     transform: translate(-50%, 0%);
     left: 50%;
+    overflow-y: scroll;
 }
 
 .task-preview .task-preview-header {
