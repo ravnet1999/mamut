@@ -244,15 +244,15 @@ nav ul li a:hover {
 }
 
 .btn-primary.info {
-    background-color: #2222FF;
+    background-color: rgb(166, 166, 255);
     color: #FFF;
-    border: 1px solid #2222FF;
+    border: 1px solid rgb(166, 166, 255);
     margin-right: 8px;
 }
 
 .btn-primary.info:hover {
     background-color: #FFF;
-    color: #2222FF;
+    color: rgb(166, 166, 255);
 }
 
 

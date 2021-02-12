@@ -77,7 +77,7 @@ const TaskPreview = (props) => {
                 <Col>
                     <div className="task-preview-details">
                         <strong>Klient:</strong> {task.klient}<br />
-                        <strong>Użytkownik:</strong> {task.klient}<br />
+                        <strong>Użytkownik:</strong> {task.zglaszajacy}<br />
                         <strong>Telefon:</strong> {task.telefon}<br />
                         <strong>Email:</strong> {task.adres_email}<br />
                         {console.log(task.stamps)}
