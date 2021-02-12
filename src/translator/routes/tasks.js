@@ -7,6 +7,7 @@ const taskService = require('../src/services/Task/TaskService');
 const taskEpisodeService = require('../src/services/Task/TaskEpisodeService');
 const operatorService = require('../src/services/OperatorService');
 const serviceService = require('../src/services/ServiceService');
+const userService = require('../src/services/UserService');
 const charset = require('../src/helpers/charset');
 const query = require('../src/mysql/query')
 
@@ -65,6 +66,9 @@ router.get('/details/:taskId', (req, res, next) => {
         return serviceService.findById(fetchedTask.body.id_uslugi);
     }).then((service) => {
         fetchedTask.body.service = service[0];
+        return userService.findById(fetchedTask.body.id_zglaszajacy);
+    }).then((rep) => {
+        fetchedTask.body.representative = rep[0];
         response(res, false, ['Pomyslnie pobrano zadanie.'], [fetchedTask.body]);
         return;
     }).catch((err) => {

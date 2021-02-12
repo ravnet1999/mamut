@@ -78,7 +78,7 @@ const TaskPreview = (props) => {
                     <div className="task-preview-details">
                         <strong>Klient:</strong> {task.klient}<br />
                         <strong>Użytkownik:</strong> {task.zglaszajacy}<br />
-                        <strong>Telefon:</strong> {task.telefon}<br />
+                        <strong>Telefon:</strong> {task.representative.tel_komorkowy}<br />
                         <strong>Email:</strong> {task.adres_email}<br />
                         {console.log(task.stamps)}
                         <strong>Data przyjęcia:</strong> {moment(task.stamps[task.stamps.length - 1].godzina).utcOffset(0).format('DD-MM-YYYY HH:mm:ss')}<br />
