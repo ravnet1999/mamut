@@ -87,7 +87,7 @@ router.put('/:clientId/:repId', [authMiddleware], (req, res, next) => {
     });
 });
 
-const notificationCallback = (err) => {
+const notificationCallback = (err, res) => {
     if(err) {
         console.log(err);
         response(res, true, ['Wystąpił problem podczas próby pobrania stempli zadania.', JSON.stringify(err)], []);
@@ -123,7 +123,7 @@ router.post('/:taskId/await/:type', [authMiddleware], (req, res, next) => {
     if(req.body.description == 'STOP') {
     
         taskService.stopTask(req.params.taskId, req.operatorId).then((result) => {
-            notifyFirstStop(req.params.taskId, req.operatorId, notificationCallback);
+            notifyFirstStop(req.params.taskId, req.operatorId, (err) => notificationCallback(err, res));
         }).catch((err) => {
             response(res, true, ['Wystąpił błąd podczas próby zatrzymania zadania.', JSON.stringify(err)], []);
             return;
@@ -137,13 +137,13 @@ router.post('/:taskId/await/:type', [authMiddleware], (req, res, next) => {
             let datetime = moment(date, 'YYYY-MM-DD HH.mm.ss').format('YYYY-MM-DD HH:mm:ss');    
 
             taskService.patchTask(req.params.taskId, { termin: datetime, terminowe: 1 }).then((result) => {
-                notifyFirstStop(req.params.taskId, req.operatorId, notificationCallback);
+                notifyFirstStop(req.params.taskId, req.operatorId, (err) => notificationCallback(err, res));
             }).catch((err) => {
                 response(res, true, ['Coś poszło nie tak podczas próby wstrzymania zadania.', JSON.stringify(err)], []);
                 return;
             });
         } else {
-            notifyFirstStop(req.params.taskId, req.operatorId, notificationCallback);
+            notifyFirstStop(req.params.taskId, req.operatorId, (err) => notificationCallback(err, res));
         }
     }).catch((err) => {
         console.log(err);
