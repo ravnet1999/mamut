@@ -87,40 +87,43 @@ router.put('/:clientId/:repId', [authMiddleware], (req, res, next) => {
     });
 });
 
+const notificationCallback = (err) => {
+    if(err) {
+        console.log(err);
+        response(res, true, ['Wystąpił problem podczas próby pobrania stempli zadania.', JSON.stringify(err)], []);
+        return;    
+    }
+
+    response(res, false, ['Pomyślnie wstrzymano zadanie.'], [], '/tasks');
+    return;
+};
+
+const notifyFirstStop = (taskId, operatorId, callback) => {
+    
+    let fetchedTask;
+    let fetchedRep;
+    let fetchedOperator;
+
+    taskService.getTaskById(taskId, operatorId).then((tasks) => {
+        fetchedTask = tasks[0];
+        return companyService.getRepresentative(fetchedTask.id_zglaszajacy);
+    }).then((rep) => {
+        fetchedRep = rep;
+        return operatorService.getOperator(fetchedTask.informatyk);
+    }).then((operators) => {
+        fetchedOperator = operators[0];
+        taskService.verifyFirstStop(taskId, (startStamp) => {
+            startStamp.godzina = moment(startStamp.godzina).format('DD-MM-YYYY HH:mm:ss');
+            taskService.notifyStop(fetchedTask, fetchedRep, fetchedOperator, startStamp);
+        }, callback);
+    })      
+}
+
 router.post('/:taskId/await/:type', [authMiddleware], (req, res, next) => {
     if(req.body.description == 'STOP') {
-        let fetchedTask;
-        let fetchedResult;
-        let fetchedRep;
-        let fetchedOperator;
     
         taskService.stopTask(req.params.taskId, req.operatorId).then((result) => {
-            fetchedResult = result;
-            return taskService.getTaskById(req.params.taskId, req.operatorId);
-        }).then((tasks) => {
-            fetchedTask = tasks[0];
-            return companyService.getRepresentative(fetchedTask.id_zglaszajacy);
-        }).then((rep) => {
-            fetchedRep = rep;
-            return operatorService.getOperator(fetchedTask.informatyk);
-        }).then((operator) => {
-            console.log('fetched operator');
-            fetchedOperator = operator[0];
-            taskService.verifyFirstStop(req.params.taskId, (startStamp) => {
-                console.log('stop is here');
-                startStamp.godzina = moment(startStamp.godzina).format('DD-MM-YYYY HH:mm:ss');
-                taskService.notifyStop(fetchedTask, fetchedRep, fetchedOperator, startStamp);
-            }, (err) => {
-                console.log('continue');
-                if(err) {
-                    console.log(err);
-                    response(res, true, ['Wystąpił problem podczas próby pobrania stempli zadania.', JSON.stringify(err)], []);
-                    return;    
-                }
-    
-                response(res, false, fetchedResult.messages, fetchedResult.resources, '/tasks');
-                return;
-            });
+            notifyFirstStop(req.params.taskId, req.operatorId, notificationCallback);
         }).catch((err) => {
             response(res, true, ['Wystąpił błąd podczas próby zatrzymania zadania.', JSON.stringify(err)], []);
             return;
@@ -128,22 +131,19 @@ router.post('/:taskId/await/:type', [authMiddleware], (req, res, next) => {
         return;
     }
 
-    taskService.awaitTask(req.params.taskId, req.params.type, req.body.description, req.operatorId).then((result) => {
+    taskService.awaitTask(req.params.taskId, req.params.type, req.body.description, req.operatorId).then((awaitResult) => {
         if(req.body.description.substr(0, 6) == 'Termin') {
             let date = req.body.description.substr(7, req.body.description.length);
-            let datetime = moment(date, 'YYYY-MM-DD HH.mm.ss').format('YYYY-MM-DD HH:mm:ss');
-            console.log(datetime);
+            let datetime = moment(date, 'YYYY-MM-DD HH.mm.ss').format('YYYY-MM-DD HH:mm:ss');    
+
             taskService.patchTask(req.params.taskId, { termin: datetime, terminowe: 1 }).then((result) => {
-                console.log(result);
-                response(res, false, ['Pomyślnie wstrzymano zadanie.'], [], '/tasks');
-                return;
+                notifyFirstStop(req.params.taskId, req.operatorId, notificationCallback);
             }).catch((err) => {
                 response(res, true, ['Coś poszło nie tak podczas próby wstrzymania zadania.', JSON.stringify(err)], []);
                 return;
             });
         } else {
-            response(res, false, ['Pomyślnie wstrzymano zadanie.'], [], '/tasks');
-            return;            
+            notifyFirstStop(req.params.taskId, req.operatorId, notificationCallback);
         }
     }).catch((err) => {
         console.log(err);
