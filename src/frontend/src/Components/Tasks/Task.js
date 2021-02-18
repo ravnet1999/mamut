@@ -57,6 +57,7 @@ const Task = (props) => {
     const [datePickerEnabled, enableDatePicker] = useState(false);
     const [dateConfirmEnabled, enableDateConfirm] = useState(true);
     const [pickerInput, setPickerInput] = useState(null);
+    const [descriptionModified, setDescriptionModified] = useState(false);
 
     const updateDescriptions = (callback = null) => {
         TaskHandler.updateLastEpisodeDescription(lastEpisode.id, appState.episodeDescription).then((result) => {
@@ -144,17 +145,17 @@ const Task = (props) => {
     //     }
     // }, [rep])
 
-    useEffect(() => {
-        if(!lastEpisode) return;
+    // useEffect(() => {
+    //     if(!lastEpisode) return;
 
-        return () => {
-            TaskHandler.updateEpisodeTravel(lastEpisode.id, appState.travel ? 1 : 0).then((result) => {
+    //     return () => {
+    //         TaskHandler.updateEpisodeTravel(lastEpisode.id, appState.travel ? 1 : 0).then((result) => {
 
-            }).catch((err) => {
-                console.log(err);
-            });
-        }
-    }, [travel]);
+    //         }).catch((err) => {
+    //             console.log(err);
+    //         });
+    //     }
+    // }, [travel]);
 
     useEffect(() => {
         if(props.match.params.options) {
@@ -169,10 +170,30 @@ const Task = (props) => {
         }
     }, [lastEpisodeInput, options])
 
+    useEffect(() => {
+        if(!lastEpisode || !task) return () => {
+
+        };
+        TaskHandler.updateLastEpisodeDescription(lastEpisode.id, appState.episodeDescription).then((result) => {
+            return TaskHandler.updateTaskDescription(task.id, appState.taskDescription);
+        }).then((result) => {
+            setDescriptionModified(false);
+            return TaskHandler.updateEpisodeTravel(lastEpisode.id, appState.travel ? 1 : 0);
+            // if(callback) {
+            //     callback();
+            // }
+        }).then((result) => {
+            console.log('updated description');
+        }).catch((err) => {
+            console.log(err);
+        });
+    }, [descriptionModified, travel]);
+
     const stopTask = () => {
         TaskHandler.stopTask(task.id).then((response) => {
             // setResponse(response);
-            updateDescriptions();
+            // updateDescriptions();
+            setDescriptionModified(true);
             setRedirect(task.informatyk == 0 ? '/tasks/general' : '/tasks');
         }).catch((err) => {
             setResponse(err);
@@ -199,7 +220,8 @@ const Task = (props) => {
 
         props.updateTaskCount();
         if(lastEpisode && task && (taskDescription !== null || lastEpisodeDescription !== null)) {
-            updateDescriptions();
+            // updateDescriptions();
+            setDescriptionModified(true);
         }
     }
 
@@ -211,7 +233,8 @@ const Task = (props) => {
 
         props.updateTaskCount();
         if(lastEpisode && task && (taskDescription !== null || lastEpisodeDescription !== null)) {
-            updateDescriptions();
+            // updateDescriptions();
+            setDescriptionModified(true);
         }
     }
 
@@ -230,15 +253,19 @@ const Task = (props) => {
         TaskHandler.reassignTask(task.id).then((result) => {
             props.updateTaskCount();
             if(lastEpisode && task && (taskDescription !== null || lastEpisodeDescription !== null)) {
-                updateDescriptions(() => {
-                    TaskHandler.updateEpisodeTravel(lastEpisode.id, appState.travel ? 1 : 0).then((result) => {
-                        if(callback) {
-                            callback();
-                        }
-                    }).catch((err) => {
-                        console.log(err);
-                    });
-                });
+                setDescriptionModified(true);
+                if(callback) {
+                    callback();
+                }
+                // updateDescriptions(() => {
+                //     TaskHandler.updateEpisodeTravel(lastEpisode.id, appState.travel ? 1 : 0).then((result) => {
+                //         if(callback) {
+                //             callback();
+                //         }
+                //     }).catch((err) => {
+                //         console.log(err);
+                //     });
+                // });
             }
         }).catch((err) => {
             console.log(err);
@@ -334,6 +361,7 @@ const Task = (props) => {
         setTask(task);
 
         TaskHandler.patchTask(task.id, task).then((task) => {
+            setDescriptionModified(true);
         }).catch((err) => {
             console.log(err);
         });
