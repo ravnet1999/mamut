@@ -256,8 +256,9 @@ router.post('/:taskId/close', [authMiddleware], (req, res, next) => {
     })
 });
 
-router.post('/:taskId/reassign', [authMiddleware], (req, res, next) => {
+router.post('/:taskId/reassign/:takeover?', [authMiddleware], (req, res, next) => {
     let self = typeof req.body.operatorId === 'undefined';
+    console.log(typeof req.params.takeover, self);
     let targetOperatorId = self ? req.operatorId : req.body.operatorId;
 
     taskService.reassignTask(req.params.taskId, {
@@ -277,7 +278,7 @@ router.post('/:taskId/reassign', [authMiddleware], (req, res, next) => {
                             companyService.getCompany(rep.id_klienta).then((company) => {
                                 taskService.verifyFirstStop(req.params.taskId, (startStamp) => {
                                     startStamp.godzina = moment(startStamp.godzina).format('DD-MM-YYYY HH:mm:ss');
-                                    taskService.notifyStop(tasks[0], rep, operators[0], startStamp);
+                                    !req.params.takeover ? taskService.notifyStop(tasks[0], rep, operators[0], startStamp) : '';
                                 }, (err) => {
                                     if(err) {
                                         response(res, true, ['Wystąpił problem podczas próby pobrania stempli zadania.', JSON.stringify(err)], []);

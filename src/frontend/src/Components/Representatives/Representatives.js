@@ -109,7 +109,7 @@ const Representatives = (props) => {
                     name: 'Potwierdź',
                     method: () => {
                         setTakeOverStarted(true);
-                        TaskHandler.reassignTask(taskForTakeOver.id, undefined).then((result) => {
+                        TaskHandler.reassignTask(taskForTakeOver.id, undefined, true).then((result) => {
                             setTakeOverStarted(false);
                             setTakeOverModalVisible(false);
                             window.location.replace(`/admin/task/${taskForTakeOver.id}`);

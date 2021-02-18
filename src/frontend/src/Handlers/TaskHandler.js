@@ -212,7 +212,7 @@ const TaskHandler = {
         });
     },
 
-    reassignTask: (taskId, operatorId) => {
+    reassignTask: (taskId, operatorId, takeOver = false) => {
         return new Promise((resolve, reject) => {
             let reassignObject = {
                 operatorId: operatorId
@@ -222,7 +222,7 @@ const TaskHandler = {
 
             console.log(reassignObject);
 
-            axios.post(`${appConfig.URLs.domain}/${appConfig.URLs.tasks}/${taskId}/reassign`, reassignObject, {
+            axios.post(`${appConfig.URLs.domain}/${appConfig.URLs.tasks}/${taskId}/reassign/${takeOver ? 'true' : ''}`, reassignObject, {
                 withCredentials: true
             }).then((response) => {
                 parseResponse(response).then((response) => {
