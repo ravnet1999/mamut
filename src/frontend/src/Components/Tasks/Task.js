@@ -171,24 +171,49 @@ const Task = (props) => {
     }, [lastEpisodeInput, options])
 
     useEffect(() => {
-        if(!lastEpisode || !task || !appState.episodeDescription) return () => {
+        if(!task || !appState.taskDescription) return () => {
 
         };
-        console.log('started description update', '-', 'episodeDescription: ', appState.episodeDescription);
-        TaskHandler.updateLastEpisodeDescription(lastEpisode.id, appState.episodeDescription).then((result) => {
-            return TaskHandler.updateTaskDescription(task.id, appState.taskDescription);
-        }).then((result) => {
+        TaskHandler.updateTaskDescription(task.id, appState.taskDescription).then((result) => {
             setDescriptionModified(false);
-            return TaskHandler.updateEpisodeTravel(lastEpisode.id, appState.travel ? 1 : 0);
-            // if(callback) {
-            //     callback();
-            // }
-        }).then((result) => {
-            console.log('updated description');
         }).catch((err) => {
             console.log(err);
-        });
-    }, [descriptionModified, travel, appState.episodeDescription]);
+        })
+    }, [descriptionModified]);
+
+    useEffect(() => {
+        if(!lastEpisode || !appState.episodeDescription) return () => {
+
+        };
+        TaskHandler.updateLastEpisodeDescription(lastEpisode.id, appState.episodeDescription).then((result) => {
+            console.log('updated episode description...');
+            return TaskHandler.updateEpisodeTravel(lastEpisode.id, appState.travel ? 1 : 0);
+        }).then((result) => {
+            console.log('updated travel option...');
+        }).catch((err) => {
+            console.log(err);
+        })
+    }, [appState.episodeDescription, travel])
+
+    // useEffect(() => {
+    //     if(!lastEpisode || !task || !appState.episodeDescription) return () => {
+
+    //     };
+    //     console.log('started description update', '-', 'episodeDescription: ', appState.episodeDescription);
+    //     TaskHandler.updateLastEpisodeDescription(lastEpisode.id, appState.episodeDescription).then((result) => {
+    //         return TaskHandler.updateTaskDescription(task.id, appState.taskDescription);
+    //     }).then((result) => {
+    //         setDescriptionModified(false);
+    //         return TaskHandler.updateEpisodeTravel(lastEpisode.id, appState.travel ? 1 : 0);
+    //         // if(callback) {
+    //         //     callback();
+    //         // }
+    //     }).then((result) => {
+    //         console.log('updated description');
+    //     }).catch((err) => {
+    //         console.log(err);
+    //     });
+    // }, [descriptionModified, travel, appState.episodeDescription]);
 
     const stopTask = () => {
         TaskHandler.stopTask(task.id).then((response) => {
