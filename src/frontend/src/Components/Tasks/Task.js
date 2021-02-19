@@ -171,9 +171,10 @@ const Task = (props) => {
     }, [lastEpisodeInput, options])
 
     useEffect(() => {
-        if(!lastEpisode || !task) return () => {
+        if(!lastEpisode || !task || !appState.episodeDescription) return () => {
 
         };
+        console.log('started description update', '-', 'episodeDescription: ', appState.episodeDescription);
         TaskHandler.updateLastEpisodeDescription(lastEpisode.id, appState.episodeDescription).then((result) => {
             return TaskHandler.updateTaskDescription(task.id, appState.taskDescription);
         }).then((result) => {
@@ -187,7 +188,7 @@ const Task = (props) => {
         }).catch((err) => {
             console.log(err);
         });
-    }, [descriptionModified, travel]);
+    }, [descriptionModified, travel, appState.episodeDescription]);
 
     const stopTask = () => {
         TaskHandler.stopTask(task.id).then((response) => {
@@ -463,6 +464,8 @@ const Task = (props) => {
         console.log(pickerInput);
         if(pickerInput) pickerInput.setOpen(true);
     }
+
+    console.log(lastEpisode);
 
     return (
         <Page>
