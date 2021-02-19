@@ -227,9 +227,19 @@ class TaskService {
 
             let startStamps = stamps.filter((stamp) => {
                 return stamp.nazwa == 'START';
-            })
+            });
 
-            if(startStamps.length == 1) {
+            let awaitStamps = stamps.filter((stamp) => {
+                return stamp.nazwa == 'OCZEKUJE';
+            });
+
+            let reassignStamps = stamps.filter((stamp) => {
+                return stamp.nazwa == 'Zmiana przypisania';
+            });
+
+            console.log('reassign', reassignStamps);
+
+            if(startStamps.length == 1 && reassignStamps.length == 0 && awaitStamps.length == 0) {
                 if(firstStopCallback) firstStopCallback(startStamps[0]);
             }
 
