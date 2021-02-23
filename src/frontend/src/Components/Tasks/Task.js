@@ -171,7 +171,7 @@ const Task = (props) => {
     }, [lastEpisodeInput, options])
 
     useEffect(() => {
-        if(!task || !appState.taskDescription) return () => {
+        if(!task) return () => {
 
         };
         TaskHandler.updateTaskDescription(task.id, appState.taskDescription).then((result) => {
@@ -182,18 +182,26 @@ const Task = (props) => {
     }, [descriptionModified]);
 
     useEffect(() => {
-        if(!lastEpisode || !appState.episodeDescription) return () => {
+        if(!lastEpisode) return () => {
 
         };
         TaskHandler.updateLastEpisodeDescription(lastEpisode.id, appState.episodeDescription).then((result) => {
             console.log('updated episode description...');
-            return TaskHandler.updateEpisodeTravel(lastEpisode.id, appState.travel ? 1 : 0);
-        }).then((result) => {
-            console.log('updated travel option...');
         }).catch((err) => {
             console.log(err);
         })
-    }, [appState.episodeDescription, travel])
+    }, [appState.episodeDescription])
+
+    useEffect(() => {
+        if(!lastEpisode || !appState.travel) return () => {
+
+        }
+        TaskHandler.updateEpisodeTravel(lastEpisode.id, appState.travel ? 1 : 0).then((result) => {
+            console.log('updated travel...');
+        }).catch((err) => {
+            console.log(err);
+        })
+    }, [travel]);
 
     // useEffect(() => {
     //     if(!lastEpisode || !task || !appState.episodeDescription) return () => {
