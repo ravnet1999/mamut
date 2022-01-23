@@ -90,7 +90,7 @@ class RepresentativesSearch extends React.Component {
 
     // Finally, render it!
     return (
-      <div>
+      <div class="representatives-search-box">
         <Alert response={this.state.response}></Alert>
 
         <Autosuggest

@@ -1,0 +1,33 @@
+.representatives-search-box .bottom-pin-wrapper {
+  position: static;
+  margin-top: 80px;
+  margin-bottom: 50px;
+}
+
+.representatives-search-box .react-autosuggest__input {
+  background-color: #333;
+  color: #fff;
+  padding: 6px 12px 6px 12px;
+  width: 100%;
+}
+
+.representatives-search-box .react-autosuggest__suggestion {
+  list-style-type: none;
+  margin-left: -40px;
+  margin-top: 10px;
+  padding: 6px 12px 6px 12px;
+  border-radius: 4px;
+  background: #333;
+  color: #fff;
+}
+
+.representatives-search-box .react-autosuggest__suggestion--highlighted {  
+  background: #0069d9;
+  cursor: pointer; 
+}
+
+/* 2222FF */
+
+.representatives-search-box .react-autosuggest__suggestion div {
+  border: 1px #515151;
+}
