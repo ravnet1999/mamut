@@ -37,66 +37,84 @@ router.get('/:operatorId', (req, res, next) => {
     // });
 });
 
-router.get('/:clientIds/representatives', async (req, res, next) =>  {
-  let clientIds = req.params.clientIds.split(',');
-
+const getTasksByRepresentatives = async (repIds) =>  {
   let allTasks = [];
   let allTasksIds = [];
   let allOperatorIds = [];
 
-  try {
-    let tasks = await taskService.find(9999999, 0, 'id', 'DESC', '`status` = \'open\'');  
+  let whereCondition = '`status` = \'open\'';
 
-    let operatorIds = tasks.map((task) => {
-      return task.informatyk;
-    });
-    allOperatorIds = operatorIds.filter((operatorId, index, self) => {
-        return self.indexOf(operatorId) === index;
-    });
-    allTasksIds = tasks.map((task) => {
-        return task.id;
-    });
-    allTasks = tasks;
-    
+  if (repIds.length !== 0) {
+    whereCondition += ' AND id_zglaszajacy IN (' + repIds.join(',') + ')';
+  }
+
+  let tasks = await taskService.find(9999999, 0, 'id', 'DESC', whereCondition);  
+
+  let operatorIds = tasks.map((task) => {
+    return task.informatyk;
+  });
+  allOperatorIds = operatorIds.filter((operatorId, index, self) => {
+      return self.indexOf(operatorId) === index;
+  });
+  allTasksIds = tasks.map((task) => {
+      return task.id;
+  });
+  allTasks = tasks;
+  
+  if( allTasksIds.length !== 0 ) {
     let episodes = await episodeService.find(99999999, 0, 'id', 'DESC', 'id_zgloszenia IN (' + allTasksIds.join(',') + ')');
-    
+
     allTasks.map((task) => {
       task.lastEpisode = episodes.filter((episode) => {
           return episode.id_zgloszenia == task.id;
       })[0];
-
+  
       return task;
     });
-
+  
     let operators = await operatorService.findById(allOperatorIds);
     
     allTasks = allTasks.map((task) => {
       task.operator = {};
-
+  
       let taskOperators = operators.filter((operator) => {
           return operator.id == task.informatyk;
       });
-
+  
       if(taskOperators.length > 0) {
           delete taskOperators[0].login;
           delete taskOperators[0].haslo;
           task.operator = taskOperators[0];
       }
-
+  
       return task;
     });
+  }
 
-    let users = await userService.findByClientId(clientIds);
-    
-    let usersWithTasks = users.map((user) => {
-      user = charset.translateIn(user);
-      user.activeTasks = allTasks.filter((task) => {
-          task = charset.translateIn(task);
-          return task.id_klienta == user.id_klienta && task.id_zglaszajacy == user.id;
-      });
-      console.log(user.activeTasks, 'active tasks');
-      return user;
+  return allTasks;
+}
+
+const getUsersWithTasks = async (users, allTasks, response) =>  {
+  let usersWithTasks = users.map((user) => {
+    user = charset.translateIn(user);
+    user.activeTasks = allTasks.filter((task) => {
+        task = charset.translateIn(task);
+        return task.id_klienta == user.id_klienta && task.id_zglaszajacy == user.id;
     });
+    console.log(user.activeTasks, 'active tasks');
+    return user;
+  });
+
+  return usersWithTasks;
+}
+
+router.get('/:clientIds/representatives', async (req, res, next) =>  {
+  try {
+    let allTasks = await getTasksByRepresentatives([]);
+
+    let clientIds = req.params.clientIds.split(',');
+    let users = await userService.findByClientId(clientIds);
+    let usersWithTasks = await getUsersWithTasks(users, allTasks);    
 
     response(res, false, ['Pomyślnie pobrano reprezentantów klienta.'], usersWithTasks);
     return;
@@ -117,6 +135,24 @@ router.get('/:clientIds/representatives', async (req, res, next) =>  {
   //     response(res, false, ['Coś poszło nie tak podczas próby pobrania reprezentantów klienta.', JSON.stringify(err)], []);
   //     return;
   // });
+});
+
+router.get('/representatives/:repIds/', async (req, res, next) =>  {
+  try {
+    let repIds = req.params.repIds.split(',');
+    let allTasks = await getTasksByRepresentatives(repIds);
+    let users = await userService.findById(repIds);
+
+    let usersWithTasks = await getUsersWithTasks(users, allTasks);    
+
+    response(res, false, ['Pomyślnie pobrano reprezentantów klienta.'], usersWithTasks);
+    return;
+        
+  } catch(err) {
+      console.log(err);
+      response(res, false, ['Coś poszło nie tak podczas próby pobrania aktywnych zadań reprezentantów', JSON.stringify(err)], []);
+      return;
+  };
 });
 
 module.exports = router;
