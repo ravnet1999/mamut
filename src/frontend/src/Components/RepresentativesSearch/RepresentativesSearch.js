@@ -107,6 +107,13 @@ class RepresentativesSearch extends React.Component {
           </div>
         </div>
 
+        <div class="react-tasks-count__box">
+          <div class="react-tasks-count__column">Zadania:</div>
+          <div class="react-tasks-count__column">
+            (5)
+          </div>
+        </div>
+
         <div className="bottom-pin-wrapper">
                 <div className="bottom-pin">
                     <Row className="no-margins">
