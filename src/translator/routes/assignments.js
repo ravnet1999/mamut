@@ -82,18 +82,18 @@ router.get('/:clientIds/representatives', (req, res, next) => {
             return task;
         })
         return userService.findByClientId(clientIds);
-    }).then((clients) => {
-        let clientsWithTasks = clients.map((client) => {
-            client = charset.translateIn(client);
-            client.activeTasks = allTasks.filter((task) => {
-                task = charset.translateIn(task);
-                return task.id_klienta == client.id_klienta && task.id_zglaszajacy == client.id;
-            });
-            console.log(client.activeTasks, 'active tasks');
-            return client;
+    }).then((users) => {
+        let usersWithTasks = users.map((user) => {
+          user = charset.translateIn(user);
+          user.activeTasks = allTasks.filter((task) => {
+              task = charset.translateIn(task);
+              return task.id_klienta == user.id_klienta && task.id_zglaszajacy == user.id;
+          });
+          console.log(user.activeTasks, 'active tasks');
+          return user;
         });
 
-        response(res, false, ['Pomyślnie pobrano reprezentantów klienta.'], clientsWithTasks);
+        response(res, false, ['Pomyślnie pobrano reprezentantów klienta.'], usersWithTasks);
         return;
     }).catch((err) => {
         console.log(err);
