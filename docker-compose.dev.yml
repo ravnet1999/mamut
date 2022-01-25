@@ -48,6 +48,8 @@ services:
       - ./mongodb:/data/db:rw
       - ./logs/mongodb:/var/log/mongodb:rw
       - ./src/mongodb/scripts/:/scripts/:rw
+    ports:
+      - 27018:27017
 
   mamut-app-db-view:
     image: mongo-express:0.49.0
