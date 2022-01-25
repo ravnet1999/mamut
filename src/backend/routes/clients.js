@@ -38,15 +38,4 @@ router.get('/', [authMiddleware], (req, res, next) => {
     // });
 });
 
-router.get('/:clientId/representatives', [authMiddleware], (req, res, next) => {
-    companyService.getRepresentatives(req.params.clientId).then((representatives) => {
-        response(res, false, ['Pomyślnie pobrano reprezentantów klientów.'], representatives);
-        return;
-    }).catch((err) => {
-        console.log(err);
-        response(res, true, ['Coś poszło nie tak podczas próby pobrania reprezentantów klientów.', JSON.stringify(err)], []);
-        return;
-    });
-});
-
 module.exports = router;

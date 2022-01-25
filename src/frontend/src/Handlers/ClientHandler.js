@@ -28,7 +28,7 @@ const ClientHandler = {
     },
     getRepresentatives: (clientId) => {
         return new Promise((resolve, reject) => {
-            axios.get(`${appConfig.URLs.domain}/${appConfig.URLs.clients}/${clientId}/representatives`, {
+            axios.get(`${appConfig.URLs.domain}/${appConfig.URLs.representatives}/findByClientIds/${clientId}`, {
                 withCredentials: true
             }).then((response) => {
                 parseResponse(response).then((response) => {
