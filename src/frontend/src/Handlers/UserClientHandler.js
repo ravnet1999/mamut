@@ -5,7 +5,7 @@ import appConfig from '../Config/appConfig.json';
 const UserClientHandler = {
     findByPhoneNumber: (phoneNumber) => {
         return new Promise((resolve, reject) => {
-            axios.get(`${appConfig.URLs.domain}/${appConfig.URLs.users_clients}/${phoneNumber}`, {
+            axios.get(`${appConfig.URLs.domain}/${appConfig.URLs.representatives_clients}/${phoneNumber}`, {
                 withCredentials: true
             }).then((response) => {
                 parseResponse(response).then((response) => {
