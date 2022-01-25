@@ -33,7 +33,7 @@ class RepresentativesSearch extends React.Component {
     this.state = {
       value: '',
       suggestions: [],
-      response: { messages: ['Wyszukaj reprezentanta, którego będziesz obsługiwał:']},
+      response: { messages: []},
       selectedClientId: null,
       selectedRepId: null,
       taskStarted: false
@@ -83,7 +83,6 @@ class RepresentativesSearch extends React.Component {
 
     // Autosuggest will pass through all these props to the input.
     const inputProps = {
-      placeholder: 'Podaj nr telefonu',
       value,
       onChange: this.onChange
     };
@@ -92,16 +91,21 @@ class RepresentativesSearch extends React.Component {
     return (
       <div class="representatives-search-box">
         <Alert response={this.state.response}></Alert>
-
-        <Autosuggest
-          suggestions={suggestions}
-          onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
-          onSuggestionsClearRequested={this.onSuggestionsClearRequested}
-          onSuggestionSelected={this.onSuggestionSelected}
-          getSuggestionValue={getSuggestionValue}
-          renderSuggestion={renderSuggestion}
-          inputProps={inputProps}
-        />
+        
+        <div class="react-autosuggest__box">
+          <div class="react-autosuggest__column">Znajdź użytkownika<br/>po numerze telefonu:</div>
+          <div class="react-autosuggest__column">
+            <Autosuggest
+              suggestions={suggestions}
+              onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
+              onSuggestionsClearRequested={this.onSuggestionsClearRequested}
+              onSuggestionSelected={this.onSuggestionSelected}
+              getSuggestionValue={getSuggestionValue}
+              renderSuggestion={renderSuggestion}
+              inputProps={inputProps}
+            />
+          </div>
+        </div>
 
         <div className="bottom-pin-wrapper">
                 <div className="bottom-pin">
