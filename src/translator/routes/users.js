@@ -15,6 +15,24 @@ router.get('/', (req, res, next) => {
     });
 });
 
+router.get('/:userIds/', async (req, res, next) =>  {
+  try {
+    let userIds = req.params.userIds.split(',');
+    let allTasks = await taskHelper.getTasksByUsers(userIds);
+    let users = await userService.findById(userIds);
+
+    let usersWithTasks = await taskHelper.getUsersWithTasks(users, allTasks);    
+
+    response(res, false, ['Pomyślnie pobrano reprezentantów klienta.'], usersWithTasks);
+    return;
+        
+  } catch(err) {
+      console.log(err);
+      response(res, false, ['Coś poszło nie tak podczas próby pobrania aktywnych zadań reprezentantów', JSON.stringify(err)], []);
+      return;
+  };
+});
+
 router.get('/findByClientIds/:clientIds', async (req, res, next) =>  {
   try {
     let allTasks = await taskHelper.getTasksByUsers([]);
