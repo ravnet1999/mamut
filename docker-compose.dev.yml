@@ -28,19 +28,19 @@ services:
     links:
       - mamut-app-db:mongo
 
-  mamut-app-parser:
-    container_name: mamut-app-parser
-    build:
-      context: ./
-      dockerfile: ./docker/backend/dev.Dockerfile
-    ports:
-      - 8312:3000
-    volumes:
-      - ./src/parser/:/app/
-      - ./scripts/:/scripts/
-    restart: always
-    links:
-      - mamut-app-db:mongo
+  # mamut-app-parser:
+  #   container_name: mamut-app-parser
+  #   build:
+  #     context: ./
+  #     dockerfile: ./docker/backend/dev.Dockerfile
+  #   ports:
+  #     - 8312:3000
+  #   volumes:
+  #     - ./src/parser/:/app/
+  #     - ./scripts/:/scripts/
+  #   restart: always
+  #   links:
+  #     - mamut-app-db:mongo
 
   mamut-app-db:
     container_name: mamut-app-db
