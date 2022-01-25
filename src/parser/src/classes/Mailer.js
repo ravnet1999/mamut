@@ -8,14 +8,14 @@ class Mailer {
     }
 
     send = (from, to, subject, text, html) => {
-        console.log('executed');
-        this.transporter.sendMail({
-            from: from,
-            to: to,
-            subject: subject,
-            text: text,
-            html: html
-        });
+        // console.log('executed');
+        // this.transporter.sendMail({
+        //     from: from,
+        //     to: to,
+        //     subject: subject,
+        //     text: text,
+        //     html: html
+        // });
     }
 
     getConfig = () => {
