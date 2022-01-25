@@ -411,7 +411,7 @@ const Task = (props) => {
         let renamedErrorTypes = filteredErrorTypes.map((errorType) => {
             return {
                 id: errorType.id,
-                name: appConfig.errorTypeNames[String(errorType.id)]
+                name: String(errorType.id)
             }
         });
 
@@ -432,7 +432,7 @@ const Task = (props) => {
 
         let errorTypesRadios = renamedErrorTypes.map((errorType, key) => {
             return (
-                <Form.Check className={key == 2 ? 'errorType-margin-right' : ''} key={key} id={`errorType-radio-${key}`} inline label={appConfig.errorTypeNames[String(errorType.id)]} type='radio' onChange={(e) => { updateTask({ id_uslugi: errorType.id, usluga: errorType.nazwa }); setPickedErrorType(errorType.id); } } checked={(pickedErrorType || (task ? task.id_uslugi : 0) ) == errorType.id}></Form.Check>
+                <Form.Check className={key == 2 ? 'errorType-margin-right' : ''} key={key} id={`errorType-radio-${key}`} inline label={String(errorType.id)} type='radio' onChange={(e) => { updateTask({ id_uslugi: errorType.id, usluga: errorType.nazwa }); setPickedErrorType(errorType.id); } } checked={(pickedErrorType || (task ? task.id_uslugi : 0) ) == errorType.id}></Form.Check>
             );
         });
 
