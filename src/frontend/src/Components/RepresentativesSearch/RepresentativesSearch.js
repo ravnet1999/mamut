@@ -10,7 +10,7 @@ import { Row, Col, Button } from '../bootstrap';
 // based on the clicked suggestion. Teach Autosuggest how to calculate the
 // input value for every given suggestion.
 const getSuggestionValue = suggestion => 
-`${suggestion.imie} ${suggestion.nazwisko}, ${!!(suggestion.tel_komorkowy)?suggestion.tel_komorkowy:""}, ${!!(suggestion.numer_wewnetrzny)?suggestion.numer_wewnetrzny:""}, ${suggestion.nazwa}`;
+`${suggestion.imie} ${suggestion.nazwisko}, ${!!(suggestion.tel_komorkowy)?suggestion.tel_komorkowy + ", ":""}${!!(suggestion.numer_wewnetrzny)?suggestion.numer_wewnetrzny + ", ":""}${suggestion.nazwa}`;
 
 // Use your imagination to render suggestions.
 const renderSuggestion = suggestion => (
