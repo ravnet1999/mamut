@@ -2,6 +2,7 @@ version: "3.3"
 
 services:
   mamut-app-translator:
+    container_name: mamut-app-translator
     build:
       context: ./
       dockerfile: ./docker/translator/dev.Dockerfile
@@ -12,6 +13,7 @@ services:
     restart: always
 
   mamut-app-backend:
+    container_name: mamut-app-backend
     build:
       context: ./
       dockerfile: ./docker/backend/dev.Dockerfile
@@ -25,6 +27,7 @@ services:
       - mamut-app-db:mongo
 
   mamut-app-parser:
+    container_name: mamut-app-parser
     build:
       context: ./
       dockerfile: ./docker/backend/dev.Dockerfile
@@ -38,6 +41,7 @@ services:
       - mamut-app-db:mongo
 
   mamut-app-db:
+    container_name: mamut-app-db
     image: mongo
     restart: always
     environment:
@@ -51,6 +55,7 @@ services:
       - 27018:27017
 
   mamut-app-db-view:
+    container_name: mamut-app-db-view
     image: mongo-express:0.49.0
     restart: always
     ports:
@@ -62,6 +67,7 @@ services:
       - mamut-app-db:mongo
 
   mamut-app-frontend:
+    container_name: mamut-app-frontend
     image: node:14.5.0
     command: /bin/sh /app/scripts/run-react.sh
     stdin_open: true
@@ -72,6 +78,7 @@ services:
     restart: always
 
   mamut-app-frontend-parser:
+    container_name: mamut-app-frontend-parser
     image: node:14.5.0
     command: /bin/sh /app/scripts/run-react.sh
     stdin_open: true
@@ -90,6 +97,7 @@ services:
   #     PMA_PORT: 3306
 
   phpmyadmin:
+    container_name: mamut-app-phpmyadmin
     image: phpmyadmin/phpmyadmin:latest
     ports:
       - 9215:80
