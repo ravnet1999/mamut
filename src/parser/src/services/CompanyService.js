@@ -195,7 +195,7 @@ class CompanyService {
 
     getCompanyRepresentatives = (clientId) => {
         return new Promise((resolve, reject) => {
-            axios.get(`${appConfig.URLs.translator}/operators/${clientId}/representatives`).then((response) => {
+            axios.get(`${appConfig.URLs.translator}/users/findByClientIds/${clientId}`).then((response) => {
                 parseResponse(response).then((response) => {
                     resolve(response.resources);
                     return;
@@ -231,7 +231,7 @@ class CompanyService {
     getRepresentatives = (companyIds) => {
         return new Promise((resolve, reject) => {
             companyIds = companyIds.join(',');
-            axios.get(`${appConfig.URLs.translator}/operators/${companyIds}/representatives`).then((response) => {
+            axios.get(`${appConfig.URLs.translator}/users/findByClientIds${companyIds}`).then((response) => {
                 parseResponse(response).then((response) => {
                     resolve(response.resources);
                     return;

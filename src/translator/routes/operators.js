@@ -37,35 +37,6 @@ router.get('/:operatorId', (req, res, next) => {
     // });
 });
 
-router.get('/:clientIds/representatives', async (req, res, next) =>  {
-  try {
-    let allTasks = await getTasksByRepresentatives([]);
-
-    let clientIds = req.params.clientIds.split(',');
-    let users = await userService.findByClientId(clientIds);
-    let usersWithTasks = await getUsersWithTasks(users, allTasks);    
-
-    response(res, false, ['Pomyślnie pobrano reprezentantów klienta.'], usersWithTasks);
-    return;
-        
-  } catch(err) {
-      console.log(err);
-      response(res, false, ['Coś poszło nie tak podczas próby pobrania aktywnych zadań reprezentantów', JSON.stringify(err)], []);
-      return;
-  };
-  // userService.findByClientId(clientIds).then((clients) => {
-  //     clients = clients.map((client) => {
-  //         client = charset.translateIn(client);
-  //         return client;
-  //     });
-  //     response(res, false, ['Pomyślnie pobrano reprezentantów klienta.'], clients);
-  //     return;
-  // }).catch((err) => {
-  //     response(res, false, ['Coś poszło nie tak podczas próby pobrania reprezentantów klienta.', JSON.stringify(err)], []);
-  //     return;
-  // });
-});
-
 router.get('/representatives/:repIds/', async (req, res, next) =>  {
   try {
     let repIds = req.params.repIds.split(',');
