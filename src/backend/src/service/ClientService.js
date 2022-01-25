@@ -5,7 +5,7 @@ const appConfig = require('../../config/appConfig.json');
 class ClientService {
     getClients = (operatorId) => {
         return new Promise((resolve, reject) => {
-            axios.get(`${appConfig.URLs.translator}/assignments/${operatorId}`).then((response) => {
+            axios.get(`${appConfig.URLs.translator}/operators/${operatorId}`).then((response) => {
                 parseResponse(response).then((response) => {
                     resolve(response);
                     return;
