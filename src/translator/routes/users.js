@@ -3,6 +3,7 @@ const router = express.Router();
 const userService = require('../src/services/UserService');
 const response = require('../src/response');
 const charset = require('../src/helpers/charset');
+const taskHelper = require('../src/helpers/taskHelper');
 
 router.get('/', (req, res, next) => {
     userService.find(999999, 0, 'id', 'ASC').then((users) => {
@@ -12,6 +13,35 @@ router.get('/', (req, res, next) => {
         response(res, true, ['Wystąpił błąd podczas pobierania wszystkich użytkowników.'], []);
         return;
     });
+});
+
+router.get('/findByClientIds/:clientIds', async (req, res, next) =>  {
+  try {
+    let allTasks = await taskHelper.getTasksByUsers([]);
+
+    let clientIds = req.params.clientIds.split(',');
+    let users = await userService.findByClientId(clientIds);
+    let usersWithTasks = await taskHelper.getUsersWithTasks(users, allTasks);    
+
+    response(res, false, ['Pomyślnie pobrano reprezentantów klienta.'], usersWithTasks);
+    return;
+        
+  } catch(err) {
+      console.log(err);
+      response(res, false, ['Coś poszło nie tak podczas próby pobrania aktywnych zadań reprezentantów', JSON.stringify(err)], []);
+      return;
+  };
+  // userService.findByClientId(clientIds).then((clients) => {
+  //     clients = clients.map((client) => {
+  //         client = charset.translateIn(client);
+  //         return client;
+  //     });
+  //     response(res, false, ['Pomyślnie pobrano reprezentantów klienta.'], clients);
+  //     return;
+  // }).catch((err) => {
+  //     response(res, false, ['Coś poszło nie tak podczas próby pobrania reprezentantów klienta.', JSON.stringify(err)], []);
+  //     return;
+  // });
 });
 
 router.get('/:userId', (req, res, next) => {
