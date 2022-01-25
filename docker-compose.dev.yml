@@ -17,10 +17,9 @@ services:
       dockerfile: ./docker/backend/dev.Dockerfile
     ports:
       - 8311:3000
-      - 443:3443
+      - 8080:8080
     volumes:
       - ./src/backend/:/app/
-      - ./certs/:/certs/
     restart: always
     links:
       - mamut-app-db:mongo
