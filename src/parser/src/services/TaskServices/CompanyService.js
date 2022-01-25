@@ -56,7 +56,7 @@ class CompanyService {
 
     getRepresentatives = (companyId) => {
         return new Promise((resolve, reject) => {
-            axios.get(`${appConfig.URLs.translator}/assignments/${companyId}/representatives`).then((response) => {
+            axios.get(`${appConfig.URLs.translator}/operators/${companyId}/representatives`).then((response) => {
                 parseResponse(response).then((response) => {
                     resolve(response.resources);
                     return;

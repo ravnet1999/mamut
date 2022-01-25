@@ -5,7 +5,7 @@ const appConfig = require('../../config/appConfig.json');
 class OperatorService {
     getOperators = () => {
         return new Promise((resolve, reject) => {
-            axios.get(`${appConfig.URLs.translator}/assignments`).then((response) => {
+            axios.get(`${appConfig.URLs.translator}/operators`).then((response) => {
                 parseResponse(response).then((response) => {
                     resolve(response.resources);
                     return;
@@ -22,7 +22,7 @@ class OperatorService {
 
     getOperator = (operatorId) => {
         return new Promise((resolve, reject) => {
-            axios.get(`${appConfig.URLs.translator}/assignments/${operatorId}`).then((response) => {
+            axios.get(`${appConfig.URLs.translator}/operators/${operatorId}`).then((response) => {
                 parseResponse(response).then((response) => {
                     resolve(response.resources);
                     return;

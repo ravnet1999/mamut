@@ -5,7 +5,7 @@ var logger = require('morgan');
 
 const endpoints = [
     'auth',
-    'assignments',
+    'operators',
     'tasks',
     'users',
     'users_clients',
