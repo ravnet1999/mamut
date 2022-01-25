@@ -118,3 +118,4 @@ services:
       PMA_PORT: 3306
     links:
       - "mamut-app-mysql:mysql"
+    restart: always
