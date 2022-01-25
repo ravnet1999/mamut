@@ -8,6 +8,7 @@ const endpoints = [
     'assignments',
     'tasks',
     'users',
+    'users_clients',
     'companies',
     'channels',
     'services',
