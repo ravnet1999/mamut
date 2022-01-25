@@ -66,7 +66,7 @@ services:
     command: /bin/sh /app/scripts/run-react.sh
     stdin_open: true
     ports:
-      -  8401:3000
+      - 8401:3000
     volumes:
       - ./src/frontend/:/app/
     restart: always
@@ -76,7 +76,7 @@ services:
     command: /bin/sh /app/scripts/run-react.sh
     stdin_open: true
     ports:
-      -  8501:3000
+      - 8501:3000
     volumes:
       - ./src/frontend_parser/:/app/
     restart: always
@@ -95,4 +95,4 @@ services:
       - 9215:80
     environment:
       PMA_HOST: 157.230.103.248
-      PMA_PORT: 8250  
+      PMA_PORT: 8250
