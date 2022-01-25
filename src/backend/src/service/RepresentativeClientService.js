@@ -2,7 +2,7 @@ const axios = require('axios');
 const parseResponse = require('../ResponseParser');
 const appConfig = require('../../config/appConfig.json');
 
-class UserClientService {
+class RepresentativeClientService {
     findByPhoneNumber = (phoneNumber) => {
         return new Promise((resolve, reject) => {
             axios.get(`${appConfig.URLs.translator}/users_clients/findByPhone/${phoneNumber}`).then((response) => {
@@ -21,4 +21,4 @@ class UserClientService {
     }
 }
 
-module.exports = new UserClientService();
+module.exports = new RepresentativeClientService();

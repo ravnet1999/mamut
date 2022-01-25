@@ -2,10 +2,10 @@ const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../middleware/auth');
 const response = require('../src/response');
-const userClientService = require('../src/service/UserClientService');
+const representativeClientService = require('../src/service/RepresentativeClientService');
 
 router.get('/:phoneNumber', [authMiddleware], (req, res, next) => {
-    userClientService.findByPhoneNumber(req.params.phoneNumber).then((representatives) => {
+    representativeClientService.findByPhoneNumber(req.params.phoneNumber).then((representatives) => {
         response(res, false, ['Pomyślnie pobrano reprezentantów klientów.'], representatives);
         return;
     }).catch((err) => {

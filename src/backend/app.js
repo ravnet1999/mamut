@@ -33,7 +33,7 @@ const endpoints = [
     'tasks',
     'representatives',
     'services',
-    'users_clients'
+    'representatives_clients'
 ];
 
 let routers = endpoints.map((endpoint) => {
