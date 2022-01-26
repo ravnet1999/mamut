@@ -12,10 +12,8 @@ const RepresentativeSearchContextProvider = ({children}) => {
       selectedClientId: null,
       selectedRepId: null,
       taskStarted: false,
-      test: "test"
     }
   );
-  const test2 = "test2";
 
   return (
     <div>
