@@ -1,8 +1,7 @@
 import React, {createContext, useReducer } from 'react';
 import RepresentativeSearchReducer from '../Reducers/RepresentativeSearchReducer';
 import UserClientHandler from '../Handlers/UserClientHandler';
-import TaskHandler from '../Handlers/TaskHandler';
-import { setValue, setSuggestions, clearSuggestions, selectRep, setResponse, setSuccessResponse, setErrorResponse, setTaskStarted } from '../Actions/RepresentativeSearchActions';
+import { setValue, setSuggestions, clearSuggestions, selectRep, setResponse, setSuccessResponse, setErrorResponse } from '../Actions/RepresentativeSearchActions';
 
 export const RepresentativeSearchContext = createContext();
 
@@ -13,8 +12,7 @@ const RepresentativeSearchContextProvider = ({children}) => {
       suggestions: [],
       response: { messages: []},
       selectedClientId: null,
-      selectedRepId: null,
-      taskStarted: false,
+      selectedRepId: null
     }
   );
 
@@ -59,21 +57,9 @@ const RepresentativeSearchContextProvider = ({children}) => {
     dispatch(selectRep({ selectedRepId: suggestion.id, selectedClientId: suggestion.id_klienta })); 
   }
 
-  const createTask = async (event) => {
-    dispatch(setSuccessResponse('Tworzenie zadania...'));
-    dispatch(setTaskStarted(true));
-
-    try {
-      let result = await TaskHandler.createTask(state.selectedClientId, state.selectedRepId);
-      dispatch(setResponse(result));
-    } catch (err) {
-      dispatch(setErrorResponse(err));
-    }
-  }
-
   return (
     <div>
-      <RepresentativeSearchContext.Provider value={{ ...state, dispatch, inputProps, onSuggestionsFetchRequested, onSuggestionsClearRequested, onSuggestionSelected, createTask, renderSuggestion, getSuggestionValue }} >
+      <RepresentativeSearchContext.Provider value={{ ...state, dispatch, inputProps, onSuggestionsFetchRequested, onSuggestionsClearRequested, onSuggestionSelected, renderSuggestion, getSuggestionValue, setResponse, setSuccessResponse, setErrorResponse }} >
         {children}
       </RepresentativeSearchContext.Provider>
     </div>

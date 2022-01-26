@@ -42,12 +42,7 @@ const representativeSearchReducer = (state, action) => {
           error: true,
           messages: [action.err]
         }
-      }
-    case('SET_TASK_STARTED'):
-      return {
-        ...state,
-        taskStarted: action.taskStarted        
-      }     
+      } 
   }
   return state;
 }
