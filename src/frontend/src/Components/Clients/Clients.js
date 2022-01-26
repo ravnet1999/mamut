@@ -5,6 +5,7 @@ import Alert from '../Alert/Alert';
 import ClientHandler from '../../Handlers/ClientHandler';
 import { NavLink as Link } from 'react-router-dom';
 import RepresentativesSearch from '../../Components/RepresentativesSearch/RepresentativesSearch';
+import RepresentativeSearchContextProvider from '../../Contexts/RepresentativeSearchContext';
 
 const Clients = (props) => {
     const [clients, setClients] = useState([]);
@@ -40,7 +41,9 @@ const Clients = (props) => {
 
     return (        
         <Page>
-            <RepresentativesSearch {...props}></RepresentativesSearch>
+            <RepresentativeSearchContextProvider>
+              <RepresentativesSearch {...props}></RepresentativesSearch>
+            </RepresentativeSearchContextProvider>
             <Alert response={response}></Alert>
             { buildClients() }
         </Page>
