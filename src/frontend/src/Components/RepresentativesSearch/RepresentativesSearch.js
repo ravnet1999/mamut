@@ -5,6 +5,7 @@ import Autosuggest from 'react-autosuggest';
 import { Row, Col, Button } from '../bootstrap';
 import { RepresentativeSearchContext } from '../../Contexts/RepresentativeSearchContext';
 import { TaskContext } from '../../Contexts/TaskContext';
+import RepresentativeActiveTasks from './RepresentativeActiveTasks';
 
 const RepresentativesSearch = () => {
   const representativeSearchContext = useContext(RepresentativeSearchContext);
@@ -40,12 +41,7 @@ const RepresentativesSearch = () => {
         </div>
       </div>
 
-      <div className="react-tasks-count__box">
-        <div className="react-tasks-count__column">Zadania:</div>
-        <div className="react-tasks-count__column">
-          (5)
-        </div>
-      </div>
+      <RepresentativeActiveTasks selectedRepId={selectedRepId}></RepresentativeActiveTasks>
 
       <div className="bottom-pin-wrapper">
           <div className="bottom-pin">
