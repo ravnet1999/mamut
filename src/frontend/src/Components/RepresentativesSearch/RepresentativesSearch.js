@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './RepresentativesSearch.css';
 import Alert from '../Alert/Alert';
 import Autosuggest from 'react-autosuggest';
-import UserClientHandler from '../../Handlers/UserClientHandler';
 import TaskHandler from '../../Handlers/TaskHandler';
 import { Row, Col, Button } from '../bootstrap';
+import { RepresentativeSearchContext } from '../../Contexts/RepresentativeSearchContext';
+import { setValue, setSuggestions, clearSuggestions, selectRep, setResponse, setSuccessResponse, setErrorResponse, setTaskStarted } from '../../Actions/RepresentativeSearchActions';
+import UserClientHandler from '../../Handlers/UserClientHandler';
 
 // When suggestion is clicked, Autosuggest needs to populate the input
 // based on the clicked suggestion. Teach Autosuggest how to calculate the
@@ -19,78 +21,60 @@ const renderSuggestion = suggestion => (
   </div>
 );
 
-
 class RepresentativesSearch extends React.Component {
+  static contextType = RepresentativeSearchContext;
 
-  constructor(props) {
-    super(props);
-
-    // Autosuggest is a controlled component.
-    // This means that you need to provide an input value
-    // and an onChange handler that updates this value (see below).
-    // Suggestions also need to be provided to the Autosuggest,
-    // and they are initially empty because the Autosuggest is closed.
-    this.state = {
-      value: '',
-      suggestions: [],
-      response: { messages: []},
-      selectedClientId: null,
-      selectedRepId: null,
-      taskStarted: false
-    };
+  componentDidMount() {    
+    this.setState({...this.context});
   }
 
-  onChange = (event, { newValue }) => { 
-    this.setState({
-      value: newValue,
-    });
-  };
-
-  // Autosuggest will call this function every time you need to update suggestions.
-  // You already implemented this logic above, so just use it.
   onSuggestionsFetchRequested = async ({ value }) => {
     try{
       let result = await UserClientHandler.findByPhoneNumber(value);
       let suggestions = result.resources.resources;
 
-      this.setState({
-        suggestions,
-        selectedClientId: null,
-        selectedRepId: null,
-      });
-    } catch{
-      
+      this.context.dispatch(setSuggestions(suggestions));
+    } catch (err) {
+      this.context.dispatch(setErrorResponse(err));
     }
   };
 
   // Autosuggest will call this function every time you need to clear suggestions.
   onSuggestionsClearRequested = () => {
-    this.setState({
-      suggestions: []
-    });
+    this.context.dispatch(clearSuggestions());
   };
 
   onSuggestionSelected = (event, { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }) => {
-    this.setState({
-      selectedClientId: suggestion.id_klienta,
-      selectedRepId: suggestion.id
-    }); 
+    this.context.dispatch(selectRep({ selectedRepId: suggestion.id, selectedClientId: suggestion.id_klienta })); 
   }
 
+  createTask = async (event) => {
+    this.context.dispatch(setSuccessResponse('Tworzenie zadania...'));
+    this.context.dispatch(setTaskStarted(true));
+
+    try {
+      let result = await TaskHandler.createTask(this.context.selectedClientId, this.context.selectedRepId);
+      this.context.dispatch(setResponse(result));
+    } catch (err) {
+      this.context.dispatch(setErrorResponse(err));
+    }
+  }
 
   render() {
-    const { value, suggestions } = this.state;
+    const { value, suggestions, response, dispatch, selectedRepId, taskStarted } = this.context;
 
     // Autosuggest will pass through all these props to the input.
     const inputProps = {
       value,
-      onChange: this.onChange
+      onChange: (event, { newValue }) => { 
+        dispatch(setValue(newValue))
+      }
     };
 
     // Finally, render it!
     return (
       <div class="representatives-search-box">
-        <Alert response={this.state.response}></Alert>
+        <Alert response={response}></Alert>
         
         <div class="react-autosuggest__box">
           <div class="react-autosuggest__column">Znajdź użytkownika<br/>po numerze telefonu:</div>
@@ -115,34 +99,17 @@ class RepresentativesSearch extends React.Component {
         </div>
 
         <div className="bottom-pin-wrapper">
-                <div className="bottom-pin">
-                    <Row className="no-margins">
-                        <Col className="text-right btn-center-container">
-                            {/* <Alert response={response}></Alert> */}
-                            <Button onClick={(e) => this.createTask()} className="btn-inverted btn-start btn-center" disabled={!this.state.selectedRepId || this.state.taskStarted}>Start</Button>
-                        </Col>
-                    </Row>
-                </div>
+            <div className="bottom-pin">
+                <Row className="no-margins">
+                    <Col className="text-right btn-center-container">
+                        <Button onClick={this.createTask} className="btn-inverted btn-start btn-center" disabled={!selectedRepId || taskStarted}>Start</Button>                        
+                    </Col>
+                </Row>
             </div>
-        </div>
+          </div>
+      </div>
     );
-  }
-
-  createTask = () => {
-    this.setState({
-      taskStarted: true,
-      response:{
-        error: false,
-        messages: ['Tworzenie zadania...']
-      }
-    });
-    
-    TaskHandler.createTask(this.state.selectedClientId, this.state.selectedRepId).then((result) => {      
-        this.setState({response: result});
-    }).catch((err) => {      
-      this.setState({response: err})
-    });
-  }
+  }  
 }
 
 export default RepresentativesSearch;
