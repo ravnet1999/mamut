@@ -73,12 +73,12 @@ class RepresentativesSearch extends React.Component {
 
     // Finally, render it!
     return (
-      <div class="representatives-search-box">
+      <div className="representatives-search-box">
         <Alert response={response}></Alert>
         
-        <div class="react-autosuggest__box">
-          <div class="react-autosuggest__column">Znajdź użytkownika<br/>po numerze telefonu:</div>
-          <div class="react-autosuggest__column">
+        <div className="react-autosuggest__box">
+          <div className="react-autosuggest__column">Znajdź użytkownika<br/>po numerze telefonu:</div>
+          <div className="react-autosuggest__column">
             <Autosuggest
               suggestions={suggestions}
               onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
@@ -91,9 +91,9 @@ class RepresentativesSearch extends React.Component {
           </div>
         </div>
 
-        <div class="react-tasks-count__box">
-          <div class="react-tasks-count__column">Zadania:</div>
-          <div class="react-tasks-count__column">
+        <div className="react-tasks-count__box">
+          <div className="react-tasks-count__column">Zadania:</div>
+          <div className="react-tasks-count__column">
             (5)
           </div>
         </div>
