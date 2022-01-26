@@ -4,10 +4,21 @@ import Alert from '../Alert/Alert';
 import Autosuggest from 'react-autosuggest';
 import { Row, Col, Button } from '../bootstrap';
 import { RepresentativeSearchContext } from '../../Contexts/RepresentativeSearchContext';
+import { TaskContext } from '../../Contexts/TaskContext';
 
 const RepresentativesSearch = () => {
   const representativeSearchContext = useContext(RepresentativeSearchContext);
-  const { suggestions, response, selectedRepId, taskStarted, onSuggestionsFetchRequested, onSuggestionsClearRequested, onSuggestionSelected, createTask, inputProps, getSuggestionValue, renderSuggestion } = representativeSearchContext;
+  const taskContext = useContext(TaskContext);
+
+  const { dispatch, setResponse, setErrorResponse, setSuccessResponse, suggestions, response, selectedRepId, selectedClientId, onSuggestionsFetchRequested, onSuggestionsClearRequested, onSuggestionSelected, inputProps, getSuggestionValue, renderSuggestion } = representativeSearchContext;
+  const { taskStarted, createTask } = taskContext;
+
+  const createTaskAndRenderResponse = (event) => {
+    dispatch(setSuccessResponse('Tworzenie zadania...'));
+    createTask(selectedRepId, selectedClientId)
+    .then(result => dispatch(setResponse(result)))
+    .catch(err => dispatch(setErrorResponse(err)));
+  }
 
   // Finally, render it!
   return (
@@ -39,8 +50,8 @@ const RepresentativesSearch = () => {
       <div className="bottom-pin-wrapper">
           <div className="bottom-pin">
               <Row className="no-margins">
-                  <Col className="text-right btn-center-container">
-                      <Button onClick={createTask} className="btn-inverted btn-start btn-center" disabled={!selectedRepId || taskStarted}>Start</Button>                        
+                  <Col className="text-right btn-center-container">                
+                      <Button onClick={createTaskAndRenderResponse} className="btn-inverted btn-start btn-center" disabled={!selectedRepId || taskStarted}>Start</Button>                          
                   </Col>
               </Row>
           </div>

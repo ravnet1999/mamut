@@ -26,7 +26,3 @@ export const setSuccessResponse = (message) => {
 export const setErrorResponse = (err) => {
   return { type: 'SET_ERROR_RESPONSE', err };
 };
-
-export const setTaskStarted = (taskStarted) => {
-  return { type: 'SET_TASK_STARTED', taskStarted };
-};
