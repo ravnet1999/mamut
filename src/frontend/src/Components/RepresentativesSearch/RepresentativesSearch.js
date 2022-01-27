@@ -6,13 +6,16 @@ import { Row, Col, Button } from '../bootstrap';
 import { RepresentativeSearchContext } from '../../Contexts/RepresentativeSearchContext';
 import { TaskContext } from '../../Contexts/TaskContext';
 import RepresentativeActiveTasks from './RepresentativeActiveTasks';
+import {WithContexts} from '../../HOCs/WithContexts'
 
-const RepresentativesSearch = () => {
-  const representativeSearchContext = useContext(RepresentativeSearchContext);
-  const taskContext = useContext(TaskContext);
-
-  const { dispatch, setResponse, setErrorResponse, setSuccessResponse, suggestions, response, selectedRepId, selectedClientId, onSuggestionsFetchRequested, onSuggestionsClearRequested, onSuggestionSelected, inputProps, getSuggestionValue, renderSuggestion } = representativeSearchContext;
-  const { taskStarted, createTask } = taskContext;
+const RepresentativesSearch = (props) => {
+  const { 
+    dispatch, 
+    response, setResponse, setSuccessResponse, setErrorResponse, 
+    suggestions, onSuggestionsFetchRequested, onSuggestionsClearRequested, onSuggestionSelected, getSuggestionValue, renderSuggestion, inputProps,
+    selectedRepId, selectedClientId,
+    createTask, taskStarted    
+  } = props;
 
   const createTaskAndRenderResponse = (event) => {
     dispatch(setSuccessResponse('Tworzenie zadania...'));
@@ -55,5 +58,4 @@ const RepresentativesSearch = () => {
     </div>
   );
 }
-
-export default RepresentativesSearch;
+export default  WithContexts(RepresentativesSearch, [RepresentativeSearchContext, TaskContext]);
