@@ -51,8 +51,7 @@ const Representatives = (props) => {
 
         };
 
-        let taskList = renderTaskList();
-        setViewedTaskList(taskList);        
+        renderTaskList();
     }, [viewedOperator, takeOverStarted])
 
     useEffect(() => {
