@@ -51,7 +51,9 @@ const RepresentativesSearch = (props) => {
     });
 
     createTask(selectedRepId, selectedClientId)
-    .then(result => dispatch(setResponse(result)))
+    .then(result => {
+      setResponse(result);
+    })
     .catch(err => {
       setResponse({
         error: true,
