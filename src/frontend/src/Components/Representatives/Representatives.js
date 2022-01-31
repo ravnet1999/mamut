@@ -18,7 +18,7 @@ const Representatives = (props) => {
     const [response, setResponse] = useState(null);
     
     const { 
-      taskStarted, setTaskStarted, createTask, tasksVisible, setTasksVisible, takeOverStarted, setTakeOverStarted, viewedOperator, setViewedOperator, viewedTaskList, setViewedTaskList, activeTasksModal, setActiveTasksModal, taskForTakeOver, setTaskForTakeOver, takeOverModalVisible, setTakeOverModalVisible, takeOverButtonDisabled, setTakeOverButtonDisabled, takeOverModal, setTakeOverModal, taskPreviewVisible, setTaskPreviewVisible, previewedTask, setPreviewedTask, renderTaskList, changeOperator  
+      taskStarted, setTaskStarted, createTask, tasksVisible, setTasksVisible, takeOverStarted, setTakeOverStarted, viewedOperator, setViewedOperator, viewedTaskList, setViewedTaskList, activeTasksModal, setActiveTasksModal, taskForTakeOver, setTaskForTakeOver, takeOverModalVisible, setTakeOverModalVisible, takeOverButtonDisabled, setTakeOverButtonDisabled, takeOverModal, setTakeOverModal, taskPreviewVisible, setTaskPreviewVisible, previewedTask, setPreviewedTask, renderTaskList, changeOperator, showTasks  
     } = props;
   
     const createTaskAndRenderResponse = (event) => {
@@ -59,11 +59,7 @@ const Representatives = (props) => {
 
         };
 
-        setActiveTasksModal({
-            title: `Aktywne zadania dla ${viewedOperator.imie} ${viewedOperator.nazwisko}`,
-            description: viewedTaskList
-        });
-        setTasksVisible(true);
+        showTasks();
     }, [viewedTaskList]);
 
     useEffect(() => {
