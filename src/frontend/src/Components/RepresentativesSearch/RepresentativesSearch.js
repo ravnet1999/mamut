@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import './RepresentativesSearch.css';
 import Alert from '../Alert/Alert';
 import Autosuggest from 'react-autosuggest';
@@ -8,14 +8,17 @@ import { TaskContext } from '../../Contexts/TaskContext';
 import { WithContexts } from '../../HOCs/WithContexts';
 import Modal from '../Modal/Modal';
 import TaskPreview from '../Tasks/TaskPreview';
+import useTaskEffects from '../../Hooks/useTaskEffects';
 
 const RepresentativesSearch = (props) => {
+  useTaskEffects(props);
+
   const { 
     dispatch, 
     response, setResponse, setSuccessResponse, setErrorResponse, 
     suggestions, onSuggestionsFetchRequested, onSuggestionsClearRequested, onSuggestionSelected, getSuggestionValue, renderSuggestion, inputProps,
     selectedRepId, selectedRep, selectedClientId, 
-    createTask, taskStarted, tasksVisible, setTasksVisible, takeOverStarted, viewedOperator, viewedTaskList, activeTasksModal, taskForTakeOver, takeOverModalVisible, setTakeOverModalVisible, takeOverModal, taskPreviewVisible, setTaskPreviewVisible, previewedTask, renderTaskList, changeOperator, showTasks, showTakeOverModal    
+    createTask, taskStarted, tasksVisible, setTasksVisible, activeTasksModal, takeOverModalVisible, setTakeOverModalVisible, takeOverModal, taskPreviewVisible, setTaskPreviewVisible, previewedTask, changeOperator   
   } = props;
 
   const createTaskAndRenderResponse = (event) => {
@@ -25,41 +28,7 @@ const RepresentativesSearch = (props) => {
     .catch(err => dispatch(setErrorResponse(err)));
   }
 
-  useEffect(() => {
-      if(!viewedOperator) return () => {
-
-      };
-
-      renderTaskList();
-  }, [viewedOperator, takeOverStarted])
-
-  useEffect(() => {
-      if(!viewedOperator) return () => {
-
-      };
-
-      showTasks();
-  }, [viewedTaskList]);
-
-  useEffect(() => {
-      if(!takeOverModalVisible || !taskForTakeOver) return () => {
-
-      };
-
-      showTakeOverModal();
-
-  }, [takeOverModalVisible, taskForTakeOver, takeOverStarted]);  
-  
-  useEffect(() => {
-    if(!takeOverModalVisible || !taskForTakeOver) return () => {
-
-    };
-
-    showTakeOverModal();
-
-}, [takeOverModalVisible, taskForTakeOver, takeOverStarted]); 
-
-   // Finally, render it!
+  // Finally, render it!
   return (
     <div className="representatives-search-box">
       <Alert response={response}></Alert>
@@ -96,7 +65,7 @@ const RepresentativesSearch = (props) => {
           <div className="bottom-pin">
               <Row className="no-margins">
                   <Col className="text-right btn-center-container">                
-                      <Button onClick={createTaskAndRenderResponse} className="btn-inverted btn-start btn-center" disabled={!selectedRepId || taskStarted}>Start</Button>                          
+                      <Button onClick={createTaskAndRenderResponse} className="btn-inverted btn-start btn-center" disabled={!selectedRep || taskStarted}>Start</Button>                          
                   </Col>
               </Row>
           </div>

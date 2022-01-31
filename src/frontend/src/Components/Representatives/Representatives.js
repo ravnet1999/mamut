@@ -9,13 +9,16 @@ import './Representatives.css';
 
 import { TaskContext } from '../../Contexts/TaskContext';
 import { WithContexts } from '../../HOCs/WithContexts'
+import useTaskEffects from '../../Hooks/useTaskEffects';
 
 const Representatives = (props) => {
+    useTaskEffects(props);
+
     const [representatives, setRepresentatives] = useState([]);
     const [selectedRep, setSelectedRep] = useState(null);
     const [response, setResponse] = useState(null);
     
-    const { taskStarted, createTask, tasksVisible, setTasksVisible, takeOverStarted, viewedOperator, viewedTaskList, activeTasksModal, taskForTakeOver, takeOverModalVisible, setTakeOverModalVisible, takeOverModal, taskPreviewVisible, setTaskPreviewVisible, previewedTask, renderTaskList, changeOperator, showTasks, showTakeOverModal } = props;
+    const { taskStarted, createTask, tasksVisible, setTasksVisible, activeTasksModal, takeOverModalVisible, setTakeOverModalVisible, takeOverModal, taskPreviewVisible, setTaskPreviewVisible, previewedTask, changeOperator } = props;
   
     const createTaskAndRenderResponse = (event) => {
       setResponse({
@@ -41,31 +44,6 @@ const Representatives = (props) => {
 
         return props.updateTaskCount;
     }, []);
-
-    useEffect(() => {
-        if(!viewedOperator) return () => {
-
-        };
-
-        renderTaskList();
-    }, [viewedOperator, takeOverStarted])
-
-    useEffect(() => {
-        if(!viewedOperator) return () => {
-
-        };
-
-        showTasks();
-    }, [viewedTaskList]);
-
-    useEffect(() => {
-        if(!takeOverModalVisible || !taskForTakeOver) return () => {
-
-        };
-
-        showTakeOverModal();
-
-    }, [takeOverModalVisible, taskForTakeOver, takeOverStarted]);    
 
     const buildClients = () => {
         
