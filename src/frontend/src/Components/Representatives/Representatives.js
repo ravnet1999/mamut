@@ -12,15 +12,13 @@ import './Representatives.css';
 import { TaskContext } from '../../Contexts/TaskContext';
 import {WithContexts} from '../../HOCs/WithContexts'
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlay } from '@fortawesome/free-solid-svg-icons';
 const Representatives = (props) => {
     const [representatives, setRepresentatives] = useState([]);
     const [selectedRep, setSelectedRep] = useState(null);
     const [response, setResponse] = useState(null);
     
     const { 
-      taskStarted, setTaskStarted, createTask, tasksVisible, setTasksVisible, takeOverStarted, setTakeOverStarted, viewedOperator, setViewedOperator, viewedTaskList, setViewedTaskList, activeTasksModal, setActiveTasksModal, taskForTakeOver, setTaskForTakeOver, takeOverModalVisible, setTakeOverModalVisible, takeOverButtonDisabled, setTakeOverButtonDisabled, takeOverModal, setTakeOverModal, taskPreviewVisible, setTaskPreviewVisible, previewedTask, setPreviewedTask, sortTasks  
+      taskStarted, setTaskStarted, createTask, tasksVisible, setTasksVisible, takeOverStarted, setTakeOverStarted, viewedOperator, setViewedOperator, viewedTaskList, setViewedTaskList, activeTasksModal, setActiveTasksModal, taskForTakeOver, setTaskForTakeOver, takeOverModalVisible, setTakeOverModalVisible, takeOverButtonDisabled, setTakeOverButtonDisabled, takeOverModal, setTakeOverModal, taskPreviewVisible, setTaskPreviewVisible, previewedTask, setPreviewedTask, renderTaskList  
     } = props;
   
     const createTaskAndRenderResponse = (event) => {
@@ -47,31 +45,6 @@ const Representatives = (props) => {
 
         return props.updateTaskCount;
     }, []);
-
-    const renderTaskList = () => {
-      let sortedTasks = sortTasks(viewedOperator.activeTasks);
-
-      let taskList = [];
-
-      for(let operator in sortedTasks) {
-          taskList.push(
-              <div key={operator}>
-                  <strong className="operator-header">{operator == '--' ? 'ToDo' : operator}: {sortedTasks[operator].length}</strong>
-                  {sortedTasks[operator].map((task, key) => {
-                      // return <div key={key}><strong>ID:</strong> {task.id}, <strong>Opis:</strong> {task.opis ? task.opis.substr(0, 150) + (task.opis.length > 150 ? '...' : '') : 'Brak opisu'}, <strong>Ostatni etap:</strong> {task.lastEpisode ? task.lastEpisode.rozwiazanie : ''}</div>
-                      return (
-                          <div key={key} className="active-task">
-                              <div className="hover-cursor hover-underline" onClick={(e) => previewTask(task)}><strong>ID:</strong> {task.id}</div><div><strong>Opis:</strong> {task.opis ? task.opis.substr(0, 150) + (task.opis.length > 150 ? '...' : '') : 'Brak opisu'}</div><div><strong>Ostatni etap:</strong> {task.lastEpisode ? task.lastEpisode.rozwiazanie.substr(0, 150) + (task.lastEpisode.rozwiazanie.length > 150 ? '...' : '') : 'Brak opisu etapu.'} </div>
-                              <div className="text-right top-right takeover-button"><Button className="small circular task-takeover" onClick={(e) => takeOverTask(task)} disabled={takeOverStarted}><span className="icon-center takeover"><FontAwesomeIcon icon={faPlay}></FontAwesomeIcon></span></Button></div>
-                          </div>
-                      )
-                  })}
-              </div>
-          )
-      }
-
-      return taskList;
-    };
 
     useEffect(() => {
         if(!viewedOperator) return () => {
@@ -127,16 +100,6 @@ const Representatives = (props) => {
         })
 
     }, [takeOverModalVisible, taskForTakeOver, takeOverStarted]);    
-
-    const previewTask = (task) => {
-        setPreviewedTask(task);
-        setTaskPreviewVisible(true);
-    }
-    
-    const takeOverTask = (task) => {
-        setTaskForTakeOver(task);
-        setTakeOverModalVisible(true);
-    }
 
     const showTasks = (representative) => {
         console.log('test');
