@@ -5,7 +5,7 @@ import Autosuggest from 'react-autosuggest';
 import { Row, Col, Button } from '../bootstrap';
 import { RepresentativeSearchContext } from '../../Contexts/RepresentativeSearchContext';
 import { TaskContext } from '../../Contexts/TaskContext';
-import {WithContexts} from '../../HOCs/WithContexts'
+import { WithContexts } from '../../HOCs/WithContexts';
 
 const RepresentativesSearch = (props) => {
   const { 
