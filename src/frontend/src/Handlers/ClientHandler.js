@@ -2,6 +2,29 @@ import axios from 'axios';
 import parseResponse from '../Handlers/ApiParser';
 import appConfig from '../Config/appConfig.json';
 
+const getUnsortedRepresentatives = (clientId) => {
+  return new Promise((resolve, reject) => {
+      axios.get(`${appConfig.URLs.domain}/${appConfig.URLs.representatives}/findByClientIds/${clientId}`, {
+          withCredentials: true
+      }).then((response) => {
+          parseResponse(response).then((response) => {
+              resolve(response);
+              return;
+          }).catch((err) => {
+              reject(err);
+              return;
+          });
+      }).catch((err) => {
+          reject({
+              error: true,
+              messages: ['Wystąpił problem z połączeniem z serwerem.', JSON.stringify(err)],
+              resources: []
+          });
+          return;
+      });
+  });
+};
+
 const ClientHandler = {
     getClients: () => {
         return new Promise((resolve, reject) => {
@@ -26,27 +49,16 @@ const ClientHandler = {
             });
         });
     },
-    getRepresentatives: (clientId) => {
-        return new Promise((resolve, reject) => {
-            axios.get(`${appConfig.URLs.domain}/${appConfig.URLs.representatives}/findByClientIds/${clientId}`, {
-                withCredentials: true
-            }).then((response) => {
-                parseResponse(response).then((response) => {
-                    resolve(response);
-                    return;
-                }).catch((err) => {
-                    reject(err);
-                    return;
-                });
-            }).catch((err) => {
-                reject({
-                    error: true,
-                    messages: ['Wystąpił problem z połączeniem z serwerem.', JSON.stringify(err)],
-                    resources: []
-                });
-                return;
-            });
-        });
+    getRepresentatives: getUnsortedRepresentatives,
+
+    getSortedRepresentatives: async (clientId) => {
+      const response = await getUnsortedRepresentatives(clientId);
+      const unsortedRepresentatives = response.resources;
+      const sortedRepresentatives = unsortedRepresentatives.sort((a, b) => {
+        return (a.imie + a.nazwisko) > (b.imie + b.nazwisko) ? 1 : ( (a.imie + a.nazwisko) < (b.imie + b.nazwisko) ? -1 : 0 );
+      });
+
+      return { resources: sortedRepresentatives };
     },
 
     getRepresentative: (repId) => {
