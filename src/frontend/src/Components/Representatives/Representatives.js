@@ -48,32 +48,37 @@ const Representatives = (props) => {
         return props.updateTaskCount;
     }, []);
 
+    const renderTaskList = () => {
+      let sortedTasks = sortTasks(viewedOperator.activeTasks);
+
+      let taskList = [];
+
+      for(let operator in sortedTasks) {
+          taskList.push(
+              <div key={operator}>
+                  <strong className="operator-header">{operator == '--' ? 'ToDo' : operator}: {sortedTasks[operator].length}</strong>
+                  {sortedTasks[operator].map((task, key) => {
+                      // return <div key={key}><strong>ID:</strong> {task.id}, <strong>Opis:</strong> {task.opis ? task.opis.substr(0, 150) + (task.opis.length > 150 ? '...' : '') : 'Brak opisu'}, <strong>Ostatni etap:</strong> {task.lastEpisode ? task.lastEpisode.rozwiazanie : ''}</div>
+                      return (
+                          <div key={key} className="active-task">
+                              <div className="hover-cursor hover-underline" onClick={(e) => previewTask(task)}><strong>ID:</strong> {task.id}</div><div><strong>Opis:</strong> {task.opis ? task.opis.substr(0, 150) + (task.opis.length > 150 ? '...' : '') : 'Brak opisu'}</div><div><strong>Ostatni etap:</strong> {task.lastEpisode ? task.lastEpisode.rozwiazanie.substr(0, 150) + (task.lastEpisode.rozwiazanie.length > 150 ? '...' : '') : 'Brak opisu etapu.'} </div>
+                              <div className="text-right top-right takeover-button"><Button className="small circular task-takeover" onClick={(e) => takeOverTask(task)} disabled={takeOverStarted}><span className="icon-center takeover"><FontAwesomeIcon icon={faPlay}></FontAwesomeIcon></span></Button></div>
+                          </div>
+                      )
+                  })}
+              </div>
+          )
+      }
+
+      return taskList;
+    };
+
     useEffect(() => {
         if(!viewedOperator) return () => {
 
         };
 
-        let sortedTasks = sortTasks(viewedOperator.activeTasks);
-
-        let taskList = [];
-
-        for(let operator in sortedTasks) {
-            taskList.push(
-                <div key={operator}>
-                    <strong className="operator-header">{operator == '--' ? 'ToDo' : operator}: {sortedTasks[operator].length}</strong>
-                    {sortedTasks[operator].map((task, key) => {
-                        // return <div key={key}><strong>ID:</strong> {task.id}, <strong>Opis:</strong> {task.opis ? task.opis.substr(0, 150) + (task.opis.length > 150 ? '...' : '') : 'Brak opisu'}, <strong>Ostatni etap:</strong> {task.lastEpisode ? task.lastEpisode.rozwiazanie : ''}</div>
-                        return (
-                            <div key={key} className="active-task">
-                                <div className="hover-cursor hover-underline" onClick={(e) => previewTask(task)}><strong>ID:</strong> {task.id}</div><div><strong>Opis:</strong> {task.opis ? task.opis.substr(0, 150) + (task.opis.length > 150 ? '...' : '') : 'Brak opisu'}</div><div><strong>Ostatni etap:</strong> {task.lastEpisode ? task.lastEpisode.rozwiazanie.substr(0, 150) + (task.lastEpisode.rozwiazanie.length > 150 ? '...' : '') : 'Brak opisu etapu.'} </div>
-                                <div className="text-right top-right takeover-button"><Button className="small circular task-takeover" onClick={(e) => takeOverTask(task)} disabled={takeOverStarted}><span className="icon-center takeover"><FontAwesomeIcon icon={faPlay}></FontAwesomeIcon></span></Button></div>
-                            </div>
-                        )
-                    })}
-                </div>
-            )
-        }
-
+        let taskList = renderTaskList();
         setViewedTaskList(taskList);        
     }, [viewedOperator, takeOverStarted])
 
