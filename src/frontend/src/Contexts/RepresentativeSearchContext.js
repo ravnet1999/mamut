@@ -2,7 +2,7 @@ import React, {createContext, useReducer } from 'react';
 import RepresentativeSearchReducer from '../Reducers/RepresentativeSearchReducer';
 import UserClientHandler from '../Handlers/UserClientHandler';
 import UserHandler from '../Handlers/UserHandler';
-import { setValue, setSuggestions, clearSuggestions, selectRep, setResponse, setSuccessResponse, setErrorResponse } from '../Actions/RepresentativeSearchActions';
+import { setValue, setSuggestions, clearSuggestions, selectRep } from '../Actions/RepresentativeSearchActions';
 
 export const RepresentativeSearchContext = createContext();
 
@@ -11,7 +11,6 @@ const RepresentativeSearchContextProvider = ({children}) => {
     RepresentativeSearchReducer, {
       value: '',
       suggestions: [],
-      response: { messages: []},
       selectedClientId: null,
       selectedRepId: null,
       selectedRep: null
@@ -39,15 +38,11 @@ const RepresentativeSearchContextProvider = ({children}) => {
     </div>
   );
 
-  const onSuggestionsFetchRequested = async ({ value }) => {
-    try{
-      let result = await UserClientHandler.findByPhoneNumber(value);
-      let suggestions = result.resources.resources;
+  const onSuggestionsFetchRequested = async ({ value }) => {    
+    let result = await UserClientHandler.findByPhoneNumber(value);
+    let suggestions = result.resources.resources;
 
-      dispatch(setSuggestions(suggestions));
-    } catch (err) {
-      dispatch(setErrorResponse(err));
-    }
+    dispatch(setSuggestions(suggestions));
   };
 
   // Autosuggest will call this function every time you need to clear suggestions.
@@ -57,18 +52,14 @@ const RepresentativeSearchContextProvider = ({children}) => {
 
   const onSuggestionSelected = async (event, { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }) => {
     const selectedRepId = suggestion.id;
-    try {
-      const response = await UserHandler.getWithTasks(selectedRepId);
-      const selectedRep = response.resources[0];
-      dispatch(selectRep({ selectedRep, selectedRepId, selectedClientId: suggestion.id_klienta })); 
-    } catch(err) {
-      dispatch(setErrorResponse(err));
-    }
+    const response = await UserHandler.getWithTasks(selectedRepId);
+    const selectedRep = response.resources[0];
+    dispatch(selectRep({ selectedRep, selectedRepId, selectedClientId: suggestion.id_klienta }));     
   }
 
   return (
     <div>
-      <RepresentativeSearchContext.Provider value={{ ...state, dispatch, inputProps, onSuggestionsFetchRequested, onSuggestionsClearRequested, onSuggestionSelected, renderSuggestion, getSuggestionValue, setResponse, setSuccessResponse, setErrorResponse }} >
+      <RepresentativeSearchContext.Provider value={{ ...state, dispatch, inputProps, onSuggestionsFetchRequested, onSuggestionsClearRequested, onSuggestionSelected, renderSuggestion, getSuggestionValue }} >
         {children}
       </RepresentativeSearchContext.Provider>
     </div>

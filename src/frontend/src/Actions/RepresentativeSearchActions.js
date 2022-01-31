@@ -13,16 +13,3 @@ export const clearSuggestions = () => {
 export const selectRep = (data) => { 
   return { type: 'SELECT_REP', data };
 };
-
-export const setResponse = (response) => {
-  return { type: 'SET_RESPONSE', response };
-};
-
-
-export const setSuccessResponse = (message) => {
-  return { type: 'SET_SUCCESS_RESPONSE', message };
-};
-
-export const setErrorResponse = (err) => {
-  return { type: 'SET_ERROR_RESPONSE', err };
-};
