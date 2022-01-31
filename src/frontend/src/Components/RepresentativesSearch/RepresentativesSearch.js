@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './RepresentativesSearch.css';
 import Alert from '../Alert/Alert';
 import Autosuggest from 'react-autosuggest';
@@ -12,35 +12,67 @@ import useTaskEffects from '../../Hooks/useTaskEffects';
 
 const RepresentativesSearch = (props) => {
   useTaskEffects(props);
+    
+  const [response, setResponse] = useState(null);
 
   const { 
     dispatch, 
-    response, setResponse, setSuccessResponse, setErrorResponse, 
     suggestions, onSuggestionsFetchRequested, onSuggestionsClearRequested, onSuggestionSelected, getSuggestionValue, renderSuggestion, inputProps,
     selectedRepId, selectedRep, selectedClientId, 
     createTask, taskStarted, tasksVisible, setTasksVisible, activeTasksModal, takeOverModalVisible, setTakeOverModalVisible, takeOverModal, taskPreviewVisible, setTaskPreviewVisible, previewedTask, changeOperator   
   } = props;
 
+  const onSuggestionsFetchRequestedWithResponse = async (event, data) => {
+    try {
+      onSuggestionsFetchRequested(event, data);   
+    } catch (err) {
+      setResponse({
+        error: true,
+        messages: [ err ]
+      }); 
+    }
+  }
+
+  const onSuggestionSelectedWithResponse = async (event, data) => {
+    try {
+      onSuggestionSelected(event, data);   
+    } catch (err) {
+      setResponse({
+        error: true,
+        messages: [ err ]
+      }); 
+    }
+  }
+
   const createTaskAndRenderResponse = (event) => {
-    dispatch(setSuccessResponse('Tworzenie zadania...'));
+    setResponse({
+      error: false,
+      messages: [ 'Tworzenie zadania...' ]
+    });
+
     createTask(selectedRepId, selectedClientId)
     .then(result => dispatch(setResponse(result)))
-    .catch(err => dispatch(setErrorResponse(err)));
+    .catch(err => {
+      setResponse({
+        error: true,
+        messages: [ err ]
+      });
+    });
   }
 
   // Finally, render it!
   return (
     <div className="representatives-search-box">
-      { response.messages.length > 0 && <Alert response={response}></Alert> }
+      { response && response.messages.length > 0 && <Alert response={response}></Alert> }
       
       <div className="react-autosuggest__box">
         <div className="react-autosuggest__column">Znajdź użytkownika<br/>po numerze telefonu:</div>
         <div className="react-autosuggest__column">
           <Autosuggest
             suggestions={suggestions}
-            onSuggestionsFetchRequested={onSuggestionsFetchRequested}
+            onSuggestionsFetchRequested={onSuggestionsFetchRequestedWithResponse}
             onSuggestionsClearRequested={onSuggestionsClearRequested}
-            onSuggestionSelected={onSuggestionSelected}
+            onSuggestionSelected={onSuggestionSelectedWithResponse}
             getSuggestionValue={getSuggestionValue}
             renderSuggestion={renderSuggestion}
             inputProps={inputProps}

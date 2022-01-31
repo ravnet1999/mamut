@@ -23,27 +23,6 @@ const representativeSearchReducer = (state, action) => {
         ...state,
         ...action.data
       }  
-    case('SET_RESPONSE'):
-      return {
-        ...state,
-        response: action.response
-      }  
-    case('SET_SUCCESS_RESPONSE'):
-    return {
-      ...state,
-      response: {
-        error: false,
-        messages: [action.message]
-      }
-    }
-    case('SET_ERROR_RESPONSE'):
-      return {
-        ...state,
-        response: {
-          error: true,
-          messages: [action.err]
-        }
-      } 
   }
   return state;
 }
