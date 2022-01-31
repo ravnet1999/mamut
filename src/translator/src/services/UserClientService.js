@@ -18,7 +18,8 @@ class UserClientService {
             + ' on uzytkownicy.id_klienta=sl_klientow.id'
             + ' WHERE (REPLACE(REPLACE(REPLACE(REPLACE(`tel_komorkowy`,"-","")," ", ""),  "tel.", ""), "kom.", "") LIKE ?'
             + ' OR REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(`numer_wewnetrzny`,"-","")," ", ""), "tel.:", ""), "w.", ""), "(", ""), ")", "") LIKE ?)'
-            + ' AND `uzytkownicy`.`aktywny`=\'on\'',
+            + ' AND `' + this.usersTableName + '`.`aktywny`=\'on\''
+            + ' AND `' + this.clientsTableName + '`.`aktywny`=\'on\'',
             ["%" + phoneNumber + "%", "%" + phoneNumber + "%"], (err, results, fields) => {
               if(err) {
                   reject(err);
