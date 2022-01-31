@@ -18,7 +18,7 @@ const Representatives = (props) => {
     const [response, setResponse] = useState(null);
     
     const { 
-      taskStarted, setTaskStarted, createTask, tasksVisible, setTasksVisible, takeOverStarted, setTakeOverStarted, viewedOperator, setViewedOperator, viewedTaskList, setViewedTaskList, activeTasksModal, setActiveTasksModal, taskForTakeOver, setTaskForTakeOver, takeOverModalVisible, setTakeOverModalVisible, takeOverButtonDisabled, setTakeOverButtonDisabled, takeOverModal, setTakeOverModal, taskPreviewVisible, setTaskPreviewVisible, previewedTask, setPreviewedTask, renderTaskList, changeOperator, showTasks  
+      taskStarted, setTaskStarted, createTask, tasksVisible, setTasksVisible, takeOverStarted, setTakeOverStarted, viewedOperator, setViewedOperator, viewedTaskList, setViewedTaskList, activeTasksModal, setActiveTasksModal, taskForTakeOver, setTaskForTakeOver, takeOverModalVisible, setTakeOverModalVisible, takeOverButtonDisabled, setTakeOverButtonDisabled, takeOverModal, setTakeOverModal, taskPreviewVisible, setTaskPreviewVisible, previewedTask, setPreviewedTask, renderTaskList, changeOperator, showTasks, showTakeOverModal  
     } = props;
   
     const createTaskAndRenderResponse = (event) => {
@@ -67,32 +67,7 @@ const Representatives = (props) => {
 
         };
 
-        console.log('refreshing modal');
-
-        setTakeOverModal({
-            title: `Przejęcie zadania ${taskForTakeOver.id} - ${taskForTakeOver.zglaszajacy}`,
-            description: `Czy na pewno chcesz przejąć zadanie ${taskForTakeOver.id} - ${taskForTakeOver.zglaszajacy} klienta ${taskForTakeOver.klient}?`,
-            buttons: [
-                {
-                    name: 'Potwierdź',
-                    method: () => {
-                        setTakeOverStarted(true);
-                        TaskHandler.reassignTask(taskForTakeOver.id, undefined, true).then((result) => {
-                            setTakeOverStarted(false);
-                            setTakeOverModalVisible(false);
-                            window.location.replace(`/admin/task/${taskForTakeOver.id}`);
-                        }).catch((err) => {
-                            console.log(err);
-                            setTakeOverStarted(false);
-                            setTakeOverModalVisible(false);
-                        });
-                    },
-                    disabled: {
-                        status: takeOverStarted
-                    }
-                }
-            ]
-        })
+        showTakeOverModal();
 
     }, [takeOverModalVisible, taskForTakeOver, takeOverStarted]);    
 
