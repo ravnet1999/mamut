@@ -31,7 +31,7 @@ const RepresentativesSearch = (props) => {
   // Finally, render it!
   return (
     <div className="representatives-search-box">
-      <Alert response={response}></Alert>
+      { response.messages.length > 0 && <Alert response={response}></Alert> }
       
       <div className="react-autosuggest__box">
         <div className="react-autosuggest__column">Znajdź użytkownika<br/>po numerze telefonu:</div>
