@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React from 'react';
 import './RepresentativesSearch.css';
 import Alert from '../Alert/Alert';
 import Autosuggest from 'react-autosuggest';
