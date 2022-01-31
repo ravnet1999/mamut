@@ -18,7 +18,7 @@ const Representatives = (props) => {
     const [response, setResponse] = useState(null);
     
     const { 
-      taskStarted, setTaskStarted, createTask, tasksVisible, setTasksVisible, takeOverStarted, setTakeOverStarted, viewedOperator, setViewedOperator, viewedTaskList, setViewedTaskList, activeTasksModal, setActiveTasksModal, taskForTakeOver, setTaskForTakeOver, takeOverModalVisible, setTakeOverModalVisible, takeOverButtonDisabled, setTakeOverButtonDisabled, takeOverModal, setTakeOverModal, taskPreviewVisible, setTaskPreviewVisible, previewedTask, setPreviewedTask, renderTaskList, showTasks  
+      taskStarted, setTaskStarted, createTask, tasksVisible, setTasksVisible, takeOverStarted, setTakeOverStarted, viewedOperator, setViewedOperator, viewedTaskList, setViewedTaskList, activeTasksModal, setActiveTasksModal, taskForTakeOver, setTaskForTakeOver, takeOverModalVisible, setTakeOverModalVisible, takeOverButtonDisabled, setTakeOverButtonDisabled, takeOverModal, setTakeOverModal, taskPreviewVisible, setTaskPreviewVisible, previewedTask, setPreviewedTask, renderTaskList, changeOperator  
     } = props;
   
     const createTaskAndRenderResponse = (event) => {
@@ -107,7 +107,7 @@ const Representatives = (props) => {
         return <Col xs="12" sm="12" md="6" lg="4" key={index}>
                 <Button onClick={(e) => setSelectedRep(representative)} className={ `full-width margin-bottom-default ${ selectedRep && selectedRep.id === representative.id ? 'active' : ''}` }>
                     {representative.imie} {representative.nazwisko}
-                    <span className="task-count" onClick={() => showTasks(representative)}>
+                    <span className="task-count" onClick={() => changeOperator(representative)}>
                         {representative.activeTasks.length > 0 ? `(${representative.activeTasks.length})` : ''}
                     </span>
                 </Button>
