@@ -41,6 +41,14 @@ const TaskContextProvider = ({children}) => {
     setViewedOperator(representative);
 }
 
+  const showTasks = () => {
+    setActiveTasksModal({
+      title: `Aktywne zadania dla ${viewedOperator.imie} ${viewedOperator.nazwisko}`,
+      description: viewedTaskList
+    });
+    setTasksVisible(true);
+  }
+
   const renderTaskList = () => {
     let sortedTasks = sortTasks(viewedOperator.activeTasks);
 
@@ -102,7 +110,7 @@ const TaskContextProvider = ({children}) => {
 
   return (
     <div>
-      <TaskContext.Provider value={{ taskStarted, setTaskStarted, createTask, tasksVisible, setTasksVisible, takeOverStarted, setTakeOverStarted, viewedOperator, setViewedOperator, viewedTaskList, setViewedTaskList, activeTasksModal, setActiveTasksModal, taskForTakeOver, setTaskForTakeOver, takeOverModalVisible, setTakeOverModalVisible, takeOverButtonDisabled, setTakeOverButtonDisabled, takeOverModal, setTakeOverModal, taskPreviewVisible, setTaskPreviewVisible, previewedTask, setPreviewedTask, renderTaskList, changeOperator }} >
+      <TaskContext.Provider value={{ taskStarted, setTaskStarted, createTask, tasksVisible, setTasksVisible, takeOverStarted, setTakeOverStarted, viewedOperator, setViewedOperator, viewedTaskList, setViewedTaskList, activeTasksModal, setActiveTasksModal, taskForTakeOver, setTaskForTakeOver, takeOverModalVisible, setTakeOverModalVisible, takeOverButtonDisabled, setTakeOverButtonDisabled, takeOverModal, setTakeOverModal, taskPreviewVisible, setTaskPreviewVisible, previewedTask, setPreviewedTask, renderTaskList, changeOperator, showTasks }} >
         {children}
       </TaskContext.Provider>
     </div>
