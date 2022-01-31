@@ -10,6 +10,7 @@ import appConfig from './Config/appConfig.json';
 import { Switch, Route } from 'react-router-dom';
 import TaskHandler from '../src/Handlers/TaskHandler';
 import Representatives from './Components/Representatives/Representatives';
+import TaskContextProvider from './Contexts/TaskContext';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
@@ -69,7 +70,7 @@ function App() {
 				<Route path='/' exact render={(props) => <Login cookies={cookies} setCookie={setCookie} removeCookie={removeCookie} {...props}></Login>}></Route>
 				<Route path='/logout' exact render={(props) => <Logout {...props} removeCookie={removeCookie}></Logout>}></Route>
 				<Route path='/clients' exact render={(props) => <Clients {...props} updateTaskCount={updateTaskCount} setCurrentPage={setCurrentPage}></Clients>}></Route>
-				<Route path='/representatives/:clientId' exact render={(props) => <Representatives {...props} updateTaskCount={updateTaskCount} setCurrentPage={setCurrentPage}></Representatives>}></Route>
+				<Route path='/representatives/:clientId' exact render={(props) => <TaskContextProvider><Representatives {...props} updateTaskCount={updateTaskCount} setCurrentPage={setCurrentPage}></Representatives></TaskContextProvider>}></Route>
 				<Route path='/task/:taskId/:options?' exact render={(props) => <Task {...props} updateTaskCount={updateTaskCount} setCurrentPage={setCurrentPage}></Task>}></Route>
 				<Route path='/tasks/:general?' exact render={(props) => <Tasks {...props} updateTaskCount={updateTaskCount} setCurrentPage={setCurrentPage}></Tasks>}></Route>
 			</Switch>

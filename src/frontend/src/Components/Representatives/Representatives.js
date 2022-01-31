@@ -9,13 +9,15 @@ import Modal from '../Modal/Modal';
 import TaskPreview from '../Tasks/TaskPreview';
 import './Representatives.css';
 
+import { TaskContext } from '../../Contexts/TaskContext';
+import {WithContexts} from '../../HOCs/WithContexts'
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlay } from '@fortawesome/free-solid-svg-icons';
 const Representatives = (props) => {
     const [representatives, setRepresentatives] = useState([]);
     const [selectedRep, setSelectedRep] = useState(null);
     const [response, setResponse] = useState(null);
-    const [taskStarted, setTaskStarted] = useState(false);
     const [tasksVisible, setTasksVisible] = useState(false);
     const [takeOverStarted, setTakeOverStarted] = useState(false);
     const [viewedOperator, setViewedOperator] = useState(null);
@@ -37,6 +39,22 @@ const Representatives = (props) => {
     const [taskPreviewVisible, setTaskPreviewVisible] = useState(false);
     const [previewedTask, setPreviewedTask] = useState(null);
 
+    const { 
+      dispatch,       
+      createTask, taskStarted    
+    } = props;
+  
+    const createTaskAndRenderResponse = (event) => {
+      setResponse({
+          error: false,
+          messages: ['Tworzenie zadania...']
+      });
+
+      createTask(selectedRep.id, props.match.params.clientId)
+      .then(result => setResponse(result))
+      .catch(err => setResponse(err));
+    }
+  
     useEffect(() => {
         props.setCurrentPage(props.history.location.pathname);
         ClientHandler.getRepresentatives(props.match.params.clientId).then((response) => {
@@ -126,20 +144,7 @@ const Representatives = (props) => {
             ]
         })
 
-    }, [takeOverModalVisible, taskForTakeOver, takeOverStarted]);
-
-    const createTask = () => {
-        setTaskStarted(true);
-        setResponse({
-            error: false,
-            messages: ['Tworzenie zadania...']
-        });
-        TaskHandler.createTask(props.match.params.clientId, selectedRep.id).then((result) => {
-            setResponse(result);
-        }).catch((err) => {
-            setResponse(err);
-        });
-    }
+    }, [takeOverModalVisible, taskForTakeOver, takeOverStarted]);    
 
     const sortTasks = (activeTasks) => {
         let operators = {};
@@ -213,7 +218,7 @@ const Representatives = (props) => {
                     <Row className="no-margins">
                         <Col className="text-right btn-center-container">
                             {/* <Alert response={response}></Alert> */}
-                            <Button onClick={(e) => createTask()} className="btn-inverted btn-start btn-center" disabled={!selectedRep || taskStarted}>Start</Button>
+                            <Button onClick={(e) => createTaskAndRenderResponse()} className="btn-inverted btn-start btn-center" disabled={!selectedRep || taskStarted}>Start</Button>
                         </Col>
                     </Row>
                 </div>
@@ -222,4 +227,4 @@ const Representatives = (props) => {
     );
 }
 
-export default Representatives;
+export default WithContexts(Representatives, [ TaskContext ]);
