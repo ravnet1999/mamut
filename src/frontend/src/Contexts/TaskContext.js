@@ -101,16 +101,45 @@ const TaskContextProvider = ({children}) => {
   const previewTask = (task) => {
     setPreviewedTask(task);
     setTaskPreviewVisible(true);
-}
+  }
 
   const takeOverTask = (task) => {
       setTaskForTakeOver(task);
       setTakeOverModalVisible(true);
   }
 
+  const showTakeOverModal = () => {
+    console.log('refreshing modal');
+
+    setTakeOverModal({
+        title: `Przejęcie zadania ${taskForTakeOver.id} - ${taskForTakeOver.zglaszajacy}`,
+        description: `Czy na pewno chcesz przejąć zadanie ${taskForTakeOver.id} - ${taskForTakeOver.zglaszajacy} klienta ${taskForTakeOver.klient}?`,
+        buttons: [
+            {
+                name: 'Potwierdź',
+                method: () => {
+                    setTakeOverStarted(true);
+                    TaskHandler.reassignTask(taskForTakeOver.id, undefined, true).then((result) => {
+                        setTakeOverStarted(false);
+                        setTakeOverModalVisible(false);
+                        window.location.replace(`/admin/task/${taskForTakeOver.id}`);
+                    }).catch((err) => {
+                        console.log(err);
+                        setTakeOverStarted(false);
+                        setTakeOverModalVisible(false);
+                    });
+                },
+                disabled: {
+                    status: takeOverStarted
+                }
+            }
+        ]
+    })
+  }
+
   return (
     <div>
-      <TaskContext.Provider value={{ taskStarted, setTaskStarted, createTask, tasksVisible, setTasksVisible, takeOverStarted, setTakeOverStarted, viewedOperator, setViewedOperator, viewedTaskList, setViewedTaskList, activeTasksModal, setActiveTasksModal, taskForTakeOver, setTaskForTakeOver, takeOverModalVisible, setTakeOverModalVisible, takeOverButtonDisabled, setTakeOverButtonDisabled, takeOverModal, setTakeOverModal, taskPreviewVisible, setTaskPreviewVisible, previewedTask, setPreviewedTask, renderTaskList, changeOperator, showTasks }} >
+      <TaskContext.Provider value={{ taskStarted, setTaskStarted, createTask, tasksVisible, setTasksVisible, takeOverStarted, setTakeOverStarted, viewedOperator, setViewedOperator, viewedTaskList, setViewedTaskList, activeTasksModal, setActiveTasksModal, taskForTakeOver, setTaskForTakeOver, takeOverModalVisible, setTakeOverModalVisible, takeOverButtonDisabled, setTakeOverButtonDisabled, takeOverModal, setTakeOverModal, taskPreviewVisible, setTaskPreviewVisible, previewedTask, setPreviewedTask, renderTaskList, changeOperator, showTasks, showTakeOverModal }} >
         {children}
       </TaskContext.Provider>
     </div>
