@@ -3,7 +3,7 @@ import TaskHandler from '../Handlers/TaskHandler';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlay } from '@fortawesome/free-solid-svg-icons';
-import { Row, Col, Button } from '../Components/bootstrap';
+import { Button } from '../Components/bootstrap';
 
 export const TaskContext = createContext();
 
@@ -139,7 +139,7 @@ const TaskContextProvider = ({children}) => {
 
   return (
     <div>
-      <TaskContext.Provider value={{ taskStarted, setTaskStarted, createTask, tasksVisible, setTasksVisible, takeOverStarted, setTakeOverStarted, viewedOperator, setViewedOperator, viewedTaskList, setViewedTaskList, activeTasksModal, setActiveTasksModal, taskForTakeOver, setTaskForTakeOver, takeOverModalVisible, setTakeOverModalVisible, takeOverButtonDisabled, setTakeOverButtonDisabled, takeOverModal, setTakeOverModal, taskPreviewVisible, setTaskPreviewVisible, previewedTask, setPreviewedTask, renderTaskList, changeOperator, showTasks, showTakeOverModal }} >
+      <TaskContext.Provider value={{ taskStarted, createTask, tasksVisible, setTasksVisible, takeOverStarted, viewedOperator, viewedTaskList, activeTasksModal, taskForTakeOver, takeOverModalVisible, setTakeOverModalVisible, takeOverModal, taskPreviewVisible, setTaskPreviewVisible, previewedTask, renderTaskList, changeOperator, showTasks, showTakeOverModal }} >
         {children}
       </TaskContext.Provider>
     </div>

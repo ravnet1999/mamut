@@ -1,25 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { NavLink as Link } from 'react-router-dom';
 import Page from '../Page';
 import { Row, Col, Button } from '../bootstrap';
 import Alert from '../Alert/Alert';
 import ClientHandler from '../../Handlers/ClientHandler';
-import TaskHandler from '../../Handlers/TaskHandler';
 import Modal from '../Modal/Modal';
 import TaskPreview from '../Tasks/TaskPreview';
 import './Representatives.css';
 
 import { TaskContext } from '../../Contexts/TaskContext';
-import {WithContexts} from '../../HOCs/WithContexts'
+import { WithContexts } from '../../HOCs/WithContexts'
 
 const Representatives = (props) => {
     const [representatives, setRepresentatives] = useState([]);
     const [selectedRep, setSelectedRep] = useState(null);
     const [response, setResponse] = useState(null);
     
-    const { 
-      taskStarted, setTaskStarted, createTask, tasksVisible, setTasksVisible, takeOverStarted, setTakeOverStarted, viewedOperator, setViewedOperator, viewedTaskList, setViewedTaskList, activeTasksModal, setActiveTasksModal, taskForTakeOver, setTaskForTakeOver, takeOverModalVisible, setTakeOverModalVisible, takeOverButtonDisabled, setTakeOverButtonDisabled, takeOverModal, setTakeOverModal, taskPreviewVisible, setTaskPreviewVisible, previewedTask, setPreviewedTask, renderTaskList, changeOperator, showTasks, showTakeOverModal  
-    } = props;
+    const { taskStarted, createTask, tasksVisible, setTasksVisible, takeOverStarted, viewedOperator, viewedTaskList, activeTasksModal, taskForTakeOver, takeOverModalVisible, setTakeOverModalVisible, takeOverModal, taskPreviewVisible, setTaskPreviewVisible, previewedTask, renderTaskList, changeOperator, showTasks, showTakeOverModal } = props;
   
     const createTaskAndRenderResponse = (event) => {
       setResponse({
