@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './RepresentativesSearch.css';
 import Alert from '../Alert/Alert';
 import Autosuggest from 'react-autosuggest';
@@ -6,14 +6,16 @@ import { Row, Col, Button } from '../bootstrap';
 import { RepresentativeSearchContext } from '../../Contexts/RepresentativeSearchContext';
 import { TaskContext } from '../../Contexts/TaskContext';
 import { WithContexts } from '../../HOCs/WithContexts';
+import Modal from '../Modal/Modal';
+import TaskPreview from '../Tasks/TaskPreview';
 
 const RepresentativesSearch = (props) => {
   const { 
     dispatch, 
     response, setResponse, setSuccessResponse, setErrorResponse, 
     suggestions, onSuggestionsFetchRequested, onSuggestionsClearRequested, onSuggestionSelected, getSuggestionValue, renderSuggestion, inputProps,
-    selectedRepId, selectedClientId,
-    createTask, taskStarted    
+    selectedRepId, selectedRep, selectedClientId, 
+    createTask, taskStarted, tasksVisible, setTasksVisible, takeOverStarted, viewedOperator, viewedTaskList, activeTasksModal, taskForTakeOver, takeOverModalVisible, setTakeOverModalVisible, takeOverModal, taskPreviewVisible, setTaskPreviewVisible, previewedTask, renderTaskList, changeOperator, showTasks, showTakeOverModal    
   } = props;
 
   const createTaskAndRenderResponse = (event) => {
@@ -23,7 +25,41 @@ const RepresentativesSearch = (props) => {
     .catch(err => dispatch(setErrorResponse(err)));
   }
 
-  // Finally, render it!
+  useEffect(() => {
+      if(!viewedOperator) return () => {
+
+      };
+
+      renderTaskList();
+  }, [viewedOperator, takeOverStarted])
+
+  useEffect(() => {
+      if(!viewedOperator) return () => {
+
+      };
+
+      showTasks();
+  }, [viewedTaskList]);
+
+  useEffect(() => {
+      if(!takeOverModalVisible || !taskForTakeOver) return () => {
+
+      };
+
+      showTakeOverModal();
+
+  }, [takeOverModalVisible, taskForTakeOver, takeOverStarted]);  
+  
+  useEffect(() => {
+    if(!takeOverModalVisible || !taskForTakeOver) return () => {
+
+    };
+
+    showTakeOverModal();
+
+}, [takeOverModalVisible, taskForTakeOver, takeOverStarted]); 
+
+   // Finally, render it!
   return (
     <div className="representatives-search-box">
       <Alert response={response}></Alert>
@@ -43,6 +79,19 @@ const RepresentativesSearch = (props) => {
         </div>
       </div>
 
+      { selectedRep  && <div className="react-autosuggest__box">
+        <div className="react-autosuggest__column">Aktywne zadania:</div>
+        <div className="react-autosuggest__column">
+          <span className="task-count" onClick={() => changeOperator(selectedRep)}>
+            ({selectedRep.activeTasks.length})
+          </span> 
+        </div>
+      </div> }
+
+      { taskPreviewVisible ? <TaskPreview task={previewedTask} onClose={() => setTaskPreviewVisible(false)}></TaskPreview> : '' }
+      <Modal className="takeover-modal" buttons={takeOverModal.buttons} closeButtonName={'Zamknij'} title={takeOverModal.title} description={takeOverModal.description} visible={takeOverModalVisible} onClose={() => setTakeOverModalVisible(false)}></Modal>
+      <Modal buttons={[]} closeButtonName={'Zamknij'} title={activeTasksModal.title} description={activeTasksModal.description} visible={tasksVisible} onClose={() => setTasksVisible(false)}></Modal>
+      
       <div className="bottom-pin-wrapper">
           <div className="bottom-pin">
               <Row className="no-margins">

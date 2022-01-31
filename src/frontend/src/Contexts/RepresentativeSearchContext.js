@@ -1,6 +1,7 @@
 import React, {createContext, useReducer } from 'react';
 import RepresentativeSearchReducer from '../Reducers/RepresentativeSearchReducer';
 import UserClientHandler from '../Handlers/UserClientHandler';
+import UserHandler from '../Handlers/UserHandler';
 import { setValue, setSuggestions, clearSuggestions, selectRep, setResponse, setSuccessResponse, setErrorResponse } from '../Actions/RepresentativeSearchActions';
 
 export const RepresentativeSearchContext = createContext();
@@ -12,7 +13,8 @@ const RepresentativeSearchContextProvider = ({children}) => {
       suggestions: [],
       response: { messages: []},
       selectedClientId: null,
-      selectedRepId: null
+      selectedRepId: null,
+      selectedRep: null
     }
   );
 
@@ -53,8 +55,15 @@ const RepresentativeSearchContextProvider = ({children}) => {
     dispatch(clearSuggestions());
   };
 
-  const onSuggestionSelected = (event, { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }) => {
-    dispatch(selectRep({ selectedRepId: suggestion.id, selectedClientId: suggestion.id_klienta })); 
+  const onSuggestionSelected = async (event, { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }) => {
+    const selectedRepId = suggestion.id;
+    try {
+      const response = await UserHandler.getWithTasks(selectedRepId);
+      const selectedRep = response.resources[0];
+      dispatch(selectRep({ selectedRep, selectedRepId, selectedClientId: suggestion.id_klienta })); 
+    } catch(err) {
+      dispatch(setErrorResponse(err));
+    }
   }
 
   return (
