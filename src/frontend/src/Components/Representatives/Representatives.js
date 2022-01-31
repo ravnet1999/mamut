@@ -20,7 +20,7 @@ const Representatives = (props) => {
     const [response, setResponse] = useState(null);
     
     const { 
-      taskStarted, setTaskStarted, createTask, tasksVisible, setTasksVisible, takeOverStarted, setTakeOverStarted, viewedOperator, setViewedOperator, viewedTaskList, setViewedTaskList, activeTasksModal, setActiveTasksModal, taskForTakeOver, setTaskForTakeOver, takeOverModalVisible, setTakeOverModalVisible, takeOverButtonDisabled, setTakeOverButtonDisabled, takeOverModal, setTakeOverModal, taskPreviewVisible, setTaskPreviewVisible, previewedTask, setPreviewedTask  
+      taskStarted, setTaskStarted, createTask, tasksVisible, setTasksVisible, takeOverStarted, setTakeOverStarted, viewedOperator, setViewedOperator, viewedTaskList, setViewedTaskList, activeTasksModal, setActiveTasksModal, taskForTakeOver, setTaskForTakeOver, takeOverModalVisible, setTakeOverModalVisible, takeOverButtonDisabled, setTakeOverButtonDisabled, takeOverModal, setTakeOverModal, taskPreviewVisible, setTaskPreviewVisible, previewedTask, setPreviewedTask, sortTasks  
     } = props;
   
     const createTaskAndRenderResponse = (event) => {
@@ -122,30 +122,6 @@ const Representatives = (props) => {
         })
 
     }, [takeOverModalVisible, taskForTakeOver, takeOverStarted]);    
-
-    const sortTasks = (activeTasks) => {
-        let operators = {};
-        activeTasks.map((activeTask) => {
-            operators[activeTask.operator.inicjaly ? activeTask.operator.inicjaly : 'Brak inicjałów'] = [];
-        });
-        for(let operator in operators) {
-            operators[operator] = activeTasks.filter((activeTask) => {
-                return activeTask.operator.inicjaly == operator;
-            });
-        }
-
-        let sortedInitials = Object.keys(operators).sort((a, b) => {
-            return a.localeCompare(b)
-        });
-
-        let sortedOperators = {};
-
-        sortedInitials.map((initials) => {
-            sortedOperators[initials] = operators[initials];
-        });
-
-        return sortedOperators;
-    }
 
     const previewTask = (task) => {
         setPreviewedTask(task);
