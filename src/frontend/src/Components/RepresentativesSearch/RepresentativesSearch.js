@@ -105,4 +105,4 @@ const RepresentativesSearch = (props) => {
     </div>
   );
 }
-export default  WithContexts(RepresentativesSearch, [RepresentativeSearchContext, TaskContext]);
+export default WithContexts(RepresentativesSearch, [RepresentativeSearchContext, TaskContext]);
