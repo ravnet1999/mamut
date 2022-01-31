@@ -36,10 +36,8 @@ const Representatives = (props) => {
   
     useEffect(() => {
         props.setCurrentPage(props.history.location.pathname);
-        ClientHandler.getRepresentatives(props.match.params.clientId).then((response) => {
-            let sorted = response.resources.sort((a, b) => {
-                return (a.imie + a.nazwisko) > (b.imie + b.nazwisko) ? 1 : ( (a.imie + a.nazwisko) < (b.imie + b.nazwisko) ? -1 : 0 );
-            });
+        ClientHandler.getSortedRepresentatives(props.match.params.clientId).then((response) => {
+            let sorted = response.resources;
             setRepresentatives(sorted);
             response.messages = ['Wybierz reprezentanta:']
             setResponse(response);
