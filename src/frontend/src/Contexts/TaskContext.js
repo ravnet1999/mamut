@@ -63,7 +63,7 @@ const TaskContextProvider = ({children}) => {
         )
     }
 
-    return taskList;
+    setViewedTaskList(taskList);
   };
 
   const sortTasks = (activeTasks) => {      
