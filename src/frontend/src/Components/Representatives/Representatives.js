@@ -18,30 +18,9 @@ const Representatives = (props) => {
     const [representatives, setRepresentatives] = useState([]);
     const [selectedRep, setSelectedRep] = useState(null);
     const [response, setResponse] = useState(null);
-    const [tasksVisible, setTasksVisible] = useState(false);
-    const [takeOverStarted, setTakeOverStarted] = useState(false);
-    const [viewedOperator, setViewedOperator] = useState(null);
-    const [viewedTaskList, setViewedTaskList] = useState([]);
-    const [activeTasksModal, setActiveTasksModal] = useState({
-        title: '',
-        description: ''
-    });
-    const [taskForTakeOver, setTaskForTakeOver] = useState(null);
-    const [takeOverModalVisible, setTakeOverModalVisible] = useState(false);
-    const [takeOverButtonDisabled, setTakeOverButtonDisabled] = useState({
-        status: false
-    });
-    const [takeOverModal, setTakeOverModal] = useState({
-        title: '',
-        description: '',
-        buttons: []
-    });
-    const [taskPreviewVisible, setTaskPreviewVisible] = useState(false);
-    const [previewedTask, setPreviewedTask] = useState(null);
-
+    
     const { 
-      dispatch,       
-      createTask, taskStarted    
+      taskStarted, setTaskStarted, createTask, tasksVisible, setTasksVisible, takeOverStarted, setTakeOverStarted, viewedOperator, setViewedOperator, viewedTaskList, setViewedTaskList, activeTasksModal, setActiveTasksModal, taskForTakeOver, setTaskForTakeOver, takeOverModalVisible, setTakeOverModalVisible, takeOverButtonDisabled, setTakeOverButtonDisabled, takeOverModal, setTakeOverModal, taskPreviewVisible, setTaskPreviewVisible, previewedTask, setPreviewedTask  
     } = props;
   
     const createTaskAndRenderResponse = (event) => {
