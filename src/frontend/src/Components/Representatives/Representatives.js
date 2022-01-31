@@ -18,7 +18,7 @@ const Representatives = (props) => {
     const [response, setResponse] = useState(null);
     
     const { 
-      taskStarted, setTaskStarted, createTask, tasksVisible, setTasksVisible, takeOverStarted, setTakeOverStarted, viewedOperator, setViewedOperator, viewedTaskList, setViewedTaskList, activeTasksModal, setActiveTasksModal, taskForTakeOver, setTaskForTakeOver, takeOverModalVisible, setTakeOverModalVisible, takeOverButtonDisabled, setTakeOverButtonDisabled, takeOverModal, setTakeOverModal, taskPreviewVisible, setTaskPreviewVisible, previewedTask, setPreviewedTask, renderTaskList  
+      taskStarted, setTaskStarted, createTask, tasksVisible, setTasksVisible, takeOverStarted, setTakeOverStarted, viewedOperator, setViewedOperator, viewedTaskList, setViewedTaskList, activeTasksModal, setActiveTasksModal, taskForTakeOver, setTaskForTakeOver, takeOverModalVisible, setTakeOverModalVisible, takeOverButtonDisabled, setTakeOverButtonDisabled, takeOverModal, setTakeOverModal, taskPreviewVisible, setTaskPreviewVisible, previewedTask, setPreviewedTask, renderTaskList, showTasks  
     } = props;
   
     const createTaskAndRenderResponse = (event) => {
@@ -100,12 +100,6 @@ const Representatives = (props) => {
         })
 
     }, [takeOverModalVisible, taskForTakeOver, takeOverStarted]);    
-
-    const showTasks = (representative) => {
-        console.log('test');
-        console.log(representative);
-        setViewedOperator(representative);
-    }
 
     const buildClients = () => {
         

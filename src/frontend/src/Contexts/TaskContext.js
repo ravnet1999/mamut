@@ -35,6 +35,12 @@ const TaskContextProvider = ({children}) => {
     return TaskHandler.createTask(selectedClientId, selectedRepId);    
   }
 
+  const showTasks = (representative) => {
+    console.log('test');
+    console.log(representative);
+    setViewedOperator(representative);
+}
+
   const renderTaskList = () => {
     let sortedTasks = sortTasks(viewedOperator.activeTasks);
 
@@ -96,7 +102,7 @@ const TaskContextProvider = ({children}) => {
 
   return (
     <div>
-      <TaskContext.Provider value={{ taskStarted, setTaskStarted, createTask, tasksVisible, setTasksVisible, takeOverStarted, setTakeOverStarted, viewedOperator, setViewedOperator, viewedTaskList, setViewedTaskList, activeTasksModal, setActiveTasksModal, taskForTakeOver, setTaskForTakeOver, takeOverModalVisible, setTakeOverModalVisible, takeOverButtonDisabled, setTakeOverButtonDisabled, takeOverModal, setTakeOverModal, taskPreviewVisible, setTaskPreviewVisible, previewedTask, setPreviewedTask, renderTaskList }} >
+      <TaskContext.Provider value={{ taskStarted, setTaskStarted, createTask, tasksVisible, setTasksVisible, takeOverStarted, setTakeOverStarted, viewedOperator, setViewedOperator, viewedTaskList, setViewedTaskList, activeTasksModal, setActiveTasksModal, taskForTakeOver, setTaskForTakeOver, takeOverModalVisible, setTakeOverModalVisible, takeOverButtonDisabled, setTakeOverButtonDisabled, takeOverModal, setTakeOverModal, taskPreviewVisible, setTaskPreviewVisible, previewedTask, setPreviewedTask, renderTaskList, showTasks }} >
         {children}
       </TaskContext.Provider>
     </div>
