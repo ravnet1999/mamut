@@ -1,6 +1,10 @@
 import React, {createContext, useState } from 'react';
 import TaskHandler from '../Handlers/TaskHandler';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlay } from '@fortawesome/free-solid-svg-icons';
+import { Row, Col, Button } from '../Components/bootstrap';
+
 export const TaskContext = createContext();
 
 const TaskContextProvider = ({children}) => {
@@ -31,6 +35,31 @@ const TaskContextProvider = ({children}) => {
     return TaskHandler.createTask(selectedClientId, selectedRepId);    
   }
 
+  const renderTaskList = () => {
+    let sortedTasks = sortTasks(viewedOperator.activeTasks);
+
+    let taskList = [];
+
+    for(let operator in sortedTasks) {
+        taskList.push(
+            <div key={operator}>
+                <strong className="operator-header">{operator == '--' ? 'ToDo' : operator}: {sortedTasks[operator].length}</strong>
+                {sortedTasks[operator].map((task, key) => {
+                    // return <div key={key}><strong>ID:</strong> {task.id}, <strong>Opis:</strong> {task.opis ? task.opis.substr(0, 150) + (task.opis.length > 150 ? '...' : '') : 'Brak opisu'}, <strong>Ostatni etap:</strong> {task.lastEpisode ? task.lastEpisode.rozwiazanie : ''}</div>
+                    return (
+                        <div key={key} className="active-task">
+                            <div className="hover-cursor hover-underline" onClick={(e) => previewTask(task)}><strong>ID:</strong> {task.id}</div><div><strong>Opis:</strong> {task.opis ? task.opis.substr(0, 150) + (task.opis.length > 150 ? '...' : '') : 'Brak opisu'}</div><div><strong>Ostatni etap:</strong> {task.lastEpisode ? task.lastEpisode.rozwiazanie.substr(0, 150) + (task.lastEpisode.rozwiazanie.length > 150 ? '...' : '') : 'Brak opisu etapu.'} </div>
+                            <div className="text-right top-right takeover-button"><Button className="small circular task-takeover" onClick={(e) => takeOverTask(task)} disabled={takeOverStarted}><span className="icon-center takeover"><FontAwesomeIcon icon={faPlay}></FontAwesomeIcon></span></Button></div>
+                        </div>
+                    )
+                })}
+            </div>
+        )
+    }
+
+    return taskList;
+  };
+
   const sortTasks = (activeTasks) => {      
     let operators = {};
     activeTasks.map((activeTask) => {
@@ -55,9 +84,19 @@ const TaskContextProvider = ({children}) => {
     return sortedOperators;
   }
 
+  const previewTask = (task) => {
+    setPreviewedTask(task);
+    setTaskPreviewVisible(true);
+}
+
+  const takeOverTask = (task) => {
+      setTaskForTakeOver(task);
+      setTakeOverModalVisible(true);
+  }
+
   return (
     <div>
-      <TaskContext.Provider value={{ taskStarted, setTaskStarted, createTask, tasksVisible, setTasksVisible, takeOverStarted, setTakeOverStarted, viewedOperator, setViewedOperator, viewedTaskList, setViewedTaskList, activeTasksModal, setActiveTasksModal, taskForTakeOver, setTaskForTakeOver, takeOverModalVisible, setTakeOverModalVisible, takeOverButtonDisabled, setTakeOverButtonDisabled, takeOverModal, setTakeOverModal, taskPreviewVisible, setTaskPreviewVisible, previewedTask, setPreviewedTask, sortTasks }} >
+      <TaskContext.Provider value={{ taskStarted, setTaskStarted, createTask, tasksVisible, setTasksVisible, takeOverStarted, setTakeOverStarted, viewedOperator, setViewedOperator, viewedTaskList, setViewedTaskList, activeTasksModal, setActiveTasksModal, taskForTakeOver, setTaskForTakeOver, takeOverModalVisible, setTakeOverModalVisible, takeOverButtonDisabled, setTakeOverButtonDisabled, takeOverModal, setTakeOverModal, taskPreviewVisible, setTaskPreviewVisible, previewedTask, setPreviewedTask, renderTaskList }} >
         {children}
       </TaskContext.Provider>
     </div>
