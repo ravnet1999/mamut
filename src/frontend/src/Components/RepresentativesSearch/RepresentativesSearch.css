@@ -1,5 +1,5 @@
 .representatives-search-box {
-  margin-top: 20px;
+  margin-top: 60px;
 }
 
 .representatives-search-box .task-count {
@@ -23,13 +23,14 @@
 .representatives-search-box .react-tasks-count__column:nth-of-type(2) {
   display: inline-block;
   float: left;
+  height: 50px;
 }
 
 .representatives-search-box .react-autosuggest__column:nth-of-type(1),
 .representatives-search-box .react-tasks-count__column:nth-of-type(1) {
   width: 160px;
   line-height: 1;
-  margin-top: 2px;
+  padding-top: 2px;
 }
 
 .representatives-search-box .react-autosuggest__column:nth-of-type(2),
