@@ -6,7 +6,8 @@
         "tasks": "tasks",
         "operators": "operators",
         "representatives": "representatives",
-        "services": "services"
+        "services": "services",
+        "representatives_clients": "representatives_clients"
     },
     "cookies": {
         "auth": {
