@@ -4,9 +4,6 @@ import { Row, Col } from '../bootstrap';
 import Alert from '../Alert/Alert';
 import ClientHandler from '../../Handlers/ClientHandler';
 import { NavLink as Link } from 'react-router-dom';
-import RepresentativesSearch from '../../Components/RepresentativesSearch/RepresentativesSearch';
-import RepresentativeSearchContextProvider from '../../Contexts/RepresentativeSearchContext';
-import TaskContextProvider from '../../Contexts/TaskContext';
 
 const Clients = (props) => {
     const [clients, setClients] = useState([]);
@@ -42,11 +39,6 @@ const Clients = (props) => {
 
     return (        
         <Page>
-            <RepresentativeSearchContextProvider>
-              <TaskContextProvider>
-                <RepresentativesSearch {...props}></RepresentativesSearch>
-              </TaskContextProvider>
-            </RepresentativeSearchContextProvider>
             <Alert response={response}></Alert>
             { buildClients() }
         </Page>
