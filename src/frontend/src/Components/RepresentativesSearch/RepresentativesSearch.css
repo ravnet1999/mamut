@@ -12,7 +12,8 @@
   margin-bottom: 50px;
 }
 
-.representatives-search-box .react-autosuggest__box{
+.representatives-search-box .react-autosuggest__box .react-autosuggest__row,
+.representatives-search-box .react-autosuggest__box .react-tasks-count__row{
   display: flex;
 }
 

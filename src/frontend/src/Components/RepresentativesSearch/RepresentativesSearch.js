@@ -68,28 +68,30 @@ const RepresentativesSearch = (props) => {
       { response && response.messages.length > 0 && <Alert response={response}></Alert> }
       
       <div className="react-autosuggest__box">
-        <div className="react-autosuggest__column">Znajdź użytkownika<br/>po numerze telefonu:</div>
-        <div className="react-autosuggest__column">
-          <Autosuggest
-            suggestions={suggestions}
-            onSuggestionsFetchRequested={onSuggestionsFetchRequestedWithResponse}
-            onSuggestionsClearRequested={onSuggestionsClearRequested}
-            onSuggestionSelected={onSuggestionSelectedWithResponse}
-            getSuggestionValue={getSuggestionValue}
-            renderSuggestion={renderSuggestion}
-            inputProps={inputProps}
-          />
+        <div className="react-autosuggest__row">
+          <div className="react-autosuggest__column">Znajdź użytkownika<br/>po numerze telefonu:</div>
+          <div className="react-autosuggest__column">
+            <Autosuggest
+              suggestions={suggestions}
+              onSuggestionsFetchRequested={onSuggestionsFetchRequestedWithResponse}
+              onSuggestionsClearRequested={onSuggestionsClearRequested}
+              onSuggestionSelected={onSuggestionSelectedWithResponse}
+              getSuggestionValue={getSuggestionValue}
+              renderSuggestion={renderSuggestion}
+              inputProps={inputProps}
+            />
+          </div>
         </div>
-      </div>
 
-      { selectedRep  && <div className="react-autosuggest__box">
-        <div className="react-tasks-count__column">Aktywne zadania:</div>
-        <div className="react-tasks-count__column">
-          <span className="task-count" onClick={() => changeOperator(selectedRep)}>
-            ({selectedRep.activeTasks.length})
-          </span> 
-        </div>
-      </div> }
+        { selectedRep  && <div className="react-tasks-count__row">
+          <div className="react-tasks-count__column">Aktywne zadania:</div>
+          <div className="react-tasks-count__column">
+            <span className="task-count" onClick={() => changeOperator(selectedRep)}>
+              ({selectedRep.activeTasks.length})
+            </span> 
+          </div>
+        </div> }
+      </div>
 
       { taskPreviewVisible ? <TaskPreview task={previewedTask} onClose={() => setTaskPreviewVisible(false)}></TaskPreview> : '' }
       <Modal className="takeover-modal" buttons={takeOverModal.buttons} closeButtonName={'Zamknij'} title={takeOverModal.title} description={takeOverModal.description} visible={takeOverModalVisible} onClose={() => setTakeOverModalVisible(false)}></Modal>
