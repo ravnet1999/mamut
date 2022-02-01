@@ -8,6 +8,7 @@ const accessMiddleware = require('./middleware/access');
 const jsonMiddleware = require('./middleware/json');
 const fs = require('fs');
 const https = require('https')
+const slicanRouter = require('./routes/slican');
 
 this.dbPath = 'mongodb://' + dbConfig.username + ':' + dbConfig.password + '@' + dbConfig.host + ':' + dbConfig.port + dbConfig.database;
 
@@ -60,6 +61,8 @@ app.use('/parser', [accessMiddleware], express.static(path.join(__dirname, 'publ
 
 app.use('/admin/*', [accessMiddleware], express.static(path.join(__dirname, 'public', 'admin')));
 app.use('/parser/*', [accessMiddleware], express.static(path.join(__dirname, 'public', 'parser')));
+
+app.use('/slican', slicanRouter);
 
 https.createServer({
     // key: fs.readFileSync('/certs/ravnet22.key'),
