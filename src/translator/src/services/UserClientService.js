@@ -71,8 +71,15 @@ class UserClientService {
           }
           
           if(name.length >= nameCharsLimit) {
-            query += `              
-              AND(
+            if(phoneNumber.length >= phoneNumberCharsLimit) {
+              query += `              
+              OR(`;
+            } else {
+              query += `              
+              AND(`;
+            }
+            
+            query += ` 
                 CONCAT(
                   uzytkownicy.imie,
                   uzytkownicy.nazwisko
