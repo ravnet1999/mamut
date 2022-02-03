@@ -13,7 +13,8 @@ const RepresentativeSearchContextProvider = ({children}) => {
       suggestions: [],
       selectedClientId: null,
       selectedRepId: null,
-      selectedRep: null
+      selectedRep: null,
+      tasksCountVisible: true
     }
   );
 

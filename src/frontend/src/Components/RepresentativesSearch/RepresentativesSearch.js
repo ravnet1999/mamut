@@ -14,16 +14,13 @@ const RepresentativesSearch = (props) => {
   useTaskEffects(props);
    
   const [response, setResponse] = useState(null);
-  const [tasksCountVisible, setTasksCountVisible] = useState(true);
+
   const { 
     suggestions, onSuggestionsFetchRequested, onSuggestionsClearRequested, onSuggestionSelected, getSuggestionValue, renderSuggestion, inputProps,
-    selectedRepId, selectedRep, selectedClientId, 
+    selectedRepId, selectedRep, selectedClientId,
+    tasksCountVisible, 
     createTask, taskStarted, tasksVisible, setTasksVisible, activeTasksModal, takeOverModalVisible, setTakeOverModalVisible, takeOverModal, taskPreviewVisible, setTaskPreviewVisible, previewedTask, changeOperator   
   } = props;
-
-  useEffect(() => {
-    setTasksCountVisible( selectedRep || suggestions.length > 0 ? false : true);
-  }, [selectedRep, suggestions])
   
   const onSuggestionsFetchRequestedWithResponse = async (event, data) => {
     try {
