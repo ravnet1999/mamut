@@ -82,9 +82,9 @@ const RepresentativesSearch = (props) => {
           </div>
         </div>
 
-        { selectedRep  && <div className="react-tasks-count__row">
-          <div className="react-tasks-count__column">Aktywne zadania:</div>
-          <div className="react-tasks-count__column">
+        { selectedRep  && <div className="react-autosuggest__row">
+          <div className="react-autosuggest__column">Aktywne zadania:</div>
+          <div className="react-autosuggest__column">
             <span className="task-count" onClick={() => changeOperator(selectedRep)}>
               ({selectedRep.activeTasks.length})
             </span> 
