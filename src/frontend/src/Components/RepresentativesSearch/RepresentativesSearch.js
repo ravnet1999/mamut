@@ -16,7 +16,6 @@ const RepresentativesSearch = (props) => {
   const [response, setResponse] = useState(null);
 
   const { 
-    dispatch, 
     suggestions, onSuggestionsFetchRequested, onSuggestionsClearRequested, onSuggestionSelected, getSuggestionValue, renderSuggestion, inputProps,
     selectedRepId, selectedRep, selectedClientId, 
     createTask, taskStarted, tasksVisible, setTasksVisible, activeTasksModal, takeOverModalVisible, setTakeOverModalVisible, takeOverModal, taskPreviewVisible, setTaskPreviewVisible, previewedTask, changeOperator   
