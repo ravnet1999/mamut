@@ -3,9 +3,9 @@ const parseResponse = require('../ResponseParser');
 const appConfig = require('../../config/appConfig.json');
 
 class RepresentativeClientService {
-    findByPhoneNumber = (phoneNumber) => {
+    search = (text) => {
         return new Promise((resolve, reject) => {
-            axios.get(`${appConfig.URLs.translator}/users_clients/findByPhone/${phoneNumber}`).then((response) => {
+            axios.get(`${appConfig.URLs.translator}/users_clients/search/${text}`).then((response) => {
                 parseResponse(response).then((response) => {
                     resolve(response);
                     return;

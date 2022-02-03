@@ -4,8 +4,8 @@ const authMiddleware = require('../middleware/auth');
 const response = require('../src/response');
 const representativeClientService = require('../src/service/RepresentativeClientService');
 
-router.get('/:phoneNumber', [authMiddleware], (req, res, next) => {
-    representativeClientService.findByPhoneNumber(req.params.phoneNumber).then((representatives) => {
+router.get('/search/:text', [authMiddleware], (req, res, next) => {
+    representativeClientService.search(req.params.text).then((representatives) => {
         response(res, false, ['Pomyślnie pobrano reprezentantów klientów.'], representatives);
         return;
     }).catch((err) => {

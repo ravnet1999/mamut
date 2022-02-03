@@ -40,7 +40,7 @@ const RepresentativeSearchContextProvider = ({children}) => {
   );
 
   const onSuggestionsFetchRequested = async ({ value }) => {    
-    let result = await UserClientHandler.findByPhoneNumber(value);
+    let result = await UserClientHandler.search(value);
     let suggestions = result.resources.resources;
 
     dispatch(setSuggestions(suggestions));
