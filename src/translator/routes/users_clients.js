@@ -4,7 +4,7 @@ const userClientService = require('../src/services/UserClientService');
 const response = require('../src/response');
 
 router.get('/search/:text', (req, res, next) => {
-  let text = req.params.text;
+  let text = decodeURIComponent(req.params.text);
   userClientService.search(text).then((users) => {
       response(res, false, ['Pomyślnie pobrano użytkownika za pomocą numeru komórkowego.'], users);
       return;

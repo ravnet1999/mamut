@@ -12,7 +12,10 @@ class UserClientService {
     search = (text) => {
       return new Promise((resolve, reject) => {
         let phoneNumber = text.replace(/\D/g,'');
-        let name = text.replace(/[^a-zA-Z]/g,'');
+        
+        let name = text.replace(/[^AaĄąBbCcĆćDdEeĘęFfGgHhIiJjKkLlŁłMmNnŃńOoÓóPpRrSsŚśTtUuWwYyZzŹźŻż]/g,'');
+        let nameObj = charset.translateOut({name});
+        name = nameObj.name;
 
         let phoneNumberCharsLimit = 3;
         let nameCharsLimit = 3;

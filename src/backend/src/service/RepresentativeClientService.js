@@ -4,6 +4,7 @@ const appConfig = require('../../config/appConfig.json');
 
 class RepresentativeClientService {
     search = (text) => {
+        text = encodeURIComponent(text);
         return new Promise((resolve, reject) => {
             axios.get(`${appConfig.URLs.translator}/users_clients/search/${text}`).then((response) => {
                 parseResponse(response).then((response) => {
