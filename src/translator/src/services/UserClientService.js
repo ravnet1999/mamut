@@ -9,9 +9,9 @@ class UserClientService {
         this.findByIdEmpty = 'Taki użytkownik nie istnieje!';
     }
 
-    findByPhoneNumber = (phoneNumber) => {
+    search = (text) => {
       return new Promise((resolve, reject) => {
-        phoneNumber = phoneNumber.replace(/\D/g,'');
+        let phoneNumber = text .replace(/\D/g,'');
 
         if(phoneNumber.length>2) {
           connection.query('SELECT `uzytkownicy`.`id`, `tel_komorkowy`, `numer_wewnetrzny`, `imie`,`nazwisko`, id_klienta, sl_klientow.nazwa FROM `' 
