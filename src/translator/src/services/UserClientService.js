@@ -17,7 +17,7 @@ class UserClientService {
         let phoneNumberCharsLimit = 3;
         let nameCharsLimit = 3;
 
-        if(phoneNumber.length >= phoneNumberCharsLimit || nameCharsLimit) {        
+        if(phoneNumber.length >= phoneNumberCharsLimit || name.length >= nameCharsLimit) {        
           let params = [];
 
           let query =`
