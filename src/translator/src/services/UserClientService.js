@@ -11,17 +11,80 @@ class UserClientService {
 
     search = (text) => {
       return new Promise((resolve, reject) => {
-        let phoneNumber = text .replace(/\D/g,'');
+        let phoneNumber = text.replace(/\D/g,'');
+        let name = text.replace(/[^a-zA-Z]/g,'');
 
-        if(phoneNumber.length>2) {
-          connection.query('SELECT `uzytkownicy`.`id`, `tel_komorkowy`, `numer_wewnetrzny`, `imie`,`nazwisko`, id_klienta, sl_klientow.nazwa FROM `' 
-            + this.usersTableName + '` join ' + this.clientsTableName 
-            + ' on uzytkownicy.id_klienta=sl_klientow.id'
-            + ' WHERE (REPLACE(REPLACE(REPLACE(REPLACE(`tel_komorkowy`,"-","")," ", ""),  "tel.", ""), "kom.", "") LIKE ?'
-            + ' OR REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(`numer_wewnetrzny`,"-","")," ", ""), "tel.:", ""), "w.", ""), "(", ""), ")", "") LIKE ?)'
-            + ' AND `' + this.usersTableName + '`.`aktywny`=\'on\''
-            + ' AND `' + this.clientsTableName + '`.`aktywny`=\'on\'',
-            ["%" + phoneNumber + "%", "%" + phoneNumber + "%"], (err, results, fields) => {
+        let phoneNumberCharsLimit = 3;
+        let nameCharsLimit = 3;
+
+        if(phoneNumber.length >= phoneNumberCharsLimit || nameCharsLimit) {        
+          let params = [];
+
+          let query =`
+            SELECT
+              uzytkownicy.id,
+              tel_komorkowy,
+              numer_wewnetrzny,
+              imie,
+              nazwisko,
+              id_klienta,
+              sl_klientow.nazwa
+            FROM
+              uzytkownicy
+            JOIN sl_klientow ON
+              uzytkownicy.id_klienta = sl_klientow.id
+            WHERE
+              uzytkownicy.aktywny = 'on' AND sl_klientow.aktywny = 'on'`;
+                
+          if(phoneNumber.length >= phoneNumberCharsLimit) {
+            query += `
+              AND(
+                REPLACE(
+                  REPLACE(
+                    REPLACE(
+                      REPLACE(
+                        tel_komorkowy,"-", ""
+                      )," ",""
+                    ),"tel.",""
+                  ),"kom.",""
+                ) LIKE ? OR
+                REPLACE(
+                  REPLACE(
+                    REPLACE(
+                      REPLACE(
+                        REPLACE(
+                          REPLACE(
+                            numer_wewnetrzny, "-", ""
+                          )," ",""
+                        ),"tel.:",""
+                      ),"w.",""
+                    ),"(",""
+                  ),")",""
+                ) LIKE ?
+              )`;  
+
+              params.push("%" + phoneNumber + "%");
+              params.push("%" + phoneNumber + "%");  
+          }
+          
+          if(name.length >= nameCharsLimit) {
+            query += `              
+              AND(
+                CONCAT(
+                  uzytkownicy.imie,
+                  uzytkownicy.nazwisko
+                ) LIKE ? OR 
+                CONCAT(
+                  uzytkownicy.nazwisko,
+                  uzytkownicy.imie
+                ) LIKE ?
+              )`;
+
+            params.push("%" + name + "%");
+            params.push("%" + name + "%");  
+          }
+
+          connection.query(query, params, (err, results, fields) => {
               if(err) {
                   reject(err);
                   return;
