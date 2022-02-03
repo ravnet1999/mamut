@@ -68,7 +68,7 @@ const RepresentativesSearch = (props) => {
       
       <div className="react-autosuggest__box">
         <div className="react-autosuggest__row">
-          <div className="react-autosuggest__column">Znajdź użytkownika<br/>po numerze telefonu:</div>
+          <div className="react-autosuggest__column">Znajdź użytkownika:</div>
           <div className="react-autosuggest__column">
             <Autosuggest
               suggestions={suggestions}
@@ -85,9 +85,9 @@ const RepresentativesSearch = (props) => {
         { selectedRep  && <div className="react-autosuggest__row">
           <div className="react-autosuggest__column">Aktywne zadania:</div>
           <div className="react-autosuggest__column">
-            <span className="task-count" onClick={() => changeOperator(selectedRep)}>
+            <div className="task-count" onClick={() => changeOperator(selectedRep)}>
               ({selectedRep.activeTasks.length})
-            </span> 
+            </div> 
           </div>
         </div> }
       </div>
