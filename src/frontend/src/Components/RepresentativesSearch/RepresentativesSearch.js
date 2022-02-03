@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './RepresentativesSearch.css';
 import Alert from '../Alert/Alert';
 import Autosuggest from 'react-autosuggest';
@@ -12,15 +12,19 @@ import useTaskEffects from '../../Hooks/useTaskEffects';
 
 const RepresentativesSearch = (props) => {
   useTaskEffects(props);
-    
+   
   const [response, setResponse] = useState(null);
-
+  const [tasksCountVisible, setTasksCountVisible] = useState(true);
   const { 
     suggestions, onSuggestionsFetchRequested, onSuggestionsClearRequested, onSuggestionSelected, getSuggestionValue, renderSuggestion, inputProps,
     selectedRepId, selectedRep, selectedClientId, 
     createTask, taskStarted, tasksVisible, setTasksVisible, activeTasksModal, takeOverModalVisible, setTakeOverModalVisible, takeOverModal, taskPreviewVisible, setTaskPreviewVisible, previewedTask, changeOperator   
   } = props;
 
+  useEffect(() => {
+    setTasksCountVisible( selectedRep || suggestions.length > 0 ? false : true);
+  }, [selectedRep, suggestions])
+  
   const onSuggestionsFetchRequestedWithResponse = async (event, data) => {
     try {
       onSuggestionsFetchRequested(event, data);   
@@ -82,10 +86,17 @@ const RepresentativesSearch = (props) => {
           </div>
         </div>
 
+        { tasksCountVisible  && <div className="react-autosuggest__row">
+          <div className="react-autosuggest__column">&nbsp;</div>
+          <div className="react-autosuggest__column">
+          Wyszukiwanie odbywa się po polach: numer telefonu oraz imię i nazwisko, a rozpocznie się po wpisaniu minimum trzech znaków.
+          </div>
+        </div> }
+
         { selectedRep  && <div className="react-autosuggest__row">
           <div className="react-autosuggest__column">Aktywne zadania:</div>
-          <div className="react-autosuggest__column">
-            <div className="task-count" onClick={() => changeOperator(selectedRep)}>
+          <div className="react-autosuggest__column react-autosuggest__task-count">
+            <div onClick={() => changeOperator(selectedRep)}>
               ({selectedRep.activeTasks.length})
             </div> 
           </div>

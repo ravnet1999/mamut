@@ -26,6 +26,7 @@
   padding: 6px 12px 6px 12px;
   width: 100%;
   margin-top: -8px;
+  margin-left: -8px;
 }
 
 .representatives-search-box .react-autosuggest__box .react-autosuggest__suggestion {
@@ -47,7 +48,6 @@
   border: 1px #515151;
 }
 
-.representatives-search-box .task-count {
+.representatives-search-box .react-autosuggest__task-count div {
   cursor: pointer;
-  margin-top: 0px;
 }
