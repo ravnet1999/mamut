@@ -9,7 +9,7 @@ router.get('/search/:text', (req, res, next) => {
       response(res, false, ['Pomyślnie pobrano użytkownika za pomocą numeru komórkowego.'], users);
       return;
   }).catch((err) => {
-      response(res, true, ['Wystąpił błąd podczas próby pobrania użytkownika za pomocą numeru komórkowego.', JSON.stringify(err)], []);
+      response(res, true, ['Wystąpił błąd podczas próby wyszukania użytkownika.', JSON.stringify(err)], []);
       return;
   })
 });
