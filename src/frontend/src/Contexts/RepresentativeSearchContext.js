@@ -20,6 +20,7 @@ const RepresentativeSearchContextProvider = ({children}) => {
   // Autosuggest will pass through all these props to the input.
   const inputProps = {
     value: state.value,
+    autoFocus: true,
     onChange: (event, { newValue }) => { 
       dispatch(setValue(newValue))
     }
