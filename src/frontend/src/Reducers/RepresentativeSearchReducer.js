@@ -12,16 +12,19 @@ const representativeSearchReducer = (state, action) => {
         selectedClientId: null,
         selectedRepId: null,
         selectedRep: null,
+        tasksCountVisible: action.suggestions.length > 0 ? false : true
       }
     case('CLEAR_SUGGESTIONS'):
       return {
         ...state,
-        suggestions: []
+        suggestions: [],
+        tasksCountVisible: true
       } 
     case('SELECT_REP'):
       return {
         ...state,
-        ...action.data
+        ...action.data,
+        tasksCountVisible: false
       }  
   }
   return state;
