@@ -9,6 +9,8 @@ import { WithContexts } from '../../HOCs/WithContexts';
 import Modal from '../Modal/Modal';
 import TaskPreview from '../Tasks/TaskPreview';
 import useTaskEffects from '../../Hooks/useTaskEffects';
+import RepresentativeCreationContextProvider from '../../Contexts/RepresentativeCreationContext';
+import RepresentativeCreation from '../RepresentativeCreation/RepresentativeCreation';
 
 const RepresentativesSearch = (props) => {
   useTaskEffects(props);
@@ -71,6 +73,10 @@ const RepresentativesSearch = (props) => {
       { response && response.messages.length > 0 && <Alert response={response}></Alert> }
       
       <div className="react-autosuggest__box">
+        <RepresentativeCreationContextProvider>
+            <RepresentativeCreation {...props}></RepresentativeCreation>
+        </RepresentativeCreationContextProvider>
+
         <div className="react-autosuggest__row">
           <div className="react-autosuggest__column">Znajdź użytkownika:</div>
           <div className="react-autosuggest__column">
