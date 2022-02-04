@@ -74,7 +74,7 @@ const RepresentativesSearch = (props) => {
       
       <div className="react-autosuggest__box">
         <RepresentativeCreationContextProvider>
-            <RepresentativeCreation {...props}></RepresentativeCreation>
+            <RepresentativeCreation></RepresentativeCreation>
         </RepresentativeCreationContextProvider>
 
         <div className="react-autosuggest__row">
