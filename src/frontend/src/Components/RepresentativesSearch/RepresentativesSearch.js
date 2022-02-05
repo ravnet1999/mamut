@@ -73,10 +73,6 @@ const RepresentativesSearch = (props) => {
       { response && response.messages.length > 0 && <Alert response={response}></Alert> }
       
       <div className="react-autosuggest__box">
-        <RepresentativeCreationContextProvider>
-            <RepresentativeCreation></RepresentativeCreation>
-        </RepresentativeCreationContextProvider>
-
         <div className="react-autosuggest__row">
           <div className="react-autosuggest__column">Znajdź użytkownika:</div>
           <div className="react-autosuggest__column">
@@ -89,6 +85,11 @@ const RepresentativesSearch = (props) => {
               renderSuggestion={renderSuggestion}
               inputProps={inputProps}
             />
+          </div>
+          <div className="react-autosuggest__column">
+            <RepresentativeCreationContextProvider>
+                <RepresentativeCreation></RepresentativeCreation>
+            </RepresentativeCreationContextProvider>
           </div>
         </div>
 
