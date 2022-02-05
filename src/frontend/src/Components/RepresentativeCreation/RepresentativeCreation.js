@@ -9,15 +9,25 @@ const RepresentativeCreation = (props) => {
   useRepresentativeCreationEffects(props);
 
   const { 
-    repCreationFormVisible, repCreationFormModal, dispatch, hideRepCreationForm, showRepCreationForm
+    repCreationFormModalVisible, repCreationFormModal, dispatch, hideRepCreationFormModal, showRepCreationFormModal, setStartButtonVisible
   } = props;
 
+  const createRep = (e) => {
+    dispatch(showRepCreationFormModal());
+    setStartButtonVisible(false);
+  }
 
+  const repCreationFormModalOnClose = () => {
+    dispatch(hideRepCreationFormModal());
+    setStartButtonVisible(true);
+  }
 
   return (
     <>
-      <Button onClick={(e) => dispatch(showRepCreationForm(<div>Tutaj będzie formularz</div>))}>Dodaj nowego użytkownika</Button>
-      <Modal buttons={[]} closeButtonName={'Zamknij'} title={repCreationFormModal.title} description={repCreationFormModal.description} visible={repCreationFormVisible} onClose={() => dispatch(hideRepCreationForm())}></Modal>
+      <div className="react-autosuggest__representative-creation-button">
+        <Button onClick={createRep}>Dodaj nowego użytkownika</Button>
+      </div>
+      <Modal buttons={[]} closeButtonName={'Zamknij'} title={repCreationFormModal.title} description={repCreationFormModal.description} visible={repCreationFormModalVisible} onClose={repCreationFormModalOnClose}></Modal>
     </>
   );
 }

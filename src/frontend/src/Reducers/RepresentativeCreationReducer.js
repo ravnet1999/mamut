@@ -1,19 +1,20 @@
 const representativeCreationReducer = (state, action) => {
   switch(action.type) {
-    case('HIDE_REP_CREATION_FORM'):
+    case('HIDE_REP_CREATION_FORM_MODAL'):
       return {
         ...state,
-        repCreationFormVisible: false
+        repCreationFormModalVisible: false
       }
-    case('SHOW_REP_CREATION_FORM'):
+    case('SHOW_REP_CREATION_FORM_MODAL'):
       return {
         ...state,
-        repCreationFormVisible: true,
-        repCreationFormModal: {
-            title: 'Dodawanie nowego użytkownika',
-            description: action.data
-        }
+        repCreationFormModalVisible: true        
       }  
+    case('UPDATE_REP_CREATION_FORM_MODAL'):
+      return {
+        ...state,
+        repCreationFormModal: action.data        
+      } 
     default:
       return state; 
   }

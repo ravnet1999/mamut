@@ -1,11 +1,13 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
+import RepresentativeCreationFormModal from '../Components/RepresentativeCreation/RepresentativeCreationFormModal';
 
 const useRepresentativeCreationEffects = (props) => {
-  const {
+  const {repCreationFormModalVisible, dispatch, updateRepCreationFormModal
   } = props;
 
-  useEffect(() => {    
-  }, []);
+  useEffect(() => {  
+    dispatch(updateRepCreationFormModal({title:'', description: <RepresentativeCreationFormModal {...props}></RepresentativeCreationFormModal>}))    
+  }, [repCreationFormModalVisible]);
 }
 
 export default useRepresentativeCreationEffects;

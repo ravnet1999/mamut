@@ -17,10 +17,12 @@ const RepresentativesSearch = (props) => {
    
   const [response, setResponse] = useState(null);
   const [tasksCountVisible, setTasksCountVisible] = useState(true);
+  const [startButtonVisible, setStartButtonVisible] = useState(true);
+
   const { 
     suggestions, onSuggestionsFetchRequested, onSuggestionsClearRequested, onSuggestionSelected, getSuggestionValue, renderSuggestion, inputProps,
     selectedRepId, selectedRep, selectedClientId, 
-    createTask, taskStarted, tasksVisible, setTasksVisible, activeTasksModal, takeOverModalVisible, setTakeOverModalVisible, takeOverModal, taskPreviewVisible, setTaskPreviewVisible, previewedTask, changeOperator   
+    createTask, taskStarted, tasksVisible, setTasksVisible, activeTasksModal, takeOverModalVisible, setTakeOverModalVisible, takeOverModal, taskPreviewVisible, setTaskPreviewVisible, previewedTask, changeOperator,
   } = props;
 
   useEffect(() => {
@@ -88,7 +90,7 @@ const RepresentativesSearch = (props) => {
           </div>
           <div className="react-autosuggest__column">
             <RepresentativeCreationContextProvider>
-                <RepresentativeCreation></RepresentativeCreation>
+                <RepresentativeCreation { ...props } setStartButtonVisible={ setStartButtonVisible }></RepresentativeCreation>
             </RepresentativeCreationContextProvider>
           </div>
         </div>
@@ -114,15 +116,17 @@ const RepresentativesSearch = (props) => {
       <Modal className="takeover-modal" buttons={takeOverModal.buttons} closeButtonName={'Zamknij'} title={takeOverModal.title} description={takeOverModal.description} visible={takeOverModalVisible} onClose={() => setTakeOverModalVisible(false)}></Modal>
       <Modal buttons={[]} closeButtonName={'Zamknij'} title={activeTasksModal.title} description={activeTasksModal.description} visible={tasksVisible} onClose={() => setTasksVisible(false)}></Modal>
       
-      <div className="bottom-pin-wrapper">
+      { startButtonVisible && 
+        <div className="bottom-pin-wrapper">
           <div className="bottom-pin">
-              <Row className="no-margins">
-                  <Col className="text-right btn-center-container">                
-                      <Button onClick={createTaskAndRenderResponse} className="btn-inverted btn-start btn-center" disabled={!selectedRep || taskStarted}>Start</Button>                          
-                  </Col>
-              </Row>
+            <Row className="no-margins">
+              <Col className="text-right btn-center-container">                
+                <Button onClick={createTaskAndRenderResponse} className="btn-inverted btn-start btn-center" disabled={!selectedRep || taskStarted}>Start</Button>                          
+              </Col>
+            </Row>
           </div>
         </div>
+      }
     </div>
   );
 }

@@ -13,10 +13,6 @@
   height: 40px;
 }
 
-.representatives-search-box .react-autosuggest__box .react-autosuggest__column:nth-of-type(3) button {
-  margin-top: -6px;
-}
-
 .representatives-search-box .react-autosuggest__box .react-autosuggest__column:nth-of-type(1) {
   width: 160px; 
 }
@@ -59,4 +55,8 @@
 
 .representatives-search-box .react-autosuggest__task-count div {
   cursor: pointer;
+}
+
+.representatives-search-box .react-autosuggest__representative-creation-button button {
+  margin-top: -6px;
 }

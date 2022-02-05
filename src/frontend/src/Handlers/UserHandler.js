@@ -25,6 +25,20 @@ const UserHandler = {
             });
         });
     },
+    create: (firstname, name, email, phone) => {
+      console.log(firstname, name, email, phone);
+
+      return new Promise((resolve, reject) => {
+        resolve({
+          error: false,
+          messages: ['Reprezentant został dodany'],
+          resources: [],
+          // redirect: '/clients'
+        });
+    });
+
+      console.log(firstname, name, email, phone);
+    }
 }
 
 export default UserHandler;
