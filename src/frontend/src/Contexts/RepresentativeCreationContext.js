@@ -1,6 +1,6 @@
 import React, { createContext, useReducer } from 'react';
 import RepresentativeCreationReducer from '../Reducers/RepresentativeCreationReducer';
-import { hideRepCreationFormModal, showRepCreationFormModal, updateRepCreationFormModal, updateForm, setResponse, setClient, setLocation } from '../Actions/RepresentativeCreationActions';
+import { hideRepCreationFormModal, showRepCreationFormModal, updateRepCreationFormModal, updateForm, setResponse, setClient, setLocation, setClients } from '../Actions/RepresentativeCreationActions';
 import UserHandler from '../Handlers/UserHandler';
 import { Form } from '../Components/bootstrap';
 
@@ -20,9 +20,10 @@ const RepresentativeCreationContextProvider = ({children}) => {
         email: '',
         phone: ''        
       },
-      client: 2,
-      location: 4,
-      response: null
+      client: '',
+      location: '',
+      response: null,
+      clients: []
     }
   );
 
@@ -58,13 +59,10 @@ const RepresentativeCreationContextProvider = ({children}) => {
   }
 
   const buildClientOptions = () => {
-    return <>    
-      <option value="" selected={state.client == "" ? "selected" : ""}>Wybierz firmę</option> 
-      <option value="1" selected={state.client == 1 ? "selected" : ""}>1</option>
-      <option value="2" selected={state.client == 2 ? "selected" : ""}>2</option>
-      <option value="3" selected={state.client == 3 ? "selected" : ""}>3</option>
-    </>;
-  }
+    let options = state.clients.map((client, index) =>  <option value={client.id} selected={state.client == client.id ? "selected" : ""}>{client.nazwa}</option>);
+    options.unshift(<option value="" selected={state.client == "" ? "selected" : ""}>Wybierz firmę</option>);
+    return options;      
+  };
 
   const buildLocationSelect = () => {
     return <>
@@ -88,7 +86,7 @@ const RepresentativeCreationContextProvider = ({children}) => {
 
   return (
     <div>
-      <RepresentativeCreationContext.Provider value={{ ...state, dispatch, hideRepCreationFormModal, showRepCreationFormModal, updateRepCreationFormModal, setField, sendForm, buildClientSelect, buildLocationSelect }} >
+      <RepresentativeCreationContext.Provider value={{ ...state, dispatch, hideRepCreationFormModal, showRepCreationFormModal, updateRepCreationFormModal, setField, sendForm, buildClientSelect, buildLocationSelect, setClients }} >
         {children}
       </RepresentativeCreationContext.Provider>
     </div>

@@ -25,3 +25,7 @@ export const setClient = (data) => {
 export const setLocation = (data) => {
   return { type: 'SET_LOCATION', data };
 };
+
+export const setClients = (data) => {
+  return { type: 'SET_CLIENTS', data };
+};
