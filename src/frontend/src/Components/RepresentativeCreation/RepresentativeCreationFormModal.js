@@ -1,47 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 
 import { Form, Button } from '../bootstrap';
 import Alert from '../Alert/Alert';
-import UserHandler from '../../Handlers/UserHandler';
 
-const RepresentativeCreationFormModal = (props) => {
-  const [form, setForm] = useState({
-    firstname: '',
-    name: '',
-    email: '',
-    phone: ''
-  });
-
-  const { 
-    dispatch, hideRepCreationFormModal
-  } = props;
-
-  const [response, setResponse] = useState(null);
-
-  const setField = (e) => {
-      e.persist();
-
-      const newForm = {
-          ...form
-      };
-
-      newForm[e.target.name] = e.target.value;
-
-      setForm(newForm);
-  }
-
-  const sendForm = (e) => {
-      e.preventDefault();
-
-      UserHandler.create(form.firstname, form.name, form.email, form.phone).then((response) => {            
-        setResponse(response);
-        dispatch(hideRepCreationFormModal());
-        return;
-      }).catch((err) => {
-        setResponse(err);
-        return;
-      });
-  }
+const RepresentativeCreationFormModal = (props) => {  
+  const { setField, sendForm, form, response } = props;
 
   return (    
     <>
@@ -58,7 +21,7 @@ const RepresentativeCreationFormModal = (props) => {
           <Form.Control type="text" name="name" placeholder="Nazwisko reprezentanta" onChange={setField} value={form.name} />
         </Form.Group>
 
-        <Form.Group controlId="formBasicName">
+        <Form.Group controlId="formBasicEmail">
           <Form.Label>E-mail</Form.Label>
           <Form.Control type="text" name="email" placeholder="E-mail" onChange={setField} value={form.email} />
         </Form.Group>

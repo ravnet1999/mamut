@@ -15,8 +15,21 @@ const representativeCreationReducer = (state, action) => {
         ...state,
         repCreationFormModal: action.data        
       } 
-    default:
-      return state; 
+    case('UPDATE_FORM'):      
+      const newForm = {
+        ...state.form
+      };
+      newForm[action.data.target.name] = action.data.target.value;
+
+      return {
+        ...state,
+        form: newForm        
+      } 
+    case('SET_RESPONSE'):
+      return {
+        ...state,
+        response: action.data
+      }
   }
 }
 
