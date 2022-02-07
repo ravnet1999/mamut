@@ -30,6 +30,17 @@ const representativeCreationReducer = (state, action) => {
         ...state,
         response: action.data
       }
+    case('SET_CLIENT'):
+      return {
+        ...state,
+        client: action.data,
+        location: ""
+      }
+    case('SET_LOCATION'):
+      return {
+        ...state,
+        location: action.data
+      }   
   }
 }
 

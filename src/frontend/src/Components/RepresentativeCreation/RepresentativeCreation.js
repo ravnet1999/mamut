@@ -9,8 +9,7 @@ const RepresentativeCreation = (props) => {
   useRepresentativeCreationEffects(props);
 
   const { 
-    repCreationFormModalVisible, repCreationFormModal, dispatch, hideRepCreationFormModal, showRepCreationFormModal, setStartButtonVisible
-  } = props;
+    repCreationFormModalVisible, repCreationFormModal, dispatch, hideRepCreationFormModal, showRepCreationFormModal, setStartButtonVisible } = props;
 
   const createRep = (e) => {
     dispatch(showRepCreationFormModal());

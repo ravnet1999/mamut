@@ -1,10 +1,10 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import { Form, Button } from '../bootstrap';
 import Alert from '../Alert/Alert';
 
 const RepresentativeCreationFormModal = (props) => {  
-  const { setField, sendForm, form, response } = props;
+  const { setField, sendForm, form, response, buildClientSelect, buildLocationSelect, client } = props;
 
   return (    
     <>
@@ -30,6 +30,9 @@ const RepresentativeCreationFormModal = (props) => {
           <Form.Label>Telefon</Form.Label>
           <Form.Control type="text" name="phone" placeholder="Telefon" onChange={setField} value={form.phone} />
         </Form.Group>
+
+        { buildClientSelect() }
+        { buildLocationSelect(client) }
 
         <Form.Group className="text-right">
           <Button variant="primary" type="submit">
