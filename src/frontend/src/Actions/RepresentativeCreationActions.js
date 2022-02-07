@@ -17,3 +17,11 @@ export const updateForm = (data) => {
 export const setResponse = (data) => {
   return { type: 'SET_RESPONSE', data };
 };
+
+export const setClient = (data) => {
+  return { type: 'SET_CLIENT', data };
+};
+
+export const setLocation = (data) => {
+  return { type: 'SET_LOCATION', data };
+};
