@@ -11,7 +11,7 @@ router.get('/:repId', [authMiddleware], (req, res, next) => {
         response(res, false, ['Pomyślnie pobrano reprezentanta.'], [representative]);
         return;
     }).catch((err) => {
-        response(res, true, ['Coś poszło nie tak podczas próby pobrania reprezentanta.', JSON.stringify(err)], [representative]);
+        response(res, true, ['Coś poszło nie tak podczas próby pobrania reprezentanta.', JSON.stringify(err)], []);
         return;
     });
 });
@@ -21,7 +21,7 @@ router.patch('/:repId', [authMiddleware], (req, res, next) => {
         response(res, false, ['Pomyślnie zmodyfikowano reprezentanta.'], [representative]);
         return;
     }).catch((err) => {
-        response(res, true, ['Coś poszło nie tak podczas próby pobrania reprezentanta.', JSON.stringify(err)], [representative]);
+        response(res, true, ['Coś poszło nie tak podczas próby pobrania reprezentanta.', JSON.stringify(err)], []);
         return;
     });
 });
