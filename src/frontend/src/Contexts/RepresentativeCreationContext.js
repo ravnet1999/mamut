@@ -37,7 +37,14 @@ const RepresentativeCreationContextProvider = ({children}) => {
   const sendForm = (e) => {
     e.preventDefault();
     
-    UserHandler.create({...state.form, 'client': state.client, 'location': state.location}).then((response) => {            
+    UserHandler.create({
+      'imie': state.form.firstname, 
+      'nazwisko': state.form.name, 
+      'tel_komorkowy': state.form.phone, 
+      'adres_email': state.form.email, 
+      'id_klienta': state.client, 
+      'lokalizacja': state.location
+    }).then((response) => {            
       dispatch(setResponse(response));
       // dispatch(hideRepCreationFormModal());
       return;

@@ -38,6 +38,16 @@ router.patch('/:repId', [authMiddleware], (req, res, next) => {
     });
 });
 
+router.put('/', [authMiddleware], (req, res, next) => {
+    companyService.createRepresentative(req.body).then((representative) => {
+        response(res, false, ['Pomyślnie utworzono reprezentanta.']);
+        return;
+    }).catch((err) => {
+        response(res, true, ['Coś poszło nie tak podczas próby utworzenia reprezentanta.', JSON.stringify(err)]);
+        return;
+    });
+});
+
 router.get('/findByClientIds/:clientId', [authMiddleware], (req, res, next) => {
   companyService.getRepresentatives(req.params.clientId).then((representatives) => {
       response(res, false, ['Pomyślnie pobrano reprezentantów klientów.'], representatives);
