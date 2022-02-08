@@ -25,8 +25,52 @@ const UserHandler = {
             });
         });
     },
-    create: (firstname, name, email, phone) => {
+    validate: (data) => {
+      let messages = [];
+
+      const requiredFields = [
+        {'name': 'firstname', 'label': 'imię'}, 
+        {'name': 'name', 'label': 'nazwisko'}, 
+        {'name': 'email', 'label': 'email'},
+        {'name': 'phone', 'label':'telefon'}, 
+        {'name': 'client', 'label': 'nazwa firmy'}, 
+        {'name': 'location', 'label': 'lokalizacja'}
+      ];
+
+      let emptyFields = requiredFields.filter(field => {
+        return !data[field.name] || data[field.name].trim().length === 0;
+      });
+
+      let emptyFieldsLabels = emptyFields.map(field => field.label);
+
+      if(emptyFields.length > 0) {        
+        let emptyFieldsLabelsString = emptyFieldsLabels.join(', ');
+        messages.push(`Uzupełnij wymagane pola: ${emptyFieldsLabelsString}.`);
+      }
+
+      if(!emptyFieldsLabels.includes('email')) {
+        let emailValid = /.+@.+\.[A-Za-z]+$/.test(data['email']);
+
+        if(!emailValid) {
+          messages.push(`Niewłaściwy format adresu email.`);
+        }
+      }
+
+      return messages;
+    },
+    create: (data) => {
+      let messages = UserHandler.validate(data);
+
       return new Promise((resolve, reject) => {
+        if(messages.length > 0) {
+          reject({
+            error: true,
+            messages: messages,
+            resources: []
+          });
+          return;
+        }
+        
         resolve({
           error: false,
           messages: ['Reprezentant został dodany'],
