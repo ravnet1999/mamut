@@ -32,12 +32,26 @@ router.get('/:companyIds', (req, res, next) => {
 });
 
 router.get('/:companyId/location', (req, res, next) => {
-    companyLocationService.findByCompanyId(req.params.companyId).then((companyLocation) => {
-        response(res, false, ['Pomyślnie pobrano lokalizację firmy.'], [companyLocation]);
+    companyLocationService.findByCompanyId(req.params.companyId).then((companyLocations) => {
+        response(res, false, ['Pomyślnie pobrano lokalizację firmy.'], [companyLocations[0]]);
         return;
     }).catch((err) => {
         response(res, true, [`Wystąpił błąd podczas próby pobrania lokalizacji firmy.`, JSON.stringify(err)], [])
     });
+});
+
+router.get('/:companyId/locations', (req, res, next) => {
+      companyLocationService.findByCompanyId(req.params.companyId).then((companyLocations) => {
+    
+      companyLocations.map((companyLocation) => {
+        return charset.translateIn(companyLocation);
+      });
+
+      response(res, false, ['Pomyślnie pobrano lokalizacje firmy.'], companyLocations);
+      return;
+  }).catch((err) => {
+      response(res, true, [`Wystąpił błąd podczas próby pobrania lokalizacji firmy.`, JSON.stringify(err)], [])
+  });
 });
 
 module.exports = router;

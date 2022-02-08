@@ -38,4 +38,14 @@ router.get('/', [authMiddleware], (req, res, next) => {
     // });
 });
 
+router.get('/:clientId/locations', [authMiddleware], (req, res, next) => {
+  companyService.getCompanyLocations(req.params.clientId).then((companyLocations) => {
+      response(res, false, ['Pomyślnie pobrano lokalizacje.'], companyLocations);
+      return;
+  }).catch((err) => {
+      response(res, true, ['Coś poszło nie tak podczas próby pobrania lokalizacji.', JSON.stringify(err)], companyLocations);
+      return;
+  });
+});
+
 module.exports = router;

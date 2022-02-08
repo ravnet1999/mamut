@@ -128,6 +128,23 @@ class CompanyService {
             });
         });   
     }
+
+    getCompanyLocations = (companyId) => {
+      return new Promise((resolve, reject) => {
+          axios.get(`${appConfig.URLs.translator}/companies/${companyId}/locations`).then((response) => {
+              parseResponse(response).then((response) => {
+                  resolve(response.resources);
+                  return;
+              }).catch((err) => {
+                  reject(err);
+                  return;
+              });
+          }).catch((err) => {
+              reject(err);
+              return;
+          });
+      });   
+  }
 }
 
 module.exports = new CompanyService();
