@@ -16,6 +16,18 @@ router.get('/:repId', [authMiddleware], (req, res, next) => {
     });
 });
 
+/* GET users listing. */
+router.get('/getWithTasks/:repId', [authMiddleware], (req, res, next) => {
+
+  companyService.getRepresentativeWithTasks(req.params.repId).then((representative) => {
+      response(res, false, ['Pomyślnie pobrano reprezentanta.'], [representative]);
+      return;
+  }).catch((err) => {
+      response(res, true, ['Coś poszło nie tak podczas próby pobrania reprezentanta.', JSON.stringify(err)], []);
+      return;
+  });
+});
+
 router.patch('/:repId', [authMiddleware], (req, res, next) => {
     companyService.changeRepresentative(req.params.repId, req.body).then((representative) => {
         response(res, false, ['Pomyślnie zmodyfikowano reprezentanta.'], [representative]);
