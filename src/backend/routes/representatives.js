@@ -43,7 +43,7 @@ router.put('/', [authMiddleware], (req, res, next) => {
         response(res, false, ['Pomyślnie utworzono reprezentanta.']);
         return;
     }).catch((err) => {
-        response(res, true, ['Coś poszło nie tak podczas próby utworzenia reprezentanta.', JSON.stringify(err)]);
+        response(res, true, ['Coś poszło nie tak podczas próby utworzenia reprezentanta.', JSON.stringify(err)], []);
         return;
     });
 });
