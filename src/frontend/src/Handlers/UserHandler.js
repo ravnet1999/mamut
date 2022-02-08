@@ -5,7 +5,7 @@ import appConfig from '../Config/appConfig.json';
 const UserHandler = {
     getWithTasks: (repId) => {
         return new Promise((resolve, reject) => {
-            axios.get(`${appConfig.URLs.domain}/${appConfig.URLs.representatives}/${repId}`, {
+            axios.get(`${appConfig.URLs.domain}/${appConfig.URLs.representatives}/getWithTasks/${repId}`, {
                 withCredentials: true
             }).then((response) => {
                 parseResponse(response).then((response) => {

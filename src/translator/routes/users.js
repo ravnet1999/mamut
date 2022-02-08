@@ -15,7 +15,7 @@ router.get('/', (req, res, next) => {
     });
 });
 
-router.get('/:userIds/', async (req, res, next) =>  {
+router.get('/getWithTasks/:userIds/', async (req, res, next) =>  {
   try {
     let userIds = req.params.userIds.split(',');
     let allTasks = await taskHelper.getTasksByUsers(userIds);
