@@ -37,9 +37,7 @@ const RepresentativeCreationContextProvider = ({children}) => {
   const sendForm = (e) => {
     e.preventDefault();
     
-    console.log(state.form.firstname, state.form.name, state.form.email, state.form.phone, state.client, state.location)
-
-    UserHandler.create(state.form.firstname, state.form.name, state.form.email, state.form.phone).then((response) => {            
+    UserHandler.create({...state.form, 'client': state.client, 'location': state.location}).then((response) => {            
       dispatch(setResponse(response));
       // dispatch(hideRepCreationFormModal());
       return;
