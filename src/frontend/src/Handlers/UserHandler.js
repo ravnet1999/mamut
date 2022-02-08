@@ -29,12 +29,12 @@ const UserHandler = {
       let messages = [];
 
       const requiredFields = [
-        {'name': 'firstname', 'label': 'imię'}, 
-        {'name': 'name', 'label': 'nazwisko'}, 
-        {'name': 'email', 'label': 'email'},
-        {'name': 'phone', 'label':'telefon'}, 
-        {'name': 'client', 'label': 'nazwa firmy'}, 
-        {'name': 'location', 'label': 'lokalizacja'}
+        {'name': 'imie', 'label': 'imię'}, 
+        {'name': 'nazwisko', 'label': 'nazwisko'}, 
+        {'name': 'adres_email', 'label': 'email'},
+        {'name': 'tel_komorkowy', 'label':'telefon'}, 
+        {'name': 'id_klienta', 'label': 'nazwa firmy'}, 
+        {'name': 'lokalizacja', 'label': 'lokalizacja'}
       ];
 
       let emptyFields = requiredFields.filter(field => {
@@ -49,7 +49,7 @@ const UserHandler = {
       }
 
       if(!emptyFieldsLabels.includes('email')) {
-        let emailValid = /.+@.+\.[A-Za-z]+$/.test(form['email']);
+        let emailValid = /.+@.+\.[A-Za-z]+$/.test(form['adres_email']);
 
         if(!emailValid) {
           messages.push(`Niewłaściwy format adresu email.`);
@@ -70,13 +70,21 @@ const UserHandler = {
           });
           return;
         }
-        
-        resolve({
-          error: false,
-          messages: ['Reprezentant został dodany'],
-          resources: [],
-          // redirect: '/clients'
-        });
+
+        axios.put(`${appConfig.URLs.domain}/${appConfig.URLs.representatives}`, form, {
+            withCredentials: true
+        }).then((response) => {
+          parseResponse(response).then((response) => {
+              resolve(response);
+              return;
+              }).catch((err) => {
+                  reject(err);
+                  return;
+              });
+          }).catch((err) => {
+              reject(err);
+              return;
+          });
     });
   }
 }
