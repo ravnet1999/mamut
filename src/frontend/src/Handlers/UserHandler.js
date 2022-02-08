@@ -25,7 +25,7 @@ const UserHandler = {
             });
         });
     },
-    validate: (data) => {
+    validate: (form) => {
       let messages = [];
 
       const requiredFields = [
@@ -38,7 +38,7 @@ const UserHandler = {
       ];
 
       let emptyFields = requiredFields.filter(field => {
-        return !data[field.name] || data[field.name].trim().length === 0;
+        return !form[field.name] || form[field.name].trim().length === 0;
       });
 
       let emptyFieldsLabels = emptyFields.map(field => field.label);
@@ -49,7 +49,7 @@ const UserHandler = {
       }
 
       if(!emptyFieldsLabels.includes('email')) {
-        let emailValid = /.+@.+\.[A-Za-z]+$/.test(data['email']);
+        let emailValid = /.+@.+\.[A-Za-z]+$/.test(form['email']);
 
         if(!emailValid) {
           messages.push(`Niewłaściwy format adresu email.`);
@@ -58,8 +58,8 @@ const UserHandler = {
 
       return messages;
     },
-    create: (data) => {
-      let messages = UserHandler.validate(data);
+    create: (form) => {
+      let messages = UserHandler.validate(form);
 
       return new Promise((resolve, reject) => {
         if(messages.length > 0) {
