@@ -3,11 +3,11 @@ import RepresentativeCreationFormModal from '../Components/RepresentativeCreatio
 import ClientHandler from '../Handlers/ClientHandler';
 
 const useRepresentativeCreationEffects = (props) => {
-  const { repCreationFormModalVisible, dispatch, updateRepCreationFormModal, response, form, client, location, clients, setClients } = props;
+  const { repCreationFormModalVisible, dispatch, updateRepCreationFormModal, response, form, client, location, clients, setClients, locations, setLocations } = props;
 
   useEffect(() => {  
     dispatch(updateRepCreationFormModal({title:'', description: <RepresentativeCreationFormModal {...props}></RepresentativeCreationFormModal>}))    
-  }, [repCreationFormModalVisible, response, form, client, location, clients]);
+  }, [repCreationFormModalVisible, response, form, client, location, clients, locations]);
 
   useEffect(() => {
     ClientHandler.getClients().then(response => {
@@ -18,6 +18,14 @@ const useRepresentativeCreationEffects = (props) => {
     });
   }, []);
 
+  useEffect(() => {
+    if(client) {
+      ClientHandler.getLocations(client).then(response => {      
+        dispatch(setLocations(response.resources));
+      });
+    }
+    console.log("client", client);
+  }, [ client ]);
 }
 
 export default useRepresentativeCreationEffects;

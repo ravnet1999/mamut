@@ -1,7 +1,8 @@
 import React, { createContext, useReducer } from 'react';
 import RepresentativeCreationReducer from '../Reducers/RepresentativeCreationReducer';
-import { hideRepCreationFormModal, showRepCreationFormModal, updateRepCreationFormModal, updateForm, setResponse, setClient, setLocation, setClients } from '../Actions/RepresentativeCreationActions';
+import { hideRepCreationFormModal, showRepCreationFormModal, updateRepCreationFormModal, updateForm, setResponse, setClient, setLocation, setClients, setLocations } from '../Actions/RepresentativeCreationActions';
 import UserHandler from '../Handlers/UserHandler';
+import ClientHandler from '../Handlers/ClientHandler';
 import { Form } from '../Components/bootstrap';
 
 export const RepresentativeCreationContext = createContext();
@@ -23,7 +24,8 @@ const RepresentativeCreationContextProvider = ({children}) => {
       client: '',
       location: '',
       response: null,
-      clients: []
+      clients: [],
+      locations: []
     }
   );
 
@@ -75,18 +77,22 @@ const RepresentativeCreationContextProvider = ({children}) => {
     </>;
   }
 
+  const buildLocationOptionName = (location) => {
+    const propNames = ['nazwa','nip','ulica','kod_pocztowy','miasto'];
+    const props = propNames.map(propName => location[propName]);
+    const propsNotEmpty = props.filter(prop => prop.length > 0);
+    return propsNotEmpty.join(", ");
+  }
+
   const buildLocationOptions = () => {
-    return <>   
-      <option value="" selected={state.location == "" ? "selected" : ""}>Wybierz lokalizację</option>   
-      <option value={Number(state.client)+1} selected={state.location == Number(state.client)+1 ? "selected" : ""}>{Number(state.client)+1}</option>
-      <option value={Number(state.client)+2} selected={state.location == Number(state.client)+2 ? "selected" : ""}>{Number(state.client)+2}</option>
-      <option value={Number(state.client)+3} selected={state.location == Number(state.client)+3 ? "selected" : ""}>{Number(state.client)+3}</option>
-    </>;
+    let options = state.locations.map((location, index) =>  <option value={location.id} selected={state.location == location.id ? "selected" : ""}>{ buildLocationOptionName(location) }</option>);
+    options.unshift(<option value="" selected={state.location == "" ? "selected" : ""}>Wybierz lokalizację</option>);
+    return options;  
   }
 
   return (
     <div>
-      <RepresentativeCreationContext.Provider value={{ ...state, dispatch, hideRepCreationFormModal, showRepCreationFormModal, updateRepCreationFormModal, setField, sendForm, buildClientSelect, buildLocationSelect, setClients }} >
+      <RepresentativeCreationContext.Provider value={{ ...state, dispatch, hideRepCreationFormModal, showRepCreationFormModal, updateRepCreationFormModal, setField, sendForm, buildClientSelect, buildLocationSelect, setClients, setLocations }} >
         {children}
       </RepresentativeCreationContext.Provider>
     </div>

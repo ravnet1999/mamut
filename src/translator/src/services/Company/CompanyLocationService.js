@@ -15,12 +15,12 @@ class CompanyLocationService extends Service {
                     return;
                 }
 
-                if(!results[0]) {
+                if(results.length === 0) {
                     reject(this.findByIdEmpty);
                     return;
                 }
 
-                resolve(results[0]);
+                resolve(results);
                 return;
             });
         });
