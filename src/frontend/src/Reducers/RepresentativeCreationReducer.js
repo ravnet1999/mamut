@@ -50,7 +50,27 @@ const representativeCreationReducer = (state, action) => {
       return {
         ...state,
         locations: action.data
+      } 
+    case('CLEAR_FORM'):
+      return {
+        ...state,
+        form: {
+          firstname: '',
+          name: '',
+          email: '',
+          phone: ''        
+        },
+      }
+    case('CLEAR_CLIENT'):
+      return {
+        ...state,
+        client: ''
       }    
+    case('CLEAR_LOCATION'):
+      return {
+        ...state,
+        location: ''
+      }         
   }
 }
 
