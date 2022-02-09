@@ -33,3 +33,15 @@ export const setClients = (data) => {
 export const setLocations = (data) => {
   return { type: 'SET_LOCATIONS', data };
 };
+
+export const clearForm = (data) => {
+  return { type: 'CLEAR_FORM', data };
+};
+
+export const clearClient = (data) => {
+  return { type: 'CLEAR_CLIENT', data };
+};
+
+export const clearLocation = (data) => {
+  return { type: 'CLEAR_LOCATION', data };
+};
