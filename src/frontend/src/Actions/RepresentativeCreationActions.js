@@ -45,3 +45,7 @@ export const clearClient = (data) => {
 export const clearLocation = (data) => {
   return { type: 'CLEAR_LOCATION', data };
 };
+
+export const clearResponse = (data) => {
+  return { type: 'CLEAR_RESPONSE', data };
+};

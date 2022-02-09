@@ -70,7 +70,12 @@ const representativeCreationReducer = (state, action) => {
       return {
         ...state,
         location: ''
-      }         
+      }   
+    case('CLEAR_RESPONSE'):
+      return {
+        ...state,
+        response: null
+      }        
   }
 }
 

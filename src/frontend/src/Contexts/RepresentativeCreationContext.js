@@ -1,6 +1,6 @@
 import React, { createContext, useReducer } from 'react';
 import RepresentativeCreationReducer from '../Reducers/RepresentativeCreationReducer';
-import { hideRepCreationFormModal, showRepCreationFormModal, updateRepCreationFormModal, updateForm, setResponse, setClient, setLocation, setClients, setLocations, clearForm, clearClient, clearLocation } from '../Actions/RepresentativeCreationActions';
+import { hideRepCreationFormModal, showRepCreationFormModal, updateRepCreationFormModal, updateForm, setResponse, setClient, setLocation, setClients, setLocations, clearForm, clearClient, clearLocation, clearResponse } from '../Actions/RepresentativeCreationActions';
 import UserHandler from '../Handlers/UserHandler';
 import { Form } from '../Components/bootstrap';
 
@@ -62,6 +62,7 @@ const RepresentativeCreationContextProvider = ({children}) => {
     dispatch(clearForm());
     dispatch(clearClient());
     dispatch(clearLocation());
+    dispatch(clearResponse());
   }
 
   const buildClientSelect = () => {
