@@ -71,11 +71,23 @@ const representativeCreationReducer = (state, action) => {
         ...state,
         location: ''
       }   
+    case('CLEAR_ALL_FIELDS'):
+      return {
+        ...state,
+        form: {
+          firstname: '',
+          name: '',
+          email: '',
+          phone: ''        
+        },
+        client: '',
+        location: ''
+      }        
     case('CLEAR_RESPONSE'):
       return {
         ...state,
         response: null
-      }        
+      }   
   }
 }
 

@@ -49,3 +49,7 @@ export const clearLocation = (data) => {
 export const clearResponse = (data) => {
   return { type: 'CLEAR_RESPONSE', data };
 };
+
+export const clearAllFields = (data) => {
+  return { type: 'CLEAR_ALL_FIELDS', data };
+};

@@ -5,12 +5,13 @@ import { RepresentativeCreationContext } from '../../Contexts/RepresentativeCrea
 import useRepresentativeCreationEffects from '../../Hooks/useRepresentativeCreationEffects';
 import Modal from '../Modal/Modal';
 import Button from 'react-bootstrap/Button';
+import { clearResponse } from '../../Actions/RepresentativeCreationActions';
 
 const RepresentativeCreation = (props) => {
   useRepresentativeCreationEffects(props);
 
   const { 
-    repCreationFormModalVisible, repCreationFormModal, dispatch, hideRepCreationFormModal, showRepCreationFormModal, setStartButtonVisible, clearAll } = props;
+    repCreationFormModalVisible, repCreationFormModal, dispatch, hideRepCreationFormModal, showRepCreationFormModal, setStartButtonVisible, clearAllFields, clearResponse } = props;
 
   const createRep = (e) => {
     dispatch(showRepCreationFormModal());
@@ -22,6 +23,11 @@ const RepresentativeCreation = (props) => {
     setStartButtonVisible(true);
   }
 
+  clearAllFieldsAndResponse = () => {
+    clearAllFields();
+    clearResponse();
+  }
+
   return (
     <>
       <div className="react-autosuggest__representative-creation-button">
@@ -29,7 +35,7 @@ const RepresentativeCreation = (props) => {
       </div>
       <Modal 
         className="react-autosuggest__representative-creation-modal" 
-        buttons={[{ name: 'Wyczyść', method: clearAll } ]} 
+        buttons={[{ name: 'Wyczyść', method: clearAllFieldsAndResponse } ]} 
         closeButtonName={'Zamknij'} 
         title={repCreationFormModal.title} 
         description={repCreationFormModal.description} 

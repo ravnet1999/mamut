@@ -1,6 +1,6 @@
 import React, { createContext, useReducer } from 'react';
 import RepresentativeCreationReducer from '../Reducers/RepresentativeCreationReducer';
-import { hideRepCreationFormModal, showRepCreationFormModal, updateRepCreationFormModal, updateForm, setResponse, setClient, setLocation, setClients, setLocations, clearForm, clearClient, clearLocation, clearResponse } from '../Actions/RepresentativeCreationActions';
+import { hideRepCreationFormModal, showRepCreationFormModal, updateRepCreationFormModal, updateForm, setResponse, setClient, setLocation, setClients, setLocations, clearAllFields, clearResponse } from '../Actions/RepresentativeCreationActions';
 import UserHandler from '../Handlers/UserHandler';
 import { Form } from '../Components/bootstrap';
 
@@ -47,7 +47,7 @@ const RepresentativeCreationContextProvider = ({children}) => {
       dispatch(setResponse(response));
 
       if(response.error === false) {
-        clearAll();
+        dispatch(clearAllFields());
       }
 
       // dispatch(hideRepCreationFormModal());
@@ -56,13 +56,6 @@ const RepresentativeCreationContextProvider = ({children}) => {
       dispatch(setResponse(err));
       return;
     });
-  }
-
-  const clearAll = () => {
-    dispatch(clearForm());
-    dispatch(clearClient());
-    dispatch(clearLocation());
-    dispatch(clearResponse());
   }
 
   const buildClientSelect = () => {
@@ -108,7 +101,7 @@ const RepresentativeCreationContextProvider = ({children}) => {
 
   return (
     <div>
-      <RepresentativeCreationContext.Provider value={{ ...state, dispatch, hideRepCreationFormModal, showRepCreationFormModal, updateRepCreationFormModal, setField, sendForm, buildClientSelect, buildLocationSelect, setClients, setLocations, clearAll }} >
+      <RepresentativeCreationContext.Provider value={{ ...state, dispatch, hideRepCreationFormModal, showRepCreationFormModal, updateRepCreationFormModal, setField, sendForm, buildClientSelect, buildLocationSelect, setClients, setLocations, clearAllFields, clearResponse }} >
         {children}
       </RepresentativeCreationContext.Provider>
     </div>
