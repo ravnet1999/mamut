@@ -25,7 +25,7 @@ const RepresentativeCreation = (props) => {
 
   const clearAllFieldsAndResponse = () => {
     dispatch(clearAllFields());
-    clearResponse();
+    dispatch(clearResponse());
   }
 
   return (
