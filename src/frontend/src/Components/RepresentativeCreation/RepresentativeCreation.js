@@ -23,7 +23,7 @@ const RepresentativeCreation = (props) => {
     setStartButtonVisible(true);
   }
 
-  clearAllFieldsAndResponse = () => {
+  const clearAllFieldsAndResponse = () => {
     clearAllFields();
     clearResponse();
   }
