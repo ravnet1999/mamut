@@ -1,4 +1,5 @@
 import React from 'react';
+import './RepresentativeCreation.css';
 import { WithContexts } from '../../HOCs/WithContexts';
 import { RepresentativeCreationContext } from '../../Contexts/RepresentativeCreationContext';
 import useRepresentativeCreationEffects from '../../Hooks/useRepresentativeCreationEffects';
