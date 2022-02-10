@@ -5,7 +5,6 @@ import { RepresentativeCreationContext } from '../../Contexts/RepresentativeCrea
 import useRepresentativeCreationEffects from '../../Hooks/useRepresentativeCreationEffects';
 import Modal from '../Modal/Modal';
 import Button from 'react-bootstrap/Button';
-import { clearResponse } from '../../Actions/RepresentativeCreationActions';
 
 const RepresentativeCreation = (props) => {
   useRepresentativeCreationEffects(props);
