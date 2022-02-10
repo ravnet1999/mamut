@@ -10,7 +10,7 @@ const RepresentativeCreation = (props) => {
   useRepresentativeCreationEffects(props);
 
   const { 
-    repCreationFormModalVisible, repCreationFormModal, dispatch, hideRepCreationFormModal, showRepCreationFormModal, setStartButtonVisible, clearAllFields, clearResponse } = props;
+    repCreationFormModalVisible, repCreationFormModal, dispatch, hideRepCreationFormModal, showRepCreationFormModal, setStartButtonVisible, clearAllFields, clearResponse, sendForm } = props;
 
   const createRep = (e) => {
     dispatch(showRepCreationFormModal());
@@ -34,7 +34,7 @@ const RepresentativeCreation = (props) => {
       </div>
       <Modal 
         className="react-autosuggest__representative-creation-modal" 
-        buttons={[{ name: 'Wyczyść', method: clearAllFieldsAndResponse } ]} 
+        buttons={[{ name: 'Dodaj', method: sendForm }, { name: 'Wyczyść', method: clearAllFieldsAndResponse } ]} 
         closeButtonName={'Zamknij bez dodawania'} 
         title={repCreationFormModal.title} 
         description={repCreationFormModal.description} 

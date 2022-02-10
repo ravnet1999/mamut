@@ -33,9 +33,7 @@ const RepresentativeCreationContextProvider = ({children}) => {
     dispatch(updateForm(e));    
   }
 
-  const sendForm = (e) => {
-    e.preventDefault();
-    
+  const sendForm = () => {    
     UserHandler.create({
       'imie': state.form.firstname, 
       'nazwisko': state.form.name, 
