@@ -33,6 +33,12 @@ const RepresentativeCreationContextProvider = ({children}) => {
     dispatch(updateForm(e));    
   }
 
+  const restrictInputFieldToNumbers = (e) => {   
+    if (!/[0-9]/.test(e.key)) {
+      e.preventDefault();
+    }
+  }
+
   const sendForm = () => {    
     UserHandler.create({
       'imie': state.form.firstname, 
@@ -99,7 +105,7 @@ const RepresentativeCreationContextProvider = ({children}) => {
 
   return (
     <div>
-      <RepresentativeCreationContext.Provider value={{ ...state, dispatch, hideRepCreationFormModal, showRepCreationFormModal, updateRepCreationFormModal, setField, sendForm, buildClientSelect, buildLocationSelect, setClients, setLocations, clearAllFields, clearResponse }} >
+      <RepresentativeCreationContext.Provider value={{ ...state, dispatch, hideRepCreationFormModal, showRepCreationFormModal, updateRepCreationFormModal, setField, restrictInputFieldToNumbers, sendForm, buildClientSelect, buildLocationSelect, setClients, setLocations, clearAllFields, clearResponse }} >
         {children}
       </RepresentativeCreationContext.Provider>
     </div>
