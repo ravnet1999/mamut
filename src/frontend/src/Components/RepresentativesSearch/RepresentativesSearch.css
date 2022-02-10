@@ -17,12 +17,12 @@
   width: 160px; 
 }
 
-.representatives-search-box .react-autosuggest__box .react-autosuggest__column:nth-of-type(3) {
-  width: 300px; 
+.representatives-search-box .react-autosuggest__box .react-autosuggest__column:nth-of-type(2) {
+  width: calc(100% - 310px);
 }
 
-.representatives-search-box .react-autosuggest__box .react-autosuggest__column:nth-of-type(2) {
-  width: calc(100% - 460px);
+.representatives-search-box .react-autosuggest__box .react-autosuggest__column:nth-of-type(3) {
+  width: 150px;
 }
 
 .representatives-search-box .react-autosuggest__box .react-autosuggest__input {
