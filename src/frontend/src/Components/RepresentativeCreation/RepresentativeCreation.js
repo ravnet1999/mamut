@@ -31,7 +31,7 @@ const RepresentativeCreation = (props) => {
   return (
     <>
       <div className="react-autosuggest__representative-creation-button">
-        <Button onClick={createRep}>Dodaj nowego użytkownika</Button>
+        <Button onClick={createRep}>Dodaj nowego reprezentanta</Button>
       </div>
       <Modal 
         className="react-autosuggest__representative-creation-modal" 
