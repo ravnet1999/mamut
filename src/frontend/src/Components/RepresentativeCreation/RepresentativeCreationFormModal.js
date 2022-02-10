@@ -33,12 +33,6 @@ const RepresentativeCreationFormModal = (props) => {
 
         { buildClientSelect() }
         { buildLocationSelect(client) }
-
-        <Form.Group className="text-right">
-          <Button variant="primary" type="submit">
-              Dodaj
-          </Button>
-        </Form.Group>
       </Form>
     </>
   );
