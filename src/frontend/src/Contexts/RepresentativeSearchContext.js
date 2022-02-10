@@ -51,16 +51,26 @@ const RepresentativeSearchContextProvider = ({children}) => {
     dispatch(clearSuggestions());
   };
 
+  const updateValue = async (repId) => {
+    let result = await UserClientHandler.findByUserId(repId);
+    let suggestion = result.resources.resources[0];
+    dispatch(setValue(getSuggestionValue(suggestion)));
+  }
+
+  const fetchWithTasksAndSelectRep = async (repId) => {
+    const response = await UserHandler.getWithTasks(repId);
+    const selectedRep = response.resources[0];
+    dispatch(selectRep({ selectedRep, selectedRepId: repId, selectedClientId: selectedRep.id_klienta }));
+  }
+
   const onSuggestionSelected = async (event, { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }) => {
     const selectedRepId = suggestion.id;
-    const response = await UserHandler.getWithTasks(selectedRepId);
-    const selectedRep = response.resources[0];
-    dispatch(selectRep({ selectedRep, selectedRepId, selectedClientId: suggestion.id_klienta }));     
+    fetchWithTasksAndSelectRep(selectedRepId);
   }
 
   return (
     <div>
-      <RepresentativeSearchContext.Provider value={{ ...state, dispatch, inputProps, onSuggestionsFetchRequested, onSuggestionsClearRequested, onSuggestionSelected, renderSuggestion, getSuggestionValue }} >
+      <RepresentativeSearchContext.Provider value={{ ...state, dispatch, inputProps, onSuggestionsFetchRequested, onSuggestionsClearRequested, onSuggestionSelected, renderSuggestion, getSuggestionValue, fetchWithTasksAndSelectRep, updateValue }} >
         {children}
       </RepresentativeSearchContext.Provider>
     </div>

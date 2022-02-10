@@ -14,4 +14,14 @@ router.get('/search/:text', (req, res, next) => {
   })
 });
 
+router.get('/user/:userId', (req, res, next) => {
+  userClientService.findByUserId(req.params.userId).then((users) => {
+      response(res, false, ['Pomyślnie pobrano użytkownika za pomocą numeru komórkowego.'], users);
+      return;
+  }).catch((err) => {
+      response(res, true, ['Wystąpił błąd podczas próby wyszukania użytkownika.', JSON.stringify(err)], []);
+      return;
+  })
+});
+
 module.exports = router;

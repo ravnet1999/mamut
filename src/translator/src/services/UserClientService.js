@@ -9,6 +9,46 @@ class UserClientService {
         this.findByIdEmpty = 'Taki użytkownik nie istnieje!';
     }
 
+    findByUserId = (userId) => {      
+      return new Promise((resolve, reject) => {
+        let params = [];
+
+        let query =`
+          SELECT
+            uzytkownicy.id,
+            tel_komorkowy,
+            numer_wewnetrzny,
+            imie,
+            nazwisko,
+            id_klienta,
+            sl_klientow.nazwa
+          FROM
+            uzytkownicy
+          JOIN sl_klientow ON
+            uzytkownicy.id_klienta = sl_klientow.id
+          WHERE
+            uzytkownicy.aktywny = 'on' 
+            AND sl_klientow.aktywny = 'on'
+            AND uzytkownicy.id = ?`;
+        
+        params.push(userId);  
+
+        connection.query(query, params, (err, results, fields) => {
+          if(err) {
+              reject(err);
+              return;
+          }
+
+          results.map((result) => {
+            return charset.translateIn(result);
+          });
+
+          resolve(results);
+          return;
+        }); 
+      });
+    }
+
     search = (text) => {
       return new Promise((resolve, reject) => {
         let phoneNumber = text.replace(/\D/g,'');

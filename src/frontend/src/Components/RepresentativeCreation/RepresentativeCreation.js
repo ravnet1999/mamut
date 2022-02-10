@@ -5,12 +5,13 @@ import { RepresentativeCreationContext } from '../../Contexts/RepresentativeCrea
 import useRepresentativeCreationEffects from '../../Hooks/useRepresentativeCreationEffects';
 import Modal from '../Modal/Modal';
 import Button from 'react-bootstrap/Button';
+import UserHandler from '../../Handlers/UserHandler';
 
 const RepresentativeCreation = (props) => {
   useRepresentativeCreationEffects(props);
 
   const { 
-    repCreationFormModalVisible, repCreationFormModal, dispatch, hideRepCreationFormModal, showRepCreationFormModal, setStartButtonVisible, clearAllFields, clearResponse, sendForm } = props;
+    repCreationFormModalVisible, repCreationFormModal, dispatch, hideRepCreationFormModal, showRepCreationFormModal, setStartButtonVisible, clearAllFields, clearResponse, form, client, location, setResponse, fetchWithTasksAndSelectRep, updateValue } = props;
 
   const createRep = (e) => {
     dispatch(showRepCreationFormModal());
@@ -25,6 +26,32 @@ const RepresentativeCreation = (props) => {
   const clearAllFieldsAndResponse = () => {
     dispatch(clearAllFields());
     dispatch(clearResponse());
+  }
+
+  const sendForm = async () => {  
+    try{
+      let response = await UserHandler.create({
+        'imie': form.firstname, 
+        'nazwisko': form.name, 
+        'tel_komorkowy': form.phone, 
+        'adres_email': form.email, 
+        'id_klienta': client, 
+        'lokalizacja': location
+      });
+
+      if(response.error === false) {
+        dispatch(clearAllFields());
+        let repId = response.resources[0].id;
+        await fetchWithTasksAndSelectRep(repId);
+        await updateValue(repId);
+        dispatch(hideRepCreationFormModal());
+        setStartButtonVisible(true);
+      } else {
+        dispatch(setResponse(response));
+      }
+    } catch(err) {
+      dispatch(setResponse(err));           
+    };        
   }
 
   return (

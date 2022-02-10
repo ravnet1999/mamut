@@ -40,7 +40,7 @@ router.patch('/:repId', [authMiddleware], (req, res, next) => {
 
 router.put('/', [authMiddleware], (req, res, next) => {
     companyService.createRepresentative(req.body).then((representative) => {
-        response(res, false, ['Pomyślnie utworzono reprezentanta.']);
+        response(res, false, ['Pomyślnie utworzono reprezentanta.'], [representative]);
         return;
     }).catch((err) => {
         response(res, true, ['Coś poszło nie tak podczas próby utworzenia reprezentanta.', JSON.stringify(err)], []);

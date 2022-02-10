@@ -24,7 +24,6 @@ const useRepresentativeCreationEffects = (props) => {
         dispatch(setLocations(response.resources));
       });
     }
-    console.log("client", client);
   }, [ client ]);
 }
 

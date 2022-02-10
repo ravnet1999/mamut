@@ -15,4 +15,15 @@ router.get('/search/:text', [authMiddleware], (req, res, next) => {
     });
 });
 
+router.get('/rep/:repId', [authMiddleware], (req, res, next) => {
+  representativeClientService.findByRepId(req.params.repId).then((representatives) => {
+      response(res, false, ['Pomyślnie pobrano reprezentantów klientów.'], representatives);
+      return;
+  }).catch((err) => {
+      console.log(err);
+      response(res, true, ['Coś poszło nie tak podczas próby pobrania reprezentantów klientów.', JSON.stringify(err)], []);
+      return;
+  });
+});
+
 module.exports = router;

@@ -21,7 +21,7 @@ const RepresentativesSearch = (props) => {
 
   const { 
     suggestions, onSuggestionsFetchRequested, onSuggestionsClearRequested, onSuggestionSelected, getSuggestionValue, renderSuggestion, inputProps,
-    selectedRepId, selectedRep, selectedClientId, 
+    selectedRepId, selectedRep, selectedClientId, fetchWithTasksAndSelectRep, updateValue,
     createTask, taskStarted, tasksVisible, setTasksVisible, activeTasksModal, takeOverModalVisible, setTakeOverModalVisible, takeOverModal, taskPreviewVisible, setTaskPreviewVisible, previewedTask, changeOperator,
   } = props;
 
@@ -90,7 +90,7 @@ const RepresentativesSearch = (props) => {
           </div>
           <div className="react-autosuggest__column">
             <RepresentativeCreationContextProvider>
-                <RepresentativeCreation { ...props } setStartButtonVisible={ setStartButtonVisible }></RepresentativeCreation>
+                <RepresentativeCreation { ...props } fetchWithTasksAndSelectRep={ fetchWithTasksAndSelectRep } updateValue={ updateValue } setStartButtonVisible={ setStartButtonVisible }></RepresentativeCreation>
             </RepresentativeCreationContextProvider>
           </div>
         </div>

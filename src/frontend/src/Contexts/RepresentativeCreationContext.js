@@ -1,7 +1,6 @@
 import React, { createContext, useReducer } from 'react';
 import RepresentativeCreationReducer from '../Reducers/RepresentativeCreationReducer';
 import { hideRepCreationFormModal, showRepCreationFormModal, updateRepCreationFormModal, updateForm, setResponse, setClient, setLocation, setClients, setLocations, clearAllFields, clearResponse } from '../Actions/RepresentativeCreationActions';
-import UserHandler from '../Handlers/UserHandler';
 import { Form } from '../Components/bootstrap';
 
 export const RepresentativeCreationContext = createContext();
@@ -37,29 +36,6 @@ const RepresentativeCreationContextProvider = ({children}) => {
     if (!/[0-9]/.test(e.key)) {
       e.preventDefault();
     }
-  }
-
-  const sendForm = () => {    
-    UserHandler.create({
-      'imie': state.form.firstname, 
-      'nazwisko': state.form.name, 
-      'tel_komorkowy': state.form.phone, 
-      'adres_email': state.form.email, 
-      'id_klienta': state.client, 
-      'lokalizacja': state.location
-    }).then((response) => {            
-      dispatch(setResponse(response));
-
-      if(response.error === false) {
-        dispatch(clearAllFields());
-      }
-
-      // dispatch(hideRepCreationFormModal());
-      return;
-    }).catch((err) => {
-      dispatch(setResponse(err));
-      return;
-    });
   }
 
   const buildClientSelect = () => {
@@ -105,7 +81,7 @@ const RepresentativeCreationContextProvider = ({children}) => {
 
   return (
     <div>
-      <RepresentativeCreationContext.Provider value={{ ...state, dispatch, hideRepCreationFormModal, showRepCreationFormModal, updateRepCreationFormModal, setField, restrictInputFieldToNumbers, sendForm, buildClientSelect, buildLocationSelect, setClients, setLocations, clearAllFields, clearResponse }} >
+      <RepresentativeCreationContext.Provider value={{ ...state, dispatch, hideRepCreationFormModal, showRepCreationFormModal, updateRepCreationFormModal, setField, restrictInputFieldToNumbers, buildClientSelect, buildLocationSelect, setClients, setLocations, clearAllFields, clearResponse, setResponse }} >
         {children}
       </RepresentativeCreationContext.Provider>
     </div>
