@@ -36,7 +36,7 @@ const RepresentativeCreation = (props) => {
       <Modal 
         className="react-autosuggest__representative-creation-modal" 
         buttons={[{ name: 'Wyczyść', method: clearAllFieldsAndResponse } ]} 
-        closeButtonName={'Zamknij'} 
+        closeButtonName={'Zamknij bez dodawania'} 
         title={repCreationFormModal.title} 
         description={repCreationFormModal.description} 
         visible={repCreationFormModalVisible} 
