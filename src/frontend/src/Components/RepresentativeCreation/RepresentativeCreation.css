@@ -1,5 +1,5 @@
 .mamut-modal.react-autosuggest__representative-creation-modal {
   top: 60%;
-  width: 60%; 
+  max-width: 800px; 
   max-height: 700px;
 }
