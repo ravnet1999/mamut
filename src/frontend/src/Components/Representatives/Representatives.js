@@ -49,6 +49,8 @@ const Representatives = (props) => {
         return props.updateTaskCount;
     }, []);
 
+    const pickedClient = props.match.params.clientId;
+    
     const afterRepCreationButtonClicked = () => setStartButtonVisible(false);
     const afterRepCreationFormModalClosed = () => setStartButtonVisible(true);
     const afterRepCreated = async (repId) => {
@@ -87,7 +89,7 @@ const Representatives = (props) => {
             <Modal className="takeover-modal" buttons={takeOverModal.buttons} closeButtonName={'Zamknij'} title={takeOverModal.title} description={takeOverModal.description} visible={takeOverModalVisible} onClose={() => setTakeOverModalVisible(false)}></Modal>
             <Modal buttons={[]} closeButtonName={'Zamknij'} title={activeTasksModal.title} description={activeTasksModal.description} visible={tasksVisible} onClose={() => setTasksVisible(false)}></Modal>
             <Alert response={response}></Alert>
-            <RepresentativesList afterRepCreationButtonClicked={ afterRepCreationButtonClicked } afterRepCreationFormModalClosed={  afterRepCreationFormModalClosed } afterRepCreated={ afterRepCreated } selectRepButtonOnClick={ selectRepButtonOnClick } clientColumns={ clientColumns }></RepresentativesList>
+            <RepresentativesList pickedClient={pickedClient} afterRepCreationButtonClicked={ afterRepCreationButtonClicked } afterRepCreationFormModalClosed={  afterRepCreationFormModalClosed } afterRepCreated={ afterRepCreated } selectRepButtonOnClick={ selectRepButtonOnClick } clientColumns={ clientColumns }></RepresentativesList>
             { startButtonVisible && 
               <div className="bottom-pin-wrapper">
                   <div className="bottom-pin">

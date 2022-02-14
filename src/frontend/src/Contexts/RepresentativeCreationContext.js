@@ -81,7 +81,7 @@ const RepresentativeCreationContextProvider = ({children}) => {
 
   return (
     <div>
-      <RepresentativeCreationContext.Provider value={{ ...state, dispatch, hideRepCreationFormModal, showRepCreationFormModal, updateRepCreationFormModal, setField, restrictInputFieldToNumbers, buildClientSelect, buildLocationSelect, setClients, setLocations, clearAllFields, clearResponse, setResponse }} >
+      <RepresentativeCreationContext.Provider value={{ ...state, dispatch, hideRepCreationFormModal, showRepCreationFormModal, updateRepCreationFormModal, setField, restrictInputFieldToNumbers, buildClientSelect, buildLocationSelect, setClients, setLocations, clearAllFields, clearResponse, setResponse, setClient }} >
         {children}
       </RepresentativeCreationContext.Provider>
     </div>

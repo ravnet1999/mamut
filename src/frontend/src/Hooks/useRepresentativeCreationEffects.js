@@ -3,13 +3,18 @@ import RepresentativeCreationFormModal from '../Components/RepresentativeCreatio
 import ClientHandler from '../Handlers/ClientHandler';
 
 const useRepresentativeCreationEffects = (props) => {
-  const { repCreationFormModalVisible, dispatch, updateRepCreationFormModal, response, form, client, location, clients, setClients, locations, setLocations } = props;
+  const { repCreationFormModalVisible, dispatch, updateRepCreationFormModal, response, form, client, pickedClient, setClient, location, clients, setClients, locations, setLocations } = props;
 
   useEffect(() => {  
     dispatch(updateRepCreationFormModal({title:'', description: <RepresentativeCreationFormModal {...props}></RepresentativeCreationFormModal>}))    
   }, [repCreationFormModalVisible, response, form, client, location, clients, locations]);
 
   useEffect(() => {
+    if(pickedClient) {
+      dispatch(setClient(pickedClient));
+      return;
+    }
+
     ClientHandler.getClients().then(response => {
       let sorted = response.resources.sort((a, b) => {
           return (a.nazwa) > (b.nazwa) ? 1 : ( (a.nazwa) < (b.nazwa) ? -1 : 0 );
