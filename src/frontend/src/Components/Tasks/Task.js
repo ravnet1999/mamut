@@ -6,7 +6,7 @@ import Alert from '../Alert/Alert';
 import OperatorHandler from '../../Handlers/OperatorHandler';
 import TaskHandler from '../../Handlers/TaskHandler';
 import ServiceHandler from '../../Handlers/ServiceHandler';
-import ClientHandler from '../../Handlers/ClientHandler';
+import UserHandler from '../../Handlers/UserHandler';
 import TaskReassign from './TaskReassign';
 import Modal from '../Modal/Modal';
 import './Tasks.css';
@@ -76,7 +76,7 @@ const Task = (props) => {
     const updateRep = () => {
         if(!rep) return;
 
-        ClientHandler.changeRepresentative(rep.id, rep).then((result) => {
+        UserHandler.update(rep.id, rep).then((result) => {
 
         }).catch((err) => {
             console.log(err);
@@ -94,7 +94,7 @@ const Task = (props) => {
         });
 
         TaskHandler.getTaskById(props.match.params.taskId).then((response) => {
-            ClientHandler.getRepresentative(response.resources[0].id_zglaszajacy).then((rep) => {
+            UserHandler.get(response.resources[0].id_zglaszajacy).then((rep) => {
                 let representative = rep.resources[0];
 
                 setRep(representative);
