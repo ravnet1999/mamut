@@ -69,6 +69,14 @@ const RepresentativesSearch = (props) => {
     });
   }
 
+  const afterRepCreationButtonClicked = () => setStartButtonVisible(false);
+  const afterRepCreationFormModalClosed = () => setStartButtonVisible(true);
+  const afterRepCreated = async (repId) => {
+    await fetchWithTasksAndSelectRep(repId);
+    await updateValue(repId);
+    setStartButtonVisible(true);
+  }
+
   // Finally, render it!
   return (
     <div className="representatives-search-box">
@@ -90,7 +98,7 @@ const RepresentativesSearch = (props) => {
           </div>
           <div className="react-autosuggest__column">
             <RepresentativeCreationContextProvider>
-                <RepresentativeCreation { ...props } fetchWithTasksAndSelectRep={ fetchWithTasksAndSelectRep } updateValue={ updateValue } setStartButtonVisible={ setStartButtonVisible }></RepresentativeCreation>
+                <RepresentativeCreation { ...props } afterRepCreated={ afterRepCreated } afterRepCreationButtonClicked={ afterRepCreationButtonClicked } afterRepCreationFormModalClosed={ afterRepCreationFormModalClosed }></RepresentativeCreation>
             </RepresentativeCreationContextProvider>
           </div>
         </div>

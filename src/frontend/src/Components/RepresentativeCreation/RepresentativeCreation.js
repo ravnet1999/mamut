@@ -11,16 +11,16 @@ const RepresentativeCreation = (props) => {
   useRepresentativeCreationEffects(props);
 
   const { 
-    repCreationFormModalVisible, repCreationFormModal, dispatch, hideRepCreationFormModal, showRepCreationFormModal, setStartButtonVisible, clearAllFields, clearResponse, form, client, location, setResponse, fetchWithTasksAndSelectRep, updateValue } = props;
+    repCreationFormModalVisible, repCreationFormModal, dispatch, hideRepCreationFormModal, showRepCreationFormModal, clearAllFields, clearResponse, form, client, location, setResponse, afterRepCreationButtonClicked, afterRepCreationFormModalClosed, afterRepCreated } = props;
 
   const repCreationButtonOnClick = (e) => {
     dispatch(showRepCreationFormModal());
-    setStartButtonVisible(false);
+    afterRepCreationButtonClicked();    
   }
 
   const repCreationFormModalOnClose = () => {
     dispatch(hideRepCreationFormModal());
-    setStartButtonVisible(true);
+    afterRepCreationFormModalClosed();    
   }
 
   const clearAllFieldsAndResponse = () => {
@@ -41,11 +41,10 @@ const RepresentativeCreation = (props) => {
 
       if(response.error === false) {
         dispatch(clearAllFields());
-        let repId = response.resources[0].id;
-        await fetchWithTasksAndSelectRep(repId);
-        await updateValue(repId);
         dispatch(hideRepCreationFormModal());
-        setStartButtonVisible(true);
+
+        let repId = response.resources[0].id;
+        afterRepCreated(repId);
       } else {
         dispatch(setResponse(response));
       }
