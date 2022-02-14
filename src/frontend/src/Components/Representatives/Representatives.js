@@ -11,13 +11,17 @@ import { TaskContext } from '../../Contexts/TaskContext';
 import { WithContexts } from '../../HOCs/WithContexts'
 import useTaskEffects from '../../Hooks/useTaskEffects';
 
+import RepresentativeCreationContextProvider from '../../Contexts/RepresentativeCreationContext';
+import RepresentativeCreation from '../RepresentativeCreation/RepresentativeCreation';
+
 const Representatives = (props) => {
     useTaskEffects(props);
 
     const [representatives, setRepresentatives] = useState([]);
     const [selectedRep, setSelectedRep] = useState(null);
     const [response, setResponse] = useState(null);
-    
+    const [startButtonVisible, setStartButtonVisible] = useState(true);
+
     const { taskStarted, createTask, tasksVisible, setTasksVisible, activeTasksModal, takeOverModalVisible, setTakeOverModalVisible, takeOverModal, taskPreviewVisible, setTaskPreviewVisible, previewedTask, changeOperator } = props;
   
     const createTaskAndRenderResponse = (event) => {
@@ -45,6 +49,11 @@ const Representatives = (props) => {
         return props.updateTaskCount;
     }, []);
 
+    const afterRepCreationButtonClicked = () => setStartButtonVisible(false);
+    const afterRepCreationFormModalClosed = () => setStartButtonVisible(true);
+    const afterRepCreated = async (repId) => {         
+    }
+
     const buildClients = () => {
         
         let clientColumns = representatives.map((representative, index) => {
@@ -60,6 +69,12 @@ const Representatives = (props) => {
 
         return (
             <Row>
+                <Col xs="12" sm="12" md="6" lg="4">
+                <RepresentativeCreationContextProvider>
+                  <RepresentativeCreation { ...props } afterRepCreated={ afterRepCreated } afterRepCreationButtonClicked={ afterRepCreationButtonClicked } afterRepCreationFormModalClosed={ afterRepCreationFormModalClosed }></RepresentativeCreation>
+                </RepresentativeCreationContextProvider>
+                </Col>
+
                 {clientColumns}
             </Row>
         );
@@ -72,16 +87,18 @@ const Representatives = (props) => {
             <Modal buttons={[]} closeButtonName={'Zamknij'} title={activeTasksModal.title} description={activeTasksModal.description} visible={tasksVisible} onClose={() => setTasksVisible(false)}></Modal>
             <Alert response={response}></Alert>
             { buildClients() }
-            <div className="bottom-pin-wrapper">
-                <div className="bottom-pin">
-                    <Row className="no-margins">
-                        <Col className="text-right btn-center-container">
-                            {/* <Alert response={response}></Alert> */}
-                            <Button onClick={(e) => createTaskAndRenderResponse()} className="btn-inverted btn-start btn-center" disabled={!selectedRep || taskStarted}>Start</Button>
-                        </Col>
-                    </Row>
-                </div>
-            </div>
+            { startButtonVisible && 
+              <div className="bottom-pin-wrapper">
+                  <div className="bottom-pin">
+                      <Row className="no-margins">
+                          <Col className="text-right btn-center-container">
+                              {/* <Alert response={response}></Alert> */}
+                              <Button onClick={(e) => createTaskAndRenderResponse()} className="btn-inverted btn-start btn-center" disabled={!selectedRep || taskStarted}>Start</Button>
+                          </Col>
+                      </Row>
+                  </div>
+              </div>
+            }
         </Page>
     );
 }
