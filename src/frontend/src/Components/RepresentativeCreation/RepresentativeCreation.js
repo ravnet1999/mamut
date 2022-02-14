@@ -13,7 +13,7 @@ const RepresentativeCreation = (props) => {
   const { 
     repCreationFormModalVisible, repCreationFormModal, dispatch, hideRepCreationFormModal, showRepCreationFormModal, setStartButtonVisible, clearAllFields, clearResponse, form, client, location, setResponse, fetchWithTasksAndSelectRep, updateValue } = props;
 
-  const createRep = (e) => {
+  const repCreationButtonOnClick = (e) => {
     dispatch(showRepCreationFormModal());
     setStartButtonVisible(false);
   }
@@ -57,7 +57,7 @@ const RepresentativeCreation = (props) => {
   return (
     <>
       <div className="react-autosuggest__representative-creation-button">
-        <Button onClick={createRep}>Dodaj nowego reprezentanta</Button>
+        <Button onClick={repCreationButtonOnClick}>Dodaj nowego reprezentanta</Button>
       </div>
       <Modal 
         className="react-autosuggest__representative-creation-modal" 
