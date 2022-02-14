@@ -25,6 +25,14 @@ const getUnsortedRepresentatives = (clientId) => {
   });
 };
 
+const sortRepresentatives = (unsortedRepresentatives) => {
+  const sortedRepresentatives = unsortedRepresentatives.sort((a, b) => {
+    return (a.imie + a.nazwisko) > (b.imie + b.nazwisko) ? 1 : ( (a.imie + a.nazwisko) < (b.imie + b.nazwisko) ? -1 : 0 );
+  });
+
+  return { resources: sortedRepresentatives };
+};
+
 const ClientHandler = {
     getClients: () => {
         return new Promise((resolve, reject) => {
@@ -54,12 +62,10 @@ const ClientHandler = {
     getSortedRepresentatives: async (clientId) => {
       const response = await getUnsortedRepresentatives(clientId);
       const unsortedRepresentatives = response.resources;
-      const sortedRepresentatives = unsortedRepresentatives.sort((a, b) => {
-        return (a.imie + a.nazwisko) > (b.imie + b.nazwisko) ? 1 : ( (a.imie + a.nazwisko) < (b.imie + b.nazwisko) ? -1 : 0 );
-      });
-
-      return { resources: sortedRepresentatives };
+      return sortRepresentatives(unsortedRepresentatives);
     },
+
+    sortRepresentatives: (unsortedRepresentatives) => sortRepresentatives(unsortedRepresentatives),
 
     getRepresentative: (repId) => {
         return new Promise((resolve, reject) => {
