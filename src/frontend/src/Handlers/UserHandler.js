@@ -25,6 +25,28 @@ const UserHandler = {
             });
         });
     },
+    get: (repId) => {
+      return new Promise((resolve, reject) => {
+          axios.get(`${appConfig.URLs.domain}/${appConfig.URLs.representatives}/${repId}`, {
+              withCredentials: true
+          }).then((response) => {
+              parseResponse(response).then((response) => {
+                  resolve(response);
+                  return;
+              }).catch((err) => {
+                  reject(err);
+                  return;
+              });
+          }).catch((err) => {
+              reject({
+                  error: true,
+                  messages: ['Wystąpił problem z połączeniem z serwerem.', JSON.stringify(err)],
+                  resources: []
+              });
+              return;
+          });
+      });
+    },  
     validate: (form) => {
       let messages = [];
 
@@ -86,7 +108,29 @@ const UserHandler = {
               return;
           });
     });
-  }
+  },
+  update: (repId, rep) => {
+    return new Promise((resolve, reject) => {
+        axios.patch(`${appConfig.URLs.domain}/${appConfig.URLs.representatives}/${repId}`, rep, {
+            withCredentials: true
+        }).then((response) => {
+            parseResponse(response).then((response) => {
+                resolve(response);
+                return;
+            }).catch((err) => {
+                reject(err);
+                return;
+            });
+        }).catch((err) => {
+            reject({
+                error: true,
+                messages: ['Wystąpił problem z połączeniem z serwerem.', JSON.stringify(err)],
+                resources: []
+            });
+            return;
+        });
+    });   
+  },
 }
 
 export default UserHandler;
