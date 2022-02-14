@@ -3,9 +3,14 @@ const parseResponse = require('../ResponseParser');
 const appConfig = require('../../config/appConfig.json');
 
 class CompanyService {
-    getCompanies = () => {
+    getCompanies = (clientIds) => {
         return new Promise((resolve, reject) => {
-            axios.get(`${appConfig.URLs.translator}/companies/`).then((response) => {
+            let url=`${appConfig.URLs.translator}/companies`;
+            if(clientIds) {
+              url += `/${clientIds}`;
+            }
+            console.log(url);
+            axios.get(url).then((response) => {
                 parseResponse(response).then((response) => {
                     resolve(response.resources);
                     return;

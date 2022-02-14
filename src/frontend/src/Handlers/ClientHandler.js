@@ -34,10 +34,13 @@ const sortRepresentatives = (unsortedRepresentatives) => {
 };
 
 const ClientHandler = {
-    getClients: () => {
+    getClients: (clientIds) => {
         return new Promise((resolve, reject) => {
-            console.log(`${appConfig.URLs.domain}/${appConfig.URLs.clients}`);
-            axios.get(`${appConfig.URLs.domain}/${appConfig.URLs.clients}`, {
+            let url = `${appConfig.URLs.domain}/${appConfig.URLs.clients}`;
+            if(clientIds) {
+              url+=`/${clientIds}`;
+            }
+            axios.get(`${url}`, {
                 withCredentials: true
             }).then((response) => {
                 parseResponse(response).then((response) => {

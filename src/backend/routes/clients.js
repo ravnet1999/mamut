@@ -38,6 +38,18 @@ router.get('/', [authMiddleware], (req, res, next) => {
     // });
 });
 
+/* GET clients listing. */
+router.get('/:clientIds', [authMiddleware], (req, res, next) => {  
+      companyService.getCompanies(req.params.clientIds).then((companies) => {
+          response(res, false, ['Pomyślnie pobrano klientów.'], companies);
+          return;
+      }).catch((err) => {
+          console.log(err);
+          response(res, true, ['Coś poszło nie tak podczas próby pobrania klientów.', JSON.stringify(err)], []);
+          return;
+      });
+});
+
 router.get('/:clientId/locations', [authMiddleware], (req, res, next) => {
   companyService.getCompanyLocations(req.params.clientId).then((companyLocations) => {
       response(res, false, ['Pomyślnie pobrano lokalizacje.'], companyLocations);
