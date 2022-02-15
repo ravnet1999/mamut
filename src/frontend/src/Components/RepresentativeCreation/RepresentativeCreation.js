@@ -59,7 +59,7 @@ const RepresentativeCreation = (props) => {
         <Button className={ `full-width margin-bottom-default` }  onClick={repCreationButtonOnClick}>Dodaj nowego reprezentanta</Button>
       </div>
       <Modal 
-        className="react-autosuggest__representative-creation-modal" 
+        className="react-autosuggest__representative-creation-modal"
         buttons={[{ name: 'Dodaj', method: sendForm }, { name: 'Wyczyść', method: clearAllFieldsAndResponse } ]} 
         closeButtonName={'Zamknij bez dodawania'} 
         title={repCreationFormModal.title} 
