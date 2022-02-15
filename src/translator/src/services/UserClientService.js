@@ -53,7 +53,7 @@ class UserClientService {
       return new Promise((resolve, reject) => {
         let phoneNumber = text.replace(/\D/g,'');
         
-        let name = text.replace(/[^AaĄąBbCcĆćDdEeĘęFfGgHhIiJjKkLlŁłMmNnŃńOoÓóPpRrSsŚśTtUuWwYyZzŹźŻż]/g,'');
+        let name = text.replace(/[^AaĄąBbCcĆćDdEeĘęFfGgHhIiJjKkLlŁłMmNnŃńOoÓóPpRrSsŚśTtUuWwYyZzŹźŻżXxVvQq]/g,'');
         let nameObj = charset.translateOut({name});
         name = nameObj.name;
 
