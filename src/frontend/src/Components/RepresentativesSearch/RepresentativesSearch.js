@@ -84,7 +84,7 @@ const RepresentativesSearch = (props) => {
       
       <div className="react-autosuggest__box">
         <div className="react-autosuggest__row">
-          <div className="react-autosuggest__column">Znajdź użytkownika:</div>
+          <div className="react-autosuggest__column">Znajdź reprezentanta:</div>
           <div className="react-autosuggest__column">
             <Autosuggest
               suggestions={suggestions}

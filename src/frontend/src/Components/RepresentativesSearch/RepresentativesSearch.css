@@ -1,5 +1,5 @@
 .representatives-search-box {
-  margin-top: 60px;
+  margin-top: 10px;
 }
 
 .representatives-search-box .react-autosuggest__box .react-autosuggest__row{
@@ -10,11 +10,11 @@
 .representatives-search-box .react-autosuggest__box .react-autosuggest__column:nth-of-type(2),
 .representatives-search-box .react-autosuggest__box .react-autosuggest__column:nth-of-type(3) {
   display: inline-block;
-  height: 40px;
+  height: 60px;
 }
 
 .representatives-search-box .react-autosuggest__box .react-autosuggest__column:nth-of-type(1) {
-  width: 160px; 
+  width: 140px; 
 }
 
 .representatives-search-box .react-autosuggest__box .react-autosuggest__column:nth-of-type(2) {
@@ -23,6 +23,11 @@
 
 .representatives-search-box .react-autosuggest__box .react-autosuggest__column:nth-of-type(3) {
   width: 150px;
+  margin-left: 20px;
+}
+
+ul.react-autosuggest__suggestions-list {
+  padding-left: 0;
 }
 
 .representatives-search-box .react-autosuggest__box .react-autosuggest__input {
@@ -30,13 +35,11 @@
   color: #fff;
   padding: 6px 12px 6px 12px;
   width: 100%;
-  margin-top: -8px;
-  margin-left: -8px;
+  margin-top: 4px;
 }
 
 .representatives-search-box .react-autosuggest__box .react-autosuggest__suggestion {
   list-style-type: none;
-  margin-left: -40px;
   margin-top: 10px;
   padding: 6px 12px 6px 12px;
   border-radius: 4px;
@@ -55,8 +58,4 @@
 
 .representatives-search-box .react-autosuggest__task-count div {
   cursor: pointer;
-}
-
-.representatives-search-box .react-autosuggest__representative-creation-button button {
-  margin-top: -6px;
 }
