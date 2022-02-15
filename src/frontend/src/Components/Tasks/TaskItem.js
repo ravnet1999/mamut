@@ -6,7 +6,7 @@ import { Button, Form } from '../bootstrap';
 
 const TaskItem = (props) => {
   const { 
-    task, response, setResponse, tasks, setTasks, pickedTask, setPickedTask, closeDisabledId, setCloseDisabledId, taskStarted, setTaskStarted, modal, setModal, modalVisible, setModalVisible, previewedTask, setPreviewedTask, taskPreviewVisible, setTaskPreviewVisible, getTasks, startTask, closeTask, parseStampDescription, previewTask, closeTaskPreview, buildTaskRadios 
+    task, pickedTask, setPickedTask, closeDisabledId, setModal, setModalVisible, closeTask, parseStampDescription, previewTask
   } = props;
 
   let taskStampClass = '';
