@@ -12,6 +12,7 @@ import TaskHandler from '../src/Handlers/TaskHandler';
 import Representatives from './Components/Representatives/Representatives';
 import RepresentativesSearchPage from './Components/RepresentativesSearch/RepresentativesSearchPage';
 import TaskContextProvider from './Contexts/TaskContext';
+import TasksContextProvider from './Contexts/TasksContext';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
@@ -74,7 +75,7 @@ function App() {
         <Route path='/clients' exact render={(props) => <Clients {...props} updateTaskCount={updateTaskCount} setCurrentPage={setCurrentPage}></Clients>}></Route>
         <Route path='/representatives/:clientId' exact render={(props) => <TaskContextProvider><Representatives {...props} updateTaskCount={updateTaskCount} setCurrentPage={setCurrentPage}></Representatives></TaskContextProvider>}></Route>
 				<Route path='/task/:taskId/:options?' exact render={(props) => <Task {...props} updateTaskCount={updateTaskCount} setCurrentPage={setCurrentPage}></Task>}></Route>
-				<Route path='/tasks/:general?' exact render={(props) => <Tasks {...props} updateTaskCount={updateTaskCount} setCurrentPage={setCurrentPage}></Tasks>}></Route>
+				<Route path='/tasks/:general?' exact render={(props) => <TasksContextProvider><Tasks {...props} updateTaskCount={updateTaskCount} setCurrentPage={setCurrentPage}></Tasks></TasksContextProvider>}></Route>
 			</Switch>
 		</div>
 	);
