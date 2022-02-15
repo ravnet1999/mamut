@@ -12,7 +12,7 @@ import useTasksEffects from '../../Hooks/useTasksEffects';
 
 const Tasks = (props) => {
     const { 
-      previewedTask, closeTaskPreview, modal, modalVisible, setModalVisible, response, buildTaskRadios, startTask, tasks, taskStarted, taskPreviewVisible, pickedTask, getTasks 
+      response, setResponse, tasks, setTasks, pickedTask, setPickedTask, closeDisabledId, setCloseDisabledId, taskStarted, setTaskStarted, modal, setModal, modalVisible, setModalVisible, previewedTask, setPreviewedTask, taskPreviewVisible, setTaskPreviewVisible, getTasks, startTask, closeTask, parseStampDescription, previewTask, closeTaskPreview, buildTaskRadios 
     } = props;
 
     useTasksEffects(props);
@@ -22,7 +22,7 @@ const Tasks = (props) => {
             { taskPreviewVisible ? <TaskPreview task={previewedTask} onClose={closeTaskPreview}></TaskPreview> : '' }
             <Modal title={modal.title} description={modal.description} buttons={modal.buttons} visible={modalVisible} onClose={() => setModalVisible(false)}></Modal>
             <Alert response={response}></Alert>
-            {buildTaskRadios()}
+            {buildTaskRadios(props)}
             {/* <Row className="margin-top-default margin-bottom-default">
                 <Col className="text-center">
                     <Button className="large" onClick={(e) => startTask()}>Start</Button>    
