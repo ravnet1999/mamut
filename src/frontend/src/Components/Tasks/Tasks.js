@@ -12,7 +12,7 @@ import useTasksEffects from '../../Hooks/useTasksEffects';
 
 const Tasks = (props) => {
     const { 
-      response, setResponse, tasks, setTasks, pickedTask, setPickedTask, closeDisabledId, setCloseDisabledId, taskStarted, setTaskStarted, modal, setModal, modalVisible, setModalVisible, previewedTask, setPreviewedTask, taskPreviewVisible, setTaskPreviewVisible, getTasks, startTask, closeTask, parseStampDescription, previewTask, closeTaskPreview, buildTaskRadios 
+      response, tasks, pickedTask, taskStarted, modal, modalVisible, setModalVisible, previewedTask, taskPreviewVisible, getTasks, startTask, closeTaskPreview, buildTaskRadios 
     } = props;
 
     useTasksEffects(props);
