@@ -11,7 +11,7 @@ const RepresentativeCreation = (props) => {
   useRepresentativeCreationEffects(props);
 
   const { 
-    repCreationFormModalVisible, repCreationFormModal, dispatch, hideRepCreationFormModal, showRepCreationFormModal, clearAllFields, clearResponse, form, client, pickedClient, location, setResponse, afterRepCreationButtonClicked, afterRepCreationFormModalClosed, afterRepCreated } = props;
+    repCreationFormModalVisible, repCreationFormModal, dispatch, hideRepCreationFormModal, showRepCreationFormModal, clearAllFields, clearAllFieldsExceptClient, clearResponse, form, client, pickedClient, location, setResponse, afterRepCreationButtonClicked, afterRepCreationFormModalClosed, afterRepCreated } = props;
 
   const repCreationButtonOnClick = (e) => {
     dispatch(showRepCreationFormModal());
