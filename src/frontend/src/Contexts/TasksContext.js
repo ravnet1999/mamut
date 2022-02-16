@@ -29,6 +29,7 @@ const TasksContextProvider = ({children}) => {
         console.log(response);
         setResponse(response);
         let tasks = response.resources;
+        setTasks(tasks);
 
         if(general) {
           let errorTypesLeftCol = [93, 36];
@@ -45,8 +46,6 @@ const TasksContextProvider = ({children}) => {
             setPickedTask(tasksRightCol[0]);
           }
         } else {          
-          setTasks(tasks);
-
           if(tasks.length > 0) {
             setPickedTask(tasks[0]);
           }
@@ -107,13 +106,13 @@ const buildTaskRadios = (props) => {
 }
 
 const buildTaskGeneralRadios = (props) => { 
-  let header = 
-    <Row key={0} className="margin-top-default margin-bottom-default">
-      <Col xs="6" className="text-center">
-        Zadania typu "Z" / "W"
+  let header = tasks.length === 0 ? <></> :
+    <Row key={0} >
+      <Col xs="6">
+        <div className="text-light text-center bg-dark">Zadania typu "Z" / "W"</div>
       </Col> 
-      <Col xs="6" className="text-center">
-        Zadania pozostałych typów
+      <Col xs="6">
+        <div className="text-light text-center bg-dark">Zadania pozostałych typów</div>
       </Col>
     </Row>  
     
@@ -123,11 +122,13 @@ const buildTaskGeneralRadios = (props) => {
         { tasksLeftCol[key] &&
           <TaskItem {...props} key={2*key+1} task={tasksLeftCol[key]}></TaskItem>
         }
+        { key==0 && !tasksLeftCol[key] && <div className="alert alert-success text-center">Dobra robota. Brak zadań!</div> }
       </Col>
       <Col xs="6">
         { tasksRightCol[key] &&
           <TaskItem {...props} key={2*key+2} task={tasksRightCol[key]}></TaskItem>
         }
+        { key==0 && !tasksRightCol[key] && <div className="alert alert-success text-center">Dobra robota. Brak zadań!</div> }
       </Col>
     </Row>  
   ));
