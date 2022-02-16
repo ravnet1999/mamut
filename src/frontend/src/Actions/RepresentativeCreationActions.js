@@ -53,3 +53,7 @@ export const clearResponse = (data) => {
 export const clearAllFields = (data) => {
   return { type: 'CLEAR_ALL_FIELDS', data };
 };
+
+export const clearAllFieldsExceptClient = (data) => {
+  return { type: 'CLEAR_ALL_FIELDS_EXCEPT_CLIENT', data };
+};
