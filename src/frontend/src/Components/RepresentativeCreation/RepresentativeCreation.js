@@ -11,7 +11,7 @@ const RepresentativeCreation = (props) => {
   useRepresentativeCreationEffects(props);
 
   const { 
-    repCreationFormModalVisible, repCreationFormModal, dispatch, hideRepCreationFormModal, showRepCreationFormModal, clearAllFields, clearResponse, form, client, pickedClient, location, setResponse, afterRepCreationButtonClicked, afterRepCreationFormModalClosed, afterRepCreated } = props;
+    repCreationFormModalVisible, repCreationFormModal, dispatch, hideRepCreationFormModal, showRepCreationFormModal, clearAllFields, clearResponse, form, client, location, setResponse, afterRepCreationButtonClicked, afterRepCreationFormModalClosed, afterRepCreated } = props;
 
   const repCreationButtonOnClick = (e) => {
     dispatch(showRepCreationFormModal());
@@ -23,15 +23,9 @@ const RepresentativeCreation = (props) => {
     afterRepCreationFormModalClosed();    
   }
 
-  const clearAllFieldsAndResponse = (pickedClient) => () => {
-    if(pickedClient) {
-      dispatch(clearAllFieldsExceptClient());
-    } else {
-      dispatch(clearAllFields());
-    }
+  const clearAllFieldsAndResponse = () => {
+    dispatch(clearAllFields());
     dispatch(clearResponse());
-    
-    
   }
 
   const sendForm = async () => {  
@@ -66,7 +60,7 @@ const RepresentativeCreation = (props) => {
       </div>
       <Modal 
         className="react-autosuggest__representative-creation-modal"
-        buttons={[{ name: 'Dodaj', method: sendForm }, { name: 'Wyczyść', method: clearAllFieldsAndResponse(pickedClient) } ]} 
+        buttons={[{ name: 'Dodaj', method: sendForm }, { name: 'Wyczyść', method: clearAllFieldsAndResponse } ]} 
         closeButtonName={'Zamknij bez dodawania'} 
         title={repCreationFormModal.title} 
         description={repCreationFormModal.description} 

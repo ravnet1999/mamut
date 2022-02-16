@@ -82,18 +82,7 @@ const representativeCreationReducer = (state, action) => {
         },
         client: '',
         location: ''
-      }  
-    case('CLEAR_ALL_FIELDS_EXCEPT_CLIENT'):
-      return {
-        ...state,
-        form: {
-          firstname: '',
-          name: '',
-          email: '',
-          phone: ''        
-        },
-        location: ''
-      }          
+      }        
     case('CLEAR_RESPONSE'):
       return {
         ...state,

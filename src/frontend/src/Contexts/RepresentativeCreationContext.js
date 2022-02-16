@@ -1,6 +1,6 @@
 import React, { createContext, useReducer } from 'react';
 import RepresentativeCreationReducer from '../Reducers/RepresentativeCreationReducer';
-import { hideRepCreationFormModal, showRepCreationFormModal, updateRepCreationFormModal, updateForm, setResponse, setClient, setLocation, setClients, setLocations, clearAllFields, clearAllFieldsExceptClient, clearResponse } from '../Actions/RepresentativeCreationActions';
+import { hideRepCreationFormModal, showRepCreationFormModal, updateRepCreationFormModal, updateForm, setResponse, setClient, setLocation, setClients, setLocations, clearAllFields, clearResponse } from '../Actions/RepresentativeCreationActions';
 import { Form } from '../Components/bootstrap';
 
 export const RepresentativeCreationContext = createContext();
@@ -81,7 +81,7 @@ const RepresentativeCreationContextProvider = ({children}) => {
 
   return (
     <div>
-      <RepresentativeCreationContext.Provider value={{ ...state, dispatch, hideRepCreationFormModal, showRepCreationFormModal, updateRepCreationFormModal, setField, restrictInputFieldToNumbers, buildClientSelect, buildLocationSelect, setClients, setLocations, clearAllFields, clearAllFieldsExceptClient, clearResponse, setResponse, setClient }} >
+      <RepresentativeCreationContext.Provider value={{ ...state, dispatch, hideRepCreationFormModal, showRepCreationFormModal, updateRepCreationFormModal, setField, restrictInputFieldToNumbers, buildClientSelect, buildLocationSelect, setClients, setLocations, clearAllFields, clearResponse, setResponse, setClient }} >
         {children}
       </RepresentativeCreationContext.Provider>
     </div>
