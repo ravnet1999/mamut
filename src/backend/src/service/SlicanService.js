@@ -37,13 +37,20 @@ class SlicanService {
     let resType = "application/xml";
     let status = await this.webIVRPostValidateAndProcessData(body);
 
+    let defaultResultXML = `
+      <WebIVR>
+        <Dial>
+            <Extension>IVR firmowe</Extension>
+            <Timeout>30</Timeout>
+        </Dial>
+      </WebIVR>`;
+
     let resultXML;
 
     switch (status) {
       case "OK":
-        resultXML = "<WebIVR></WebIVR>";
       default:
-        resultXML = "<WebIVR></WebIVR>";
+        resultXML = defaultResultXML;
         break;
     }
 
