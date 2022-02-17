@@ -84,38 +84,15 @@ const closeTaskPreview = () => {
 }
 
 const buildTaskRadios = (props) => { 
-  // let header = tasks.length === 0 ? <></> :
-  //   <Row key={0} >
-  //     <Col xs="6">
-  //       <div className="text-light text-center bg-dark">Zadania typu "Z" / "W"</div>
-  //     </Col> 
-  //     <Col xs="6">
-  //       <div className="text-light text-center bg-dark">Zadania pozostałych typów</div>
-  //     </Col>
-  //   </Row>  
-    
-  // let rows = _.times(Math.max(tasksLeftCol.length, tasksRightCol.length), (key) => (
-  //   <Row key={key}>
-  //     <Col xs="6">
-  //       { tasksLeftCol[key] &&
-  //         <TaskItem {...props} key={2*key+1} task={tasksLeftCol[key]}></TaskItem>
-  //       }
-  //       { key==0 && !tasksLeftCol[key] && <div className="alert alert-success text-center">Dobra robota. Brak zadań!</div> }
-  //     </Col>
-  //     <Col xs="6">
-  //       { tasksRightCol[key] &&
-  //         <TaskItem {...props} key={2*key+2} task={tasksRightCol[key]}></TaskItem>
-  //       }
-  //       { key==0 && !tasksRightCol[key] && <div className="alert alert-success text-center">Dobra robota. Brak zadań!</div> }
-  //     </Col>
-  //   </Row>  
-  // ));
-
-  // return <>
-  //   { header } 
-  //   { rows }
-  // </>
-
+  let header = tasks.length === 0 ? <></> :
+    <Row>
+      <Col xs="6">
+        <div className="text-light text-center bg-dark">Zadania typu "Z" / "W"</div>
+      </Col> 
+      <Col xs="6">
+        <div className="text-light text-center bg-dark">Zadania pozostałych typów</div>
+      </Col>
+    </Row>  
 
   let rowsLeft = _.times(tasksLeftCol.length, (key) => (
       <Row key={key}>
@@ -138,8 +115,8 @@ const buildTaskRadios = (props) => {
       </Row>  
     ));
 
-
   return <>
+    { header }
     <Row>
       <Col xs="6">
       { rowsLeft }
