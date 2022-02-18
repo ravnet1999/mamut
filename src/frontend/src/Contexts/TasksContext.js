@@ -31,18 +31,24 @@ const TasksContextProvider = ({children}) => {
         let tasks = response.resources;
         setTasks(tasks);
 
-        let errorTypesLeftCol = [93, 36];
-        
-        let tasksLeftCol = tasks.filter(task => errorTypesLeftCol.includes(task.id_uslugi));
-        let tasksRightCol = tasks.filter(task => !tasksLeftCol.includes(task));
+        if(general) {
+          let errorTypesLeftCol = [93, 36];
 
-        setTasksLeftCol(tasksLeftCol);
-        setTasksRightCol(tasksRightCol);
+          let tasksLeftCol = tasks.filter(task => errorTypesLeftCol.includes(task.id_uslugi));
+          let tasksRightCol = tasks.filter(task => !tasksLeftCol.includes(task));
 
-        if(tasksLeftCol.length > 0) {
-          setPickedTask(tasksLeftCol[0]);
-        } else if(tasksRightCol.length > 0) {
-          setPickedTask(tasksRightCol[0]);
+          setTasksLeftCol(tasksLeftCol);
+          setTasksRightCol(tasksRightCol);
+
+          if(tasksLeftCol.length > 0) {
+            setPickedTask(tasksLeftCol[0]);
+          } else if(tasksRightCol.length > 0) {
+            setPickedTask(tasksRightCol[0]);
+          }
+        } else {          
+          if(tasks.length > 0) {
+            setPickedTask(tasks[0]);
+          }
         }
         
         setCloseDisabledId(null);
@@ -84,70 +90,52 @@ const closeTaskPreview = () => {
 }
 
 const buildTaskRadios = (props) => { 
-  // let header = tasks.length === 0 ? <></> :
-  //   <Row key={0} >
-  //     <Col xs="6">
-  //       <div className="text-light text-center bg-dark">Zadania typu "Z" / "W"</div>
-  //     </Col> 
-  //     <Col xs="6">
-  //       <div className="text-light text-center bg-dark">Zadania pozostałych typów</div>
-  //     </Col>
-  //   </Row>  
+  if(props.match.params.general) {
+    return buildTaskGeneralRadios(props);
+  }
+
+  return tasks.map((task, key) => {
+    return (
+      <Row key={key}>
+        <Col xs="12">
+          <TaskItem {...props} key={key} task={task}></TaskItem>
+        </Col>
+      </Row>        
+    );
+  });
+}
+
+const buildTaskGeneralRadios = (props) => { 
+  let header = tasks.length === 0 ? <></> :
+    <Row key={0} >
+      <Col xs="6">
+        <div className="text-light text-center bg-dark">Zadania typu "Z" / "W"</div>
+      </Col> 
+      <Col xs="6">
+        <div className="text-light text-center bg-dark">Zadania pozostałych typów</div>
+      </Col>
+    </Row>  
     
-  // let rows = _.times(Math.max(tasksLeftCol.length, tasksRightCol.length), (key) => (
-  //   <Row key={key}>
-  //     <Col xs="6">
-  //       { tasksLeftCol[key] &&
-  //         <TaskItem {...props} key={2*key+1} task={tasksLeftCol[key]}></TaskItem>
-  //       }
-  //       { key==0 && !tasksLeftCol[key] && <div className="alert alert-success text-center">Dobra robota. Brak zadań!</div> }
-  //     </Col>
-  //     <Col xs="6">
-  //       { tasksRightCol[key] &&
-  //         <TaskItem {...props} key={2*key+2} task={tasksRightCol[key]}></TaskItem>
-  //       }
-  //       { key==0 && !tasksRightCol[key] && <div className="alert alert-success text-center">Dobra robota. Brak zadań!</div> }
-  //     </Col>
-  //   </Row>  
-  // ));
-
-  // return <>
-  //   { header } 
-  //   { rows }
-  // </>
-
-
-  let rowsLeft = _.times(tasksLeftCol.length, (key) => (
-      <Row key={key}>
-        <Col xs="12">
-          { tasksLeftCol[key] &&
-            <TaskItem {...props} key={2*key+1} task={tasksLeftCol[key]}></TaskItem>
-          }
-          { key==0 && !tasksLeftCol[key] && <div className="alert alert-success text-center">Dobra robota. Brak zadań!</div> }
-        </Col>
-      </Row>  
-    ));
-  let rowsRight = _.times(tasksRightCol.length, (key) => (
-      <Row key={key}>
-        <Col xs="12">
-          { tasksLeftCol[key] &&
-            <TaskItem {...props} key={2*key+1} task={tasksRightCol[key]}></TaskItem>
-          }
-          { key==0 && !tasksRightCol[key] && <div className="alert alert-success text-center">Dobra robota. Brak zadań!</div> }
-        </Col>
-      </Row>  
-    ));
-
+  let rows = _.times(Math.max(tasksLeftCol.length, tasksRightCol.length), (key) => (
+    <Row key={key}>
+      <Col xs="6">
+        { tasksLeftCol[key] &&
+          <TaskItem {...props} key={2*key+1} task={tasksLeftCol[key]}></TaskItem>
+        }
+        { key==0 && !tasksLeftCol[key] && <div className="alert alert-success text-center">Dobra robota. Brak zadań!</div> }
+      </Col>
+      <Col xs="6">
+        { tasksRightCol[key] &&
+          <TaskItem {...props} key={2*key+2} task={tasksRightCol[key]}></TaskItem>
+        }
+        { key==0 && !tasksRightCol[key] && <div className="alert alert-success text-center">Dobra robota. Brak zadań!</div> }
+      </Col>
+    </Row>  
+  ));
 
   return <>
-    <Row>
-      <Col xs="6">
-      { rowsLeft }
-      </Col>
-      <Col xs="6">
-      { rowsRight}
-      </Col>
-    </Row>
+    { header } 
+    { rows }
   </>
 }
 
