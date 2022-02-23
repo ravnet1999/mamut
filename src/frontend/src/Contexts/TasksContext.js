@@ -122,10 +122,10 @@ const buildTaskRadios = (props) => {
   let headerBottom = 
     <Row>
       <Col xs="6">
-        <div className="text-light text-center bg-dark">Zadania typu "Z" / "W"</div>
+        <div className="text-light text-center bg-dark">Zadania typu "Z" i "W"</div>
       </Col> 
       <Col xs="6">
-        <div className="text-light text-center bg-dark">Zadania pozostałych typów</div>
+        <div className="text-light text-center bg-dark">Zadania typu "C", "B" i "K"</div>
       </Col>
     </Row>  
 
