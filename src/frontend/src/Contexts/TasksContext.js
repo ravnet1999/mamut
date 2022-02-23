@@ -98,40 +98,26 @@ const buildTaskRadios = (props) => {
       </Col>
     </Row>
 
-  let rowsTopLeft = _.times(Math.ceil(tasksTopRow.length/ 2), (key) => (
-    <Row xs="12" key={key}>
-      <Col xs="12">
-        { tasksTopRow[2*key] &&
-          <TaskItem {...props} key={2*key+1} task={tasksTopRow[2*key]}></TaskItem>
-        }     
-      </Col>   
-    </Row>
-  ));
-
-  let rowsTopRight = _.times(Math.ceil(tasksTopRow.length/ 2), (key) => (
-    <Row xs="12" key={key}>
-      <Col xs="12">
-        { tasksTopRow[2*key+1] &&
-          <TaskItem {...props} key={2*key+1} task={tasksTopRow[2*key+1]}></TaskItem>
-        }    
-      </Col>    
-    </Row>
-  ));  
-
   let rowsTop = tasksTopRow.length === 0 ? 
     <Row>
       <Col xs="12">
         <div className="alert alert-success text-center">Dobra robota. Brak zadań!</div>
       </Col>
     </Row> :
-    <Row>
-      <Col xs="6">
-        { rowsTopLeft }
-      </Col>
-      <Col xs="6">
-        { rowsTopRight }      
-      </Col>      
-    </Row>;
+    _.times(Math.ceil(tasksTopRow.length/ 2), (key) => (
+      <Row key={key}>
+        <Col xs="6">
+          { tasksTopRow[2*key] &&
+            <TaskItem {...props} key={2*key+1} task={tasksTopRow[2*key]}></TaskItem>
+          }        
+        </Col>
+        <Col xs="6">
+          { tasksTopRow[2*key+1] &&
+            <TaskItem {...props} key={2*key+1} task={tasksTopRow[2*key+1]}></TaskItem>
+          }        
+        </Col>
+      </Row>  
+  ));
 
   let headerBottom = 
     <Row>
