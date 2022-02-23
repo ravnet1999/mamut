@@ -16,6 +16,7 @@ import appConfig from '../../Config/appConfig.json';
 import DatePicker, { registerLocale } from 'react-datepicker';
 import pl from 'date-fns/locale/pl';
 import 'react-datepicker/dist/react-datepicker.css';
+import ReactTooltip from 'react-tooltip';
 import moment from 'moment';
 registerLocale('pl', pl);
 
@@ -544,12 +545,13 @@ const Task = (props) => {
                     <Row className="no-margins">
                         <Col className="text-right btn-center-container">
                             <div className={`floating-buttons ${awaitClicked ? 'd-block' : 'd-none'}`}>
-                                <Button onClick={(e) => awaitTask('OCZEKUJE', 'Zasoby')}><FontAwesomeIcon icon={faBoxOpen}></FontAwesomeIcon></Button>
-                                <Button onClick={(e) => awaitTask('OCZEKUJE', 'Kompetencje')}><FontAwesomeIcon icon={faBookReader}></FontAwesomeIcon></Button>
-                                <Button onClick={(e) => awaitTask('OCZEKUJE', 'Uzytkownik')}><FontAwesomeIcon icon={faUserClock}></FontAwesomeIcon></Button>
-                                <Button onClick={(e) => pickDate()}><FontAwesomeIcon icon={faCalendarDay}></FontAwesomeIcon></Button>
-                                <Button onClick={(e) => awaitTask('OCZEKUJE', 'Transport')}><FontAwesomeIcon icon={faTruck}></FontAwesomeIcon></Button>
-                                <Button onClick={(e) =>  setAwaitClicked(false)} className={'btn-close-menu'}><FontAwesomeIcon icon={faWindowClose}></FontAwesomeIcon></Button>
+                                <Button data-tip="Zasoby" onClick={(e) => awaitTask('OCZEKUJE', 'Zasoby')}><FontAwesomeIcon icon={faBoxOpen}></FontAwesomeIcon></Button>
+                                <Button data-tip="Kompetencje" onClick={(e) => awaitTask('OCZEKUJE', 'Kompetencje')}><FontAwesomeIcon icon={faBookReader}></FontAwesomeIcon></Button>
+                                <Button data-tip="Użytkownik" onClick={(e) => awaitTask('OCZEKUJE', 'Uzytkownik')}><FontAwesomeIcon icon={faUserClock}></FontAwesomeIcon></Button>
+                                <Button data-tip="Termin" onClick={(e) => pickDate()}><FontAwesomeIcon icon={faCalendarDay}></FontAwesomeIcon></Button>
+                                <Button data-tip="Transport" onClick={(e) => awaitTask('OCZEKUJE', 'Transport')}><FontAwesomeIcon icon={faTruck}></FontAwesomeIcon></Button>
+                                <Button data-tip="Zamknij" onClick={(e) =>  setAwaitClicked(false)} className={'btn-close-menu'}><FontAwesomeIcon icon={faWindowClose}></FontAwesomeIcon></Button>
+                                <ReactTooltip />
                             </div>
                             <Button onClick={(e) => awaitClicked ? awaitTask('OCZEKUJE', 'STOP') : setAwaitClicked(true)} className="btn-inverted btn-center btn-await">
                                 { awaitClicked ? 'STOP' : 'Oczekuje'}
