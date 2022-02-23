@@ -107,7 +107,7 @@ const buildTaskRadios = (props) => {
   let rowsRight = _.times(tasksRightCol.length, (key) => (
       <Row key={key}>
         <Col xs="12">
-          { tasksLeftCol[key] &&
+          { tasksRightCol[key] &&
             <TaskItem {...props} key={2*key+1} task={tasksRightCol[key]}></TaskItem>
           }
           { key==0 && !tasksRightCol[key] && <div className="alert alert-success text-center">Dobra robota. Brak zadań!</div> }
