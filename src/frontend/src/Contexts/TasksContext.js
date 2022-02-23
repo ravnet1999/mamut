@@ -102,7 +102,7 @@ const buildTaskRadios = (props) => {
     <Row xs="12" key={key}>
       <Col xs="12">
         { tasksTopRow[2*key] &&
-          <TaskItem {...props} key={2*key+1} task={tasksTopRow[2*key]}></TaskItem>
+          <TaskItem {...props} key={2*key} task={tasksTopRow[2*key]}></TaskItem>
         }     
       </Col>   
     </Row>
