@@ -12,6 +12,7 @@ const TasksContextProvider = ({children}) => {
   const [tasks, setTasks] = useState([]);
   const [tasksLeftCol, setTasksLeftCol] = useState([]);
   const [tasksRightCol, setTasksRightCol] = useState([]);
+  const [tasksTopRow, setTasksTopRow] = useState([]);
   const [pickedTask, setPickedTask] = useState(null);
   const [closeDisabledId, setCloseDisabledId] = useState(null);
   const [taskStarted, setTaskStarted] = useState(false);
@@ -31,14 +32,20 @@ const TasksContextProvider = ({children}) => {
         let tasks = response.resources;
         setTasks(tasks);
 
+        let errorTypesTopRow = [89];
         let errorTypesLeftCol = [93, 36];
         
+        let tasksTopRow = tasks.filter(task => errorTypesTopRow.includes(task.id_uslugi));
         let tasksLeftCol = tasks.filter(task => errorTypesLeftCol.includes(task.id_uslugi));
-        let tasksRightCol = tasks.filter(task => !tasksLeftCol.includes(task));
+        let tasksRightCol = tasks.filter(task => !tasksTopRow.includes(task) && !tasksLeftCol.includes(task));
 
+        setTasksTopRow(tasksTopRow);
         setTasksLeftCol(tasksLeftCol);
         setTasksRightCol(tasksRightCol);
 
+        if(tasksTopRow.length > 0) {
+          setPickedTask(tasksTopRow[0]);
+        } else 
         if(tasksLeftCol.length > 0) {
           setPickedTask(tasksLeftCol[0]);
         } else if(tasksRightCol.length > 0) {
@@ -84,7 +91,35 @@ const closeTaskPreview = () => {
 }
 
 const buildTaskRadios = (props) => { 
-  let header = tasks.length === 0 ? <></> :
+  let headerTop = 
+    <Row>
+      <Col xs="12">
+        <div className="text-light text-center bg-dark">Zadania typu "A"</div>
+      </Col>
+    </Row>
+
+  let rowsTop = tasksTopRow.length === 0 ? 
+    <Row>
+      <Col xs="12">
+        <div className="alert alert-success text-center">Dobra robota. Brak zadań!</div>
+      </Col>
+    </Row> :
+    _.times(Math.ceil(tasksTopRow.length/ 2), (key) => (
+      <Row key={key}>
+        <Col xs="6">
+          { tasksTopRow[2*key] &&
+            <TaskItem {...props} key={2*key+1} task={tasksTopRow[2*key]}></TaskItem>
+          }        
+        </Col>
+        <Col xs="6">
+          { tasksTopRow[2*key+1] &&
+            <TaskItem {...props} key={2*key+1} task={tasksTopRow[2*key+1]}></TaskItem>
+          }        
+        </Col>
+      </Row>  
+  ));
+
+  let headerBottom = 
     <Row>
       <Col xs="6">
         <div className="text-light text-center bg-dark">Zadania typu "Z" / "W"</div>
@@ -94,17 +129,29 @@ const buildTaskRadios = (props) => {
       </Col>
     </Row>  
 
-  let rowsLeft = _.times(tasksLeftCol.length, (key) => (
+  let rowsLeft = tasksLeftCol.length === 0 ? 
+    <Row>
+      <Col xs="12">
+        <div className="alert alert-success text-center">Dobra robota. Brak zadań!</div>
+      </Col>
+    </Row> :
+    _.times(tasksLeftCol.length, (key) => (
       <Row key={key}>
         <Col xs="12">
           { tasksLeftCol[key] &&
             <TaskItem {...props} key={2*key+1} task={tasksLeftCol[key]}></TaskItem>
           }
-          { key==0 && !tasksLeftCol[key] && <div className="alert alert-success text-center">Dobra robota. Brak zadań!</div> }
-        </Col>
+          </Col>
       </Row>  
     ));
-  let rowsRight = _.times(tasksRightCol.length, (key) => (
+
+  let rowsRight = tasksRightCol.length === 0 ? 
+    <Row>
+      <Col xs="12">
+        <div className="alert alert-success text-center">Dobra robota. Brak zadań!</div>
+      </Col>
+    </Row> :
+    _.times(tasksRightCol.length, (key) => (
       <Row key={key}>
         <Col xs="12">
           { tasksRightCol[key] &&
@@ -116,7 +163,9 @@ const buildTaskRadios = (props) => {
     ));
 
   return <>
-    { header }
+    { headerTop }
+    { rowsTop }
+    { headerBottom }
     <Row>
       <Col xs="6">
       { rowsLeft }

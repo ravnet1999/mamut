@@ -22,7 +22,7 @@ const Tasks = (props) => {
             { taskPreviewVisible ? <TaskPreview task={previewedTask} onClose={closeTaskPreview}></TaskPreview> : '' }
             <Modal title={modal.title} description={modal.description} buttons={modal.buttons} visible={modalVisible} onClose={() => setModalVisible(false)}></Modal>
             <Alert response={response}></Alert>
-            {buildTaskRadios(props)}
+            { tasks.length > 0 && buildTaskRadios(props)}
             {/* <Row className="margin-top-default margin-bottom-default">
                 <Col className="text-center">
                     <Button className="large" onClick={(e) => startTask()}>Start</Button>    
