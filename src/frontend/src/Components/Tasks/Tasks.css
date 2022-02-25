@@ -177,5 +177,13 @@
 }
 
 .task-preview .tab-content {
-    margin-top: 6px;
+  margin-top: 6px;
+}
+
+.tasks .card-body {
+  padding: 5px;
+}
+
+.tasks .card-columns .card {
+  margin-bottom: 10px;
 }
