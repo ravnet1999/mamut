@@ -1,8 +1,7 @@
 import React, {createContext, useState } from 'react';
 import TaskHandler from '../Handlers/TaskHandler';
-import { Row, Col } from '../Components/bootstrap';
+import { Row, Col, Card, CardColumns } from '../Components/bootstrap';
 import TaskItem from '../Components/Tasks/TaskItem';
-import appConfig from '../Config/appConfig.json';
 import _ from "lodash";
 
 export const TasksContext = createContext();
@@ -98,39 +97,29 @@ const buildTaskRadios = (props) => {
       </Col>
     </Row>
 
-  let rowsTopLeft = _.times(Math.ceil(tasksTopRow.length/ 2), (key) => (
-    <Row xs="12" key={key}>
-      <Col xs="12">
-        { tasksTopRow[2*key] &&
-          <TaskItem {...props} key={2*key} task={tasksTopRow[2*key]}></TaskItem>
-        }     
-      </Col>   
-    </Row>
-  ));
+  let rowsTop = _.times(tasksTopRow.length, (key) => (      
+     tasksTopRow[key] &&     
+      <Card>
+        <Card.Body>
+          <Card.Text>
+          <TaskItem {...props} key={key} task={tasksTopRow[key]}></TaskItem>
+          </Card.Text>
+        </Card.Body>
+      </Card>    
+  )); 
 
-  let rowsTopRight = _.times(Math.ceil(tasksTopRow.length/ 2), (key) => (
-    <Row xs="12" key={key}>
-      <Col xs="12">
-        { tasksTopRow[2*key+1] &&
-          <TaskItem {...props} key={2*key+1} task={tasksTopRow[2*key+1]}></TaskItem>
-        }    
-      </Col>    
-    </Row>
-  ));  
-
-  let rowsTop = tasksTopRow.length === 0 ? 
+  rowsTop = tasksTopRow.length === 0 ? 
     <Row>
       <Col xs="12">
         <div className="alert alert-success text-center">Dobra robota. Brak zadań!</div>
       </Col>
     </Row> :
     <Row>
-      <Col xs="6">
-        { rowsTopLeft }
+      <Col xs="12">
+        <CardColumns style={{columnCount: "2"}}>
+          {rowsTop}
+        </CardColumns>
       </Col>
-      <Col xs="6">
-        { rowsTopRight }      
-      </Col>      
     </Row>;
 
   let headerBottom = 
@@ -141,42 +130,59 @@ const buildTaskRadios = (props) => {
       <Col xs="6">
         <div className="text-light text-center bg-dark">Zadania typu "C", "B" i "K"</div>
       </Col>
-    </Row>  
+    </Row>
+    
+  let rowsLeft = _.times(tasksLeftCol.length, (key) => (      
+    tasksLeftCol[key] &&     
+      <Card>
+        <Card.Body>
+          <Card.Text>
+          <TaskItem {...props} key={key} task={tasksLeftCol[key]}></TaskItem>
+          </Card.Text>
+        </Card.Body>
+      </Card>    
+  ));  
 
-  let rowsLeft = tasksLeftCol.length === 0 ? 
+  let rowsRight = _.times(tasksRightCol.length, (key) => (      
+    tasksRightCol[key] &&     
+     <Card>
+       <Card.Body>
+         <Card.Text>
+         <TaskItem {...props} key={key} task={tasksRightCol[key]}></TaskItem>
+         </Card.Text>
+       </Card.Body>
+     </Card>    
+  ));
+
+  rowsLeft = tasksLeftCol.length === 0 ? 
     <Row>
       <Col xs="12">
         <div className="alert alert-success text-center">Dobra robota. Brak zadań!</div>
       </Col>
     </Row> :
-    _.times(tasksLeftCol.length, (key) => (
-      <Row key={key}>
-        <Col xs="12">
-          { tasksLeftCol[key] &&
-            <TaskItem {...props} key={2*key+1} task={tasksLeftCol[key]}></TaskItem>
-          }
-          </Col>
-      </Row>  
-    ));
+    <Row>
+    <Col xs="12">
+      <CardColumns style={{columnCount: "1"}}>
+        {rowsLeft}
+      </CardColumns>
+    </Col>
+  </Row>;
 
-  let rowsRight = tasksRightCol.length === 0 ? 
+  rowsRight = tasksRightCol.length === 0 ? 
     <Row>
       <Col xs="12">
         <div className="alert alert-success text-center">Dobra robota. Brak zadań!</div>
       </Col>
     </Row> :
-    _.times(tasksRightCol.length, (key) => (
-      <Row key={key}>
-        <Col xs="12">
-          { tasksRightCol[key] &&
-            <TaskItem {...props} key={2*key+1} task={tasksRightCol[key]}></TaskItem>
-          }
-          { key==0 && !tasksRightCol[key] && <div className="alert alert-success text-center">Dobra robota. Brak zadań!</div> }
-        </Col>
-      </Row>  
-    ));
+    <Row>
+      <Col xs="12">
+        <CardColumns style={{columnCount: "1"}}>
+          {rowsRight}
+        </CardColumns>
+      </Col>
+    </Row>;
 
-  return <>
+  return <div className="tasks">
     { headerTop }
     { rowsTop }
     { headerBottom }
@@ -188,7 +194,7 @@ const buildTaskRadios = (props) => {
       { rowsRight}
       </Col>
     </Row>
-  </>
+  </div>
 }
 
 return (
