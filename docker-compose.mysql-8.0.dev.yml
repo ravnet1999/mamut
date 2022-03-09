@@ -1,0 +1,19 @@
+version: "3.3"
+
+services:
+  mamut-app-mysql-8.0:
+    container_name: mamut-app-mysql-8.0
+    image: mysql:8.0
+    command: mysqld --sql_mode="ONLY_FULL_GROUP_BY,NO_ENGINE_SUBSTITUTION"
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'mamut_2'
+      MYSQL_USER: 'mamutapk'
+      MYSQL_PASSWORD: 'a6yebHXNZy74Eyh'
+      # MYSQL_PASSWORD: 'CZ@rn0c!n$k@175a'
+      MYSQL_ROOT_PASSWORD: 'NkNTFGsfpGN32EU'
+    ports:
+      - '3307:3306'
+    volumes:
+      - /mnt/praca/Imagho/Data/mamut-app/mysql-8.0:/var/lib/mysql
+      - ./src/mysql-8.0/scripts/:/scripts/:rw

@@ -17,6 +17,7 @@ import DatePicker, { registerLocale } from 'react-datepicker';
 import pl from 'date-fns/locale/pl';
 import 'react-datepicker/dist/react-datepicker.css';
 import ReactTooltip from 'react-tooltip';
+import FormData from 'form-data';
 import moment from 'moment';
 registerLocale('pl', pl);
 
@@ -59,6 +60,9 @@ const Task = (props) => {
     const [dateConfirmEnabled, enableDateConfirm] = useState(true);
     const [pickerInput, setPickerInput] = useState(null);
     const [descriptionModified, setDescriptionModified] = useState(false);
+
+    const [selectedAppendix, setSelectedAppendix] = useState(null);
+    const [selectedAppendixKey, setSelectedAppendixKey] = useState(null);
 
     const updateDescriptions = (callback = null) => {
         TaskHandler.updateLastEpisodeDescription(lastEpisode.id, appState.episodeDescription).then((result) => {
@@ -499,6 +503,25 @@ const Task = (props) => {
         if(pickerInput) pickerInput.setOpen(true);
     }
 
+    const onAppendixChange = event => {
+      setSelectedAppendix(event.target.files[0]);       
+    };
+
+    const onAppendixUpload = event => {
+      const formData = new FormData();
+
+      formData.append(
+        "task-appendix",        
+        selectedAppendix
+      );
+
+      TaskHandler.addAppendix(task.id, formData).then((result) => {
+        setSelectedAppendixKey(Math.random().toString(36)); 
+      }).catch((err) => {
+        console.log(err);
+      });
+    };
+
     console.log(lastEpisode);
 
     return (
@@ -513,6 +536,21 @@ const Task = (props) => {
                 </div>
                 {buildErrorType()}
             </div>
+
+            <div className="form-group task-appendices-container margin-bottom-default">
+            <Row>
+              <Col xs="10" md="8">
+                <label for="task_appendix">Załączniki:</label><br/>
+                <div className="task-appendix-content">
+                  <input id="task-appendix" name="task-appendix" key={ selectedAppendixKey || '' }  className={'form-control', 'margin-top-reduced',  'margin-bottom-default'} type="file" onChange={onAppendixChange} />  
+                </div>
+              </Col>
+              <Col xs="2" md="1" className="text-right">
+                <Button className="appendix-add-button" onClick={ onAppendixUpload }><FontAwesomeIcon icon={faPlus}></FontAwesomeIcon></Button>
+              </Col>
+            </Row>  
+            </div>             
+
             {buildLastEpisode()}
             {buildNonLastEpisodes()}
             <div className="bottom-pin-wrapper">

@@ -97,7 +97,7 @@ class TaskService {
 
     awaitTask = (taskId, type, description, operatorId) => {
         return new Promise((resolve, reject) => {
-            axios.post(`${appConfig.URLs.translator}/tasks/${taskId}/await/${type}`, {
+            axios(`${appConfig.URLs.translator}/tasks/${taskId}/await/${type}`, {
                 operatorId: operatorId,
                 description: description
             }).then((response) => {
@@ -117,7 +117,7 @@ class TaskService {
 
     stopTask = (taskId, operatorId) => {
         return new Promise((resolve, reject) => {
-            axios.post(`${appConfig.URLs.translator}/tasks/${taskId}/stop`, {
+            axios(`${appConfig.URLs.translator}/tasks/${taskId}/stop`, {
                 operatorId: operatorId
             }).then((response) => {
                 parseResponse(response).then((response) => {
