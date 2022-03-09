@@ -15,8 +15,7 @@ const endpoints = [
     'request_categories',
     'departments',
     'priorities',
-    'episodes',
-    'appendices'
+    'episodes'
 ];
 
 let routers = endpoints.map((endpoint) => {

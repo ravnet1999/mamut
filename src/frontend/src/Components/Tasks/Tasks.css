@@ -32,16 +32,6 @@
     padding: 6px 6px;
 }
 
-.task-appendices-container {
-  background-color: #E6CB86;
-  border-radius: 3px;
-  padding: 6px 6px;
-}
-
-.appendix-add-button {
-  margin-top: 5px;
-}
-
 .task-main-description {
     font-size: .8em;
     margin: 0 0 3px 20px;
