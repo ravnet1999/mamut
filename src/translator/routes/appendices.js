@@ -3,9 +3,10 @@ const router = express.Router();
 const response = require('../src/response');
 const appendixService = require('../src/services/AppendixService');
 const multiparty = require('multiparty');
+const config = require('../config/config.json');
 
 router.post('/:taskId', (req, res, next) => {
-  var form = new multiparty.Form({maxFieldsSize: 209715200});
+  var form = new multiparty.Form({maxFieldsSize: config.appendices.maxFieldsSize});
   
   return new Promise((resolve, reject) => {  
     form.on('error', function(err) {
