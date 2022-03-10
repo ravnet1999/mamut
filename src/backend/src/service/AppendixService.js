@@ -1,5 +1,4 @@
 const appConfig = require('../../config/appConfig.json');
-const multer = require('multer');
 
 const multiparty = require('multiparty');
 const fs = require('fs');
