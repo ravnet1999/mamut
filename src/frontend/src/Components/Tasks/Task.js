@@ -61,8 +61,8 @@ const Task = (props) => {
     const [pickerInput, setPickerInput] = useState(null);
     const [descriptionModified, setDescriptionModified] = useState(false);
 
-    const [selectedAppendix, setSelectedAppendix] = useState(null);
-    const [selectedAppendixKey, setSelectedAppendixKey] = useState(null);
+    const [selectedAppendices, setSelectedAppendices] = useState(null);
+    const [selectedAppendicesKey, setSelectedAppendicesKey] = useState(null);
 
     const updateDescriptions = (callback = null) => {
         TaskHandler.updateLastEpisodeDescription(lastEpisode.id, appState.episodeDescription).then((result) => {
@@ -503,20 +503,20 @@ const Task = (props) => {
         if(pickerInput) pickerInput.setOpen(true);
     }
 
-    const onAppendixChange = event => {
-      setSelectedAppendix(event.target.files[0]);       
+    const onAppendicesChange = event => {
+      setSelectedAppendices(event.target.files[0]);       
     };
 
-    const onAppendixUpload = event => {
+    const onAppendicesUpload = event => {
       const formData = new FormData();
 
       formData.append(
-        "task-appendix",        
-        selectedAppendix
+        "task-appendices",        
+        selectedAppendices
       );
 
-      TaskHandler.addAppendix(task.id, formData).then((result) => {
-        setSelectedAppendixKey(Math.random().toString(36)); 
+      TaskHandler.addAppendices(task.id, formData).then((result) => {
+        setSelectedAppendicesKey(Math.random().toString(36)); 
       }).catch((err) => {
         console.log(err);
       });
@@ -540,13 +540,13 @@ const Task = (props) => {
             <div className="form-group task-appendices-container margin-bottom-default">
             <Row>
               <Col xs="10" md="8">
-                <label for="task_appendix">Załączniki:</label><br/>
-                <div className="task-appendix-content">
-                  <input id="task-appendix" name="task-appendix" key={selectedAppendixKey||''}  className={'form-control', 'margin-top-reduced',  'margin-bottom-default'} type="file" onChange={onAppendixChange} />  
+                <label for="task_appendices">Załączniki:</label><br/>
+                <div className="task-appendices-content">
+                  <input id="task-appendices" name="task-appendices" key={selectedAppendicesKey||''}  className={'form-control', 'margin-top-reduced',  'margin-bottom-default'} type="file" onChange={onAppendicesChange} />  
                 </div>
               </Col>
               <Col xs="2" md="1" className="text-right">
-                <Button className="appendix-add-button" onClick={onAppendixUpload}><FontAwesomeIcon icon={faPlus}></FontAwesomeIcon></Button>
+                <Button className="appendices-add-button" onClick={onAppendicesUpload}><FontAwesomeIcon icon={faPlus}></FontAwesomeIcon></Button>
               </Col>
             </Row>  
             </div>             
