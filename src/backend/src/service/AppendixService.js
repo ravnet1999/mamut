@@ -29,7 +29,13 @@ class AppendixService {
             formData.append("size", file.size);
             formData.append("data", data);
 
-            axios.post(`${appConfig.URLs.translator}/appendices/${taskId}`, formData, {
+            axios({
+              method: 'post',
+              url: `${appConfig.URLs.translator}/appendices/${taskId}`,
+              data: formData,
+              maxContentLength: Infinity,
+              maxBodyLength: Infinity,
+              // headers: {'Content-Type': 'multipart/form-data;boundary=' + formData.getBoundary()}
               headers: formData.getHeaders()
             }).then((response) => {
               parseResponse(response).then((result) => {
