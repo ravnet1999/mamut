@@ -542,7 +542,7 @@ const Task = (props) => {
               <Col xs="10" md="8">
                 <label for="task_appendices">Załączniki:</label><br/>
                 <div className="task-appendices-content">
-                  <input id="task-appendices" name="task-appendices" key={selectedAppendicesKey||''}  className={'form-control', 'margin-top-reduced',  'margin-bottom-default'} type="file" onChange={onAppendicesChange} />  
+                  <input id="task-appendices" name="task-appendices" key={selectedAppendicesKey||''} multiple className={'form-control', 'margin-top-reduced',  'margin-bottom-default'} type="file" onChange={onAppendicesChange} />  
                 </div>
               </Col>
               <Col xs="2" md="1" className="text-right">
