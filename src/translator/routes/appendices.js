@@ -25,20 +25,6 @@ router.post('/:taskId', (req, res, next) => {
             return;
         });
       }
-
-      // if(files) {
-      //   let file = Object.values(files)[0][0];
-
-      //   console.log(file);
-
-      //   appendixService.create(req.params.taskId, file).then((result) => {
-      //       response(res, false, ['Pomyślnie utworzono nowy załącznik.'], [result]);
-      //       return;
-      //   }).catch((err) => {
-      //       response(res, true, ['Wystąpił błąd podczas próby utworzenia nowego załącznika', JSON.stringify(err)], []);
-      //       return;
-      //   });
-      // }
     });        
   });  
 });
