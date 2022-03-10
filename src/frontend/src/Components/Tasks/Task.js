@@ -62,7 +62,7 @@ const Task = (props) => {
     const [descriptionModified, setDescriptionModified] = useState(false);
 
     const [selectedAppendices, setSelectedAppendices] = useState(null);
-    const [selectedAppendicesKey, setSelectedAppendicesKey] = useState(null);
+    const [taskAppendicesKey, setTaskAppendicesKey] = useState(null);
 
     const updateDescriptions = (callback = null) => {
         TaskHandler.updateLastEpisodeDescription(lastEpisode.id, appState.episodeDescription).then((result) => {
@@ -516,7 +516,7 @@ const Task = (props) => {
       );
 
       TaskHandler.addAppendices(task.id, formData).then((result) => {
-        setSelectedAppendicesKey(Math.random().toString(36)); 
+        setTaskAppendicesKey(Math.random().toString(36)); 
       }).catch((err) => {
         console.log(err);
       });
@@ -542,7 +542,7 @@ const Task = (props) => {
               <Col xs="10" md="8">
                 <label for="task_appendices">Załączniki:</label><br/>
                 <div className="task-appendices-content">
-                  <input id="task-appendices" name="task-appendices" key={selectedAppendicesKey||''} multiple className={'form-control', 'margin-top-reduced',  'margin-bottom-default'} type="file" onChange={onAppendicesChange} />  
+                  <input id="task-appendices" name="task-appendices" key={taskAppendicesKey||''} multiple className={'form-control', 'margin-top-reduced',  'margin-bottom-default'} type="file" onChange={onAppendicesChange} />  
                 </div>
               </Col>
               <Col xs="2" md="1" className="text-right">
