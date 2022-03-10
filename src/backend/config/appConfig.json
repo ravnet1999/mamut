@@ -7,6 +7,7 @@
             "name": "mamut_app_auth"
         }
     },
+    "tasksAppendicesUploadDir": "tasks-appendices",
     "tasks": {
         "id_zglaszajacy": null,
         "zglaszajacy": "",
