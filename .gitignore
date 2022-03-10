@@ -20,3 +20,4 @@
 /src/mongodb/scripts/add_user.js
 /mongodb
 /certs/*
+/src/mysql-8.0/scripts/Mamut_2_Dump20220112.sql
