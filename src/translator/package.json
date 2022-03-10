@@ -13,6 +13,7 @@
     "iconv": "^3.0.0",
     "iconv-lite": "^0.6.2",
     "morgan": "~1.9.1",
+    "multiparty": "^4.2.3",
     "mysql": "^2.18.1",
     "mysql2": "^2.3.3",
     "windows-1250": "^1.0.0"
