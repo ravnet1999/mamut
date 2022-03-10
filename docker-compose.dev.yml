@@ -11,8 +11,6 @@ services:
     volumes:
       - ./src/translator/:/app/
     restart: always
-    links:
-      - "mamut-app-mysql:mysql"
 
   mamut-app-backend:
     container_name: mamut-app-backend
@@ -88,34 +86,4 @@ services:
       - 8501:3000
     volumes:
       - ./src/frontend_parser/:/app/
-    restart: always
-
-  mamut-app-mysql:
-    container_name: mamut-app-mysql
-    image: mysql:5.7.17
-    command: mysqld --sql_mode="ONLY_FULL_GROUP_BY,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION"
-    restart: always
-    environment:
-      MYSQL_DATABASE: 'db'
-      # So you don't have to use root, but you can if you like
-      MYSQL_USER: 'user'
-      # You can use whatever password you like
-      MYSQL_PASSWORD: 'password'
-      # Password for root access
-      MYSQL_ROOT_PASSWORD: 'password'
-    ports:
-      - '3306:3306'
-    volumes:
-      - /mnt/praca/Imagho/Data/mamut-app/mysql:/var/lib/mysql
-
-  phpmyadmin:
-    container_name: mamut-app-phpmyadmin
-    image: phpmyadmin/phpmyadmin:latest
-    ports:
-      - 9215:80
-    environment:
-      PMA_HOST: mysql
-      PMA_PORT: 3306
-    links:
-      - "mamut-app-mysql:mysql"
     restart: always
