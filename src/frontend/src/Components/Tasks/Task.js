@@ -504,16 +504,15 @@ const Task = (props) => {
     }
 
     const onAppendicesChange = event => {
-      setSelectedAppendices(event.target.files[0]);       
+      setSelectedAppendices(event.target.files);       
     };
 
     const onAppendicesUpload = event => {
       const formData = new FormData();
 
-      formData.append(
-        "task-appendices",        
-        selectedAppendices
-      );
+      for (let i = 0; i < selectedAppendices.length; i++) {
+        formData.append(`task-appendices[${i}]`, selectedAppendices[i])
+      }
 
       TaskHandler.addAppendices(task.id, formData).then((result) => {
         setTaskAppendicesKey(Math.random().toString(36)); 

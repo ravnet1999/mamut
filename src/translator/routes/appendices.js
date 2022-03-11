@@ -15,8 +15,13 @@ router.post('/:taskId', (req, res, next) => {
 
     form.parse(req, function(err, fields, files) {   
       if(fields) {   
-        console.log(fields.filename[0])
-        console.log(fields.contentType[0])
+        console.log(fields.filename[0]);
+        console.log(fields.path[0]);        
+        console.log(fields.size[0]);
+        console.log(fields.contentType[0]);
+        // console.log(fields.data[0]);
+        
+        // console.log(fields);
       
         appendixService.create(req.params.taskId, fields['data'][0]).then((result) => {
           response(res, false, ['Pomyślnie utworzono nowy załącznik.'], [result]);
