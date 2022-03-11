@@ -4,31 +4,31 @@ const authMiddleware = require('../middleware/auth');
 const response = require('../src/response');
 const appendixService = require('../src/service/AppendixService');
 const multiparty = require('multiparty');
+const appConfig = require('../config/appConfig.json');
 
 router.post('/:taskId', [authMiddleware], (req, res, next) => {
   let taskId = req.params.taskId;
 
-  var form = new multiparty.Form({maxFieldsSize: 2097152000});
+  var form = new multiparty.Form({maxFieldsSize: appConfig.maxFieldsSize});
 
   form.on('error', function(err) {
-    response(res, true, ['Wystąpił błąd poczas próby utworzenia nowego załącznika.', JSON.stringify(err)], []);
+    response(res, true, ['Wystąpił błąd poczas próby utworzenia nowych załączników.', JSON.stringify(err)], []);
     return;
   });
     
   form.parse(req, function(err, fields, files) {
-    if(files) {
-      let file = Object.values(files)[0][0];
+    if(files) {      
+      let promises = Object.values(files).map(file => appendixService.create(taskId, file[0]))
 
-      appendixService.create(taskId, file).then((result) => {
-          response(res, false, ['Pomyślnie utworzono nowy załącznik.'], result.resources);
-          return;
+      Promise.all(promises).then((results) => {
+        response(res, false, ['Pomyślnie utworzono nowe załączniki.'], results.map(result => result.resources.resources[0]));
       }).catch((err) => {
-          response(res, true, ['Wystąpił błąd poczas próby utworzenia nowego załącznika.', JSON.stringify(err)], []);
+          response(res, true, ['Wystąpił błąd poczas próby utworzenia nowych załączników.', JSON.stringify(err)], []);
           return;
-      })
+      });
     } else {
-      response(res, true, ['Wystąpił błąd poczas próby utworzenia nowego załącznika.'], []);
-      return;  
+      response(res, true, ['Wystąpił błąd poczas próby utworzenia nowych załączników.'], []);
+      return;
     }
   });
 });
