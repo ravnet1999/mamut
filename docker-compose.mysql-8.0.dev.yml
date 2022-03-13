@@ -17,7 +17,7 @@ services:
       - /mnt/praca/Imagho/Data/mamut-app/mysql-8.0:/var/lib/mysql
       - ./src/mysql-8.0/scripts/:/scripts/:rw
 
-  phpmyadmin:
+  phpmyadmin-mysql-8.0:
     container_name: mamut-app-phpmyadmin-mysql-8.0
     image: phpmyadmin/phpmyadmin:latest
     ports:
