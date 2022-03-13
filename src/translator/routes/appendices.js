@@ -15,6 +15,7 @@ router.post('/:taskId', (req, res, next) => {
 
     form.parse(req, function(err, fields, files) {   
       if(fields) {   
+        console.log(fields.originalFilename[0]);
         console.log(fields.filename[0]);
         console.log(fields.path[0]);        
         console.log(fields.size[0]);
