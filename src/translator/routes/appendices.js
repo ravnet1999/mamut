@@ -13,7 +13,7 @@ router.post('/:taskId', (req, res, next) => {
       return reject(err);
     });
 
-    form.parse(req, function(err, fields, files) {   
+    form.parse(req, async function(err, fields, files) {   
       if(fields) {   
         console.log(fields.originalFilename[0]);
         console.log(fields.filename[0]);
@@ -24,13 +24,17 @@ router.post('/:taskId', (req, res, next) => {
         
         // console.log(fields);
       
-        appendixService.create(req.params.taskId, fields['data'][0]).then((result) => {
-          response(res, false, ['Pomyślnie utworzono nowy załącznik.'], [result]);
+        try {
+          let appendixId = await appendixService.create(req.params.taskId, fields);
+          let appendix = await appendixService.findById(appendixId);
+          // console.log(appendix[0]['zawartosc'].toString())
+          delete appendix[0]['zawartosc'];          
+          response(res, false, ['Pomyślnie utworzono nowy załącznik.'], [appendix[0]]);
           return;
-        }).catch((err) => {
-            response(res, true, ['Wystąpił błąd podczas próby utworzenia nowego załącznika', JSON.stringify(err)], []);
-            return;
-        });
+        } catch(err) {
+          response(res, true, ['Wystąpił błąd podczas próby utworzenia nowego załącznika', JSON.stringify(err)], []);
+          return;
+        }
       }
     });        
   });  
