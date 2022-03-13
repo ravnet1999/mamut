@@ -1,4 +1,5 @@
 const Service = require('./Service');
+const connection = require('../mysql/connection');
 
 class AppendixService extends Service {
     constructor(tableName) {
@@ -8,20 +9,18 @@ class AppendixService extends Service {
 
     create = (taskId, file) => {
       return new Promise((resolve, reject) => {
-        // resolve(`Super. Teraz wystarczy zapisać w bazie danych załącznik dla zadania ${taskId} zapisany w backendzie w ${file.path}.`);
-        resolve(`Super. Teraz wystarczy zapisać w bazie danych załącznik dla zadania ${taskId}.`);
-        return;
-        // connection.query('SELECT * FROM `' + this.tableName + '` WHERE `id_klienta` IN (?) AND `aktywny`=\'on\'', [clientIds], (err, results, fields) => {
-        //     if(err) {
-        //         reject(err);
-        //         return;
-        //     }
-
-        //     resolve(results);
-        //     return;
-        // });
+        connection.query('INSERT INTO `' + this.tableName + '`(id_zgloszenia, nazwa, nazwa_oryginalna, sciezka, rozmiar, typ_mime, zawartosc) VALUES (?,?,?,?,?,?,?)', 
+          [taskId, file.filename[0], file.originalFilename[0], file.path[0], parseInt(file.size[0]), file.contentType[0], file.data[0]], (err, results, fields) => {
+            if(err) {            
+              reject(err);
+              return;
+            }
+            
+            resolve(results.insertId);
+            return;
+        });
       });
     }
 }
 
-module.exports = new AppendixService('appendices');
+module.exports = new AppendixService('zgloszenia_zalaczniki');
