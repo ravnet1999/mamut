@@ -12,7 +12,8 @@ class AppendixService {
   create = (taskId, file) => {
     return new Promise((resolve, reject) => { 
       let uploadDir = appConfig.tasksAppendicesUploadDir + '/' + taskId;
-      let filename = Date.now() + '-' + file.originalFilename;
+      let originalFilename = file.originalFilename;
+      let filename = Date.now() + '-' + originalFilename;
       let uploadPath = uploadDir + '/' + filename;
       
       if(!fs.existsSync(uploadDir)) {   
@@ -35,6 +36,7 @@ class AppendixService {
 
       fs.createReadStream(uploadPath).pipe(concat({ encoding: 'buffer' }, function (data) {
         var formData = new FormData();
+        formData.append("originalFilename", originalFilename);
         formData.append("filename", filename);
         formData.append("path", uploadPath);
         formData.append("size", file.size);
