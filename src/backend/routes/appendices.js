@@ -40,8 +40,8 @@ router.get('/:appendixId', [authMiddleware], async (req, res, next) => {
   try{
     appendix = await appendixService.get(req.params.appendixId);
     if(!appendix) throw "Wystąpił błąd podczas próby pobrania załącznika z translatora";
-  } catch (error) {
-    console.log(error)
+  } catch (err) {
+    console.log(err);
     res.writeHead(404, {'Content-Type': 'text/html; charset=utf-8'});
     return res.end("Wystąpił błąd poczas próby pobrania załącznika");
   }
@@ -53,7 +53,7 @@ router.get('/:appendixId', [authMiddleware], async (req, res, next) => {
 
   fs.readFile(path, function(err, data) {
     if (err) {
-      console.log(error);
+      console.log(err);
       res.writeHead(404, {'Content-Type': 'text/html; charset=utf-8'});
       return res.end("Wystąpił błąd poczas próby pobrania załącznika");
     }
@@ -67,8 +67,8 @@ router.get('/task/:taskId', [authMiddleware], async (req, res, next) => {
   try{
     results = await appendixService.getByTaskId(req.params.taskId); 
     response(res, false, ['Pomyślnie pobrano informacje o załącznikach dla wybranego zadania.'], results);   
-  } catch (error) {
-    console.log(error)
+  } catch (err) {
+    console.log(err);
     res.writeHead(404, {'Content-Type': 'text/html; charset=utf-8'});
     return res.end("Wystąpił błąd podczas próby pobrania informacji o załącznikach dla wybranego zadania z translatora");
   }
