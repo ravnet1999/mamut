@@ -5,6 +5,7 @@ const response = require('../src/response');
 const appendixService = require('../src/service/AppendixService');
 const multiparty = require('multiparty');
 const appConfig = require('../config/appConfig.json');
+const fs = require('fs');
 
 router.post('/:taskId', [authMiddleware], (req, res, next) => {
   let taskId = req.params.taskId;
@@ -30,6 +31,35 @@ router.post('/:taskId', [authMiddleware], (req, res, next) => {
       response(res, true, ['Wystąpił błąd poczas próby utworzenia nowych załączników.'], []);
       return;
     }
+  });
+});
+
+router.get('/:appendixId', [authMiddleware], async (req, res, next) => { 
+  let appendix;
+
+  try{
+    appendix = await appendixService.get(req.params.appendixId);
+    if(!appendix) throw "Wystąpił błąd podczas próby pobrania załącznika z translatora";
+  } catch (error) {
+    console.log(error)
+    res.writeHead(404, {'Content-Type': 'text/html; charset=utf-8'});
+    return res.end("Wystąpił błąd poczas próby pobrania załącznika");
+  }
+
+  let originalFilename = appendix['nazwa_oryginalna'];
+  let mimeType = appendix['typ_mime'];
+
+  let path = appendix['sciezka'];
+
+  fs.readFile(path, function(err, data) {
+    if (err) {
+      console.log(error);
+      res.writeHead(404, {'Content-Type': 'text/html; charset=utf-8'});
+      return res.end("Wystąpił błąd poczas próby pobrania załącznika");
+    }
+
+    res.writeHead(200, {'Content-Disposition': `attachment; filename="${originalFilename}`, 'Content-Type': mimeType});
+    res.end(data);
   });
 });
 
