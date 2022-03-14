@@ -10,12 +10,27 @@ router.get('/:appendicesIds', (req, res, next) => {
   let appendicesIds = req.params.appendicesIds.split(',');
   appendixService.findById(appendicesIds).then((appendices) => {
     appendices = appendices.map((appendix) => {
+      delete appendix['zawartosc'];
       return charset.translateIn(appendix);
     });
     response(res, false, ['Pomyślnie pobrano dane załączników.'], appendices);
     return;
   }).catch((err) => {
       response(res, true, [`Wystąpił błąd podczas próby pobrania danych załączników.`, JSON.stringify(err)], [])
+  });
+});
+
+router.get('/task/:taskId', (req, res, next) => {
+  let taskId = req.params.taskId;
+  appendixService.findByTaskId(taskId).then((appendices) => {
+    appendices = appendices.map((appendix) => {
+      delete appendix['zawartosc'];
+      return charset.translateIn(appendix);
+    });
+    response(res, false, ['Pomyślnie pobrano dane załączników dla wybranego zadania.'], appendices);
+    return;
+  }).catch((err) => {
+      response(res, true, [`Wystąpił błąd podczas próby pobrania danych załączników dla wybranego zadania.`, JSON.stringify(err)], [])
   });
 });
 
@@ -51,7 +66,7 @@ router.post('/:taskId', (req, res, next) => {
         }
       }
     });        
-  });  
+  });
 });
 
 module.exports = router;
