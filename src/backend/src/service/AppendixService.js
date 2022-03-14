@@ -1,6 +1,7 @@
 const appConfig = require('../../config/appConfig.json');
 
 const fs = require('fs');
+const fsExtra = require('fs-extra');
 
 const axios = require('axios');
 var concat = require('concat-stream');
@@ -25,15 +26,15 @@ class AppendixService {
           }
         })
       }
-       
-      fs.copyFileSync(file.path, uploadPath), err => {
-        if(err) {
-          return reject({
-            message: 'Wystąpił problem z przeniesieniem załącznika do katalogu docelowego.'
-          });
-        }
-      }
 
+      try{       
+        fsExtra.moveSync(file.path, uploadPath);
+      } catch(err) {
+        return reject({
+          message: 'Wystąpił problem z przeniesieniem załącznika do katalogu docelowego.'
+        });
+      }
+      
       fs.createReadStream(uploadPath).pipe(concat({ encoding: 'buffer' }, function (data) {
         var formData = new FormData();
         formData.append("originalFilename", originalFilename);
@@ -41,14 +42,14 @@ class AppendixService {
         formData.append("path", uploadPath);
         formData.append("size", file.size);
         formData.append("contentType", file.headers["content-type"]);
-        formData.append("data", data);        
+        // formData.append("data", data);        
 
         axios({
           method: 'post',
           url: `${appConfig.URLs.translator}/appendices/${taskId}`,
           data: formData,
-          maxContentLength: Infinity,
-          maxBodyLength: Infinity,
+          // maxContentLength: Infinity,
+          // maxBodyLength: Infinity,
           // headers: {'Content-Type': 'multipart/form-data;boundary=' + formData.getBoundary()}
           headers: formData.getHeaders()
         })
