@@ -69,8 +69,7 @@ router.get('/task/:taskId', [authMiddleware], async (req, res, next) => {
     response(res, false, ['Pomyślnie pobrano informacje o załącznikach dla zadania.'], results);   
   } catch (err) {
     console.log(err);
-    res.writeHead(404, {'Content-Type': 'text/html; charset=utf-8'});
-    return res.end("Wystąpił błąd podczas próby pobrania z translatora informacji o załącznikach dla zadania");
+    response(res, true, ['Wystąpił błąd poczas próby pobrania z translatora informacji o załącznikach dla zadania.', JSON.stringify(err)], []);
   }
 });
 
