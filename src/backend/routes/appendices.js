@@ -34,11 +34,12 @@ router.post('/:taskId', [authMiddleware], (req, res, next) => {
   });
 });
 
-router.get('/:appendixId', [authMiddleware], async (req, res, next) => { 
+router.get('/:appendixId/file', [authMiddleware], async (req, res, next) => { 
   let appendix;
 
   try{
     appendix = await appendixService.get(req.params.appendixId);
+        
     if(!appendix) throw "Wystąpił błąd podczas próby pobrania załącznika z translatora";
   } catch (err) {
     console.log(err);
@@ -60,6 +61,33 @@ router.get('/:appendixId', [authMiddleware], async (req, res, next) => {
 
     res.writeHead(200, {'Content-Disposition': `attachment; filename="${originalFilename}`, 'Content-Type': mimeType});
     res.end(data);
+  });
+});
+
+router.get('/:appendixId/json', [authMiddleware], async (req, res, next) => { 
+  let appendix;
+
+  try{
+    appendix = await appendixService.get(req.params.appendixId);
+    
+    if(!appendix) throw "Wystąpił błąd podczas próby pobrania załącznika z translatora";    
+  } catch (err) {
+    console.log(err);
+    response(res, true, ['Wystąpił błąd poczas próby pobrania z translatora informacji o załączniku.', JSON.stringify(err)], []);
+    return;
+  }
+
+  let path = appendix['sciezka'];
+
+  fs.readFile(path, function(err, data) {
+    if (err) {
+      console.log(err)
+      response(res, true, ['Wystąpił błąd poczas próby pobrania z translatora informacji o załączniku.', JSON.stringify(err)], []);
+      return;
+    }
+
+    appendix['data'] = data;
+    response(res, false, ['Pomyślnie pobrano informacje o załączniku.'], appendix); 
   });
 });
 

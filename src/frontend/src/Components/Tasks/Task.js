@@ -20,6 +20,8 @@ import ReactTooltip from 'react-tooltip';
 import FormData from 'form-data';
 import moment from 'moment';
 import AppendixHandler from '../../Handlers/AppendixHandler';
+import axios from 'axios';
+
 registerLocale('pl', pl);
 
 const Task = (props) => {
@@ -532,10 +534,26 @@ const Task = (props) => {
       });
     };
 
+    const onAppendixDownload = async (appendixId) => {
+      let appendixInfoUrl = `${appConfig.URLs.domain}/${appConfig.URLs.appendices}/${appendixId}/json`;
+      let result = await axios.get(`${appendixInfoUrl}`, {
+        withCredentials: true
+      });
+
+      let appendix = result.data.resources;
+      let buffer = new Uint8Array(appendix.data.data);
+      let appendixDownloadUrl = window.URL.createObjectURL(new Blob([buffer], {"type": appendix.typ_mime}));
+      let a = document.createElement('a');
+      a.href = appendixDownloadUrl;
+      a.download = result.data.resources.nazwa_oryginalna;
+      a.click();
+    }
+
     const buildAppendicesPreviewButtons = () => {
       return appendices.map((appendix, key) => {
-        let url = `${appConfig.URLs.domain}/${appConfig.URLs.appendices}/${appendix.id}`;
-        return <a href={url} target="_blank" download={appendix.nazwa_oryginalna}>{appendix.nazwa_oryginalna} </a>;
+        // let url = `${appConfig.URLs.domain}/${appConfig.URLs.appendices}/${appendix.id}/file`;
+        // return <a href={url} target="_blank" download={appendix.nazwa_oryginalna}>{appendix.nazwa_oryginalna}</a>;
+        return <Button onClick={e=>{onAppendixDownload(appendix.id)}}>{appendix.nazwa_oryginalna}</Button>
     });    
     } 
 
