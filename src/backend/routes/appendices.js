@@ -63,4 +63,15 @@ router.get('/:appendixId', [authMiddleware], async (req, res, next) => {
   });
 });
 
+router.get('/task/:taskId', [authMiddleware], async (req, res, next) => { 
+  try{
+    results = await appendixService.getByTaskId(req.params.taskId); 
+    response(res, false, ['Pomyślnie pobrano informacje o załącznikach dla wybranego zadania.'], results);   
+  } catch (error) {
+    console.log(error)
+    res.writeHead(404, {'Content-Type': 'text/html; charset=utf-8'});
+    return res.end("Wystąpił błąd podczas próby pobrania informacji o załącznikach dla wybranego zadania z translatora");
+  }
+});
+
 module.exports = router;

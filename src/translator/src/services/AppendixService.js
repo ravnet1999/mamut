@@ -23,6 +23,21 @@ class AppendixService extends Service {
         });
       });
     }
+
+    findByTaskId = (taskId) => {
+      return new Promise((resolve, reject) => {
+        connection.query('SELECT * FROM `' + this.tableName + '` WHERE id_zgloszenia=?', 
+          [taskId], (err, results, fields) => {
+            if(err) {            
+              reject(err);
+              return;
+            }
+            
+            resolve(results);
+            return;
+        });
+      });
+    }
 }
 
 module.exports = new AppendixService('zgloszenia_zalaczniki');

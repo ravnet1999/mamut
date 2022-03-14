@@ -27,6 +27,23 @@ class AppendixService {
     });
   }
 
+  getByTaskId = taskId => {
+    return new Promise((resolve, reject) => {
+      axios.get(`${appConfig.URLs.translator}/appendices/task/${taskId}`).then((response) => {        
+          parseResponse(response).then((response) => {
+            resolve(response.resources);
+            return;
+          }).catch((err) => {
+              reject(err);
+              return;
+          });
+      }).catch((err) => {
+          reject(err);
+          return;
+      });
+    });
+  }
+
   create = (taskId, file) => {
     return new Promise((resolve, reject) => { 
       let uploadDir = appConfig.tasksAppendicesUploadDir + '/' + taskId;

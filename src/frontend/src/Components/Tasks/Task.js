@@ -19,11 +19,13 @@ import 'react-datepicker/dist/react-datepicker.css';
 import ReactTooltip from 'react-tooltip';
 import FormData from 'form-data';
 import moment from 'moment';
+import AppendixHandler from '../../Handlers/AppendixHandler';
 registerLocale('pl', pl);
 
 const Task = (props) => {
     const [options, setOptions] = useState(null);
     const [task, setTask] = useState(null);
+    const [appendices, setAppendices] = useState(null);
     const [response, setResponse] = useState(null);
     const [taskDescription, setTaskDescription] = useState(null);
     const [taskEpisodes, setTaskEpisodes] = useState(null);
@@ -134,6 +136,14 @@ const Task = (props) => {
             console.log(err);
         })
     }, [errorTypes.length])
+
+    useEffect(() => {
+      if(!task) return;
+
+      AppendixHandler.getByTaskId(task.id).then(result => {
+        setAppendices(result.resources);
+      });
+  }, [task])
 
     // useEffect(() => {
     //     return () => {
@@ -516,10 +526,18 @@ const Task = (props) => {
 
       TaskHandler.addAppendices(task.id, formData).then((result) => {
         setTaskAppendicesKey(Math.random().toString(36)); 
+        setAppendices([...appendices, result.resources[0]])
       }).catch((err) => {
         console.log(err);
       });
     };
+
+    const buildAppendicesPreviewButtons = () => {
+      return appendices.map((appendix, key) => {
+        let url = `${appConfig.URLs.domain}/${appConfig.URLs.appendices}/${appendix.id}`;
+        return <a href={url} target="_blank" download={appendix.nazwa_oryginalna}>{appendix.nazwa_oryginalna} </a>;
+    });    
+    } 
 
     console.log(lastEpisode);
 
@@ -543,6 +561,8 @@ const Task = (props) => {
                 <div className="task-appendices-content">
                   <input id="task-appendices" name="task-appendices" key={taskAppendicesKey||''} multiple className={'form-control', 'margin-top-reduced',  'margin-bottom-default'} type="file" onChange={onAppendicesChange} />  
                 </div>
+
+                { appendices &&  buildAppendicesPreviewButtons()}
               </Col>
               <Col xs="2" md="1" className="text-right">
                 <Button className="appendices-add-button" onClick={onAppendicesUpload}><FontAwesomeIcon icon={faPlus}></FontAwesomeIcon></Button>
