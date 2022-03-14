@@ -34,8 +34,7 @@ const endpoints = [
     'tasks',
     'representatives',
     'services',
-    'representatives_clients',
-    'appendices'
+    'representatives_clients'
 ];
 
 let routers = endpoints.map((endpoint) => {
@@ -56,6 +55,8 @@ app.use('/parser', express.static(path.join(__dirname, 'public', 'parser')));
 routers.map((router) => {
     app.use(`${router[0]}`, [accessMiddleware, jsonMiddleware], router[1]);
 });
+
+app.use('/api/appendices', [accessMiddleware], require(`./routes/appendices`) );
 
 app.use('/admin', [accessMiddleware], express.static(path.join(__dirname, 'public', 'admin')));
 app.use('/parser', [accessMiddleware], express.static(path.join(__dirname, 'public', 'parser')));

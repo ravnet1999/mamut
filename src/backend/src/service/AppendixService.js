@@ -10,6 +10,23 @@ var FormData = require('form-data');
 const parseResponse = require('../ResponseParser');
 
 class AppendixService {
+  get = (appendicesIds) => {
+    return new Promise((resolve, reject) => {
+      axios.get(`${appConfig.URLs.translator}/appendices/${appendicesIds}`).then((response) => {        
+          parseResponse(response).then((response) => {
+            resolve(response.resources[0]);
+            return;
+          }).catch((err) => {
+              reject(err);
+              return;
+          });
+      }).catch((err) => {
+          reject(err);
+          return;
+      });
+    });
+  }
+
   create = (taskId, file) => {
     return new Promise((resolve, reject) => { 
       let uploadDir = appConfig.tasksAppendicesUploadDir + '/' + taskId;
