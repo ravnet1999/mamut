@@ -542,7 +542,7 @@ const Task = (props) => {
 
       let appendix = result.data.resources;
       let buffer = new Uint8Array(appendix.data.data);
-      let appendixDownloadUrl = window.URL.createObjectURL(new Blob([buffer], {"type": appendix.typ_mime}));
+      let appendixDownloadUrl = window.URL.createObjectURL(new Blob([buffer], {"type": "application/octet-stream"}));
       let a = document.createElement('a');
       a.href = appendixDownloadUrl;
       a.download = appendix.nazwa_oryginalna;
