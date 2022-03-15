@@ -11,7 +11,7 @@ import TaskReassign from './TaskReassign';
 import Modal from '../Modal/Modal';
 import './Tasks.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faBoxOpen, faUserClock, faCalendarDay, faTruck, faBookReader, faWindowClose, faUpload, faDownload, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faBoxOpen, faUserClock, faCalendarDay, faTruck, faBookReader, faWindowClose, faUpload } from '@fortawesome/free-solid-svg-icons';
 import appConfig from '../../Config/appConfig.json';
 import DatePicker, { registerLocale } from 'react-datepicker';
 import pl from 'date-fns/locale/pl';
@@ -20,16 +20,25 @@ import ReactTooltip from 'react-tooltip';
 import FormData from 'form-data';
 import moment from 'moment';
 import AppendixHandler from '../../Handlers/AppendixHandler';
-import axios from 'axios';
+import { WithContexts } from '../../HOCs/WithContexts';
 import { TaskAppendicesContext } from '../../Contexts/TaskAppendicesContext';
-import { WithContexts } from '../../HOCs/WithContexts'
 
 registerLocale('pl', pl);
 
 const Task = (props) => {
+    const { 
+      appendices, setAppendices,
+      selectedAppendices, setSelectedAppendices, 
+      taskAppendicesKey, setTaskAppendicesKey,
+      onAppendicesChange,
+      onAppendicesUpload,
+      onAppendixDownload,
+      buildAppendicesDownloadButtons,
+      onAppendixRemove
+    } = props;
+
     const [options, setOptions] = useState(null);
     const [task, setTask] = useState(null);
-    const [appendices, setAppendices] = useState(null);
     const [response, setResponse] = useState(null);
     const [taskDescription, setTaskDescription] = useState(null);
     const [taskEpisodes, setTaskEpisodes] = useState(null);
@@ -65,10 +74,7 @@ const Task = (props) => {
     const [datePickerEnabled, enableDatePicker] = useState(false);
     const [dateConfirmEnabled, enableDateConfirm] = useState(true);
     const [pickerInput, setPickerInput] = useState(null);
-    const [descriptionModified, setDescriptionModified] = useState(false);
-
-    const [selectedAppendices, setSelectedAppendices] = useState(null);
-    const [taskAppendicesKey, setTaskAppendicesKey] = useState(null);
+    const [descriptionModified, setDescriptionModified] = useState(false);    
 
     const updateDescriptions = (callback = null) => {
         TaskHandler.updateLastEpisodeDescription(lastEpisode.id, appState.episodeDescription).then((result) => {
@@ -517,86 +523,6 @@ const Task = (props) => {
         if(pickerInput) pickerInput.setOpen(true);
     }
 
-    const onAppendicesChange = event => {
-      setSelectedAppendices(event.target.files);       
-    };
-
-    const onAppendicesUpload = event => {
-      if(!selectedAppendices) {
-        setResponse({"error": true, "messages": ["Wybierz załączniki do załadowania."]});
-        return;
-      }
-
-      const formData = new FormData();
-
-      for (let i = 0; i < selectedAppendices.length; i++) {
-        formData.append(`task-appendices[${i}]`, selectedAppendices[i])
-      }
-
-      TaskHandler.addAppendices(task.id, formData).then((result) => {
-        setTaskAppendicesKey(Math.random().toString(36)); 
-        setAppendices([...result.resources, ...appendices])
-      }).catch((err) => {
-        console.log(err);
-      });
-    };
-
-    const onAppendixDownload = async (appendixId) => {
-      let appendixInfoUrl = `${appConfig.URLs.domain}/${appConfig.URLs.appendices}/${appendixId}/json`;
-      let result = await axios.get(`${appendixInfoUrl}`, {
-        withCredentials: true
-      });
-
-      setResponse(result.data);
-
-      if(result.data.error) return;
-
-      let appendix = result.data.resources;
-      let buffer = new Uint8Array(appendix.data.data);
-      let appendixDownloadUrl = window.URL.createObjectURL(new Blob([buffer], {"type": "application/octet-stream"}));
-      let a = document.createElement('a');
-      a.href = appendixDownloadUrl;
-      a.download = appendix.nazwa_oryginalna;
-      document.body.append(a);
-      a.click();
-      a.remove();
-      window.URL.revokeObjectURL(appendixDownloadUrl);
-    }
-
-    // const onAppendixDownload = async (appendix) => {
-    //   let appendixDownloadUrl = `${appConfig.URLs.domain}/${appConfig.URLs.appendices}/${appendix.id}/file`;
-
-    //   let a = document.createElement('a');
-    //   a.href = appendixDownloadUrl;
-    //   a.download = appendix.nazwa_oryginalna;  
-    //   document.body.append(a);
-    //   a.click();
-    //   a.remove();
-    //   window.URL.revokeObjectURL(appendixDownloadUrl);
-    // }
-
-    const buildAppendicesDownloadButtons = () => {
-      return appendices.map((appendix, key) => {
-        // let url = `${appConfig.URLs.domain}/${appConfig.URLs.appendices}/${appendix.id}/file`;
-        // return <a href={url} target="_blank" download={appendix.nazwa_oryginalna}>{appendix.nazwa_oryginalna}</a>;
-        return <Row className="margin-top-default">
-            <Col>
-              {appendix.nazwa_oryginalna}
-              <Button className="appendix-download-button" onClick={e=>{onAppendixDownload(appendix.id)}}>
-                <FontAwesomeIcon icon={faDownload}></FontAwesomeIcon>
-              </Button>
-              <Button className="appendix-remove-button" onClick={e=>{onAppendixRemove(appendix)}}>
-                <FontAwesomeIcon icon={faTrash}></FontAwesomeIcon>
-              </Button>
-            </Col>
-          </Row>
-      });    
-    } 
-
-    const onAppendixRemove = () => {
-
-    }
-
     console.log(lastEpisode);
 
     return (
@@ -618,7 +544,7 @@ const Task = (props) => {
                 <label for="task-appendices">Załączniki:</label><br/>
                 <div className="task-appendices-content">
                   <input id="task-appendices" name="task-appendices" key={taskAppendicesKey||''} multiple className={'form-control', 'margin-top-reduced',  'margin-bottom-default'} type="file" onChange={onAppendicesChange} />  
-                  <Button className="appendices-add-button" onClick={onAppendicesUpload}><FontAwesomeIcon icon={faUpload}></FontAwesomeIcon></Button>
+                  <Button className="appendices-add-button" onClick={event => onAppendicesUpload(task.id)}><FontAwesomeIcon icon={faUpload}></FontAwesomeIcon></Button>
                 </div>
                 { appendices &&  buildAppendicesDownloadButtons()}
               </Col>
