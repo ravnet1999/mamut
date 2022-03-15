@@ -590,7 +590,7 @@ const Task = (props) => {
             <div className="form-group task-appendices-container margin-bottom-default">
             <Row>
               <Col>
-                <label for="task_appendices">Załączniki:</label><br/>
+                <label for="task-appendices">Załączniki:</label><br/>
                 <div className="task-appendices-content">
                   <input id="task-appendices" name="task-appendices" key={taskAppendicesKey||''} multiple className={'form-control', 'margin-top-reduced',  'margin-bottom-default'} type="file" onChange={onAppendicesChange} />  
                   <Button className="appendices-add-button" onClick={onAppendicesUpload}><FontAwesomeIcon icon={faUpload}></FontAwesomeIcon></Button>
