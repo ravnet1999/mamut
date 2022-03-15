@@ -63,7 +63,8 @@ router.get('/:appendixId/file', [authMiddleware], async (req, res, next) => {
 
     res.writeHead(200, {
       'Content-Description': 'File Transfer',    
-      'Content-Disposition': `attachment; filename="${originalFilename}`, 'Content-Type': 'application/octet-stream',
+      'Content-Disposition': `attachment; filename="${originalFilename}`, 
+      'Content-Type': 'application/octet-stream',
       'Content-Transfer-Encoding': 'binary',
       'Expires': 0,
       'Cache-Control': 'must-revalidate',
