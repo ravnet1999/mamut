@@ -38,19 +38,16 @@
   padding: 6px 6px;
 }
 
-.appendices-add-button {
-  margin-left: 5px;
-}
-
-.btn-primary.appendix-download-button, .btn-primary.appendix-remove-button {
+.btn-primary.appendices-add-button, .btn-primary.appendix-download-button, .btn-primary.appendix-remove-button {
   background: black;
-  border: black;
+  border-color: white;
   color: white;
   margin-left: 5px;
 }
-.btn-primary.appendix-download-button:hover, .btn-primary.appendix-remove-button:hover {
+
+.btn-primary.appendices-add-button:hover, .btn-primary.appendix-download-button:hover, .btn-primary.appendix-remove-button:hover {
   background: white;
-  border: white;
+  border-color: black;
   color: black;
 }
 
