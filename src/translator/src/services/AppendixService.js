@@ -26,7 +26,7 @@ class AppendixService extends Service {
 
     findByTaskId = (taskId) => {
       return new Promise((resolve, reject) => {
-        connection.query('SELECT * FROM `' + this.tableName + '` WHERE id_zgloszenia=?', 
+        connection.query('SELECT * FROM `' + this.tableName + '` WHERE id_zgloszenia=? ORDER BY nazwa_oryginalna', 
           [taskId], (err, results, fields) => {
             if(err) {            
               reject(err);
