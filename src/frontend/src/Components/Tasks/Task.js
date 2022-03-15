@@ -545,7 +545,7 @@ const Task = (props) => {
     //   let appendixDownloadUrl = window.URL.createObjectURL(new Blob([buffer], {"type": appendix.typ_mime}));
     //   let a = document.createElement('a');
     //   a.href = appendixDownloadUrl;
-    //   a.download = result.data.resources.nazwa_oryginalna;
+    //   a.download = appendix.nazwa_oryginalna;
     //   a.click();
     // }
 
