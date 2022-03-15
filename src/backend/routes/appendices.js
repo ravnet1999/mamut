@@ -48,8 +48,7 @@ router.get('/:appendixId/file', [authMiddleware], async (req, res, next) => {
   }
 
   let originalFilename = appendix['nazwa_oryginalna'];
-  let mimeType = appendix['typ_mime'];
-
+  
   let path = appendix['sciezka'];
 
   fs.readFile(path, function(err, data) {
@@ -59,7 +58,19 @@ router.get('/:appendixId/file', [authMiddleware], async (req, res, next) => {
       return res.end("Wystąpił błąd poczas próby pobrania załącznika");
     }
 
-    res.writeHead(200, {'Content-Disposition': `attachment; filename="${originalFilename}`, 'Content-Type': mimeType});
+    // let mimeType = appendix['typ_mime'];
+    // res.writeHead(200, {'Content-Disposition': `attachment; filename="${originalFilename}`, 'Content-Type': mimeType});
+
+    res.writeHead(200, {
+      'Content-Description': 'File Transfer',    
+      'Content-Disposition': `attachment; filename="${originalFilename}`, 'Content-Type': 'application/octet-stream',
+      'Content-Transfer-Encoding': 'binary',
+      'Expires': 0,
+      'Cache-Control': 'must-revalidate',
+      'Pragma': 'public',
+      'Content-Length': `${appendix.rozmiar}`
+    });
+
     res.end(data);
   });
 });
