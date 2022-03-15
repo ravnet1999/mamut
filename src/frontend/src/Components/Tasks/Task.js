@@ -520,6 +520,8 @@ const Task = (props) => {
     };
 
     const onAppendicesUpload = event => {
+      if(!selectedAppendices) return;
+      
       const formData = new FormData();
 
       for (let i = 0; i < selectedAppendices.length; i++) {
