@@ -11,7 +11,7 @@ import TaskReassign from './TaskReassign';
 import Modal from '../Modal/Modal';
 import './Tasks.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faBoxOpen, faUserClock, faCalendarDay, faTruck, faBookReader, faWindowClose } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faBoxOpen, faUserClock, faCalendarDay, faTruck, faBookReader, faWindowClose, faUpload } from '@fortawesome/free-solid-svg-icons';
 import appConfig from '../../Config/appConfig.json';
 import DatePicker, { registerLocale } from 'react-datepicker';
 import pl from 'date-fns/locale/pl';
@@ -583,7 +583,7 @@ const Task = (props) => {
                 { appendices &&  buildAppendicesPreviewButtons()}
               </Col>
               <Col xs="2" md="1" className="text-right">
-                <Button className="appendices-add-button" onClick={onAppendicesUpload}><FontAwesomeIcon icon={faPlus}></FontAwesomeIcon></Button>
+                <Button className="appendices-add-button" onClick={onAppendicesUpload}><FontAwesomeIcon icon={faUpload}></FontAwesomeIcon></Button>
               </Col>
             </Row>  
             </div>             
