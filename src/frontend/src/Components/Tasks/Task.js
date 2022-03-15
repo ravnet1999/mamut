@@ -545,11 +545,10 @@ const Task = (props) => {
         withCredentials: true
       });
 
-      if(result.data.error) {
-        setResponse(result.data);
-        return;
-      }
+      setResponse(result.data);
 
+      if(result.data.error) return;
+      
       let appendix = result.data.resources;
       let buffer = new Uint8Array(appendix.data.data);
       let appendixDownloadUrl = window.URL.createObjectURL(new Blob([buffer], {"type": "application/octet-stream"}));
