@@ -11,7 +11,7 @@ import TaskReassign from './TaskReassign';
 import Modal from '../Modal/Modal';
 import './Tasks.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faBoxOpen, faUserClock, faCalendarDay, faTruck, faBookReader, faWindowClose, faUpload, faDownload, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faBoxOpen, faUserClock, faCalendarDay, faTruck, faBookReader, faWindowClose, faUpload, faDownload, faTrash, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import appConfig from '../../Config/appConfig.json';
 import DatePicker, { registerLocale } from 'react-datepicker';
 import pl from 'date-fns/locale/pl';
@@ -533,7 +533,7 @@ const Task = (props) => {
 
       TaskHandler.addAppendices(task.id, formData).then((result) => {
         setTaskAppendicesKey(Math.random().toString(36)); 
-        setAppendices([result.resources[0], ...appendices])
+        setAppendices([...result.resources, ...appendices])
       }).catch((err) => {
         console.log(err);
       });
@@ -548,7 +548,7 @@ const Task = (props) => {
       setResponse(result.data);
 
       if(result.data.error) return;
-      
+
       let appendix = result.data.resources;
       let buffer = new Uint8Array(appendix.data.data);
       let appendixDownloadUrl = window.URL.createObjectURL(new Blob([buffer], {"type": "application/octet-stream"}));
