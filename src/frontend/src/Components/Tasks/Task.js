@@ -546,7 +546,10 @@ const Task = (props) => {
     //   let a = document.createElement('a');
     //   a.href = appendixDownloadUrl;
     //   a.download = appendix.nazwa_oryginalna;
+    //   document.body.append(a);
     //   a.click();
+    //   a.remove();
+    //   window.URL.revokeObjectURL(appendixDownloadUrl);
     // }
 
     const buildAppendicesPreviewButtons = () => {
