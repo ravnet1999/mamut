@@ -11,32 +11,19 @@ import TaskReassign from './TaskReassign';
 import Modal from '../Modal/Modal';
 import './Tasks.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faBoxOpen, faUserClock, faCalendarDay, faTruck, faBookReader, faWindowClose, faUpload } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faBoxOpen, faUserClock, faCalendarDay, faTruck, faBookReader, faWindowClose } from '@fortawesome/free-solid-svg-icons';
 import appConfig from '../../Config/appConfig.json';
 import DatePicker, { registerLocale } from 'react-datepicker';
 import pl from 'date-fns/locale/pl';
 import 'react-datepicker/dist/react-datepicker.css';
 import ReactTooltip from 'react-tooltip';
-import FormData from 'form-data';
 import moment from 'moment';
-import AppendixHandler from '../../Handlers/AppendixHandler';
-import { WithContexts } from '../../HOCs/WithContexts';
-import { TaskAppendicesContext } from '../../Contexts/TaskAppendicesContext';
+import TaskAppendices from './TaskAppendices';
+import TaskAppendicesContextProvider from '../../Contexts/TaskAppendicesContext';
 
 registerLocale('pl', pl);
 
 const Task = (props) => {
-    const { 
-      appendices, setAppendices,
-      selectedAppendices, setSelectedAppendices, 
-      taskAppendicesKey, setTaskAppendicesKey,
-      onAppendicesChange,
-      onAppendicesUpload,
-      onAppendixDownload,
-      buildAppendicesDownloadButtons,
-      onAppendixRemove
-    } = props;
-
     const [options, setOptions] = useState(null);
     const [task, setTask] = useState(null);
     const [response, setResponse] = useState(null);
@@ -146,14 +133,6 @@ const Task = (props) => {
             console.log(err);
         })
     }, [errorTypes.length])
-
-    useEffect(() => {
-      if(!task) return;
-
-      AppendixHandler.getByTaskId(task.id).then(result => {
-        setAppendices(result.resources);
-      });
-  }, [task])
 
     // useEffect(() => {
     //     return () => {
@@ -538,18 +517,7 @@ const Task = (props) => {
                 {buildErrorType()}
             </div>
 
-            <div className="form-group task-appendices-container margin-bottom-default">
-            <Row>
-              <Col>
-                <label for="task-appendices">Załączniki:</label><br/>
-                <div className="task-appendices-content">
-                  <input id="task-appendices" name="task-appendices" key={taskAppendicesKey||''} multiple className={'form-control', 'margin-top-reduced',  'margin-bottom-default'} type="file" onChange={onAppendicesChange} />  
-                  <Button className="appendices-add-button" onClick={event => onAppendicesUpload(task.id)}><FontAwesomeIcon icon={faUpload}></FontAwesomeIcon></Button>
-                </div>
-                { appendices &&  buildAppendicesDownloadButtons()}
-              </Col>
-            </Row>  
-            </div>             
+            <TaskAppendicesContextProvider><TaskAppendices {...props} task={task}></TaskAppendices></TaskAppendicesContextProvider>
 
             {buildLastEpisode()}
             {buildNonLastEpisodes()}
@@ -606,4 +574,4 @@ const Task = (props) => {
     );
 }
 
-export default WithContexts(Task, [TaskAppendicesContext]);
+export default Task;
