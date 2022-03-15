@@ -21,6 +21,8 @@ import FormData from 'form-data';
 import moment from 'moment';
 import AppendixHandler from '../../Handlers/AppendixHandler';
 import axios from 'axios';
+import { TaskAppendicesContext } from '../../Contexts/TaskAppendicesContext';
+import { WithContexts } from '../../HOCs/WithContexts'
 
 registerLocale('pl', pl);
 
@@ -678,4 +680,4 @@ const Task = (props) => {
     );
 }
 
-export default Task;
+export default WithContexts(Task, [TaskAppendicesContext]);
