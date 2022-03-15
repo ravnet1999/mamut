@@ -552,11 +552,23 @@ const Task = (props) => {
     //   window.URL.revokeObjectURL(appendixDownloadUrl);
     // }
 
+    const onAppendixDownload = async (appendix) => {
+      let appendixDownloadUrl = `${appConfig.URLs.domain}/${appConfig.URLs.appendices}/${appendix.id}/file`;
+
+      let a = document.createElement('a');
+      a.href = appendixDownloadUrl;
+      a.download = appendix.nazwa_oryginalna;  
+      document.body.append(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(appendixDownloadUrl);
+    }
+
     const buildAppendicesDownloadButtons = () => {
       return appendices.map((appendix, key) => {
         // let url = `${appConfig.URLs.domain}/${appConfig.URLs.appendices}/${appendix.id}/file`;
         // return <a href={url} target="_blank" download={appendix.nazwa_oryginalna}>{appendix.nazwa_oryginalna}</a>;
-        return <Button onClick={e=>{onAppendixDownload(appendix.id)}}>{appendix.nazwa_oryginalna}</Button>
+        return <Button onClick={e=>{onAppendixDownload(appendix)}}>{appendix.nazwa_oryginalna}</Button>
       });    
     } 
 
