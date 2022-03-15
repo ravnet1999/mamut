@@ -552,12 +552,12 @@ const Task = (props) => {
     //   window.URL.revokeObjectURL(appendixDownloadUrl);
     // }
 
-    const buildAppendicesPreviewButtons = () => {
+    const buildAppendicesDownloadButtons = () => {
       return appendices.map((appendix, key) => {
         // let url = `${appConfig.URLs.domain}/${appConfig.URLs.appendices}/${appendix.id}/file`;
         // return <a href={url} target="_blank" download={appendix.nazwa_oryginalna}>{appendix.nazwa_oryginalna}</a>;
         return <Button onClick={e=>{onAppendixDownload(appendix.id)}}>{appendix.nazwa_oryginalna}</Button>
-    });    
+      });    
     } 
 
     console.log(lastEpisode);
@@ -583,7 +583,7 @@ const Task = (props) => {
                   <input id="task-appendices" name="task-appendices" key={taskAppendicesKey||''} multiple className={'form-control', 'margin-top-reduced',  'margin-bottom-default'} type="file" onChange={onAppendicesChange} />  
                   <Button className="appendices-add-button" onClick={onAppendicesUpload}><FontAwesomeIcon icon={faUpload}></FontAwesomeIcon></Button>
                 </div>
-                { appendices &&  buildAppendicesPreviewButtons()}
+                { appendices &&  buildAppendicesDownloadButtons()}
               </Col>
             </Row>  
             </div>             
