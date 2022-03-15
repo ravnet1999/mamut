@@ -528,7 +528,7 @@ const Task = (props) => {
 
       TaskHandler.addAppendices(task.id, formData).then((result) => {
         setTaskAppendicesKey(Math.random().toString(36)); 
-        setAppendices([...appendices, result.resources[0]])
+        setAppendices([result.resources[0], ...appendices])
       }).catch((err) => {
         console.log(err);
       });
