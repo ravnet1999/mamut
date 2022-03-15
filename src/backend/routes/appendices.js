@@ -81,7 +81,7 @@ router.get('/:appendixId/json', [authMiddleware], async (req, res, next) => {
   try{
     appendix = await appendixService.get(req.params.appendixId);
     
-    if(!appendix) throw "Wystąpił błąd podczas próby pobrania załącznika z translatora";    
+    if(!appendix) response(res, true, ['Wystąpił błąd poczas próby pobrania z translatora informacji o załączniku.'], []);  
   } catch (err) {
     console.log(err);
     response(res, true, ['Wystąpił błąd poczas próby pobrania z translatora informacji o załączniku.', JSON.stringify(err)], []);
