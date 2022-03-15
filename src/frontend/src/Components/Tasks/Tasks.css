@@ -42,6 +42,18 @@
   margin-left: 5px;
 }
 
+.btn-primary.appendix-download-button, .btn-primary.appendix-remove-button {
+  background: black;
+  border: black;
+  color: white;
+  margin-left: 5px;
+}
+.btn-primary.appendix-download-button:hover, .btn-primary.appendix-remove-button:hover {
+  background: white;
+  border: white;
+  color: black;
+}
+
 .task-main-description {
     font-size: .8em;
     margin: 0 0 3px 20px;
