@@ -11,7 +11,7 @@ import TaskReassign from './TaskReassign';
 import Modal from '../Modal/Modal';
 import './Tasks.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faBoxOpen, faUserClock, faCalendarDay, faTruck, faBookReader, faWindowClose, faUpload } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faBoxOpen, faUserClock, faCalendarDay, faTruck, faBookReader, faWindowClose, faUpload, faDownload } from '@fortawesome/free-solid-svg-icons';
 import appConfig from '../../Config/appConfig.json';
 import DatePicker, { registerLocale } from 'react-datepicker';
 import pl from 'date-fns/locale/pl';
@@ -568,7 +568,7 @@ const Task = (props) => {
       return appendices.map((appendix, key) => {
         // let url = `${appConfig.URLs.domain}/${appConfig.URLs.appendices}/${appendix.id}/file`;
         // return <a href={url} target="_blank" download={appendix.nazwa_oryginalna}>{appendix.nazwa_oryginalna}</a>;
-        return <Button onClick={e=>{onAppendixDownload(appendix)}}>{appendix.nazwa_oryginalna}</Button>
+        return <Button onClick={e=>{onAppendixDownload(appendix)}}>{appendix.nazwa_oryginalna}<FontAwesomeIcon icon={faDownload}></FontAwesomeIcon></Button>
       });    
     } 
 
