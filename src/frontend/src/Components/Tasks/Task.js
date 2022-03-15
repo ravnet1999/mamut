@@ -520,8 +520,11 @@ const Task = (props) => {
     };
 
     const onAppendicesUpload = event => {
-      if(!selectedAppendices) return;
-      
+      if(!selectedAppendices) {
+        setResponse({"error": true, "messages": ["Wybierz załączniki do załadowania."]});
+        return;
+      }
+
       const formData = new FormData();
 
       for (let i = 0; i < selectedAppendices.length; i++) {
@@ -541,6 +544,11 @@ const Task = (props) => {
       let result = await axios.get(`${appendixInfoUrl}`, {
         withCredentials: true
       });
+
+      if(result.data.error) {
+        setResponse(result.data);
+        return;
+      }
 
       let appendix = result.data.resources;
       let buffer = new Uint8Array(appendix.data.data);
