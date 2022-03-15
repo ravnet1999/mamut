@@ -11,7 +11,7 @@ import TaskReassign from './TaskReassign';
 import Modal from '../Modal/Modal';
 import './Tasks.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faBoxOpen, faUserClock, faCalendarDay, faTruck, faBookReader, faWindowClose, faUpload, faDownload, faTrash, faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faBoxOpen, faUserClock, faCalendarDay, faTruck, faBookReader, faWindowClose, faUpload, faDownload, faTrash } from '@fortawesome/free-solid-svg-icons';
 import appConfig from '../../Config/appConfig.json';
 import DatePicker, { registerLocale } from 'react-datepicker';
 import pl from 'date-fns/locale/pl';
