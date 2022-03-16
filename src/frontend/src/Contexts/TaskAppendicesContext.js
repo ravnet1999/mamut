@@ -69,7 +69,7 @@ const TaskAppendicesContextProvider = ({children}) => {
   //   window.URL.revokeObjectURL(appendixDownloadUrl);
   // }
 
-  const onAppendixRemove = () => {
+  const onAppendixRemove = (appendix) => {
 
   }
 
