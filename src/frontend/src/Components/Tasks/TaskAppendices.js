@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import AppendixHandler from '../../Handlers/AppendixHandler';
 import { Container, Row, Col, Button, Form } from '../bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUpload } from '@fortawesome/free-solid-svg-icons';
+import { faUpload, faDownload, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { WithContexts } from '../../HOCs/WithContexts';
 import { TaskAppendicesContext } from '../../Contexts/TaskAppendicesContext';
 
@@ -15,7 +15,6 @@ const TaskAppendices = (props) => {
       onAppendicesChange,
       onAppendicesUpload,
       onAppendixDownload,
-      buildAppendicesDownloadButtons,
       onAppendixRemove
     } = props;
 
@@ -38,7 +37,21 @@ const TaskAppendices = (props) => {
             <input id="task-appendices" name="task-appendices" key={taskAppendicesKey||''} multiple className={'form-control', 'margin-top-reduced',  'margin-bottom-default'} type="file" onChange={onAppendicesChange} />  
             <Button className="appendices-add-button" onClick={event => onAppendicesUpload(task.id)}><FontAwesomeIcon icon={faUpload}></FontAwesomeIcon></Button>
           </div>
-          { appendices &&  buildAppendicesDownloadButtons()}
+          { appendices &&  appendices.map((appendix, key) => {
+      // let url = `${appConfig.URLs.domain}/${appConfig.URLs.appendices}/${appendix.id}/file`;
+      // return <a href={url} target="_blank" download={appendix.nazwa_oryginalna}>{appendix.nazwa_oryginalna}</a>;
+            return <Row className="margin-top-default">
+              <Col>
+                {appendix.nazwa_oryginalna}
+                <Button className="appendix-download-button" onClick={e=>{onAppendixDownload(appendix.id)}}>
+                  <FontAwesomeIcon icon={faDownload}></FontAwesomeIcon>
+                </Button>
+                <Button className="appendix-remove-button" onClick={e=>{onAppendixRemove(appendix)}}>
+                  <FontAwesomeIcon icon={faTrash}></FontAwesomeIcon>
+                </Button>
+              </Col>
+            </Row>})
+          }
         </Col>
       </Row>  
       </div> 
