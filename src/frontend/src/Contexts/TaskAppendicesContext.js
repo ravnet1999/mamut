@@ -38,6 +38,7 @@ const TaskAppendicesContextProvider = ({children}) => {
     }).catch((err) => {
       console.log(err);
     }).finally(() => {
+      setSelectedAppendices(null);
       setAppendicesUploading(false);
     });
   };

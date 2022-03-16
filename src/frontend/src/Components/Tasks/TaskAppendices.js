@@ -38,7 +38,7 @@ const TaskAppendices = (props) => {
           <div className="task-appendices-content">
             <input id="task-appendices" name="task-appendices" key={appendicesKey||''} multiple className={'form-control', 'margin-top-reduced',  'margin-bottom-default'} type="file" onChange={onAppendicesChange} />  
             {!appendicesUploading && 
-              <Button disabled={appendicesDownloading.length>0 || appendicesRemoving.length>0} className="appendices-add-button" onClick={e=>onAppendicesUpload(task.id)}>
+              <Button disabled={!selectedAppendices || appendicesDownloading.length>0 || appendicesRemoving.length>0} className="appendices-add-button" onClick={e=>onAppendicesUpload(task.id)}>
                 <FontAwesomeIcon icon={faUpload}></FontAwesomeIcon>
               </Button>
             }
