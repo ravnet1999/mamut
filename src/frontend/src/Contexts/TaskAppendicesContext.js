@@ -1,11 +1,8 @@
 import React, {createContext, useState } from 'react';
 
 import axios from 'axios';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faDownload, faTrash } from '@fortawesome/free-solid-svg-icons';
 import TaskHandler from '../Handlers/TaskHandler';
 import appConfig from '../Config/appConfig.json';
-import { Row, Col, Button } from '../Components/bootstrap';
 
 export const TaskAppendicesContext = createContext();
 
@@ -72,31 +69,13 @@ const TaskAppendicesContextProvider = ({children}) => {
   //   window.URL.revokeObjectURL(appendixDownloadUrl);
   // }
 
-  const buildAppendicesDownloadButtons = () => {
-    return appendices.map((appendix, key) => {
-      // let url = `${appConfig.URLs.domain}/${appConfig.URLs.appendices}/${appendix.id}/file`;
-      // return <a href={url} target="_blank" download={appendix.nazwa_oryginalna}>{appendix.nazwa_oryginalna}</a>;
-      return <Row className="margin-top-default">
-          <Col>
-            {appendix.nazwa_oryginalna}
-            <Button className="appendix-download-button" onClick={e=>{onAppendixDownload(appendix.id)}}>
-              <FontAwesomeIcon icon={faDownload}></FontAwesomeIcon>
-            </Button>
-            <Button className="appendix-remove-button" onClick={e=>{onAppendixRemove(appendix)}}>
-              <FontAwesomeIcon icon={faTrash}></FontAwesomeIcon>
-            </Button>
-          </Col>
-        </Row>
-    });    
-  } 
-
   const onAppendixRemove = () => {
 
   }
 
   return (
     <div>
-      <TaskAppendicesContext.Provider value={{ appendices, setAppendices, selectedAppendices, setSelectedAppendices, taskAppendicesKey, setTaskAppendicesKey, onAppendicesChange, onAppendicesUpload, onAppendixDownload, buildAppendicesDownloadButtons, onAppendixRemove }} >
+      <TaskAppendicesContext.Provider value={{ appendices, setAppendices, selectedAppendices, setSelectedAppendices, taskAppendicesKey, setTaskAppendicesKey, onAppendicesChange, onAppendicesUpload, onAppendixDownload, onAppendixRemove }} >
         {children}
       </TaskAppendicesContext.Provider>
     </div>
