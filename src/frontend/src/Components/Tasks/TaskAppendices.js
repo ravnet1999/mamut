@@ -38,7 +38,7 @@ const TaskAppendices = (props) => {
           <div className="task-appendices-content">
             <input id="task-appendices" name="task-appendices" key={appendicesKey||''} multiple className={'form-control', 'margin-top-reduced',  'margin-bottom-default'} type="file" onChange={onAppendicesChange} />  
             {!appendicesUploading && 
-              <Button className="appendices-add-button" onClick={e=>onAppendicesUpload(task.id)}>
+              <Button disabled={appendicesDownloading.length>0 || appendicesRemoving.length>0} className="appendices-add-button" onClick={e=>onAppendicesUpload(task.id)}>
                 <FontAwesomeIcon icon={faUpload}></FontAwesomeIcon>
               </Button>
             }
@@ -52,14 +52,14 @@ const TaskAppendices = (props) => {
                 {appendix.nazwa_oryginalna}
                 
                 {!appendicesDownloading.includes(appendix.id) && 
-                  <Button className="appendix-download-button" onClick={e=>onAppendixDownload(appendix.id)}>
+                  <Button disabled={appendicesUploading || appendicesDownloading.length>0 || appendicesRemoving.length>0} className="appendix-download-button" onClick={e=>onAppendixDownload(appendix.id)}>
                     <FontAwesomeIcon icon={faDownload}></FontAwesomeIcon>
                   </Button>
                 }
                 <ClipLoader loading={appendicesDownloading.includes(appendix.id)} size={20} />
 
                 {!appendicesRemoving.includes(appendix.id) &&
-                  <Button className="appendix-remove-button" onClick={e=>onAppendixRemove(appendix)}>
+                  <Button disabled={appendicesUploading || appendicesDownloading.length>0 || appendicesRemoving.length>0} className="appendix-remove-button" onClick={e=>onAppendixRemove(appendix)}>
                     <FontAwesomeIcon icon={faTrash}></FontAwesomeIcon>
                   </Button>
                 }
