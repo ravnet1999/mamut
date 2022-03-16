@@ -36,8 +36,8 @@ const TaskAppendices = (props) => {
             <Button className="appendices-add-button" onClick={event => onAppendicesUpload(task.id)}><FontAwesomeIcon icon={faUpload}></FontAwesomeIcon></Button>
           </div>
           { appendices &&  appendices.map((appendix, key) => {
-      // let url = `${appConfig.URLs.domain}/${appConfig.URLs.appendices}/${appendix.id}/file`;
-      // return <a href={url} target="_blank" download={appendix.nazwa_oryginalna}>{appendix.nazwa_oryginalna}</a>;
+          // let url = `${appConfig.URLs.domain}/${appConfig.URLs.appendices}/${appendix.id}/file`;
+          // return <a href={url} target="_blank" download={appendix.nazwa_oryginalna}>{appendix.nazwa_oryginalna}</a>;
             return <Row className="margin-top-default">
               <Col>
                 {appendix.nazwa_oryginalna}
