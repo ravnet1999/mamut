@@ -71,7 +71,56 @@ const TaskAppendicesContextProvider = ({children}) => {
   //   setAppendicesDownloading(appendicesDownloadingFiltered);
   // }
 
-  const onAppendixDownload = appendix => {
+  const getCookie = cname => {
+    let name = cname + "=";
+    let decodedCookie = decodeURIComponent(document.cookie);
+    let ca = decodedCookie.split(';');
+    for(let i = 0; i <ca.length; i++) {
+      let c = ca[i];
+      while (c.charAt(0) == ' ') {
+        c = c.substring(1);
+      }
+      if (c.indexOf(name) == 0) {
+        return c.substring(name.length, c.length);
+      }
+    }
+    return "";
+  };
+
+  const deleteCookie = cname => {
+    document.cookie = cname +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+  };
+
+  const getAppendixDownloadedCookieName = appendixId => {
+    return `appendixDownloaded${appendixId}`;
+  };
+
+  const appendixDownloaded = appendixId => {  
+    let appendixDownloadedCookieName = getAppendixDownloadedCookieName(appendixId);     
+    let appendixDownloadedCookie = getCookie(appendixDownloadedCookieName);
+
+    if(appendixDownloadedCookie === "true") {   
+      let appendicesDownloadingFiltered = [...appendicesDownloading];
+      appendicesDownloadingFiltered.filter(appendicesDownloading => appendicesDownloading!==appendixId); 
+      setAppendicesDownloading(appendicesDownloadingFiltered);
+
+      deleteCookie(appendixDownloadedCookieName);  
+
+      return true;
+    }
+
+    return false;
+  };
+
+  const onAppendixDownload = (appendix) => {
+    setAppendicesDownloading([...appendicesDownloading, appendix.id]);
+
+    deleteCookie(getAppendixDownloadedCookieName(appendix.id));
+
+    let appendixDownloadedInterval = setInterval(() => {
+      if(appendixDownloaded(appendix.id)) clearInterval(appendixDownloadedInterval);
+    }, 100); 
+
     let appendixDownloadUrl = `${appConfig.URLs.domain}/${appConfig.URLs.appendices}/${appendix.id}/file`;
 
     let a = document.createElement('a');
