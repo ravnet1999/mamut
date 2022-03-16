@@ -10,6 +10,7 @@ const TaskAppendicesContextProvider = ({children}) => {
   const [appendices, setAppendices] = useState(null);
   const [selectedAppendices, setSelectedAppendices] = useState(null);
   const [taskAppendicesKey, setTaskAppendicesKey] = useState(null);
+  const [appendicesUploading, setAppendicesUploading] = useState(false);  
 
   const onAppendicesChange = event => {
     setSelectedAppendices(event.target.files);       
@@ -20,6 +21,8 @@ const TaskAppendicesContextProvider = ({children}) => {
       // setResponse({"error": true, "messages": ["Wybierz załączniki do załadowania."]});
       return;
     }
+
+    setAppendicesUploading(true);
 
     const formData = new FormData();
 
@@ -32,6 +35,8 @@ const TaskAppendicesContextProvider = ({children}) => {
       setAppendices([...result.resources, ...appendices])
     }).catch((err) => {
       console.log(err);
+    }).finally(() => {
+      setAppendicesUploading(false);
     });
   };
 
@@ -75,7 +80,7 @@ const TaskAppendicesContextProvider = ({children}) => {
 
   return (
     <div>
-      <TaskAppendicesContext.Provider value={{ appendices, setAppendices, selectedAppendices, setSelectedAppendices, taskAppendicesKey, setTaskAppendicesKey, onAppendicesChange, onAppendicesUpload, onAppendixDownload, onAppendixRemove }} >
+      <TaskAppendicesContext.Provider value={{ appendices, setAppendices, selectedAppendices, setSelectedAppendices, taskAppendicesKey, setTaskAppendicesKey, onAppendicesChange, onAppendicesUpload, onAppendixDownload, onAppendixRemove, appendicesUploading, setAppendicesUploading }} >
         {children}
       </TaskAppendicesContext.Provider>
     </div>
