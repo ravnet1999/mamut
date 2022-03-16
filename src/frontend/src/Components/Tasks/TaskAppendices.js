@@ -52,7 +52,7 @@ const TaskAppendices = (props) => {
                 {appendix.nazwa_oryginalna}
                 
                 {!appendicesDownloading.includes(appendix.id) && 
-                  <Button disabled={appendicesUploading || appendicesDownloading.length>0 || appendicesRemoving.length>0} className="appendix-download-button" onClick={e=>onAppendixDownload(appendix.id)}>
+                  <Button disabled={appendicesUploading || appendicesDownloading.length>0 || appendicesRemoving.length>0} className="appendix-download-button" onClick={e=>onAppendixDownload(appendix)}>
                     <FontAwesomeIcon icon={faDownload}></FontAwesomeIcon>
                   </Button>
                 }
