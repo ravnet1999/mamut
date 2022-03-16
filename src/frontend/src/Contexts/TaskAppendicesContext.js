@@ -43,45 +43,45 @@ const TaskAppendicesContextProvider = ({children}) => {
     });
   };
 
-  const onAppendixDownload = async (appendixId) => {
-    setAppendicesDownloading([...appendicesDownloading, appendixId]);
+  // const onAppendixDownload = async (appendixId) => {
+  //   setAppendicesDownloading([...appendicesDownloading, appendixId]);
 
-    let appendixInfoUrl = `${appConfig.URLs.domain}/${appConfig.URLs.appendices}/${appendixId}/json`;
-    let result = await axios.get(`${appendixInfoUrl}`, {
-      withCredentials: true
-    });
+  //   let appendixInfoUrl = `${appConfig.URLs.domain}/${appConfig.URLs.appendices}/${appendixId}/json`;
+  //   let result = await axios.get(`${appendixInfoUrl}`, {
+  //     withCredentials: true
+  //   });
 
-    // setResponse(result.data);
+  //   // setResponse(result.data);
 
-    if(!result.data.error) {
-      let appendix = result.data.resources;
-      let buffer = new Uint8Array(appendix.data.data);
-      let appendixDownloadUrl = window.URL.createObjectURL(new Blob([buffer], {"type": "application/octet-stream"}));
-      let a = document.createElement('a');
-      a.href = appendixDownloadUrl;
-      a.download = appendix.nazwa_oryginalna;
-      document.body.append(a);
-      a.click();
-      a.remove();
-      window.URL.revokeObjectURL(appendixDownloadUrl);
-    }
+  //   if(!result.data.error) {
+  //     let appendix = result.data.resources;
+  //     let buffer = new Uint8Array(appendix.data.data);
+  //     let appendixDownloadUrl = window.URL.createObjectURL(new Blob([buffer], {"type": "application/octet-stream"}));
+  //     let a = document.createElement('a');
+  //     a.href = appendixDownloadUrl;
+  //     a.download = appendix.nazwa_oryginalna;
+  //     document.body.append(a);
+  //     a.click();
+  //     a.remove();
+  //     window.URL.revokeObjectURL(appendixDownloadUrl);
+  //   }
 
-    let appendicesDownloadingFiltered = [...appendicesDownloading];
-    appendicesDownloadingFiltered.filter(appendicesDownloading => appendicesDownloading!==appendixId); 
-    setAppendicesDownloading(appendicesDownloadingFiltered);
-  }
-
-  // const onAppendixDownload = async (appendix) => {
-  //   let appendixDownloadUrl = `${appConfig.URLs.domain}/${appConfig.URLs.appendices}/${appendix.id}/file`;
-
-  //   let a = document.createElement('a');
-  //   a.href = appendixDownloadUrl;
-  //   a.download = appendix.nazwa_oryginalna;  
-  //   document.body.append(a);
-  //   a.click();
-  //   a.remove();
-  //   window.URL.revokeObjectURL(appendixDownloadUrl);
+  //   let appendicesDownloadingFiltered = [...appendicesDownloading];
+  //   appendicesDownloadingFiltered.filter(appendicesDownloading => appendicesDownloading!==appendixId); 
+  //   setAppendicesDownloading(appendicesDownloadingFiltered);
   // }
+
+  const onAppendixDownload = async (appendix) => {
+    let appendixDownloadUrl = `${appConfig.URLs.domain}/${appConfig.URLs.appendices}/${appendix.id}/file`;
+
+    let a = document.createElement('a');
+    a.href = appendixDownloadUrl;
+    a.download = appendix.nazwa_oryginalna;  
+    document.body.append(a);
+    a.click();
+    a.remove();
+    window.URL.revokeObjectURL(appendixDownloadUrl);
+  }
 
   const onAppendixRemove = async (appendix) => {
     setAppendicesRemoving([...appendicesRemoving, appendix.id]);
