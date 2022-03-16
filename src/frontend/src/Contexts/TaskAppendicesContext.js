@@ -12,6 +12,7 @@ const TaskAppendicesContextProvider = ({children}) => {
   const [taskAppendicesKey, setTaskAppendicesKey] = useState(null);
   const [appendicesUploading, setAppendicesUploading] = useState(false);  
   const [appendicesDownloading, setAppendicesDownloading] = useState([]);
+  const [appendicesRemoving, setAppendicesRemoving] = useState([]);
 
   const onAppendicesChange = event => {
     setSelectedAppendices(event.target.files);       
@@ -81,13 +82,23 @@ const TaskAppendicesContextProvider = ({children}) => {
   //   window.URL.revokeObjectURL(appendixDownloadUrl);
   // }
 
-  const onAppendixRemove = (appendix) => {
+  const onAppendixRemove = async (appendix) => {
+    setAppendicesRemoving([...appendicesRemoving, appendix.id]);
 
+    function sleep (time) {
+      return new Promise((resolve) => setTimeout(resolve, time));
+    }
+
+    await sleep(5000);
+
+    let appendicesRemovingFiltered = [...appendicesRemoving];
+    appendicesRemovingFiltered.filter(appendicesRemoving => appendicesRemoving!==appendix.id); 
+    setAppendicesRemoving(appendicesRemovingFiltered);
   }
 
   return (
     <div>
-      <TaskAppendicesContext.Provider value={{ appendices, setAppendices, selectedAppendices, setSelectedAppendices, taskAppendicesKey, setTaskAppendicesKey, onAppendicesChange, onAppendicesUpload, onAppendixDownload, onAppendixRemove, appendicesUploading, setAppendicesUploading, appendicesDownloading, setAppendicesDownloading }} >
+      <TaskAppendicesContext.Provider value={{ appendices, setAppendices, selectedAppendices, setSelectedAppendices, taskAppendicesKey, setTaskAppendicesKey, onAppendicesChange, onAppendicesUpload, onAppendixDownload, onAppendixRemove, appendicesUploading, setAppendicesUploading, appendicesDownloading, setAppendicesDownloading, appendicesRemoving, setAppendicesRemoving }} >
         {children}
       </TaskAppendicesContext.Provider>
     </div>
