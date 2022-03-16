@@ -41,10 +41,10 @@ const TaskAppendices = (props) => {
             return <Row className="margin-top-default">
               <Col>
                 {appendix.nazwa_oryginalna}
-                <Button className="appendix-download-button" onClick={e=>{onAppendixDownload(appendix.id)}}>
+                <Button className="appendix-download-button" onClick={e=>onAppendixDownload(appendix.id)}>
                   <FontAwesomeIcon icon={faDownload}></FontAwesomeIcon>
                 </Button>
-                <Button className="appendix-remove-button" onClick={e=>{onAppendixRemove(appendix)}}>
+                <Button className="appendix-remove-button" onClick={e=>onAppendixRemove(appendix)}>
                   <FontAwesomeIcon icon={faTrash}></FontAwesomeIcon>
                 </Button>
               </Col>
