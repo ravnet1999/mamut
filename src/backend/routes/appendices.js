@@ -65,7 +65,8 @@ router.get('/:appendixId/file', [authMiddleware], async (req, res, next) => {
       'Expires': 0,
       'Cache-Control': 'must-revalidate',
       'Pragma': 'public',
-      'Content-Length': `${appendix.rozmiar}`
+      'Content-Length': `${appendix.rozmiar}`,
+      'Set-Cookie': `appendixDownloaded${appendix.id}=true; path=/; max-age=3600`
     });
 
     res.end(data);
