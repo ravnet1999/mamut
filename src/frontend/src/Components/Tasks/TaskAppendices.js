@@ -12,7 +12,7 @@ const TaskAppendices = (props) => {
       task,
       appendices, setAppendices,
       selectedAppendices, setSelectedAppendices, 
-      taskAppendicesKey, setTaskAppendicesKey,
+      appendicesKey, setAppendicesKey,
       appendicesUploading, setAppendicesUploading,
       appendicesDownloading, setAppendicesDownloading,
       appendicesRemoving, setAppendicesRemoving,
@@ -36,7 +36,7 @@ const TaskAppendices = (props) => {
         <Col>
           <label for="task-appendices">Załączniki:</label><br/>
           <div className="task-appendices-content">
-            <input id="task-appendices" name="task-appendices" key={taskAppendicesKey||''} multiple className={'form-control', 'margin-top-reduced',  'margin-bottom-default'} type="file" onChange={onAppendicesChange} />  
+            <input id="task-appendices" name="task-appendices" key={appendicesKey||''} multiple className={'form-control', 'margin-top-reduced',  'margin-bottom-default'} type="file" onChange={onAppendicesChange} />  
             {!appendicesUploading && 
               <Button className="appendices-add-button" onClick={e=>onAppendicesUpload(task.id)}>
                 <FontAwesomeIcon icon={faUpload}></FontAwesomeIcon>
