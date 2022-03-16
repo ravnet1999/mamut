@@ -15,6 +15,7 @@ const TaskAppendices = (props) => {
       taskAppendicesKey, setTaskAppendicesKey,
       appendicesUploading, setAppendicesUploading,
       appendicesDownloading, setAppendicesDownloading,
+      appendicesRemoving, setAppendicesRemoving,
       onAppendicesChange,
       onAppendicesUpload,
       onAppendixDownload,
@@ -49,6 +50,7 @@ const TaskAppendices = (props) => {
             return <Row className="margin-top-default">
               <Col>
                 {appendix.nazwa_oryginalna}
+                
                 {!appendicesDownloading.includes(appendix.id) && 
                   <Button className="appendix-download-button" onClick={e=>onAppendixDownload(appendix.id)}>
                     <FontAwesomeIcon icon={faDownload}></FontAwesomeIcon>
@@ -56,9 +58,12 @@ const TaskAppendices = (props) => {
                 }
                 <ClipLoader loading={appendicesDownloading.includes(appendix.id)} size={20} />
 
-                <Button className="appendix-remove-button" onClick={e=>onAppendixRemove(appendix)}>
-                  <FontAwesomeIcon icon={faTrash}></FontAwesomeIcon>
-                </Button>
+                {!appendicesRemoving.includes(appendix.id) &&
+                  <Button className="appendix-remove-button" onClick={e=>onAppendixRemove(appendix)}>
+                    <FontAwesomeIcon icon={faTrash}></FontAwesomeIcon>
+                  </Button>
+                }
+                <ClipLoader loading={appendicesRemoving.includes(appendix.id)} size={20} />
               </Col>
             </Row>})
           }
