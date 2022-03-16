@@ -33,7 +33,7 @@ const TaskAppendices = (props) => {
           <label for="task-appendices">Załączniki:</label><br/>
           <div className="task-appendices-content">
             <input id="task-appendices" name="task-appendices" key={taskAppendicesKey||''} multiple className={'form-control', 'margin-top-reduced',  'margin-bottom-default'} type="file" onChange={onAppendicesChange} />  
-            <Button className="appendices-add-button" onClick={event => onAppendicesUpload(task.id)}><FontAwesomeIcon icon={faUpload}></FontAwesomeIcon></Button>
+            <Button className="appendices-add-button" onClick={e=>onAppendicesUpload(task.id)}><FontAwesomeIcon icon={faUpload}></FontAwesomeIcon></Button>
           </div>
           { appendices &&  appendices.map((appendix, key) => {
           // let url = `${appConfig.URLs.domain}/${appConfig.URLs.appendices}/${appendix.id}/file`;
