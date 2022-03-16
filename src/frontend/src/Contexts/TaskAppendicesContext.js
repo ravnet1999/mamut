@@ -71,7 +71,7 @@ const TaskAppendicesContextProvider = ({children}) => {
   //   setAppendicesDownloading(appendicesDownloadingFiltered);
   // }
 
-  const onAppendixDownload = async (appendix) => {
+  const onAppendixDownload = appendix => {
     let appendixDownloadUrl = `${appConfig.URLs.domain}/${appConfig.URLs.appendices}/${appendix.id}/file`;
 
     let a = document.createElement('a');
