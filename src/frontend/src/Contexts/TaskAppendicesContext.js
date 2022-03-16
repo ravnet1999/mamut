@@ -11,6 +11,7 @@ const TaskAppendicesContextProvider = ({children}) => {
   const [selectedAppendices, setSelectedAppendices] = useState(null);
   const [taskAppendicesKey, setTaskAppendicesKey] = useState(null);
   const [appendicesUploading, setAppendicesUploading] = useState(false);  
+  const [appendicesDownloading, setAppendicesDownloading] = useState([]);
 
   const onAppendicesChange = event => {
     setSelectedAppendices(event.target.files);       
@@ -41,6 +42,8 @@ const TaskAppendicesContextProvider = ({children}) => {
   };
 
   const onAppendixDownload = async (appendixId) => {
+    setAppendicesDownloading([...appendicesDownloading, appendixId]);
+
     let appendixInfoUrl = `${appConfig.URLs.domain}/${appConfig.URLs.appendices}/${appendixId}/json`;
     let result = await axios.get(`${appendixInfoUrl}`, {
       withCredentials: true
@@ -48,18 +51,22 @@ const TaskAppendicesContextProvider = ({children}) => {
 
     // setResponse(result.data);
 
-    if(result.data.error) return;
+    if(!result.data.error) {
+      let appendix = result.data.resources;
+      let buffer = new Uint8Array(appendix.data.data);
+      let appendixDownloadUrl = window.URL.createObjectURL(new Blob([buffer], {"type": "application/octet-stream"}));
+      let a = document.createElement('a');
+      a.href = appendixDownloadUrl;
+      a.download = appendix.nazwa_oryginalna;
+      document.body.append(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(appendixDownloadUrl);
+    }
 
-    let appendix = result.data.resources;
-    let buffer = new Uint8Array(appendix.data.data);
-    let appendixDownloadUrl = window.URL.createObjectURL(new Blob([buffer], {"type": "application/octet-stream"}));
-    let a = document.createElement('a');
-    a.href = appendixDownloadUrl;
-    a.download = appendix.nazwa_oryginalna;
-    document.body.append(a);
-    a.click();
-    a.remove();
-    window.URL.revokeObjectURL(appendixDownloadUrl);
+    let appendicesDownloadingFiltered = [...appendicesDownloading];
+    appendicesDownloadingFiltered.filter(appendicesDownloading => appendicesDownloading!==appendixId); 
+    setAppendicesDownloading(appendicesDownloadingFiltered);
   }
 
   // const onAppendixDownload = async (appendix) => {
@@ -80,7 +87,7 @@ const TaskAppendicesContextProvider = ({children}) => {
 
   return (
     <div>
-      <TaskAppendicesContext.Provider value={{ appendices, setAppendices, selectedAppendices, setSelectedAppendices, taskAppendicesKey, setTaskAppendicesKey, onAppendicesChange, onAppendicesUpload, onAppendixDownload, onAppendixRemove, appendicesUploading, setAppendicesUploading }} >
+      <TaskAppendicesContext.Provider value={{ appendices, setAppendices, selectedAppendices, setSelectedAppendices, taskAppendicesKey, setTaskAppendicesKey, onAppendicesChange, onAppendicesUpload, onAppendixDownload, onAppendixRemove, appendicesUploading, setAppendicesUploading, appendicesDownloading, setAppendicesDownloading }} >
         {children}
       </TaskAppendicesContext.Provider>
     </div>
