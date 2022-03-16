@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUpload, faDownload, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { WithContexts } from '../../HOCs/WithContexts';
 import { TaskAppendicesContext } from '../../Contexts/TaskAppendicesContext';
+import ClipLoader from "react-spinners/ClipLoader";
 
 const TaskAppendices = (props) => {
     const { 
@@ -12,6 +13,7 @@ const TaskAppendices = (props) => {
       appendices, setAppendices,
       selectedAppendices, setSelectedAppendices, 
       taskAppendicesKey, setTaskAppendicesKey,
+      appendicesUploading, setAppendicesUploading,
       onAppendicesChange,
       onAppendicesUpload,
       onAppendixDownload,
@@ -33,7 +35,8 @@ const TaskAppendices = (props) => {
           <label for="task-appendices">Załączniki:</label><br/>
           <div className="task-appendices-content">
             <input id="task-appendices" name="task-appendices" key={taskAppendicesKey||''} multiple className={'form-control', 'margin-top-reduced',  'margin-bottom-default'} type="file" onChange={onAppendicesChange} />  
-            <Button className="appendices-add-button" onClick={e=>onAppendicesUpload(task.id)}><FontAwesomeIcon icon={faUpload}></FontAwesomeIcon></Button>
+            {!appendicesUploading && <Button className="appendices-add-button" onClick={e=>onAppendicesUpload(task.id)}><FontAwesomeIcon icon={faUpload}></FontAwesomeIcon></Button>}
+            <ClipLoader loading={appendicesUploading} size={20} />
           </div>
           { appendices &&  appendices.map((appendix, key) => {
           // let url = `${appConfig.URLs.domain}/${appConfig.URLs.appendices}/${appendix.id}/file`;
