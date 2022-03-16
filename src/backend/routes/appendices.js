@@ -27,9 +27,6 @@ router.post('/:taskId', [authMiddleware], (req, res, next) => {
           response(res, true, ['Wystąpił błąd poczas próby utworzenia nowych załączników.', JSON.stringify(err)], []);
           return;
       });
-    } else {
-      response(res, true, ['Wystąpił błąd poczas próby utworzenia nowych załączników.'], []);
-      return;
     }
   });
 });
