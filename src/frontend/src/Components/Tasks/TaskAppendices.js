@@ -24,7 +24,7 @@ const TaskAppendices = (props) => {
       AppendixHandler.getByTaskId(task.id).then(result => {
         setAppendices(result.resources);
       });
-    }, [task])
+    }, [task]);
 
     return (
       <div className="form-group task-appendices-container margin-bottom-default">
