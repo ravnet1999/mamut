@@ -18,8 +18,6 @@ const TaskAppendices = (props) => {
       onAppendixRemove
     } = props;
 
-    console.log("task",task);
-
     useEffect(() => {
       if(!task) return;
   
