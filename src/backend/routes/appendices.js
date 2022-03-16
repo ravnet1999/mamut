@@ -93,7 +93,7 @@ router.get('/:appendixId/json', [authMiddleware], async (req, res, next) => {
 
   fs.readFile(path, function(err, data) {
     if (err) {
-      console.log(err)
+      console.log(err);
       response(res, true, ['Wystąpił błąd poczas próby pobrania z translatora informacji o załączniku.', JSON.stringify(err)], []);
       return;
     }
