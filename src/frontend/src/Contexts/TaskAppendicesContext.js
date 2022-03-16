@@ -80,7 +80,6 @@ const TaskAppendicesContextProvider = ({children}) => {
     document.body.append(a);
     a.click();
     a.remove();
-    window.URL.revokeObjectURL(appendixDownloadUrl);
   }
 
   const onAppendixRemove = async (appendix) => {
