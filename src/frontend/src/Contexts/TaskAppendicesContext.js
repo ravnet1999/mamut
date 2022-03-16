@@ -15,7 +15,7 @@ const TaskAppendicesContextProvider = ({children}) => {
     setSelectedAppendices(event.target.files);       
   };
 
-  const onAppendicesUpload = (taskId) =>  {
+  const onAppendicesUpload = (taskId) => {
     if(!selectedAppendices) {
       // setResponse({"error": true, "messages": ["Wybierz załączniki do załadowania."]});
       return;
