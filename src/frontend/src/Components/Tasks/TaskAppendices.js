@@ -50,45 +50,46 @@ const TaskAppendices = (props) => {
                 <FontAwesomeIcon className="fa-sm" icon={faUpload}></FontAwesomeIcon>
               </Button>
             }
-            <span className="clip-loader"><ClipLoader loading={appendicesUploading} size={20} /></span>         
-            <CardColumns style={{columnCount: "1"}}>
-            { appendices &&  appendices.map((appendix, key) => {
-            // let url = `${appConfig.URLs.domain}/${appConfig.URLs.appendices}/${appendix.id}/file`;
-            // return <a href={url} target="_blank" download={appendix.nazwa_oryginalna}>{appendix.nazwa_oryginalna}</a>;
-              return <Card style={{width: "fit-content"}}>
-                <Card.Body>
-                  <Card.Text>
-                    <div style={{whiteSpace: "nowrap"}}>
-                      {appendix.nazwa_oryginalna}
-                      
-                      {!appendicesDownloading.includes(appendix.id) && 
-                        <Button data-tip="Pobierz" disabled={appendicesUploading || appendicesDownloading.length>0 || appendicesRemoving.length>0} className="appendix-download-button" onClick={e=>onAppendixDownload(appendix)}>
-                          <FontAwesomeIcon className="fa-sm" icon={faDownload}></FontAwesomeIcon>
-                        </Button>
-                      }
-                      <span className="clip-loader">
-                        <ClipLoader loading={appendicesDownloading.includes(appendix.id)} size={20} />
-                      </span>
-
-                      {!appendicesRemoving.includes(appendix.id) &&
-                        <>
-                          <Modal title={appendixRemoveModal.title} description={appendixRemoveModal.description} buttons={appendixRemoveModal.buttons} visible={appendixRemoveModalVisible} onClose={() => setAppendixRemoveModalVisible(false)}></Modal>
-                          <Button data-tip="Usuń" disabled={appendicesUploading || appendicesDownloading.length>0 || appendicesRemoving.length>0} className="appendix-remove-button" onClick={e=>onAppendixRemove(appendix)}>
-                            <FontAwesomeIcon className="fa-sm" icon={faTrash}></FontAwesomeIcon>
+            <span className="clip-loader"><ClipLoader loading={appendicesUploading} size={20} /></span>        
+            { appendices.length > 0 && <CardColumns style={{columnCount: "1"}}>
+              { appendices.map((appendix, key) => {
+              // let url = `${appConfig.URLs.domain}/${appConfig.URLs.appendices}/${appendix.id}/file`;
+              // return <a href={url} target="_blank" download={appendix.nazwa_oryginalna}>{appendix.nazwa_oryginalna}</a>;
+                return <Card style={{width: "fit-content"}}>
+                  <Card.Body>
+                    <Card.Text>
+                      <div style={{whiteSpace: "nowrap"}}>
+                        {appendix.nazwa_oryginalna}
+                        
+                        {!appendicesDownloading.includes(appendix.id) && 
+                          <Button data-tip="Pobierz" disabled={appendicesUploading || appendicesDownloading.length>0 || appendicesRemoving.length>0} className="appendix-download-button" onClick={e=>onAppendixDownload(appendix)}>
+                            <FontAwesomeIcon className="fa-sm" icon={faDownload}></FontAwesomeIcon>
                           </Button>
-                        </>
-                      }
-                      <span className="clip-loader">
-                        <ClipLoader loading={appendicesRemoving.includes(appendix.id)} size={20} />
-                      </span>
-                      <ReactTooltip />
-                    </div>
-                  </Card.Text>
-                </Card.Body>
-              </Card>
-              })
+                        }
+                        <span className="clip-loader">
+                          <ClipLoader loading={appendicesDownloading.includes(appendix.id)} size={20} />
+                        </span>
+
+                        {!appendicesRemoving.includes(appendix.id) &&
+                          <>
+                            <Modal title={appendixRemoveModal.title} description={appendixRemoveModal.description} buttons={appendixRemoveModal.buttons} visible={appendixRemoveModalVisible} onClose={() => setAppendixRemoveModalVisible(false)}></Modal>
+                            <Button data-tip="Usuń" disabled={appendicesUploading || appendicesDownloading.length>0 || appendicesRemoving.length>0} className="appendix-remove-button" onClick={e=>onAppendixRemove(appendix)}>
+                              <FontAwesomeIcon className="fa-sm" icon={faTrash}></FontAwesomeIcon>
+                            </Button>
+                          </>
+                        }
+                        <span className="clip-loader">
+                          <ClipLoader loading={appendicesRemoving.includes(appendix.id)} size={20} />
+                        </span>
+                        <ReactTooltip />
+                      </div>
+                    </Card.Text>
+                  </Card.Body>
+                </Card>
+                })
+              }
+              </CardColumns> 
             }
-            </CardColumns>
           </div>
         </Col>
       </Row>  
