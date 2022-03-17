@@ -38,9 +38,7 @@ class AppendixService {
         fs.mkdirSync(uploadDir, {'recursive': true}, err => {
           if(err) {
             console.log(err);
-            return reject({
-              message: 'Wystąpił problem z utworzeniem katalogu do zapisu załączników.'
-            });
+            return reject('Wystąpił problem z utworzeniem katalogu do zapisu załączników.');
           }
         })
       }
@@ -49,16 +47,12 @@ class AppendixService {
         fsExtra.moveSync(file.path, uploadPath);
       } catch(err) {
         console.log(err);
-        return reject({
-          message: 'Wystąpił problem z przeniesieniem załącznika do katalogu docelowego.'
-        });
+        return reject('Wystąpił problem z przeniesieniem załącznika do katalogu docelowego.');
       }
       
       fs.createReadStream(uploadPath).on('error', function(err) {
         console.log(err);
-        return reject({
-          message: 'Wystąpił problem z utworzeniem strumienia do odczytu pliku załącznika.'
-        });
+        return reject('Wystąpił problem z utworzeniem strumienia do odczytu pliku załącznika.');
       }).pipe(concat({ encoding: 'buffer' }, function (data) {
         var formData = new FormData();
         formData.append("originalFilename", originalFilename);
@@ -89,9 +83,7 @@ class AppendixService {
           });
         }).catch((err) => {
           console.log(err);
-          return reject({
-              message: 'Wystąpił problem z połączeniem z translatorem.'
-          });
+          return reject('Wystąpił problem z połączeniem z translatorem.');
         });
       }))
     })
@@ -105,9 +97,7 @@ class AppendixService {
       fs.unlink(uploadPath, err => {
         if(err) {
           console.log(err);
-          reject({
-            message: `Wystąpił problem z usunięciem pliku załącznika ${uploadPath}.`
-          });
+          reject(`Wystąpił problem z usunięciem pliku załącznika: ${uploadPath}.`);
           return;
         }
 
