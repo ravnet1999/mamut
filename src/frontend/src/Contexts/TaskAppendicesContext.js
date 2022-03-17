@@ -146,8 +146,7 @@ const TaskAppendicesContextProvider = ({children}) => {
             
                 AppendixHandler.delete(appendixId).then((result) => {
                   let appendicesFiltered = [...appendices];
-                  appendicesFiltered = appendicesFiltered.filter(appendix => {
-                    console.log (appendix.id,appendixId)
+                  appendicesFiltered = appendicesFiltered.filter(appendix => {                    
                     return appendix.id!=appendixId
                   });
                   console.log(appendicesFiltered);  
