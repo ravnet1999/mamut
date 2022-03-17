@@ -72,6 +72,10 @@
   margin-left: 5px;
 }
 
+.task-appendices-container .mamut-modal {
+  width: 50%;
+}
+
 .task-main-description {
     font-size: .8em;
     margin: 0 0 3px 20px;
