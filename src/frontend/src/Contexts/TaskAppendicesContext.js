@@ -8,7 +8,6 @@ export const TaskAppendicesContext = createContext();
 const TaskAppendicesContextProvider = ({children}) => {
   const [appendices, setAppendices] = useState(null);
   const [selectedAppendices, setSelectedAppendices] = useState(null);
-  const [appendicesKey, setAppendicesKey] = useState(null);
   const [appendicesUploading, setAppendicesUploading] = useState(false);  
   const [appendicesDownloading, setAppendicesDownloading] = useState([]);
   const [appendicesRemoving, setAppendicesRemoving] = useState([]);
@@ -31,7 +30,6 @@ const TaskAppendicesContextProvider = ({children}) => {
     }
 
     TaskHandler.addAppendices(taskId, formData).then((result) => {
-      setAppendicesKey(Math.random().toString(36)); 
       setAppendices([...result.resources, ...appendices])
     }).catch((err) => {
       console.log(err);
@@ -139,8 +137,7 @@ const TaskAppendicesContextProvider = ({children}) => {
         console.log (appendix.id,appendixId)
         return appendix.id!=appendixId
       });
-      console.log(appendicesFiltered);
-      setAppendicesKey(Math.random().toString(36));  
+      console.log(appendicesFiltered);  
       setAppendices(appendicesFiltered);      
     }).catch((err) => {
       console.log(err);
@@ -153,7 +150,7 @@ const TaskAppendicesContextProvider = ({children}) => {
 
   return (
     <div>
-      <TaskAppendicesContext.Provider value={{ appendices, setAppendices, selectedAppendices, setSelectedAppendices, appendicesKey, setAppendicesKey, onAppendicesChange, onAppendicesUpload, onAppendixDownload, onAppendixRemove, appendicesUploading, setAppendicesUploading, appendicesDownloading, setAppendicesDownloading, appendicesRemoving, setAppendicesRemoving }} >
+      <TaskAppendicesContext.Provider value={{ appendices, setAppendices, selectedAppendices, setSelectedAppendices, onAppendicesChange, onAppendicesUpload, onAppendixDownload, onAppendixRemove, appendicesUploading, setAppendicesUploading, appendicesDownloading, setAppendicesDownloading, appendicesRemoving, setAppendicesRemoving }} >
         {children}
       </TaskAppendicesContext.Provider>
     </div>
