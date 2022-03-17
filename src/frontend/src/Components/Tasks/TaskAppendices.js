@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import AppendixHandler from '../../Handlers/AppendixHandler';
-import { Container, Row, Col, Button, Form } from '../bootstrap';
+import { Container, Row, Col, Button, Form, Card, CardColumns } from '../bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUpload, faDownload, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { WithContexts } from '../../HOCs/WithContexts';
@@ -49,34 +49,41 @@ const TaskAppendices = (props) => {
                 <FontAwesomeIcon icon={faUpload}></FontAwesomeIcon>
               </Button>
             }
-            <ClipLoader loading={appendicesUploading} size={20} />
-          </div>
-          { appendices &&  appendices.map((appendix, key) => {
-          // let url = `${appConfig.URLs.domain}/${appConfig.URLs.appendices}/${appendix.id}/file`;
-          // return <a href={url} target="_blank" download={appendix.nazwa_oryginalna}>{appendix.nazwa_oryginalna}</a>;
-            return <Row className="margin-top-default">
-              <Col>
-                {appendix.nazwa_oryginalna}
-                
-                {!appendicesDownloading.includes(appendix.id) && 
-                  <Button disabled={appendicesUploading || appendicesDownloading.length>0 || appendicesRemoving.length>0} className="appendix-download-button" onClick={e=>onAppendixDownload(appendix)}>
-                    <FontAwesomeIcon icon={faDownload}></FontAwesomeIcon>
-                  </Button>
-                }
-                <ClipLoader loading={appendicesDownloading.includes(appendix.id)} size={20} />
+            <ClipLoader loading={appendicesUploading} size={20} />          
+            <CardColumns style={{columnCount: "1"}}>
+            { appendices &&  appendices.map((appendix, key) => {
+            // let url = `${appConfig.URLs.domain}/${appConfig.URLs.appendices}/${appendix.id}/file`;
+            // return <a href={url} target="_blank" download={appendix.nazwa_oryginalna}>{appendix.nazwa_oryginalna}</a>;
+              return <Card style={{width: "fit-content"}}>
+                <Card.Body>
+                  <Card.Text>
+                    <div style={{whiteSpace: "nowrap"}}>
+                    {appendix.nazwa_oryginalna}
+                    
+                    {!appendicesDownloading.includes(appendix.id) && 
+                      <Button disabled={appendicesUploading || appendicesDownloading.length>0 || appendicesRemoving.length>0} className="appendix-download-button" onClick={e=>onAppendixDownload(appendix)}>
+                        <FontAwesomeIcon icon={faDownload}></FontAwesomeIcon>
+                      </Button>
+                    }
+                    <ClipLoader loading={appendicesDownloading.includes(appendix.id)} size={20} />
 
-                {!appendicesRemoving.includes(appendix.id) &&
-                  <>
-                    <Modal title={appendixRemoveModal.title} description={appendixRemoveModal.description} buttons={appendixRemoveModal.buttons} visible={appendixRemoveModalVisible} onClose={() => setAppendixRemoveModalVisible(false)}></Modal>
-                    <Button disabled={appendicesUploading || appendicesDownloading.length>0 || appendicesRemoving.length>0 || appendixRemoveModalVisible} className="appendix-remove-button" onClick={e=>onAppendixRemove(appendix)}>
-                      <FontAwesomeIcon icon={faTrash}></FontAwesomeIcon>
-                    </Button>
-                  </>
-                }
-                  <ClipLoader loading={appendicesRemoving.includes(appendix.id)} size={20} />                  
-              </Col>
-            </Row>})
-          }
+                    {!appendicesRemoving.includes(appendix.id) &&
+                      <>
+                        <Modal title={appendixRemoveModal.title} description={appendixRemoveModal.description} buttons={appendixRemoveModal.buttons} visible={appendixRemoveModalVisible} onClose={() => setAppendixRemoveModalVisible(false)}></Modal>
+                        <Button disabled={appendicesUploading || appendicesDownloading.length>0 || appendicesRemoving.length>0 || appendixRemoveModalVisible} className="appendix-remove-button" onClick={e=>onAppendixRemove(appendix)}>
+                          <FontAwesomeIcon icon={faTrash}></FontAwesomeIcon>
+                        </Button>
+                      </>
+                    }
+                    <ClipLoader loading={appendicesRemoving.includes(appendix.id)} size={20} />
+                    </div>
+                  </Card.Text>
+                </Card.Body>
+              </Card>
+              })
+            }
+            </CardColumns>
+          </div>
         </Col>
       </Row>  
       </div> 

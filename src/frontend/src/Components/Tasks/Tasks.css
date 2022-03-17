@@ -38,6 +38,23 @@
   padding: 6px 6px;
 }
 
+.task-appendices-container .card-columns {
+  border: 2px solid rgba(0,0,0,.125);
+  border-radius: .25rem;  
+  margin-top: 8px;
+  background-color: #EACF8A;
+  padding: 8px 8px 0 0;
+}
+
+.task-appendices-container .card {
+  background-color: #ECCF8C;
+  margin-left: 8px;
+}
+
+.task-appendices-container .card-body {
+  padding: 10px;
+}
+
 .btn-primary.appendices-add-button, .btn-primary.appendix-download-button, .btn-primary.appendix-remove-button {
   background: black;
   border-color: white;
