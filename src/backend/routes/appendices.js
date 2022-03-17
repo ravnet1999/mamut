@@ -100,6 +100,17 @@ router.get('/:appendixId/json', [authMiddleware], async (req, res, next) => {
   });
 });
 
+router.delete('/:appendixId', [authMiddleware], async (req, res, next) => {
+  try{
+    await appendixService.delete(req.params.appendixId);    
+    response(res, false, ['Pomyślnie usunięto załącznik.'], []);  
+  } catch (err) {
+    console.log(err);
+    response(res, true, ['Wystąpił błąd poczas próby usunięcia załącznika za pośrednictwem translatora.', JSON.stringify(err)], []);
+    return;
+  }
+});
+
 router.get('/task/:taskId', [authMiddleware], async (req, res, next) => { 
   try{
     results = await appendixService.getByTaskId(req.params.taskId); 

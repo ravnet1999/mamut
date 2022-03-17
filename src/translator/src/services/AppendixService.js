@@ -24,6 +24,26 @@ class AppendixService extends Service {
       });
     }
 
+    delete = (appendixId) => {
+      return new Promise((resolve, reject) => {
+        connection.query('DELETE FROM `' + this.tableName + '` WHERE id=?', 
+          [appendixId], (err, results, fields) => {
+            if(err) {            
+              reject(err);
+              return;
+            }
+
+            if(results.affectedRows == 0) {
+              reject('Nie ma takiego załącznika.');
+              return;
+            }
+            
+            resolve();
+            return;
+        });
+      });
+    }
+
     findByTaskId = (taskId) => {
       return new Promise((resolve, reject) => {
         connection.query('SELECT * FROM `' + this.tableName + '` WHERE id_zgloszenia=? ORDER BY nazwa_oryginalna', 

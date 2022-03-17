@@ -97,6 +97,23 @@ class AppendixService {
     })
   }
 
+  delete = (appendixId) => {
+    return new Promise((resolve, reject) => {
+      axios.delete(`${appConfig.URLs.translator}/appendices/${appendixId}`).then((response) => {        
+          parseResponse(response).then((response) => {
+            resolve(response.resources[0]);
+            return;
+          }).catch((err) => {
+              reject(err);
+              return;
+          });
+      }).catch((err) => {
+          reject(err);
+          return;
+      });
+    });
+  }
+
   getByTaskId = taskId => {
     return new Promise((resolve, reject) => {
       axios.get(`${appConfig.URLs.translator}/appendices/task/${taskId}`).then((response) => {        
