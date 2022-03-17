@@ -102,23 +102,34 @@ const TaskAppendicesContextProvider = ({children}) => {
     return `appendixDownloaded${appendixId}`;
   };
 
+  const markAppendixAsDownloaded = (appendixId, appendixDownloadedCookieName) => {
+    let appendicesDownloadingFiltered = [...appendicesDownloading];
+    appendicesDownloadingFiltered = appendicesDownloadingFiltered.filter(appendixDownloading => appendixDownloading!==appendixId); 
+    setAppendicesDownloading(appendicesDownloadingFiltered);
+
+    deleteCookie(appendixDownloadedCookieName);
+  }
+
   const appendixDownloaded = appendixId => {  
     let appendixDownloadedCookieName = getAppendixDownloadedCookieName(appendixId);     
     let appendixDownloadedCookie = getCookie(appendixDownloadedCookieName);
 
-    if(appendixDownloadedCookie === "true") {   
-      let appendicesDownloadingFiltered = [...appendicesDownloading];
-      appendicesDownloadingFiltered = appendicesDownloadingFiltered.filter(appendixDownloading => appendixDownloading!==appendixId); 
-      setAppendicesDownloading(appendicesDownloadingFiltered);
+    if (["true", "false"].includes(appendixDownloadedCookie)) {
+      markAppendixAsDownloaded(appendixId, appendixDownloadedCookieName);
 
-      deleteCookie(appendixDownloadedCookieName); 
-      
-      setResponse({
-        error: false,
-        messages: [ 'Pomyślnie pobrano załącznik.' ]
-      });
-
-      return true;
+      if(appendixDownloadedCookie === "true") {  
+        setResponse({
+          error: false,
+          messages: [ 'Pomyślnie pobrano załącznik.' ]
+        });
+  
+        return true;
+      } else {
+        setResponse({
+          error: false,
+          messages: [ 'Nie udało się pobrać załącznika.' ]
+        });
+      }
     }
 
     return false;

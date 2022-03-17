@@ -1,5 +1,6 @@
 const Service = require('./Service');
 const connection = require('../mysql/connection');
+const charset = require('../helpers/charset');
 
 class AppendixService extends Service {
     constructor(tableName) {
@@ -7,12 +8,21 @@ class AppendixService extends Service {
         this.findByIdEmpty = 'Taki załącznik nie istnieje!';
     }
 
+    translateAppendixOut = file => {
+      for(let key in file) {
+        file[key] = file[key][0];
+      }
+      charset.translateOut(file);
+    }
+
     create = (taskId, file) => {
+      this.translateAppendixOut(file)
+
       return new Promise((resolve, reject) => {
         // connection.query('INSERT INTO `' + this.tableName + '`(id_zgloszenia, nazwa, nazwa_oryginalna, sciezka, rozmiar, typ_mime, zawartosc) VALUES (?,?,?,?,?,?,?)', 
         // [taskId, file.filename[0], file.originalFilename[0], file.path[0], parseInt(file.size[0]), file.contentType[0], file.data[0]], (err, results, fields) => {
         connection.query('INSERT INTO `' + this.tableName + '`(id_zgloszenia, nazwa, nazwa_oryginalna, sciezka, rozmiar, typ_mime) VALUES (?,?,?,?,?,?)', 
-          [taskId, file.filename[0], file.originalFilename[0], file.path[0], parseInt(file.size[0]), file.contentType[0]], (err, results, fields) => {
+          [taskId, file.filename, file.originalFilename, file.path, parseInt(file.size), file.contentType], (err, results, fields) => {
             if(err) {            
               reject(err);
               return;
@@ -53,7 +63,7 @@ class AppendixService extends Service {
               return;
             }
             
-            resolve(results);
+            resolve(charset.translateOut(results));
             return;
         });
       });
