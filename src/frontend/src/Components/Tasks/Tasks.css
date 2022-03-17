@@ -33,7 +33,7 @@
 }
 
 .task-appendices-container {
-  background-color: #E6CB86;
+  background-color: #82B38D;
   border-radius: 3px;
   padding: 6px 6px;
 }
@@ -42,12 +42,12 @@
   border: 2px solid rgba(0,0,0,.125);
   border-radius: .25rem;  
   margin-top: 8px;
-  background-color: #EACF8A;
+  background-color:#8EC49A;
   padding: 8px 8px 0 0;
 }
 
 .task-appendices-container .card {
-  background-color: #ECCF8C;
+  background-color: white;
   margin-left: 8px;
 }
 
