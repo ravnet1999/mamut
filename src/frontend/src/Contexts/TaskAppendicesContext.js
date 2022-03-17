@@ -1,6 +1,6 @@
 import React, {createContext, useState } from 'react';
-
 import TaskHandler from '../Handlers/TaskHandler';
+import AppendixHandler from '../Handlers/AppendixHandler';
 import appConfig from '../Config/appConfig.json';
 
 export const TaskAppendicesContext = createContext();
@@ -130,17 +130,25 @@ const TaskAppendicesContextProvider = ({children}) => {
   }
 
   const onAppendixRemove = async (appendix) => {
-    setAppendicesRemoving([...appendicesRemoving, appendix.id]);
+    let appendixId = appendix.id;
+    setAppendicesRemoving([...appendicesRemoving, appendixId]);
 
-    function sleep (time) {
-      return new Promise((resolve) => setTimeout(resolve, time));
-    }
-
-    await sleep(5000);
-
-    let appendicesRemovingFiltered = [...appendicesRemoving];
-    appendicesRemovingFiltered = appendicesRemovingFiltered.filter(appendixRemoving => appendixRemoving!==appendix.id); 
-    setAppendicesRemoving(appendicesRemovingFiltered);
+    AppendixHandler.delete(appendixId).then((result) => {
+      let appendicesFiltered = [...appendices];
+      appendicesFiltered = appendicesFiltered.filter(appendix => {
+        console.log (appendix.id,appendixId)
+        return appendix.id!=appendixId
+      });
+      console.log(appendicesFiltered);
+      setAppendicesKey(Math.random().toString(36));  
+      setAppendices(appendicesFiltered);      
+    }).catch((err) => {
+      console.log(err);
+    }).finally(() => {
+      let appendicesRemovingFiltered = [...appendicesRemoving];
+      appendicesRemovingFiltered = appendicesRemovingFiltered.filter(appendixRemoving => appendixRemoving!==appendix.id); 
+      setAppendicesRemoving(appendicesRemovingFiltered);
+    });
   }
 
   return (
