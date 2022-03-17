@@ -49,7 +49,7 @@ const TaskAppendices = (props) => {
                 <FontAwesomeIcon icon={faUpload}></FontAwesomeIcon>
               </Button>
             }
-            <ClipLoader loading={appendicesUploading} size={20} />          
+            <span className="clip-loader"><ClipLoader loading={appendicesUploading} size={20} /></span>         
             <CardColumns style={{columnCount: "1"}}>
             { appendices &&  appendices.map((appendix, key) => {
             // let url = `${appConfig.URLs.domain}/${appConfig.URLs.appendices}/${appendix.id}/file`;
@@ -65,7 +65,9 @@ const TaskAppendices = (props) => {
                         <FontAwesomeIcon icon={faDownload}></FontAwesomeIcon>
                       </Button>
                     }
-                    <ClipLoader loading={appendicesDownloading.includes(appendix.id)} size={20} />
+                    <span className="clip-loader">
+                      <ClipLoader loading={appendicesDownloading.includes(appendix.id)} size={20} />
+                    </span>
 
                     {!appendicesRemoving.includes(appendix.id) &&
                       <>
@@ -75,7 +77,9 @@ const TaskAppendices = (props) => {
                         </Button>
                       </>
                     }
-                    <ClipLoader loading={appendicesRemoving.includes(appendix.id)} size={20} />
+                    <span className="clip-loader">
+                      <ClipLoader loading={appendicesRemoving.includes(appendix.id)} size={20} />
+                    </span>
                     </div>
                   </Card.Text>
                 </Card.Body>
