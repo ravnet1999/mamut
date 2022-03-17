@@ -45,7 +45,7 @@ const TaskAppendices = (props) => {
           <div className="task-appendices-content">
             <input id="task-appendices" name="task-appendices" key={appendicesKey||''} multiple className={'form-control', 'margin-top-reduced',  'margin-bottom-default'} type="file" onChange={onAppendicesChange} />  
             {!appendicesUploading && 
-              <Button disabled={!selectedAppendices || appendicesDownloading.length>0 || appendicesRemoving.length>0} className="appendices-add-button" onClick={e=>onAppendicesUpload(task.id)}>
+              <Button disabled={!selectedAppendices || appendicesDownloading.length>0 || appendicesRemoving.length>0 || appendixRemoveModalVisible} className="appendices-add-button" onClick={e=>onAppendicesUpload(task.id)}>
                 <FontAwesomeIcon icon={faUpload}></FontAwesomeIcon>
               </Button>
             }
@@ -61,7 +61,7 @@ const TaskAppendices = (props) => {
                     {appendix.nazwa_oryginalna}
                     
                     {!appendicesDownloading.includes(appendix.id) && 
-                      <Button disabled={appendicesUploading || appendicesDownloading.length>0 || appendicesRemoving.length>0} className="appendix-download-button" onClick={e=>onAppendixDownload(appendix)}>
+                      <Button disabled={appendicesUploading || appendicesDownloading.length>0 || appendicesRemoving.length>0 || appendixRemoveModalVisible} className="appendix-download-button" onClick={e=>onAppendixDownload(appendix)}>
                         <FontAwesomeIcon icon={faDownload}></FontAwesomeIcon>
                       </Button>
                     }
