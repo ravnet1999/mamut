@@ -11,6 +11,12 @@ const TaskAppendicesContextProvider = ({children}) => {
   const [appendicesUploading, setAppendicesUploading] = useState(false);  
   const [appendicesDownloading, setAppendicesDownloading] = useState([]);
   const [appendicesRemoving, setAppendicesRemoving] = useState([]);
+  const [modal, setModal] = useState({
+    title: '',
+    description: '',
+    buttons: []
+  });
+  const [modalVisible, setModalVisible] = useState(false);
 
   const onAppendicesChange = event => {
     setSelectedAppendices(event.target.files);       
@@ -128,29 +134,42 @@ const TaskAppendicesContextProvider = ({children}) => {
   }
 
   const onAppendixRemove = async (appendix) => {
-    let appendixId = appendix.id;
-    setAppendicesRemoving([...appendicesRemoving, appendixId]);
-
-    AppendixHandler.delete(appendixId).then((result) => {
-      let appendicesFiltered = [...appendices];
-      appendicesFiltered = appendicesFiltered.filter(appendix => {
-        console.log (appendix.id,appendixId)
-        return appendix.id!=appendixId
-      });
-      console.log(appendicesFiltered);  
-      setAppendices(appendicesFiltered);      
-    }).catch((err) => {
-      console.log(err);
-    }).finally(() => {
-      let appendicesRemovingFiltered = [...appendicesRemoving];
-      appendicesRemovingFiltered = appendicesRemovingFiltered.filter(appendixRemoving => appendixRemoving!==appendix.id); 
-      setAppendicesRemoving(appendicesRemovingFiltered);
-    });
+    setModal({
+      title: `Czy na pewno chcesz usunąć załącznik ${appendix.nazwa_oryginalna}?`,
+      description: '',
+      buttons: [
+          {
+              name: 'Potwierdź',
+              method: () => {
+                let appendixId = appendix.id;
+                setAppendicesRemoving([...appendicesRemoving, appendixId]);
+            
+                AppendixHandler.delete(appendixId).then((result) => {
+                  let appendicesFiltered = [...appendices];
+                  appendicesFiltered = appendicesFiltered.filter(appendix => {
+                    console.log (appendix.id,appendixId)
+                    return appendix.id!=appendixId
+                  });
+                  console.log(appendicesFiltered);  
+                  setAppendices(appendicesFiltered);      
+                }).catch((err) => {
+                  console.log(err);
+                }).finally(() => {
+                  let appendicesRemovingFiltered = [...appendicesRemoving];
+                  appendicesRemovingFiltered = appendicesRemovingFiltered.filter(appendixRemoving => appendixRemoving!==appendix.id); 
+                  setAppendicesRemoving(appendicesRemovingFiltered);
+                });
+                  setModalVisible(false);
+              },
+          }
+      ]
+    }); 
+    setModalVisible(true);
   }
 
   return (
     <div>
-      <TaskAppendicesContext.Provider value={{ appendices, setAppendices, selectedAppendices, setSelectedAppendices, onAppendicesChange, onAppendicesUpload, onAppendixDownload, onAppendixRemove, appendicesUploading, setAppendicesUploading, appendicesDownloading, setAppendicesDownloading, appendicesRemoving, setAppendicesRemoving }} >
+      <TaskAppendicesContext.Provider value={{ appendices, setAppendices, selectedAppendices, setSelectedAppendices, onAppendicesChange, onAppendicesUpload, onAppendixDownload, onAppendixRemove, appendicesUploading, setAppendicesUploading, appendicesDownloading, setAppendicesDownloading, appendicesRemoving, setAppendicesRemoving, modal, setModal, modalVisible, setModalVisible }} >
         {children}
       </TaskAppendicesContext.Provider>
     </div>
