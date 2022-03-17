@@ -6,6 +6,7 @@ import { faUpload, faDownload, faTrash } from '@fortawesome/free-solid-svg-icons
 import { WithContexts } from '../../HOCs/WithContexts';
 import { TaskAppendicesContext } from '../../Contexts/TaskAppendicesContext';
 import ClipLoader from "react-spinners/ClipLoader";
+import Modal from '../Modal/Modal';
 
 const TaskAppendices = (props) => {
     const { 
@@ -16,6 +17,8 @@ const TaskAppendices = (props) => {
       appendicesUploading, setAppendicesUploading,
       appendicesDownloading, setAppendicesDownloading,
       appendicesRemoving, setAppendicesRemoving,
+      modal, setModal,
+      modalVisible, setModalVisible,
       onAppendicesChange,
       onAppendicesUpload,
       onAppendixDownload,
@@ -59,11 +62,14 @@ const TaskAppendices = (props) => {
                 <ClipLoader loading={appendicesDownloading.includes(appendix.id)} size={20} />
 
                 {!appendicesRemoving.includes(appendix.id) &&
-                  <Button disabled={appendicesUploading || appendicesDownloading.length>0 || appendicesRemoving.length>0} className="appendix-remove-button" onClick={e=>onAppendixRemove(appendix)}>
-                    <FontAwesomeIcon icon={faTrash}></FontAwesomeIcon>
-                  </Button>
+                  <>
+                    <Modal title={modal.title} description={modal.description} buttons={modal.buttons} visible={modalVisible} onClose={() => setModalVisible(false)}></Modal>
+                    <Button disabled={appendicesUploading || appendicesDownloading.length>0 || appendicesRemoving.length>0 || modalVisible} className="appendix-remove-button" onClick={e=>onAppendixRemove(appendix)}>
+                      <FontAwesomeIcon icon={faTrash}></FontAwesomeIcon>
+                    </Button>
+                  </>
                 }
-                <ClipLoader loading={appendicesRemoving.includes(appendix.id)} size={20} />
+                  <ClipLoader loading={appendicesRemoving.includes(appendix.id)} size={20} />                  
               </Col>
             </Row>})
           }
