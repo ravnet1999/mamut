@@ -62,6 +62,10 @@
   margin-left: 5px;
 }
 
+ .btn-primary.appendix-download-button, .btn-primary.appendix-remove-button {
+  padding: .200rem .50rem;
+}
+
 .btn-primary.appendices-add-button:hover, .btn-primary.appendix-download-button:hover, .btn-primary.appendix-remove-button:hover {
   background: white;
   border-color: black;
