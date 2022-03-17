@@ -126,7 +126,7 @@ router.delete('/:appendixId', [authMiddleware], async (req, res, next) => {
     response(res, false, ['Pomyślnie usunięto załącznik.'], []);  
   } catch (err) {
     console.log(err);
-    response(res, true, ['Wystąpił błąd poczas próby usunięcia załącznika za pośrednictwem translatora.', JSON.stringify(err)], []);
+    response(res, true, ['Wystąpił błąd poczas próby usunięcia załącznika.', JSON.stringify(err)], []);
     return;
   }
 });
