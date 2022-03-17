@@ -9,6 +9,7 @@ const TaskAppendicesContextProvider = ({children}) => {
   const [response, setResponse] = useState(null);
   const [appendices, setAppendices] = useState(null);
   const [selectedAppendices, setSelectedAppendices] = useState(null);
+  const [appendicesKey, setAppendicesKey] = useState(null);
   const [appendicesUploading, setAppendicesUploading] = useState(false);  
   const [appendicesDownloading, setAppendicesDownloading] = useState([]);
   const [appendicesRemoving, setAppendicesRemoving] = useState([]);
@@ -37,6 +38,7 @@ const TaskAppendicesContextProvider = ({children}) => {
     }
 
     TaskHandler.addAppendices(taskId, formData).then((result) => {
+      setAppendicesKey(Math.random().toString(36)); 
       setAppendices([...result.resources, ...appendices]);
       setResponse(result);
     }).catch((err) => {
@@ -157,7 +159,8 @@ const TaskAppendicesContextProvider = ({children}) => {
                   appendicesFiltered = appendicesFiltered.filter(appendix => {                    
                     return appendix.id!=appendixId
                   });
-                  console.log(appendicesFiltered);  
+                  console.log(appendicesFiltered);
+                  setAppendicesKey(Math.random().toString(36));   
                   setAppendices(appendicesFiltered);
                   
                   setResponse({
@@ -182,7 +185,7 @@ const TaskAppendicesContextProvider = ({children}) => {
 
   return (
     <div>
-      <TaskAppendicesContext.Provider value={{ appendices, setAppendices, selectedAppendices, setSelectedAppendices, onAppendicesChange, onAppendicesUpload, onAppendixDownload, onAppendixRemove, appendicesUploading, setAppendicesUploading, appendicesDownloading, setAppendicesDownloading, appendicesRemoving, setAppendicesRemoving, appendixRemoveModal, setAppendixRemoveModal, appendixRemoveModalVisible, setAppendixRemoveModalVisible, response, setResponse }} >
+      <TaskAppendicesContext.Provider value={{ appendices, setAppendices, selectedAppendices, setSelectedAppendices, appendicesKey, setAppendicesKey, onAppendicesChange, onAppendicesUpload, onAppendixDownload, onAppendixRemove, appendicesUploading, setAppendicesUploading, appendicesDownloading, setAppendicesDownloading, appendicesRemoving, setAppendicesRemoving, appendixRemoveModal, setAppendixRemoveModal, appendixRemoveModalVisible, setAppendixRemoveModalVisible, response, setResponse }} >
         {children}
       </TaskAppendicesContext.Provider>
     </div>
