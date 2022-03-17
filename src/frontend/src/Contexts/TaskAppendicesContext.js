@@ -126,7 +126,7 @@ const TaskAppendicesContextProvider = ({children}) => {
         return true;
       } else {
         setResponse({
-          error: false,
+          error: true,
           messages: [ 'Nie udało się pobrać załącznika.' ]
         });
       }
