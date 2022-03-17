@@ -8,6 +8,7 @@ import { TaskAppendicesContext } from '../../Contexts/TaskAppendicesContext';
 import ClipLoader from "react-spinners/ClipLoader";
 import Modal from '../Modal/Modal';
 import Alert from '../Alert/Alert';
+import ReactTooltip from 'react-tooltip';
 
 const TaskAppendices = (props) => {
     const { 
@@ -45,7 +46,7 @@ const TaskAppendices = (props) => {
           <div className="task-appendices-content">
             <input id="task-appendices" name="task-appendices" key={appendicesKey||''} multiple className={'form-control', 'margin-top-reduced',  'margin-bottom-default'} type="file" onChange={onAppendicesChange} />  
             {!appendicesUploading && 
-              <Button disabled={!selectedAppendices || appendicesDownloading.length>0 || appendicesRemoving.length>0} className="appendices-add-button" onClick={e=>onAppendicesUpload(task.id)}>
+              <Button data-tip="Wyślij" disabled={!selectedAppendices || appendicesDownloading.length>0 || appendicesRemoving.length>0} className="appendices-add-button" onClick={e=>onAppendicesUpload(task.id)}>
                 <FontAwesomeIcon icon={faUpload}></FontAwesomeIcon>
               </Button>
             }
@@ -58,28 +59,29 @@ const TaskAppendices = (props) => {
                 <Card.Body>
                   <Card.Text>
                     <div style={{whiteSpace: "nowrap"}}>
-                    {appendix.nazwa_oryginalna}
-                    
-                    {!appendicesDownloading.includes(appendix.id) && 
-                      <Button disabled={appendicesUploading || appendicesDownloading.length>0 || appendicesRemoving.length>0} className="appendix-download-button" onClick={e=>onAppendixDownload(appendix)}>
-                        <FontAwesomeIcon className="fa-sm" icon={faDownload}></FontAwesomeIcon>
-                      </Button>
-                    }
-                    <span className="clip-loader">
-                      <ClipLoader loading={appendicesDownloading.includes(appendix.id)} size={20} />
-                    </span>
-
-                    {!appendicesRemoving.includes(appendix.id) &&
-                      <>
-                        <Modal title={appendixRemoveModal.title} description={appendixRemoveModal.description} buttons={appendixRemoveModal.buttons} visible={appendixRemoveModalVisible} onClose={() => setAppendixRemoveModalVisible(false)}></Modal>
-                        <Button disabled={appendicesUploading || appendicesDownloading.length>0 || appendicesRemoving.length>0} className="appendix-remove-button" onClick={e=>onAppendixRemove(appendix)}>
-                          <FontAwesomeIcon className="fa-sm" icon={faTrash}></FontAwesomeIcon>
+                      {appendix.nazwa_oryginalna}
+                      
+                      {!appendicesDownloading.includes(appendix.id) && 
+                        <Button data-tip="Pobierz" disabled={appendicesUploading || appendicesDownloading.length>0 || appendicesRemoving.length>0} className="appendix-download-button" onClick={e=>onAppendixDownload(appendix)}>
+                          <FontAwesomeIcon className="fa-sm" icon={faDownload}></FontAwesomeIcon>
                         </Button>
-                      </>
-                    }
-                    <span className="clip-loader">
-                      <ClipLoader loading={appendicesRemoving.includes(appendix.id)} size={20} />
-                    </span>
+                      }
+                      <span className="clip-loader">
+                        <ClipLoader loading={appendicesDownloading.includes(appendix.id)} size={20} />
+                      </span>
+
+                      {!appendicesRemoving.includes(appendix.id) &&
+                        <>
+                          <Modal title={appendixRemoveModal.title} description={appendixRemoveModal.description} buttons={appendixRemoveModal.buttons} visible={appendixRemoveModalVisible} onClose={() => setAppendixRemoveModalVisible(false)}></Modal>
+                          <Button data-tip="Usuń" disabled={appendicesUploading || appendicesDownloading.length>0 || appendicesRemoving.length>0} className="appendix-remove-button" onClick={e=>onAppendixRemove(appendix)}>
+                            <FontAwesomeIcon className="fa-sm" icon={faTrash}></FontAwesomeIcon>
+                          </Button>
+                        </>
+                      }
+                      <span className="clip-loader">
+                        <ClipLoader loading={appendicesRemoving.includes(appendix.id)} size={20} />
+                      </span>
+                      <ReactTooltip />
                     </div>
                   </Card.Text>
                 </Card.Body>
