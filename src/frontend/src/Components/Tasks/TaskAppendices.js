@@ -7,10 +7,12 @@ import { WithContexts } from '../../HOCs/WithContexts';
 import { TaskAppendicesContext } from '../../Contexts/TaskAppendicesContext';
 import ClipLoader from "react-spinners/ClipLoader";
 import Modal from '../Modal/Modal';
+import Alert from '../Alert/Alert';
 
 const TaskAppendices = (props) => {
     const { 
       task,
+      response, setResponse,
       appendices, setAppendices,
       selectedAppendices, setSelectedAppendices, 
       appendicesKey, setAppendicesKey,
@@ -34,6 +36,8 @@ const TaskAppendices = (props) => {
     }, [task]);
 
     return (
+      <>
+      <Alert response={response}></Alert>
       <div className="form-group task-appendices-container margin-bottom-default">
       <Row>
         <Col>
@@ -76,6 +80,7 @@ const TaskAppendices = (props) => {
         </Col>
       </Row>  
       </div> 
+      </>
     );
 }
 

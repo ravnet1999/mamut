@@ -6,6 +6,7 @@ import appConfig from '../Config/appConfig.json';
 export const TaskAppendicesContext = createContext();
 
 const TaskAppendicesContextProvider = ({children}) => {
+  const [response, setResponse] = useState(null);
   const [appendices, setAppendices] = useState(null);
   const [selectedAppendices, setSelectedAppendices] = useState(null);
   const [appendicesUploading, setAppendicesUploading] = useState(false);  
@@ -36,9 +37,11 @@ const TaskAppendicesContextProvider = ({children}) => {
     }
 
     TaskHandler.addAppendices(taskId, formData).then((result) => {
-      setAppendices([...result.resources, ...appendices])
+      setAppendices([...result.resources, ...appendices]);
+      setResponse(result);
     }).catch((err) => {
       console.log(err);
+      setResponse(err);
     }).finally(() => {
       setSelectedAppendices(null);
       setAppendicesUploading(false);
@@ -106,7 +109,12 @@ const TaskAppendicesContextProvider = ({children}) => {
       appendicesDownloadingFiltered = appendicesDownloadingFiltered.filter(appendixDownloading => appendixDownloading!==appendixId); 
       setAppendicesDownloading(appendicesDownloadingFiltered);
 
-      deleteCookie(appendixDownloadedCookieName);  
+      deleteCookie(appendixDownloadedCookieName); 
+      
+      setResponse({
+        error: false,
+        messages: [ 'Pomyślnie pobrano załącznik.' ]
+      });
 
       return true;
     }
@@ -150,9 +158,15 @@ const TaskAppendicesContextProvider = ({children}) => {
                     return appendix.id!=appendixId
                   });
                   console.log(appendicesFiltered);  
-                  setAppendices(appendicesFiltered);      
+                  setAppendices(appendicesFiltered);
+                  
+                  setResponse({
+                    error: false,
+                    messages: [ 'Pomyślnie usunięto załącznik.' ]
+                  });                  
                 }).catch((err) => {
                   console.log(err);
+                  setResponse(err);
                 }).finally(() => {
                   let appendicesRemovingFiltered = [...appendicesRemoving];
                   appendicesRemovingFiltered = appendicesRemovingFiltered.filter(appendixRemoving => appendixRemoving!==appendix.id); 
@@ -168,7 +182,7 @@ const TaskAppendicesContextProvider = ({children}) => {
 
   return (
     <div>
-      <TaskAppendicesContext.Provider value={{ appendices, setAppendices, selectedAppendices, setSelectedAppendices, onAppendicesChange, onAppendicesUpload, onAppendixDownload, onAppendixRemove, appendicesUploading, setAppendicesUploading, appendicesDownloading, setAppendicesDownloading, appendicesRemoving, setAppendicesRemoving, appendixRemoveModal, setAppendixRemoveModal, appendixRemoveModalVisible, setAppendixRemoveModalVisible }} >
+      <TaskAppendicesContext.Provider value={{ appendices, setAppendices, selectedAppendices, setSelectedAppendices, onAppendicesChange, onAppendicesUpload, onAppendixDownload, onAppendixRemove, appendicesUploading, setAppendicesUploading, appendicesDownloading, setAppendicesDownloading, appendicesRemoving, setAppendicesRemoving, appendixRemoveModal, setAppendixRemoveModal, appendixRemoveModalVisible, setAppendixRemoveModalVisible, response, setResponse }} >
         {children}
       </TaskAppendicesContext.Provider>
     </div>
