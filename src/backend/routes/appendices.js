@@ -36,7 +36,7 @@ router.get('/:appendixId/file', [authMiddleware], async (req, res, next) => {
   try{
     appendix = await appendixService.get(req.params.appendixId);
         
-    if(!appendix) throw "Wystąpił błąd podczas próby pobrania załącznika z translatora";
+    if(!appendix) throw "Wystąpił błąd poczas próby pobrania z translatora informacji o załączniku.";
   } catch (err) {
     console.log(err);
     let newFileName = encodeURIComponent("błąd pobierania");
@@ -49,7 +49,7 @@ router.get('/:appendixId/file', [authMiddleware], async (req, res, next) => {
       'Pragma': 'public',
       'Set-Cookie': `appendixDownloaded${appendix.id}=false; path=/; max-age=3600`
     });
-    return res.end("Wystąpił błąd poczas próby pobrania załącznika");
+    return res.end("Wystąpił błąd poczas próby pobrania z translatora informacji o załączniku.");
   }
 
   let originalFilename = appendix['nazwa_oryginalna'];
@@ -69,7 +69,7 @@ router.get('/:appendixId/file', [authMiddleware], async (req, res, next) => {
         'Pragma': 'public',
         'Set-Cookie': `appendixDownloaded${appendix.id}=false; path=/; max-age=3600`
       });
-      return res.end("Wystąpił błąd poczas próby pobrania załącznika");
+      return res.end("Wystąpił błąd poczas próby wczytania załącznika z pliku.");
     }
 
     // let mimeType = appendix['typ_mime'];
