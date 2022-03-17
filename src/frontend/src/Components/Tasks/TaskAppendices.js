@@ -62,7 +62,7 @@ const TaskAppendices = (props) => {
                     
                     {!appendicesDownloading.includes(appendix.id) && 
                       <Button disabled={appendicesUploading || appendicesDownloading.length>0 || appendicesRemoving.length>0} className="appendix-download-button" onClick={e=>onAppendixDownload(appendix)}>
-                        <FontAwesomeIcon icon={faDownload}></FontAwesomeIcon>
+                        <FontAwesomeIcon className="fa-sm" icon={faDownload}></FontAwesomeIcon>
                       </Button>
                     }
                     <span className="clip-loader">
@@ -73,7 +73,7 @@ const TaskAppendices = (props) => {
                       <>
                         <Modal title={appendixRemoveModal.title} description={appendixRemoveModal.description} buttons={appendixRemoveModal.buttons} visible={appendixRemoveModalVisible} onClose={() => setAppendixRemoveModalVisible(false)}></Modal>
                         <Button disabled={appendicesUploading || appendicesDownloading.length>0 || appendicesRemoving.length>0} className="appendix-remove-button" onClick={e=>onAppendixRemove(appendix)}>
-                          <FontAwesomeIcon icon={faTrash}></FontAwesomeIcon>
+                          <FontAwesomeIcon className="fa-sm" icon={faTrash}></FontAwesomeIcon>
                         </Button>
                       </>
                     }
