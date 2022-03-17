@@ -99,7 +99,7 @@ const TaskAppendicesContextProvider = ({children}) => {
 
     if(appendixDownloadedCookie === "true") {   
       let appendicesDownloadingFiltered = [...appendicesDownloading];
-      appendicesDownloadingFiltered.filter(appendicesDownloading => appendicesDownloading!==appendixId); 
+      appendicesDownloadingFiltered.filter(appendixDownloading => appendixDownloading!==appendixId); 
       setAppendicesDownloading(appendicesDownloadingFiltered);
 
       deleteCookie(appendixDownloadedCookieName);  
@@ -139,7 +139,7 @@ const TaskAppendicesContextProvider = ({children}) => {
     await sleep(5000);
 
     let appendicesRemovingFiltered = [...appendicesRemoving];
-    appendicesRemovingFiltered.filter(appendicesRemoving => appendicesRemoving!==appendix.id); 
+    appendicesRemovingFiltered.filter(appendixRemoving => appendixRemoving!==appendix.id); 
     setAppendicesRemoving(appendicesRemovingFiltered);
   }
 
