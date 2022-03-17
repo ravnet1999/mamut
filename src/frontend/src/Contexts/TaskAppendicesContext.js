@@ -7,7 +7,7 @@ export const TaskAppendicesContext = createContext();
 
 const TaskAppendicesContextProvider = ({children}) => {
   const [response, setResponse] = useState(null);
-  const [appendices, setAppendices] = useState(null);
+  const [appendices, setAppendices] = useState([]);
   const [selectedAppendices, setSelectedAppendices] = useState(null);
   const [appendicesKey, setAppendicesKey] = useState(null);
   const [appendicesUploading, setAppendicesUploading] = useState(false);  
