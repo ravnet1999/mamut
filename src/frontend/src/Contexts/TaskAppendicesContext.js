@@ -11,12 +11,12 @@ const TaskAppendicesContextProvider = ({children}) => {
   const [appendicesUploading, setAppendicesUploading] = useState(false);  
   const [appendicesDownloading, setAppendicesDownloading] = useState([]);
   const [appendicesRemoving, setAppendicesRemoving] = useState([]);
-  const [modal, setModal] = useState({
+  const [appendixRemoveModal, setAppendixRemoveModal] = useState({
     title: '',
     description: '',
     buttons: []
   });
-  const [modalVisible, setModalVisible] = useState(false);
+  const [appendixRemoveModalVisible, setAppendixRemoveModalVisible] = useState(false);
 
   const onAppendicesChange = event => {
     setSelectedAppendices(event.target.files);       
@@ -134,7 +134,7 @@ const TaskAppendicesContextProvider = ({children}) => {
   }
 
   const onAppendixRemove = async (appendix) => {
-    setModal({
+    setAppendixRemoveModal({
       title: `Czy na pewno chcesz usunąć załącznik ${appendix.nazwa_oryginalna}?`,
       description: '',
       buttons: [
@@ -159,17 +159,17 @@ const TaskAppendicesContextProvider = ({children}) => {
                   appendicesRemovingFiltered = appendicesRemovingFiltered.filter(appendixRemoving => appendixRemoving!==appendix.id); 
                   setAppendicesRemoving(appendicesRemovingFiltered);
                 });
-                  setModalVisible(false);
+                  setAppendixRemoveModalVisible(false);
               },
           }
       ]
     }); 
-    setModalVisible(true);
+    setAppendixRemoveModalVisible(true);
   }
 
   return (
     <div>
-      <TaskAppendicesContext.Provider value={{ appendices, setAppendices, selectedAppendices, setSelectedAppendices, onAppendicesChange, onAppendicesUpload, onAppendixDownload, onAppendixRemove, appendicesUploading, setAppendicesUploading, appendicesDownloading, setAppendicesDownloading, appendicesRemoving, setAppendicesRemoving, modal, setModal, modalVisible, setModalVisible }} >
+      <TaskAppendicesContext.Provider value={{ appendices, setAppendices, selectedAppendices, setSelectedAppendices, onAppendicesChange, onAppendicesUpload, onAppendixDownload, onAppendixRemove, appendicesUploading, setAppendicesUploading, appendicesDownloading, setAppendicesDownloading, appendicesRemoving, setAppendicesRemoving, appendixRemoveModal, setAppendixRemoveModal, appendixRemoveModalVisible, setAppendixRemoveModalVisible }} >
         {children}
       </TaskAppendicesContext.Provider>
     </div>

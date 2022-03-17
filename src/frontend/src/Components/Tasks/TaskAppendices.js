@@ -17,8 +17,8 @@ const TaskAppendices = (props) => {
       appendicesUploading, setAppendicesUploading,
       appendicesDownloading, setAppendicesDownloading,
       appendicesRemoving, setAppendicesRemoving,
-      modal, setModal,
-      modalVisible, setModalVisible,
+      appendixRemoveModal, setAppendixRemoveModal,
+      appendixRemoveModalVisible, setAppendixRemoveModalVisible,
       onAppendicesChange,
       onAppendicesUpload,
       onAppendixDownload,
@@ -63,8 +63,8 @@ const TaskAppendices = (props) => {
 
                 {!appendicesRemoving.includes(appendix.id) &&
                   <>
-                    <Modal title={modal.title} description={modal.description} buttons={modal.buttons} visible={modalVisible} onClose={() => setModalVisible(false)}></Modal>
-                    <Button disabled={appendicesUploading || appendicesDownloading.length>0 || appendicesRemoving.length>0 || modalVisible} className="appendix-remove-button" onClick={e=>onAppendixRemove(appendix)}>
+                    <Modal title={appendixRemoveModal.title} description={appendixRemoveModal.description} buttons={appendixRemoveModal.buttons} visible={appendixRemoveModalVisible} onClose={() => setAppendixRemoveModalVisible(false)}></Modal>
+                    <Button disabled={appendicesUploading || appendicesDownloading.length>0 || appendicesRemoving.length>0 || appendixRemoveModalVisible} className="appendix-remove-button" onClick={e=>onAppendixRemove(appendix)}>
                       <FontAwesomeIcon icon={faTrash}></FontAwesomeIcon>
                     </Button>
                   </>
