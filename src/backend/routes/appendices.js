@@ -39,7 +39,16 @@ router.get('/:appendixId/file', [authMiddleware], async (req, res, next) => {
     if(!appendix) throw "Wystąpił błąd podczas próby pobrania załącznika z translatora";
   } catch (err) {
     console.log(err);
-    res.writeHead(404, {'Content-Type': 'text/html; charset=utf-8'});
+    let newFileName = encodeURIComponent("błąd pobierania");
+    res.writeHead(200, {
+      'Content-Description': 'File Transfer',    
+      'Content-Disposition': `attachment;filename*=UTF-8\'\'${newFileName}`,
+      'Content-Type': 'application/octet-stream',
+      'Expires': 0,
+      'Cache-Control': 'must-revalidate',
+      'Pragma': 'public',
+      'Set-Cookie': `appendixDownloaded${appendix.id}=false; path=/; max-age=3600`
+    });
     return res.end("Wystąpił błąd poczas próby pobrania załącznika");
   }
 
@@ -50,16 +59,27 @@ router.get('/:appendixId/file', [authMiddleware], async (req, res, next) => {
   fs.readFile(path, function(err, data) {
     if (err) {
       console.log(err);
-      res.writeHead(404, {'Content-Type': 'text/html; charset=utf-8'});
+      let newFileName = encodeURIComponent("błąd pobierania");
+      res.writeHead(200, {
+        'Content-Description': 'File Transfer',    
+        'Content-Disposition': `attachment;filename*=UTF-8\'\'${newFileName}`,
+        'Content-Type': 'application/octet-stream',
+        'Expires': 0,
+        'Cache-Control': 'must-revalidate',
+        'Pragma': 'public',
+        'Set-Cookie': `appendixDownloaded${appendix.id}=false; path=/; max-age=3600`
+      });
       return res.end("Wystąpił błąd poczas próby pobrania załącznika");
     }
 
     // let mimeType = appendix['typ_mime'];
     // res.writeHead(200, {'Content-Disposition': `attachment; filename="${originalFilename}`, 'Content-Type': mimeType});
 
+    let newFileName = encodeURIComponent(originalFilename);
+
     res.writeHead(200, {
       'Content-Description': 'File Transfer',    
-      'Content-Disposition': `attachment; filename="${originalFilename}`, 
+      'Content-Disposition': `attachment;filename*=UTF-8\'\'${newFileName}`, 
       'Content-Type': 'application/octet-stream',
       'Content-Transfer-Encoding': 'binary',
       'Expires': 0,
