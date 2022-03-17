@@ -67,10 +67,14 @@
 }
 
 .btn-primary.appendices-add-button:hover, .btn-primary.appendix-download-button:hover, .btn-primary.appendix-remove-button:hover {
-  background: white;
-  border-color: black;
+  background: white;  
   color: black;
 }
+
+.btn.btn-primary.appendices-add-button:disabled, .btn-primary.appendix-download-button:disabled, .btn-primary.appendix-remove-button:disabled{
+  border-color: #555;
+}
+
 
 .task-appendices-container .clip-loader {
   margin-left: 5px;
