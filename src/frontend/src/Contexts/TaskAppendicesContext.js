@@ -65,7 +65,7 @@ const TaskAppendicesContextProvider = ({children}) => {
   //   }
 
   //   let appendicesDownloadingFiltered = [...appendicesDownloading];
-  //   appendicesDownloadingFiltered.filter(appendicesDownloading => appendicesDownloading!==appendixId); 
+  //   appendicesDownloadingFiltered = appendicesDownloadingFiltered.filter(appendicesDownloading => appendicesDownloading!==appendixId); 
   //   setAppendicesDownloading(appendicesDownloadingFiltered);
   // }
 
@@ -99,7 +99,7 @@ const TaskAppendicesContextProvider = ({children}) => {
 
     if(appendixDownloadedCookie === "true") {   
       let appendicesDownloadingFiltered = [...appendicesDownloading];
-      appendicesDownloadingFiltered.filter(appendixDownloading => appendixDownloading!==appendixId); 
+      appendicesDownloadingFiltered = appendicesDownloadingFiltered.filter(appendixDownloading => appendixDownloading!==appendixId); 
       setAppendicesDownloading(appendicesDownloadingFiltered);
 
       deleteCookie(appendixDownloadedCookieName);  
@@ -139,7 +139,7 @@ const TaskAppendicesContextProvider = ({children}) => {
     await sleep(5000);
 
     let appendicesRemovingFiltered = [...appendicesRemoving];
-    appendicesRemovingFiltered.filter(appendixRemoving => appendixRemoving!==appendix.id); 
+    appendicesRemovingFiltered = appendicesRemovingFiltered.filter(appendixRemoving => appendixRemoving!==appendix.id); 
     setAppendicesRemoving(appendicesRemovingFiltered);
   }
 
