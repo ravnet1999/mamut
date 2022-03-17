@@ -54,7 +54,7 @@ const TaskAppendices = (props) => {
           { appendices &&  appendices.map((appendix, key) => {
           // let url = `${appConfig.URLs.domain}/${appConfig.URLs.appendices}/${appendix.id}/file`;
           // return <a href={url} target="_blank" download={appendix.nazwa_oryginalna}>{appendix.nazwa_oryginalna}</a>;
-            return <Row className="margin-top-default" key={appendix.id}>
+            return <Row className="margin-top-default">
               <Col>
                 {appendix.nazwa_oryginalna}
                 
