@@ -57,7 +57,7 @@
 
 .btn-primary.appendices-add-button, .btn-primary.appendix-download-button, .btn-primary.appendix-remove-button {
   background: black;
-  border-color: white;
+  border-color: black;
   color: white;
   margin-left: 5px;
 }
