@@ -1,6 +1,5 @@
 import React, {createContext, useState } from 'react';
 
-import axios from 'axios';
 import TaskHandler from '../Handlers/TaskHandler';
 import appConfig from '../Config/appConfig.json';
 
