@@ -98,18 +98,31 @@ class AppendixService {
   }
 
   delete = (appendixId) => {
-    return new Promise((resolve, reject) => {
-      axios.delete(`${appConfig.URLs.translator}/appendices/${appendixId}`).then((response) => {        
-          parseResponse(response).then((response) => {
-            resolve(response.resources[0]);
+    return new Promise(async(resolve, reject) => {
+      let appendix = await this.get(appendixId);
+      let uploadPath = appendix.sciezka;
+
+      fs.unlink(uploadPath, err => {
+        if(err) {
+          console.log(err);
+          reject({
+            message: `Wystąpił problem z usunięciem pliku załącznika ${uploadPath}.`
+          });
+          return;
+        }
+
+        axios.delete(`${appConfig.URLs.translator}/appendices/${appendixId}`).then((response) => {        
+          parseResponse(response).then((response) => {            
+            resolve(`Pomyślnie usunięto plik załącznika ${uploadPath}.`);
             return;
           }).catch((err) => {
               reject(err);
               return;
           });
-      }).catch((err) => {
-          reject(err);
-          return;
+        }).catch((err) => {
+            reject(err);
+            return;
+        });
       });
     });
   }
