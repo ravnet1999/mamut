@@ -65,9 +65,9 @@ app.use('/parser/*', [accessMiddleware], express.static(path.join(__dirname, 'pu
 app.use('/slican', slicanRouter);
 
 https.createServer({
-    key: fs.readFileSync('/certs/ravnet22.key'),
-    cert: fs.readFileSync('/certs/ravnet22.crt'),
-    passphrase: undefined
-}, app).listen(3443);
+    // key: fs.readFileSync('/certs/ravnet22.key'),
+    // cert: fs.readFileSync('/certs/ravnet22.crt'),
+    // passphrase: undefined
+}, app).listen(8080);
 
 module.exports = app;
