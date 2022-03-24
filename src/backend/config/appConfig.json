@@ -65,6 +65,7 @@
         "cykl_cron": "",
         "problem_zadanie": "zadanie",
         "rozliczone": "",
-        "powiadomienie_email": "on"
+        "powiadomienie_email": "on",
+        "rozwiazanie": ""
     }
 }
