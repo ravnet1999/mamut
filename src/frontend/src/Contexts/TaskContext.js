@@ -62,7 +62,7 @@ const TaskContextProvider = ({children}) => {
                     // return <div key={key}><strong>ID:</strong> {task.id}, <strong>Opis:</strong> {task.opis ? task.opis.substr(0, 150) + (task.opis.length > 150 ? '...' : '') : 'Brak opisu'}, <strong>Ostatni etap:</strong> {task.lastEpisode ? task.lastEpisode.rozwiazanie : ''}</div>
                     return (
                         <div key={key} className="active-task">
-                            <div className="hover-cursor hover-underline" onClick={(e) => previewTask(task)}><strong>ID:</strong> {task.id}</div><div><strong>Opis:</strong> {task.opis ? task.opis.substr(0, 150) + (task.opis.length > 150 ? '...' : '') : 'Brak opisu'}</div><div><strong>Ostatni etap:</strong> {task.lastEpisode ? task.lastEpisode.rozwiazanie.substr(0, 150) + (task.lastEpisode.rozwiazanie.length > 150 ? '...' : '') : 'Brak opisu etapu.'} </div>
+                            <div className="hover-cursor hover-underline" onClick={(e) => previewTask(task)}><strong>ID:</strong> {task.id}</div><div><strong>Opis:</strong> {task.opis ? task.opis.substr(0, 150) + (task.opis.length > 150 ? '...' : '') : 'Brak opisu'}</div><div><strong>Ostatni etap:</strong> {task.lastEpisode && task.lastEpisode.rozwiazanie ? task.lastEpisode.rozwiazanie.substr(0, 150) + (task.lastEpisode.rozwiazanie.length > 150 ? '...' : '') : 'Brak opisu etapu.'} </div>
                             <div className="text-right top-right takeover-button"><Button className="small circular task-takeover" onClick={(e) => takeOverTask(task)} disabled={takeOverStarted}><span className="icon-center takeover"><FontAwesomeIcon icon={faPlay}></FontAwesomeIcon></span></Button></div>
                         </div>
                     )
