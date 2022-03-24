@@ -197,7 +197,7 @@ const Task = (props) => {
     }, [appState.episodeDescription])
 
     useEffect(() => {
-        if(!lastEpisode || !appState.travel) return () => {
+        if(!lastEpisode) return () => {
 
         }
         TaskHandler.updateEpisodeTravel(lastEpisode.id, appState.travel ? 1 : 0).then((result) => {
