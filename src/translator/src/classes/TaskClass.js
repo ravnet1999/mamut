@@ -97,7 +97,7 @@ class Task {
                 this.body[taskObjectKey] = taskObject[taskObjectKey];
             }
 
-            return taskStampService.stamp('dodanie zgł.', this.body.id, operatorId);
+            return taskStampService.stamp('DODANIE', this.body.id, operatorId);
         }).then((stampAddTaskResult) => {
             return taskStampService.stamp('nowy etap', this.body.id, operatorId);
         }).then((stampAddEpisodeResult) => {
