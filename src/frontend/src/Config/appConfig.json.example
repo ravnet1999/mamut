@@ -7,7 +7,8 @@
         "operators": "operators",
         "representatives": "representatives",
         "services": "services",
-        "representatives_clients": "representatives_clients"
+        "representatives_clients": "representatives_clients",
+        "appendices": "appendices"
     },
     "cookies": {
         "auth": {
