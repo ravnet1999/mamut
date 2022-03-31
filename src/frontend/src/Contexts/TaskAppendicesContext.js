@@ -20,6 +20,14 @@ const TaskAppendicesContextProvider = ({children}) => {
   });
   const [appendixRemoveModalVisible, setAppendixRemoveModalVisible] = useState(false);
 
+  const [appendicesTags, setAppendicesTags] = useState([]);
+  const [appendicesTagsSuggestions, setAppendicesTagsSuggestions] = useState([
+    { id: 1, name: "Obszar serwerów" },
+    { id: 2, name: "Obszar sieci" },
+    { id: 3, name: "Obszar użytkowników" },
+    { id: 4, name: "Inne" }
+  ]);
+
   const onAppendicesChange = event => {
     setSelectedAppendices(event.target.files);       
   };
@@ -190,9 +198,20 @@ const TaskAppendicesContextProvider = ({children}) => {
     setAppendixRemoveModalVisible(true);
   }
 
+  const onAppendixTagDelete = i => {
+    const newAppendicesTags = appendicesTags.slice(0);
+    newAppendicesTags.splice(i, 1);
+    setAppendicesTags(newAppendicesTags);
+  }
+
+  const onAppendixTagAddition = tag => {
+    console.log(tag);
+    setAppendicesTags([...appendicesTags, tag]);
+  }
+
   return (
     <div>
-      <TaskAppendicesContext.Provider value={{ appendices, setAppendices, selectedAppendices, setSelectedAppendices, appendicesKey, setAppendicesKey, onAppendicesChange, onAppendicesUpload, onAppendixDownload, onAppendixRemove, appendicesUploading, setAppendicesUploading, appendicesDownloading, setAppendicesDownloading, appendicesRemoving, setAppendicesRemoving, appendixRemoveModal, setAppendixRemoveModal, appendixRemoveModalVisible, setAppendixRemoveModalVisible, response, setResponse }} >
+      <TaskAppendicesContext.Provider value={{ appendices, setAppendices, selectedAppendices, setSelectedAppendices, appendicesKey, setAppendicesKey, onAppendicesChange, onAppendicesUpload, onAppendixDownload, onAppendixRemove, appendicesUploading, setAppendicesUploading, appendicesDownloading, setAppendicesDownloading, appendicesRemoving, setAppendicesRemoving, appendixRemoveModal, setAppendixRemoveModal, appendixRemoveModalVisible, setAppendixRemoveModalVisible, response, setResponse, appendicesTags, setAppendicesTags, appendicesTagsSuggestions, setAppendicesTagsSuggestions, onAppendixTagDelete, onAppendixTagAddition }} >
         {children}
       </TaskAppendicesContext.Provider>
     </div>

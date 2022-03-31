@@ -9,6 +9,7 @@ import ClipLoader from "react-spinners/ClipLoader";
 import Modal from '../Modal/Modal';
 import Alert from '../Alert/Alert';
 import ReactTooltip from 'react-tooltip';
+import ReactTags from 'react-tag-autocomplete';
 
 const TaskAppendices = (props) => {
     const { 
@@ -25,7 +26,8 @@ const TaskAppendices = (props) => {
       onAppendicesChange,
       onAppendicesUpload,
       onAppendixDownload,
-      onAppendixRemove
+      onAppendixRemove,
+      appendicesTags, setAppendicesTags, appendicesTagsSuggestions, setAppendicesTagsSuggestions, onAppendixTagDelete, onAppendixTagAddition
     } = props;
 
     useEffect(() => {
@@ -52,6 +54,15 @@ const TaskAppendices = (props) => {
         <Col>
           <label for="task-appendices"><strong>Załączniki:</strong></label><br/>
           <div className="task-appendices-content">
+            <ReactTags
+              tags={appendicesTags}
+              suggestions={appendicesTagsSuggestions}
+              onDelete={onAppendixTagDelete}
+              onAddition={onAppendixTagAddition} 
+              allowNew={true}
+              removeButtonText="Kliknij, aby usunąć tag"
+            />
+
             <input id="task-appendices" name="task-appendices" key={appendicesKey||''} multiple className={'form-control', 'margin-top-reduced',  'margin-bottom-default'} type="file" onChange={onAppendicesChange} />  
             {/* {!appendicesUploading && 
               <Button data-tip="Dodaj" disabled={!selectedAppendices || appendicesDownloading.length>0 || appendicesRemoving.length>0} className="appendices-add-button" onClick={e=>onAppendicesUpload(task.id)}>

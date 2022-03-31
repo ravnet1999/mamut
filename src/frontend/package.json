@@ -24,6 +24,7 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
     "react-spinners": "^0.11.0",
+    "react-tag-autocomplete": "^6.3.0",
     "react-tooltip": "^4.2.21",
     "universal-cookie": "^4.0.3"
   },
