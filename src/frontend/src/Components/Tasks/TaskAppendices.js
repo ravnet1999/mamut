@@ -36,6 +36,14 @@ const TaskAppendices = (props) => {
       });
     }, [task]);
 
+    useEffect(() => {
+      if(!selectedAppendices) {
+        return;
+      }
+  
+      onAppendicesUpload(task.id);
+    }, [selectedAppendices]);
+
     return (
       <>
       <Alert response={response}></Alert>
@@ -45,11 +53,11 @@ const TaskAppendices = (props) => {
           <label for="task-appendices"><strong>Załączniki:</strong></label><br/>
           <div className="task-appendices-content">
             <input id="task-appendices" name="task-appendices" key={appendicesKey||''} multiple className={'form-control', 'margin-top-reduced',  'margin-bottom-default'} type="file" onChange={onAppendicesChange} disabled={appendicesUploading || appendicesDownloading.length>0 || appendicesRemoving.length>0}/>  
-            {!appendicesUploading && 
+            {/* {!appendicesUploading && 
               <Button data-tip="Dodaj" disabled={!selectedAppendices || appendicesDownloading.length>0 || appendicesRemoving.length>0} className="appendices-add-button" onClick={e=>onAppendicesUpload(task.id)}>
                 <FontAwesomeIcon className="fa-sm" icon={faUpload}></FontAwesomeIcon>
               </Button>
-            }
+            } */}
             <span className="clip-loader"><ClipLoader loading={appendicesUploading} size={20} /></span>        
             { appendices.length > 0 && <CardColumns style={{columnCount: "1"}}>
               { appendices.map((appendix, key) => {
