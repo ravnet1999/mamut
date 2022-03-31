@@ -25,10 +25,6 @@ const TaskAppendicesContextProvider = ({children}) => {
   };
 
   const onAppendicesUpload = (taskId) => {
-    if(!selectedAppendices) {
-      return;
-    }
-
     setAppendicesUploading(true);
 
     const formData = new FormData();
