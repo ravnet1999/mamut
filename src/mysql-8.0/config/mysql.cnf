@@ -1,0 +1,14 @@
+[mysqld]
+character-set-server = utf8mb4
+collation-server = utf8mb4_polish_ci
+
+# For users that have the CONNECTION_ADMIN or SUPER privilege, the content of init_connect is not executed. This is done so that an erroneous value for init_connect does not prevent all clients from connecting. For example, the value might contain a statement that has a syntax error, thus causing client connections to fail. Not executing init_connect for users that have the CONNECTION_ADMIN or SUPER privilege enables them to open a connection and fix the init_connect value. If you connect using root and wish to use custom connection collation, please use a non-SUPER account. 
+# init-connect='SET NAMES utf8mb4'
+# init_connect='SET collation_connection = utf8mb4_polish_ci'
+# init-connect='SET NAMES utf8mb4 COLLATE utf8mb4_polish_ci'
+
+[client]
+default-character-set = utf8mb4
+
+[mysql]
+default-character-set = utf8mb4
