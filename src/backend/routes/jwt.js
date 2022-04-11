@@ -16,7 +16,7 @@ router.post('/register', [], async (req, res, next) => {
 
     // Validate user input
     if (!(login && password)) {      
-      response(res, true, ['Wymagany login i hasło.', JSON.stringify(err)], []);
+      return response(res, true, ['Wymagany login i hasło.', JSON.stringify(err)], []);
     }
 
     // check if user already exist
@@ -24,7 +24,7 @@ router.post('/register', [], async (req, res, next) => {
     const oldUser = await JwtUser.findOne({ login });
 
     if (oldUser) {      
-      response(res, true, ['Taki użytkownik już istnieje.'], []);
+      return response(res, true, ['Taki użytkownik już istnieje.'], []);
     }
 
     //Encrypt user password
@@ -48,10 +48,9 @@ router.post('/register', [], async (req, res, next) => {
     jwtUser.token = token;
 
     // return new user
-    response(res, false, ['Pomyślnie zarejestrowano.'], [ jwtUser ]);
-
+    return response(res, false, ['Pomyślnie zarejestrowano.'], [ jwtUser ]);
   } catch (err) {
-    response(res, true, ['Wystąpił problem z rejestracją.', JSON.stringify(err)], []);
+    return response(res, true, ['Wystąpił problem z rejestracją.', JSON.stringify(err)], []);
   }    
 });
 
@@ -63,7 +62,7 @@ router.post('/login', [], async (req, res, next) => {
 
     // Validate user input
     if (!(login && password)) {
-      response(res, true, ['Wymagany login i hasło.'], []);
+      return response(res, true, ['Wymagany login i hasło.'], []);
     }
     // Validate if user exist in our database
     const jwtUser = await JwtUser.findOne({ login });
@@ -82,13 +81,12 @@ router.post('/login', [], async (req, res, next) => {
       jwtUser.token = token;
 
       // user
-      response(res, false, ['Pomyślnie zalogowano.'], [ jwtUser ]);
-    } else {   
-      response(res, true, ['Nieprawidłowy login lub hasło.'], []);
-    }
+      return response(res, false, ['Pomyślnie zalogowano.'], [ jwtUser ]);
+    } 
+      return response(res, true, ['Nieprawidłowy login lub hasło.'], []);
   } catch (err) {
     console.log(err)
-    response(res, true, ['Wystąpił problem z logowaniem.', JSON.stringify(err)], []);
+    return response(res, true, ['Wystąpił problem z logowaniem.', JSON.stringify(err)], []);
   }
     
 });
