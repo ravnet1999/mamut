@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const appConfig = require('../config/appConfig.json');
+const jwtConfig = require('../config/jwtConfig.json');
 const response = require('../src/response');
 
 const verifyToken = (req, res, next) => {
@@ -10,7 +10,7 @@ const verifyToken = (req, res, next) => {
     response(res, true, ['Wymagany token.'], [], '/');
   }
   try {
-    const decoded = jwt.verify(token, appConfig.JWT_TOKEN_KEY);
+    const decoded = jwt.verify(token, jwtConfig.JWT_TOKEN_KEY);
     req.user = decoded;
   } catch (err) {
     response(res, true, ['Nieprawidłowy.'], [], '/');

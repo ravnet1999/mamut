@@ -3,7 +3,7 @@ const router = express.Router();
 const bcrypt = require("bcryptjs");
 const jwt = require('jsonwebtoken');
 const response = require('../src/response');
-const appConfig = require('../config/appConfig.json');
+const jwtConfig = require('../config/jwtConfig.json');
 
 const JwtUser = require("../src/models/JwtUser");
 
@@ -39,7 +39,7 @@ router.post('/register', [], async (req, res, next) => {
     // Create token
     const token = jwt.sign(
       { user_id: jwtUser._id, login },
-      appConfig.JWT_TOKEN_KEY,
+      jwtConfig.JWT_TOKEN_KEY,
       {
         expiresIn: "2h",
       }
@@ -72,7 +72,7 @@ router.post('/login', [], async (req, res, next) => {
       // Create token
       const token = jwt.sign(
         { user_id: jwtUser._id, login },
-        appConfig.JWT_TOKEN_KEY,
+        jwtConfig.JWT_TOKEN_KEY,
         {
           expiresIn: "2h",
         }
