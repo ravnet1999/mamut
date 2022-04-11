@@ -83,8 +83,9 @@ router.post('/login', [], async (req, res, next) => {
 
       // user
       response(res, false, ['Pomyślnie zalogowano.'], [ jwtUser ]);
-    }    
-    response(res, true, ['Nieprawidłowy login lub hasło.'], []);
+    } else {   
+      response(res, true, ['Nieprawidłowy login lub hasło.'], []);
+    }
   } catch (err) {
     console.log(err)
     response(res, true, ['Wystąpił problem z logowaniem.', JSON.stringify(err)], []);
