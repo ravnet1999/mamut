@@ -66,6 +66,8 @@ app.use('/parser/*', [accessMiddleware], express.static(path.join(__dirname, 'pu
 
 app.use('/slican', slicanRouter);
 
+app.use('/api/jwt', [accessMiddleware], require(`./routes/jwt`) );
+
 https.createServer({
     // key: fs.readFileSync('/certs/ravnet22.key'),
     // cert: fs.readFileSync('/certs/ravnet22.crt'),
