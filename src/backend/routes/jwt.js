@@ -16,7 +16,7 @@ router.post('/register', [], async (req, res, next) => {
 
     // Validate user input
     if (!(login && password)) {      
-      return response(res, true, ['Wymagany login i hasło.', JSON.stringify(err)], []);
+      return response(res, true, ['Wymagany login i hasło.'], []);
     }
 
     // check if user already exist
