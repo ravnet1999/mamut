@@ -8,6 +8,7 @@
 /src/backend/middleware/access.js
 /src/backend/middleware/json.js
 /src/backend/config/mailer.json
+/src/backend/config/jwtConfig.json
 /src/backend/public/admin/*
 /src/backend/tasks-appendices/*
 /src/frontend/src/Config/appConfig.json
