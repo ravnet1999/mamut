@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../middleware/auth');
+const jwtAuthMiddleware = require('../middleware/jwtAuth');
 const response = require('../src/response');
 const appendixService = require('../src/service/AppendixService');
 const multiparty = require('multiparty');
@@ -30,7 +31,7 @@ router.post('/:taskId', [authMiddleware], (req, res, next) => {
   });
 });
 
-router.get('/:appendixId/file', [authMiddleware], async (req, res, next) => { 
+let appendixRoute = async (req, res, next) => { 
   let appendix;
 
   try{
@@ -91,7 +92,11 @@ router.get('/:appendixId/file', [authMiddleware], async (req, res, next) => {
 
     res.end(data);
   });
-});
+}
+
+router.get('/:appendixId/file', [authMiddleware], appendixRoute);
+
+router.get('/:appendixId/file/jwt', [jwtAuthMiddleware], appendixRoute);
 
 router.get('/:appendixId/json', [authMiddleware], async (req, res, next) => { 
   let appendix;
