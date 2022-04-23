@@ -19,7 +19,12 @@ const TaskAppendicesContextProvider = ({children}) => {
     buttons: []
   });
   const [appendixRemoveModalVisible, setAppendixRemoveModalVisible] = useState(false);
+  
   const [tags, setTags] = useState([]);
+
+  const [tagToCreate, setTagToCreate] = useState(null);
+  const [tagsToCreate, setTagsToCreate] = useState([]);
+  const [tagsConfirmed, setTagsConfirmed] = useState([]);
 
   const onAppendicesChange = event => {
     setSelectedAppendices(event.target.files);       
@@ -244,9 +249,23 @@ const TaskAppendicesContextProvider = ({children}) => {
     setAppendices([...appendicesUpdated]);
   }
 
+  const onTagToCreateChange = tagName => {
+    setTagToCreate(tagName);
+  }
+  
+  const onTagToCreateConfirm = () => {
+    if(!tagsConfirmed.includes(tagToCreate)) { 
+      setTagsConfirmed([...tagsConfirmed, tagToCreate]);
+    }
+  }
+
+  const onTagConfirmedRemove = tagName => {
+    setTagsConfirmed(tagsConfirmed.filter(name => name != tagName));
+  }
+
   return (
     <div>
-      <TaskAppendicesContext.Provider value={{ appendices, setAppendices, selectedAppendices, setSelectedAppendices, appendicesKey, setAppendicesKey, onAppendicesChange, onAppendicesUpload, onAppendixDownload, onAppendixRemove, appendicesUploading, setAppendicesUploading, appendicesDownloading, setAppendicesDownloading, appendicesRemoving, setAppendicesRemoving, appendixRemoveModal, setAppendixRemoveModal, appendixRemoveModalVisible, setAppendixRemoveModalVisible, response, setResponse, onTagRemove, onTagChange, onTagCreate, tags, setTags }} >
+      <TaskAppendicesContext.Provider value={{ appendices, setAppendices, selectedAppendices, setSelectedAppendices, appendicesKey, setAppendicesKey, onAppendicesChange, onAppendicesUpload, onAppendixDownload, onAppendixRemove, appendicesUploading, setAppendicesUploading, appendicesDownloading, setAppendicesDownloading, appendicesRemoving, setAppendicesRemoving, appendixRemoveModal, setAppendixRemoveModal, appendixRemoveModalVisible, setAppendixRemoveModalVisible, response, setResponse, onTagRemove, onTagChange, onTagCreate, tags, setTags, tagsToCreate, setTagsToCreate, tagsConfirmed, setTagsConfirmed, onTagToCreateChange, onTagToCreateConfirm, onTagConfirmedRemove}} >
         {children}
       </TaskAppendicesContext.Provider>
     </div>
