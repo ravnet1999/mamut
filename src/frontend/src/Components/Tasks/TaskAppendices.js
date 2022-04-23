@@ -26,7 +26,8 @@ const TaskAppendices = (props) => {
       onAppendicesUpload,
       onAppendixDownload,
       onAppendixRemove,
-      tags, setTags, onTagRemove, onTagChange, onTagCreate
+      tags, setTags, onTagRemove, onTagChange, onTagCreate,
+      tagsToCreate, setTagsToCreate, tagsConfirmed, setTagsConfirmer, onTagToCreateChange, onTagToCreateConfirm, onTagConfirmedRemove
     } = props;
 
     useEffect(() => {
@@ -53,12 +54,24 @@ const TaskAppendices = (props) => {
         <Col>
           <label for="task-appendices"><strong>Załączniki:</strong></label><br/>
           <div className="task-appendices-content">
-            <input id="task-appendices" name="task-appendices" key={appendicesKey||''} multiple className={'form-control', 'margin-top-reduced',  'margin-bottom-default'} type="file" onChange={onAppendicesChange} disabled={appendicesUploading || appendicesDownloading.length>0 || appendicesRemoving.length>0}/>  
+            <input key={0} onChange={e=>onTagToCreateChange(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && onTagToCreateConfirm()} placeholder="Wpisz tag i wciśnij ENTER"></input>
+            
+            { tagsConfirmed && tagsConfirmed.map((tag) => {
+              return <Card style={{width: "fit-content"}}>
+                  <Card.Body>
+                    <Card.Text>
+                      { tag } <span onClick={e=>onTagConfirmedRemove(tag)}>x</span>
+                    </Card.Text>
+                  </Card.Body>
+                </Card>
+            })}             
+            
+            <input id="task-appendices" name="task-appendices" key={appendicesKey||''} multiple className={'form-control', 'margin-top-reduced',  'margin-bottom-default'} type="file" onChange={onAppendicesChange} disabled={appendicesUploading || appendicesDownloading.length>0 || appendicesRemoving.length>0 || tagsConfirmed.length == 0 }/>  
             {/* {!appendicesUploading && 
               <Button data-tip="Dodaj" disabled={!selectedAppendices || appendicesDownloading.length>0 || appendicesRemoving.length>0} className="appendices-add-button" onClick={e=>onAppendicesUpload(task.id)}>
                 <FontAwesomeIcon className="fa-sm" icon={faUpload}></FontAwesomeIcon>
               </Button>
-            } */}
+            } */}            
             <span className="clip-loader"><ClipLoader loading={appendicesUploading} size={20} /></span>        
             { appendices.length > 0 && <CardColumns style={{columnCount: "1"}}>
               { appendices.map((appendix, key) => {
@@ -104,7 +117,7 @@ const TaskAppendices = (props) => {
                           <Card>
                             <Card.Body>
                               <Card.Text>
-                                <input key={appendix.id} onChange={e=>onTagChange(appendix, e.target.value)} onKeyPress={(e) => e.key === 'Enter' && onTagCreate(appendix.id)}></input>
+                                <input key={appendix.id} onChange={e=>onTagChange(appendix, e.target.value)} onKeyPress={(e) => e.key === 'Enter' && onTagCreate(appendix.id)} placeholder="Wpisz tag i wciśnij ENTER"></input>
                               </Card.Text>
                             </Card.Body>
                           </Card>
