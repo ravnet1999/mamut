@@ -78,4 +78,13 @@ router.delete('/:taskId', async (req, res, next) => {
   }  
 });
 
+router.delete('/tag/:appendixId/:tagId', async (req, res, next) => {  
+  try {
+    await appendixService.deleteTag(req.params.appendixId, req.params.tagId);
+    response(res, false, ['Pomyślnie usunięto tag do załącznika.']);    
+  } catch(err) {
+    response(res, true, ['Wystąpił błąd podczas próby usunięcia tagu do załącznika', JSON.stringify(err)], []);    
+  }  
+});
+
 module.exports = router;

@@ -117,6 +117,23 @@ class AppendixService {
     });
   }
 
+  deleteTag = (appendixId, tagId) => {
+    return new Promise(async(resolve, reject) => {
+      axios.delete(`${appConfig.URLs.translator}/appendices/tag/${appendixId}/${tagId}`).then((response) => {        
+        parseResponse(response).then((response) => {            
+          resolve(`Pomyślnie usunięto tag do załącznika.`);
+          return;
+        }).catch((err) => {
+            reject(err);
+            return;
+        });
+      }).catch((err) => {
+          reject(err);
+          return;
+      });
+    });
+  }
+
   getByTaskId = taskId => {
     return new Promise((resolve, reject) => {
       axios.get(`${appConfig.URLs.translator}/appendices/task/${taskId}`).then((response) => {        

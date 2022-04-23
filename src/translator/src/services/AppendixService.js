@@ -96,6 +96,46 @@ class AppendixService extends Service {
         });
       });
     }
+
+    deleteTag = (appendixId, tagId) => {
+      console.log('DELETE FROM ' + this.tagsTableName + ' WHERE tagi.id IN ' + 
+      '(SELECT ' + this.tagsTableName + '.id_typu FROM ' + this.tagTypesTableName + ' ' + 
+      'WHERE ' + this.tagTypesTableName + '.nazwa=?) ' +
+      'AND ' + this.tagsTableName + '.id NOT IN (SELECT id_tagu FROM ' + this.appendicesTagsTableName + ');');
+
+      return new Promise((resolve, reject) => {
+        connection.query('DELETE FROM `' + this.appendicesTagsTableName + '` WHERE id_obiektu=? AND id_tagu=? ' + 
+        'AND id_tagu IN (' + 
+        'SELECT ' + this.tagsTableName + '.id FROM ' + this.tagTypesTableName + ', ' + this.tagsTableName + ' ' +
+        'WHERE ' + this.tagTypesTableName + '.id=' + this.tagsTableName + '.id_typu AND ' + this.tagTypesTableName + '.nazwa=?)', 
+          [appendixId, tagId, AppendixService.appendicesTagTypeName], (err, results, fields) => {
+            if(err) {            
+              reject(err);
+              return;
+            }
+
+            if(results.affectedRows == 0) {
+              reject('Nie ma takiego tagu do załącznika.');
+              return;
+            }
+
+            connection.query('DELETE FROM ' + this.tagsTableName + ' WHERE tagi.id_typu IN ' + 
+            '(SELECT ' + this.tagsTableName + '.id_typu FROM ' + this.tagTypesTableName + ' ' + 
+            'WHERE ' + this.tagTypesTableName + '.nazwa=?) ' +
+            'AND ' + this.tagsTableName + '.id NOT IN (SELECT id_tagu FROM ' + this.appendicesTagsTableName + ');',
+
+            [AppendixService.appendicesTagTypeName], (err, results, fields) => {
+              if(err) {            
+                reject(err);
+                return;
+              }
+            
+              resolve();
+              return;
+            });
+        });
+      });    
+    }
 }
 
 module.exports = new AppendixService('zgloszenia_zalaczniki');

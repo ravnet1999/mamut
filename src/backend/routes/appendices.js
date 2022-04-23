@@ -136,6 +136,17 @@ router.delete('/:appendixId', [authMiddleware], async (req, res, next) => {
   }
 });
 
+router.delete('/:appendixId/tag/:tagId', [], async (req, res, next) => {
+  try{
+    await appendixService.deleteTag(req.params.appendixId, req.params.tagId);    
+    response(res, false, ['Pomyślnie usunięto tag do załącznika.'], []);  
+  } catch (err) {
+    console.log(err);
+    response(res, true, ['Wystąpił błąd poczas próby usunięcia tagu do załącznika.', JSON.stringify(err)], []);
+    return;
+  }
+});
+
 router.get('/task/:taskId', [authMiddleware], async (req, res, next) => { 
   try{
     results = await appendixService.getByTaskId(req.params.taskId); 
