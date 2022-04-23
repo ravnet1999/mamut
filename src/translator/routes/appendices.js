@@ -69,9 +69,9 @@ router.post('/:taskId', (req, res, next) => {
   });
 });
 
-router.delete('/:taskId', async (req, res, next) => {  
+router.delete('/:appendixId', async (req, res, next) => {  
   try {
-    await appendixService.delete(req.params.taskId);
+    await appendixService.delete(req.params.appendixId);
     response(res, false, ['Pomyślnie usunięto załącznik.']);    
   } catch(err) {
     response(res, true, ['Wystąpił błąd podczas próby usunięcia załącznika', JSON.stringify(err)], []);    
