@@ -138,8 +138,8 @@ router.delete('/:appendixId', [authMiddleware], async (req, res, next) => {
 
 router.post('/:appendixId/tags', [authMiddleware], async(req, res, next) => {
   try{
-    await appendixService.addTags(req.params.appendixId, req.body.tags);    
-    response(res, false, ['Pomyślnie dodano tagi do załącznika.'], []);  
+    let results = await appendixService.addTags(req.params.appendixId, req.body.tags);    
+    response(res, false, ['Pomyślnie dodano tagi do załącznika.'], results);  
   } catch (err) {
     console.log(err);
     response(res, true, ['Wystąpił błąd poczas próby dodania tagów do załącznika.', JSON.stringify(err)], []);
