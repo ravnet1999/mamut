@@ -62,17 +62,19 @@ class AppendixService extends Service {
     }
 
     findByTaskId = (taskId) => {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve, reject) => {        
         connection.query('SELECT ' + this.tableName + '.*, GROUP_CONCAT(CONCAT(' + this.tagsTableName + '.id, ";", ' + this.tagsTableName + '.nazwa)) tagi ' +
-        'FROM ' + this.tableName + ', ' + this.tagsTableName + ', ' + this.tagTypesTableName + ', ' + this.appendicesTagsTableName + ' ' +
-        'WHERE id_zgloszenia=? ' +
-        'AND ' + this.appendicesTagsTableName + '.id_obiektu=' + this.tableName + '.id ' + 
+        'FROM ' + this.tableName + ' ' + 
+        'LEFT JOIN ' + this.tagsTableName + ' ' + 
+        'ON id_zgloszenia=?' + ' ' +        
+        'JOIN ' + this.tagTypesTableName + ' ' +
+        'ON ' + this.tagsTableName + '.id_typu=' + this.tagTypesTableName + '.id ' +
+        'AND ' + this.tagTypesTableName + '.nazwa=?' + ' '+ 
+        'JOIN ' + this.appendicesTagsTableName + ' ' +        
+        'ON ' + this.appendicesTagsTableName + '.id_obiektu=' + this.tableName + '.id ' + 
         'AND ' + this.appendicesTagsTableName + '.id_tagu=tagi.id ' +
-        'AND ' + this.tagTypesTableName + '.nazwa=? ' +
-        'AND ' + this.tagsTableName + '.id_typu=' + this.tagTypesTableName + '.id ' + 
         'GROUP BY ' + this.tableName + '.id ' + 
-        'ORDER BY nazwa_oryginalna'
-        , [taskId, AppendixService.appendicesTagTypeName], (err, results, fields) => {
+        'ORDER BY nazwa_oryginalna', [taskId, AppendixService.appendicesTagTypeName], (err, results, fields) => {
             if(err) {            
               reject(err);
               return;
