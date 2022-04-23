@@ -27,7 +27,7 @@ const TaskAppendices = (props) => {
       onAppendixDownload,
       onAppendixRemove,
       tags, setTags, onTagRemove, onTagChange, onTagCreate,
-      tagsToCreate, setTagsToCreate, tagsConfirmed, setTagsConfirmer, onTagToCreateChange, onTagToCreateConfirm, onTagConfirmedRemove
+      tagsToCreate, setTagsToCreate, tagsConfirmed, setTagsConfirmed, onTagToCreateChange, onTagToCreateConfirm, onTagConfirmedRemove
     } = props;
 
     useEffect(() => {
