@@ -73,7 +73,7 @@ class AppendixService extends Service {
         'ON ' + this.tagsTableName + '.id_typu=' + this.tagTypesTableName + '.id ' + 
         'AND ' + this.tagTypesTableName + '.nazwa=?' + ' ' +
         'GROUP BY ' + this.tableName + '.id ' +  
-        'ORDER BY nazwa_oryginalna';
+        'ORDER BY id';
         
         connection.query(sql, [taskId, AppendixService.appendicesTagTypeName], (err, results, fields) => {
           console.log(results);

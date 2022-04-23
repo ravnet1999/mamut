@@ -136,6 +136,16 @@ router.delete('/:appendixId', [authMiddleware], async (req, res, next) => {
   }
 });
 
+router.post('/:appendixId/tags', [authMiddleware], async(req, res, next) => {
+  try{
+    await appendixService.addTags(req.params.appendixId, req.body.tags);    
+    response(res, false, ['Pomyślnie dodano tagi do załącznika.'], []);  
+  } catch (err) {
+    console.log(err);
+    response(res, true, ['Wystąpił błąd poczas próby dodania tagów do załącznika.', JSON.stringify(err)], []);
+  } 
+});
+
 router.delete('/:appendixId/tag/:tagId', [authMiddleware], async (req, res, next) => {
   try{
     await appendixService.deleteTag(req.params.appendixId, req.params.tagId);    
