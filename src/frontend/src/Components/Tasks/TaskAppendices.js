@@ -25,7 +25,8 @@ const TaskAppendices = (props) => {
       onAppendicesChange,
       onAppendicesUpload,
       onAppendixDownload,
-      onAppendixRemove
+      onAppendixRemove,
+      onTagRemove,
     } = props;
 
     useEffect(() => {
@@ -90,6 +91,17 @@ const TaskAppendices = (props) => {
                           <ClipLoader loading={appendicesRemoving.includes(appendix.id)} size={20} />
                         </span>
                         <ReactTooltip />
+                        <div>
+                          { Object.entries(appendix.tagi).map((tag) => {
+                            return <Card style={{width: "fit-content"}}>
+                                <Card.Body>
+                                  <Card.Text>
+                                    { tag[1] } <span onClick={e=>onTagRemove(appendix.id, tag[0])}>x</span>
+                                  </Card.Text>
+                                </Card.Body>
+                              </Card>
+                          })} 
+                        </div>                        
                       </div>
                     </Card.Text>
                   </Card.Body>
