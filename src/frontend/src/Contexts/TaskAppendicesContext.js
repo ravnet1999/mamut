@@ -19,6 +19,7 @@ const TaskAppendicesContextProvider = ({children}) => {
     buttons: []
   });
   const [appendixRemoveModalVisible, setAppendixRemoveModalVisible] = useState(false);
+  const [tags, setTags] = useState([]);
 
   const onAppendicesChange = event => {
     setSelectedAppendices(event.target.files);       
@@ -221,9 +222,31 @@ const TaskAppendicesContextProvider = ({children}) => {
     }); 
   }
 
+  const onTagChange = (appendix, tagName) => {
+    let appendixId = appendix.id;
+
+    let tagsUpdated = tags.filter(tag => tag.appendixId != appendixId);
+    tagsUpdated.push({appendixId, name:tagName});
+    setTags([...tagsUpdated]);
+  }
+
+  const onTagCreate = async (appendixId) => {    
+    let tagsFiltered = tags.filter(tag => tag.appendixId == appendixId);
+    let tagName = tagsFiltered[0].name;
+
+    let appendicesUpdated = appendices.map(appendix => {
+      if(appendix.id == appendixId) {
+        appendix.tagi[100] = tagName;
+      }
+      return appendix;
+    });
+
+    setAppendices([...appendicesUpdated]);
+  }
+
   return (
     <div>
-      <TaskAppendicesContext.Provider value={{ appendices, setAppendices, selectedAppendices, setSelectedAppendices, appendicesKey, setAppendicesKey, onAppendicesChange, onAppendicesUpload, onAppendixDownload, onAppendixRemove, appendicesUploading, setAppendicesUploading, appendicesDownloading, setAppendicesDownloading, appendicesRemoving, setAppendicesRemoving, appendixRemoveModal, setAppendixRemoveModal, appendixRemoveModalVisible, setAppendixRemoveModalVisible, response, setResponse, onTagRemove }} >
+      <TaskAppendicesContext.Provider value={{ appendices, setAppendices, selectedAppendices, setSelectedAppendices, appendicesKey, setAppendicesKey, onAppendicesChange, onAppendicesUpload, onAppendixDownload, onAppendixRemove, appendicesUploading, setAppendicesUploading, appendicesDownloading, setAppendicesDownloading, appendicesRemoving, setAppendicesRemoving, appendixRemoveModal, setAppendixRemoveModal, appendixRemoveModalVisible, setAppendixRemoveModalVisible, response, setResponse, onTagRemove, onTagChange, onTagCreate, tags, setTags }} >
         {children}
       </TaskAppendicesContext.Provider>
     </div>

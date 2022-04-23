@@ -26,7 +26,7 @@ const TaskAppendices = (props) => {
       onAppendicesUpload,
       onAppendixDownload,
       onAppendixRemove,
-      onTagRemove,
+      tags, setTags, onTagRemove, onTagChange, onTagCreate
     } = props;
 
     useEffect(() => {
@@ -92,7 +92,7 @@ const TaskAppendices = (props) => {
                         </span>
                         <ReactTooltip />
                         <div>
-                          { Object.entries(appendix.tagi).map((tag) => {
+                          { appendix.tagi && Object.entries(appendix.tagi).map((tag) => {
                             return <Card style={{width: "fit-content"}}>
                                 <Card.Body>
                                   <Card.Text>
@@ -101,6 +101,13 @@ const TaskAppendices = (props) => {
                                 </Card.Body>
                               </Card>
                           })} 
+                          <Card>
+                            <Card.Body>
+                              <Card.Text>
+                                <input key={appendix.id} onChange={e=>onTagChange(appendix, e.target.value)} onKeyPress={(e) => e.key === 'Enter' && onTagCreate(appendix.id)}></input>
+                              </Card.Text>
+                            </Card.Body>
+                          </Card>
                         </div>                        
                       </div>
                     </Card.Text>
