@@ -3,8 +3,15 @@ const connection = require('../mysql/connection');
 const charset = require('../helpers/charset');
 
 class AppendixService extends Service {
+    static appendicesTagTypeName = "załączniki do zgłoszeń";
+
     constructor(tableName) {
         super(tableName);
+    
+        this.tagsTableName = 'tagi';
+        this.tagTypesTableName = 'tagi_typy';
+        this.appendicesTagsTableName = 'zgloszenia_zalaczniki_tagi';
+
         this.findByIdEmpty = 'Taki załącznik nie istnieje!';
     }
 
@@ -56,11 +63,32 @@ class AppendixService extends Service {
 
     findByTaskId = (taskId) => {
       return new Promise((resolve, reject) => {
-        connection.query('SELECT * FROM `' + this.tableName + '` WHERE id_zgloszenia=? ORDER BY nazwa_oryginalna', 
-          [taskId], (err, results, fields) => {
+        connection.query('SELECT ' + this.tableName + '.*, GROUP_CONCAT(CONCAT(' + this.tagsTableName + '.id, ";", ' + this.tagsTableName + '.nazwa)) tagi ' +
+        'FROM ' + this.tableName + ', ' + this.tagsTableName + ', ' + this.tagTypesTableName + ', ' + this.appendicesTagsTableName + ' ' +
+        'WHERE id_zgloszenia=? ' +
+        'AND ' + this.appendicesTagsTableName + '.id_obiektu=' + this.tableName + '.id ' + 
+        'AND ' + this.appendicesTagsTableName + '.id_tagu=tagi.id ' +
+        'AND ' + this.tagTypesTableName + '.nazwa=? ' +
+        'AND ' + this.tagsTableName + '.id_typu=' + this.tagTypesTableName + '.id ' + 
+        'GROUP BY ' + this.tableName + '.id ' + 
+        'ORDER BY nazwa_oryginalna'
+        , [taskId, AppendixService.appendicesTagTypeName], (err, results, fields) => {
             if(err) {            
               reject(err);
               return;
+            }
+
+            for(let result of results) {              
+              let tags = result.tagi.split(',');              
+
+              let tagi = {};
+
+              for(let tag of tags) {
+                tag = tag.split(';');
+                tagi[tag[0]] = tag[1];
+              }
+
+              result.tagi = tagi;
             }
             
             resolve(charset.translateOut(results));
