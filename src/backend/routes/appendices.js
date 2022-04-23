@@ -136,7 +136,7 @@ router.delete('/:appendixId', [authMiddleware], async (req, res, next) => {
   }
 });
 
-router.delete('/:appendixId/tag/:tagId', [], async (req, res, next) => {
+router.delete('/:appendixId/tag/:tagId', [authMiddleware], async (req, res, next) => {
   try{
     await appendixService.deleteTag(req.params.appendixId, req.params.tagId);    
     response(res, false, ['Pomyślnie usunięto tag do załącznika.'], []);  
