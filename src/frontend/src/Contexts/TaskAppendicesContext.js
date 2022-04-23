@@ -190,7 +190,35 @@ const TaskAppendicesContextProvider = ({children}) => {
     setAppendixRemoveModalVisible(true);
   }
 
-  const onTagRemove = async (appendixId, tagId) => {    
+  const onTagRemove = async (appendix, tagId) => { 
+    if(Object.entries(appendix.tagi).length == 1) {
+      setResponse({
+        error: true,
+        messages: [ 'Nie można usunąć jedynego tagu do załącznika.' ]
+      }); 
+      return;
+    }
+    
+    let appendixId = appendix.id;
+
+    AppendixHandler.deleteTag(appendixId, tagId).then((result) => {  
+      let appendicesUpdated = appendices.map(appendix => {
+        if(appendix.id == appendixId) {
+          delete appendix.tagi[tagId];
+        }
+        return appendix;
+      });
+      setAppendicesKey(Math.random().toString(36));   
+      setAppendices([...appendicesUpdated]);      
+      
+      setResponse({
+        error: false,
+        messages: [ 'Pomyślnie usunięto tag do załącznika.' ]
+      });                  
+    }).catch((err) => {
+      console.log(err);
+      setResponse(err);
+    }); 
   }
 
   return (
