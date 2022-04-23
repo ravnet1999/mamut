@@ -123,7 +123,7 @@ class AppendixService {
         tags
       }).then((response) => {        
         parseResponse(response).then((response) => {            
-          resolve(`Pomyślnie dodano tagi do załącznika.`);
+          resolve(response);
           return;
         }).catch((err) => {
             reject(err);
