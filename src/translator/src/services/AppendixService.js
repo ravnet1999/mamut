@@ -143,6 +143,33 @@ class AppendixService extends Service {
         });
       });    
     }
+
+    addTags = (appendixId, tagNames) => {
+      let promises = tagNames.map(tagName => new Promise((resolve, reject) => {
+        connection.query('INSERT IGNORE INTO ' + this.tagsTableName + '(nazwa, id_typu) ' + 
+        'SELECT ?, id FROM ' + this.tagTypesTableName + ' WHERE ' + this.tagTypesTableName + '.nazwa=?;',
+          [tagName, AppendixService.appendicesTagTypeName], (err, result, fields) => {
+            if(err) {            
+              reject(err);
+              return;
+            }
+
+            connection.query('INSERT INTO ' + this.appendicesTagsTableName + '(id_obiektu, id_tagu) ' + 
+              'SELECT ?, id FROM ' + this.tagsTableName + ' WHERE ' + this.tagsTableName + '.nazwa=?;',
+                [appendixId, tagName], (err, result, fields) => {
+                  if(err) {            
+                    reject(err);
+                    return;
+                  }
+
+                  resolve();
+                  return;
+            });
+          });
+      }));
+
+      return Promise.all(promises);
+    }
 }
 
 module.exports = new AppendixService('zgloszenia_zalaczniki');

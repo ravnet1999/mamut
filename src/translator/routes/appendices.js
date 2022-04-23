@@ -69,6 +69,17 @@ router.post('/:taskId', (req, res, next) => {
   });
 });
 
+router.post('/:appendixId/tags', async (req, res, next) => {
+  try {
+    await appendixService.addTags(req.params.appendixId, req.body.tags.split(','));
+    response(res, false, ['Pomyślnie dodano tagi do załącznika.']);    
+  } catch(err) {
+    response(res, true, ['Wystąpił błąd podczas próby dodania tagów do załącznika', JSON.stringify(err)], []);    
+  }  
+
+  response(res, false, ['Pomyślnie zapisano tagi do załącznika.']);   
+});
+
 router.delete('/:appendixId', async (req, res, next) => {  
   try {
     await appendixService.delete(req.params.appendixId);
