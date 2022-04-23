@@ -159,7 +159,7 @@ router.delete('/:appendixId/tag/:tagId', [authMiddleware], async (req, res, next
 
 router.get('/task/:taskId', [authMiddleware], async (req, res, next) => { 
   try{
-    results = await appendixService.getByTaskId(req.params.taskId); 
+    let results = await appendixService.getByTaskId(req.params.taskId); 
     response(res, false, ['Pomyślnie pobrano informacje o załącznikach dla zadania.'], results);   
   } catch (err) {
     console.log(err);
