@@ -62,35 +62,40 @@ class AppendixService extends Service {
     }
 
     findByTaskId = (taskId) => {
-      return new Promise((resolve, reject) => {        
-        connection.query('SELECT ' + this.tableName + '.*, GROUP_CONCAT(CONCAT(' + this.tagsTableName + '.id, ";", ' + this.tagsTableName + '.nazwa)) tagi ' +
-        'FROM ' + this.tableName + ' ' + 
-        'LEFT JOIN ' + this.tagsTableName + ' ' + 
-        'ON id_zgloszenia=?' + ' ' +        
-        'JOIN ' + this.tagTypesTableName + ' ' +
-        'ON ' + this.tagsTableName + '.id_typu=' + this.tagTypesTableName + '.id ' +
-        'AND ' + this.tagTypesTableName + '.nazwa=?' + ' '+ 
-        'JOIN ' + this.appendicesTagsTableName + ' ' +        
+      return new Promise((resolve, reject) => {  
+        let sql = 'SELECT ' + this.tableName + '.*, GROUP_CONCAT(CONCAT(' + this.tagsTableName + '.id, ";",' + this.tagsTableName + '.nazwa)) tagi ' +
+        'FROM ' + this.tableName + ' ' +  
+        'LEFT JOIN ' + this.appendicesTagsTableName + ' ' + 
         'ON ' + this.appendicesTagsTableName + '.id_obiektu=' + this.tableName + '.id ' + 
-        'AND ' + this.appendicesTagsTableName + '.id_tagu=tagi.id ' +
-        'GROUP BY ' + this.tableName + '.id ' + 
-        'ORDER BY nazwa_oryginalna', [taskId, AppendixService.appendicesTagTypeName], (err, results, fields) => {
+        'AND ' + this.tableName + '.id_zgloszenia=?' + ' ' + 
+        'LEFT JOIN ' + this.tagsTableName + ' ON ' + this.appendicesTagsTableName + '.id_tagu = tagi.id ' +  
+        'LEFT JOIN ' + this.tagTypesTableName + ' ' + 
+        'ON ' + this.tagsTableName + '.id_typu=' + this.tagTypesTableName + '.id ' + 
+        'AND ' + this.tagTypesTableName + '.nazwa=?' + ' ' +
+        'GROUP BY ' + this.tableName + '.id ' +  
+        'ORDER BY nazwa_oryginalna';
+        
+        connection.query(sql, [taskId, AppendixService.appendicesTagTypeName], (err, results, fields) => {
+          console.log(results);
+
             if(err) {            
               reject(err);
               return;
             }
 
-            for(let result of results) {              
-              let tags = result.tagi.split(',');              
+            for(let result of results) {    
+              if(result.tagi) {          
+                let tags = result.tagi.split(',');              
 
-              let tagi = {};
+                let tagi = {};
 
-              for(let tag of tags) {
-                tag = tag.split(';');
-                tagi[tag[0]] = tag[1];
+                for(let tag of tags) {
+                  tag = tag.split(';');
+                  tagi[tag[0]] = tag[1];
+                }
+
+                result.tagi = tagi;
               }
-
-              result.tagi = tagi;
             }
             
             resolve(charset.translateOut(results));
