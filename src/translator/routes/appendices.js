@@ -71,8 +71,8 @@ router.post('/:taskId', (req, res, next) => {
 
 router.post('/:appendixId/tags', async (req, res, next) => {
   try {
-    await appendixService.addTags(req.params.appendixId, req.body.tags.split(','));
-    response(res, false, ['Pomyślnie dodano tagi do załącznika.']);    
+    let results = await appendixService.addTags(req.params.appendixId, req.body.tags.split(','));
+    response(res, false, ['Pomyślnie dodano tagi do załącznika.'], results);    
   } catch(err) {
     response(res, true, ['Wystąpił błąd podczas próby dodania tagów do załącznika', JSON.stringify(err)], []);    
   }  
