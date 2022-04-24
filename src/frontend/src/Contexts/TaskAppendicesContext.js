@@ -239,14 +239,26 @@ const TaskAppendicesContextProvider = ({children}) => {
     let tagsFiltered = tags.filter(tag => tag.appendixId == appendixId);
     let tagName = tagsFiltered[0].name;
 
-    let appendicesUpdated = appendices.map(appendix => {
-      if(appendix.id == appendixId) {
-        appendix.tagi[100] = tagName;
-      }
-      return appendix;
-    });
-
-    setAppendices([...appendicesUpdated]);
+    try {
+      let results = await AppendixHandler.addTags(appendixId, tagName);
+      
+      let appendicesUpdated = appendices.map(appendix => {
+        if(appendix.id == appendixId) {  
+          appendix.tagi[results.resources[0].id] = tagName;
+        }
+        return appendix;
+      });
+  
+      setAppendices([...appendicesUpdated]);   
+      
+      setResponse({
+        error: false,
+        messages: [ 'Pomyślnie dodano tag do załącznika.' ]
+      });  
+    } catch(err) {
+      console.log(err);
+      setResponse(err);
+    }
   }
 
   const onTagToCreateChange = tagName => {
