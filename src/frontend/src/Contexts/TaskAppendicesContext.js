@@ -132,14 +132,14 @@ const TaskAppendicesContextProvider = ({children}) => {
       if(appendixDownloadedCookie === "true") {  
         setResponse({
           error: false,
-          messages: [ 'Pomyślnie pobrano załącznik.' ]
+          messages: ['Pomyślnie pobrano załącznik.']
         });
   
         return true;
       } else {
         setResponse({
           error: true,
-          messages: [ 'Nie udało się pobrać załącznika.' ]
+          messages: ['Nie udało się pobrać załącznika.']
         });
       }
     }
@@ -188,7 +188,7 @@ const TaskAppendicesContextProvider = ({children}) => {
                   
                   setResponse({
                     error: false,
-                    messages: [ 'Pomyślnie usunięto załącznik.' ]
+                    messages: ['Pomyślnie usunięto załącznik.']
                   });                  
                 }).catch((err) => {
                   console.log(err);
@@ -210,7 +210,7 @@ const TaskAppendicesContextProvider = ({children}) => {
     if(Object.entries(appendix.tagi).length == 1) {
       setResponse({
         error: true,
-        messages: [ 'Nie można usunąć jedynego tagu do załącznika.' ]
+        messages: ['Nie można usunąć jedynego tagu do załącznika.']
       }); 
       return;
     }
@@ -229,7 +229,7 @@ const TaskAppendicesContextProvider = ({children}) => {
       
       setResponse({
         error: false,
-        messages: [ 'Pomyślnie usunięto tag do załącznika.' ]
+        messages: ['Pomyślnie usunięto tag do załącznika.']
       });                  
     }).catch((err) => {
       console.log(err);
@@ -253,7 +253,7 @@ const TaskAppendicesContextProvider = ({children}) => {
     if(Object.values(appendix.tagi).includes(tagName)) {
       setResponse({
         error: true,
-        messages: [ 'Taki tag do załącznika już istnieje.' ]
+        messages: ['Taki tag do załącznika już istnieje.']
       }); 
       return;   
     }
@@ -272,7 +272,7 @@ const TaskAppendicesContextProvider = ({children}) => {
       
       setResponse({
         error: false,
-        messages: [ 'Pomyślnie dodano tag do załącznika.' ]
+        messages: ['Pomyślnie dodano tag do załącznika.']
       });  
     } catch(err) {
       console.log(err);
@@ -297,13 +297,13 @@ const TaskAppendicesContextProvider = ({children}) => {
 
       setResponse({
         error: true,
-        messages: [ 'Pomyślnie dodano tag do załącznika.' ]
+        messages: ['Pomyślnie dodano tag do załącznika.']
       }); 
       return;       
     } else {
       setResponse({
         error: true,
-        messages: [ 'Taki tag do załącznika już istnieje.' ]
+        messages: ['Taki tag do załącznika już istnieje.']
       }); 
       return; 
     }
