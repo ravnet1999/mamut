@@ -245,9 +245,31 @@ const TaskAppendicesContextProvider = ({children}) => {
     setTags([...tagsUpdated]);
   }
 
+  const afterTagCreated = (appendixId) => {
+    let tagsFocusUpdated = [];
+    tagsFocusUpdated[appendixId] = true;
+    setTagsFocus(tagsFocusUpdated);
+
+    setTag(null);
+    setTagKey(Math.random().toString(36)); 
+
+    let tagsUpdated = tags.filter(tag => tag.appendixId != appendixId);
+    setTags([...tagsUpdated]);
+  }
+
   const onTagCreate = async (appendix) => {    
     let appendixId = appendix.id;
     let tagsFiltered = tags.filter(tag => tag.appendixId == appendixId);
+
+    if(!tagsFiltered.length) {
+      setResponse({
+        error: true,
+        messages: ['Tag do załącznika nie może być pusty.']
+      }); 
+      afterTagCreated(appendixId);
+      return;   
+    }
+
     let tagName = tagsFiltered[0].name;
 
     if(Object.values(appendix.tagi).includes(tagName)) {
@@ -255,6 +277,7 @@ const TaskAppendicesContextProvider = ({children}) => {
         error: true,
         messages: ['Taki tag do załącznika już istnieje.']
       }); 
+      afterTagCreated(appendixId);
       return;   
     }
 
@@ -278,12 +301,7 @@ const TaskAppendicesContextProvider = ({children}) => {
       console.log(err);
       setResponse(err);
     } finally {
-      let tagsFocusUpdated = [];
-      tagsFocusUpdated[appendixId] = true;
-      setTagsFocus(tagsFocusUpdated);
-
-      setTag(null);
-      setTagKey(Math.random().toString(36));  
+      afterTagCreated(appendixId);
     }
   }
 
@@ -291,21 +309,25 @@ const TaskAppendicesContextProvider = ({children}) => {
     setTagToCreate(tagName);
   }
   
-  const onTagToCreateConfirm = (event) => {    
-    if(!tagsConfirmed.includes(tagToCreate)) { 
+  const onTagToCreateConfirm = (event) => {   
+    if(!tagToCreate) {
+      setResponse({
+        error: true,
+        messages: ['Tag do załącznika nie może być pusty.']
+      });  
+    } else if(!tagsConfirmed.includes(tagToCreate)) { 
       setTagsConfirmed([...tagsConfirmed, tagToCreate]);
 
       setResponse({
         error: true,
         messages: ['Pomyślnie dodano tag do załącznika.']
-      }); 
-      return;       
+      });       
     } else {
       setResponse({
         error: true,
         messages: ['Taki tag do załącznika już istnieje.']
       }); 
-      return; 
+       
     }
 
     setTagToCreate(null);
