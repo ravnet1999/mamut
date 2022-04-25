@@ -261,21 +261,20 @@ const TaskAppendicesContextProvider = ({children}) => {
     let appendixId = appendix.id;
     let tagsFiltered = tags.filter(tag => tag.appendixId == appendixId);
 
-    if(!tagsFiltered.length) {
+    if(!tagsFiltered.length || tagsFiltered[0].name.length < 3) {
       setResponse({
         error: true,
-        messages: ['Tag do załącznika nie może być pusty.']
+        messages: ['Tag musi mieć co najmniej 3 znaki.']
       }); 
-      afterTagCreated(appendixId);
       return;   
-    }
+    } 
 
     let tagName = tagsFiltered[0].name;
 
     if(Object.values(appendix.tagi).includes(tagName)) {
       setResponse({
         error: true,
-        messages: ['Taki tag do załącznika już istnieje.']
+        messages: [`Tag "${tagName}" już istnieje.`]
       }); 
       afterTagCreated(appendixId);
       return;   
@@ -308,31 +307,35 @@ const TaskAppendicesContextProvider = ({children}) => {
   const onTagToCreateChange = tagName => {
     setTagToCreate(tagName);
   }
-  
-  const onTagToCreateConfirm = (event) => {   
-    if(!tagToCreate) {
-      setResponse({
-        error: true,
-        messages: ['Tag do załącznika nie może być pusty.']
-      });  
-    } else if(!tagsConfirmed.includes(tagToCreate)) { 
-      setTagsConfirmed([...tagsConfirmed, tagToCreate]);
 
-      setResponse({
-        error: true,
-        messages: ['Pomyślnie dodano tag do załącznika.']
-      });       
-    } else {
-      setResponse({
-        error: true,
-        messages: ['Taki tag do załącznika już istnieje.']
-      }); 
-       
-    }
-
+  const afterTagToCreateConfirmed = () => {
     setTagToCreate(null);
     setTagToCreateKey(Math.random().toString(36));
     setTagToCreateFocus(true);
+  }
+  
+  const onTagToCreateConfirm = (event) => {   
+    if(!tagToCreate || tagToCreate.length < 3) {
+      setResponse({
+        error: true,
+        messages: ['Tag musi mieć co najmniej 3 znaki.']
+      });  
+    } else {
+        if(!tagsConfirmed.includes(tagToCreate)) { 
+        setTagsConfirmed([...tagsConfirmed, tagToCreate]);
+
+        setResponse({
+          error: true,
+          messages: ['Pomyślnie dodano tag do załącznika.']
+        });       
+      } else {
+        setResponse({
+          error: true,
+          messages: [`Tag "${tagToCreate}" już istnieje.`]
+        }); 
+      }
+      afterTagToCreateConfirmed();
+    }
   }
 
   const onTagConfirmedRemove = tagName => {
