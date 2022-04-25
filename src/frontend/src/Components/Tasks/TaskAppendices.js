@@ -115,7 +115,7 @@ const TaskAppendices = (props) => {
                                 </Card.Body>
                               </Card>
                           })} 
-                          <Card>
+                          <Card style={{width: "fit-content"}}>
                             <Card.Body>
                               <Card.Text>
                                 <input key={tagKey} value={tag} onChange={e=>onTagChange(appendix, e.target.value)} onKeyPress={(e) => e.key === 'Enter' && onTagCreate(appendix.id)} autoFocus={tagsFocus[appendix.id]} placeholder="Wpisz tag i wciśnij ENTER"></input>
