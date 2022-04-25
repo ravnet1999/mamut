@@ -61,7 +61,7 @@ const TaskAppendices = (props) => {
               return <Card style={{width: "fit-content"}}>
                   <Card.Body>
                     <Card.Text>
-                      { tag } <span onClick={e=>onTagConfirmedRemove(tag)}>x</span>
+                      <span onClick={e=>onTagConfirmedRemove(tag)}>{ tag }</span>
                     </Card.Text>
                   </Card.Body>
                 </Card>
@@ -110,7 +110,7 @@ const TaskAppendices = (props) => {
                             return <Card style={{width: "fit-content"}}>
                                 <Card.Body>
                                   <Card.Text>
-                                    { tag[1] } <span onClick={e=>onTagRemove(appendix, tag[0])}>x</span>
+                                    <span onClick={e=>onTagRemove(appendix, tag[0])}>{ tag[1] }</span>
                                   </Card.Text>
                                 </Card.Body>
                               </Card>
