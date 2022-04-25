@@ -58,6 +58,7 @@ const TaskAppendicesContextProvider = ({children}) => {
     }).finally(() => {
       setSelectedAppendices(null);
       setAppendicesUploading(false);
+      setTagsConfirmed([]);
     });
   };
 
@@ -271,7 +272,7 @@ const TaskAppendicesContextProvider = ({children}) => {
       let tagsFocusUpdated = [];
       tagsFocusUpdated[appendixId] = true;
       setTagsFocus(tagsFocusUpdated);
-      
+
       setTag(null);
       setTagKey(Math.random().toString(36));  
     }
