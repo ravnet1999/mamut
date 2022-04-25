@@ -27,7 +27,7 @@ const TaskAppendices = (props) => {
       onAppendixDownload,
       onAppendixRemove,
       tags, setTags, onTagRemove, onTagChange, onTagCreate,
-      tagsToCreate, setTagsToCreate, tagsConfirmed, setTagsConfirmed, onTagToCreateChange, onTagToCreateConfirm, onTagConfirmedRemove
+      tagsToCreate, setTagsToCreate, tagsConfirmed, setTagsConfirmed, onTagToCreateChange, onTagToCreateConfirm, onTagConfirmedRemove, tagToCreate, setTagToCreate, tagToCreateKey, setTagToCreateKey, tag, setTag, tagKey, setTagKey
     } = props;
 
     useEffect(() => {
@@ -54,7 +54,7 @@ const TaskAppendices = (props) => {
         <Col>
           <label for="task-appendices"><strong>Załączniki:</strong></label><br/>
           <div className="task-appendices-content">
-            <input key={0} onChange={e=>onTagToCreateChange(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && onTagToCreateConfirm()} placeholder="Wpisz tag i wciśnij ENTER"></input>
+            <input key={tagToCreateKey} value={tagToCreate} onChange={e=>onTagToCreateChange(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && onTagToCreateConfirm()} placeholder="Wpisz tag i wciśnij ENTER"></input>
             
             { tagsConfirmed && tagsConfirmed.map((tag) => {
               return <Card style={{width: "fit-content"}}>
@@ -117,7 +117,7 @@ const TaskAppendices = (props) => {
                           <Card>
                             <Card.Body>
                               <Card.Text>
-                                <input key={appendix.id} onChange={e=>onTagChange(appendix, e.target.value)} onKeyPress={(e) => e.key === 'Enter' && onTagCreate(appendix.id)} placeholder="Wpisz tag i wciśnij ENTER"></input>
+                                <input key={tagKey} value={tag} onChange={e=>onTagChange(appendix, e.target.value)} onKeyPress={(e) => e.key === 'Enter' && onTagCreate(appendix.id)} placeholder="Wpisz tag i wciśnij ENTER"></input>
                               </Card.Text>
                             </Card.Body>
                           </Card>
