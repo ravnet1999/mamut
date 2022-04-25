@@ -55,7 +55,7 @@ const TaskAppendices = (props) => {
         <Col>
           <label for="task-appendices"><strong>Załączniki:</strong></label><br/>
           <div className="task-appendices-content">
-            <input id="tag-to-create" key={tagToCreateKey} value={tagToCreate} onChange={e=>onTagToCreateChange(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && onTagToCreateConfirm(e)} autoFocus={tagToCreateFocus} placeholder="Wpisz tag i wciśnij ENTER"></input>
+            <input id="tag-to-create" key={tagToCreateKey} value={tagToCreate} onChange={e=>onTagToCreateChange(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && onTagToCreateConfirm(e)} autoFocus={tagToCreateFocus} placeholder="Wpisz tag (min. 3 znaki) i wciśnij ENTER"></input>
             
             { tagsConfirmed && tagsConfirmed.map((tag) => {
               return <Card style={{width: "fit-content"}}>
@@ -118,7 +118,7 @@ const TaskAppendices = (props) => {
                           <Card style={{width: "fit-content"}}>
                             <Card.Body>
                               <Card.Text>
-                                <input key={tagKey} value={tag} onChange={e=>onTagChange(appendix, e.target.value)} onKeyPress={(e) => e.key === 'Enter' && onTagCreate(appendix)} autoFocus={tagsFocus[appendix.id]} placeholder="Wpisz tag i wciśnij ENTER"></input>
+                                <input key={tagKey} value={tag} onChange={e=>onTagChange(appendix, e.target.value)} onKeyPress={(e) => e.key === 'Enter' && onTagCreate(appendix)} autoFocus={tagsFocus[appendix.id]} placeholder="Wpisz tag (min. 3 znaki) i wciśnij ENTER"></input>
                               </Card.Text>
                             </Card.Body>
                           </Card>
