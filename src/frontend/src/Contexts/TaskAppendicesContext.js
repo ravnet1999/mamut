@@ -36,10 +36,11 @@ const TaskAppendicesContextProvider = ({children}) => {
     const formData = new FormData();
 
     for (let i = 0; i < selectedAppendices.length; i++) {
-      formData.append(`task-appendices[${i}]`, selectedAppendices[i])
+      formData.append(`task-appendices[${i}]`, selectedAppendices[i]);
+      formData.append(`tags`, tagsConfirmed);
     }
 
-    TaskHandler.addAppendices(taskId, formData).then((result) => {
+    TaskHandler.addAppendices(taskId, formData, tagsConfirmed).then((result) => {
       setAppendicesKey(Math.random().toString(36)); 
       setAppendices([...result.resources, ...appendices]);
       setResponse(result);

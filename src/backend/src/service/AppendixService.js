@@ -27,7 +27,7 @@ class AppendixService {
     });
   }
 
-  create = (taskId, file) => {
+  create = (taskId, file, tags) => {
     return new Promise((resolve, reject) => { 
       let uploadDir = appConfig.tasksAppendicesUploadDir + '/' + taskId;
       let originalFilename = file.originalFilename;
@@ -60,7 +60,8 @@ class AppendixService {
         formData.append("path", uploadPath);
         formData.append("size", file.size);
         formData.append("contentType", file.headers["content-type"]);
-        // formData.append("data", data);        
+        formData.append("tags", JSON.stringify(tags));
+        // formData.append("data", data);                  
 
         axios({
           method: 'post',

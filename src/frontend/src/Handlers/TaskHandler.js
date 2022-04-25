@@ -335,7 +335,7 @@ const TaskHandler = {
         });
     },
 
-    addAppendices: (taskId, formData) => {
+    addAppendices: (taskId, formData, tags) => {
       return new Promise((resolve, reject) => {
           axios.post(`${appConfig.URLs.domain}/appendices/${taskId}`, formData, {
               withCredentials: true
