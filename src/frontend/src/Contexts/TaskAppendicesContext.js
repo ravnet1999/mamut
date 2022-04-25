@@ -245,9 +245,18 @@ const TaskAppendicesContextProvider = ({children}) => {
     setTags([...tagsUpdated]);
   }
 
-  const onTagCreate = async (appendixId) => {    
+  const onTagCreate = async (appendix) => {    
+    let appendixId = appendix.id;
     let tagsFiltered = tags.filter(tag => tag.appendixId == appendixId);
     let tagName = tagsFiltered[0].name;
+
+    if(Object.values(appendix.tagi).includes(tagName)) {
+      setResponse({
+        error: true,
+        messages: [ 'Taki tag do załącznika już istnieje.' ]
+      }); 
+      return;   
+    }
 
     try {
       let results = await AppendixHandler.addTags(appendixId, tagName);
@@ -285,7 +294,20 @@ const TaskAppendicesContextProvider = ({children}) => {
   const onTagToCreateConfirm = (event) => {    
     if(!tagsConfirmed.includes(tagToCreate)) { 
       setTagsConfirmed([...tagsConfirmed, tagToCreate]);
+
+      setResponse({
+        error: true,
+        messages: [ 'Pomyślnie dodano tag do załącznika.' ]
+      }); 
+      return;       
+    } else {
+      setResponse({
+        error: true,
+        messages: [ 'Taki tag do załącznika już istnieje.' ]
+      }); 
+      return; 
     }
+
     setTagToCreate(null);
     setTagToCreateKey(Math.random().toString(36));
     setTagToCreateFocus(true);
