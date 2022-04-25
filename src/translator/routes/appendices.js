@@ -49,13 +49,18 @@ router.post('/:taskId', (req, res, next) => {
         console.log(fields.path[0]);        
         console.log(fields.size[0]);
         console.log(fields.contentType[0]);
+        console.log(JSON.parse(fields.tags[0]));
         // console.log(fields.data[0]);
         
         // console.log(fields);
+
+        let tags = JSON.parse(fields.tags[0]);
       
         try {
           let appendixId = await appendixService.create(req.params.taskId, fields);
-          let appendix = await appendixService.findById(appendixId);
+          await appendixService.addTags(appendixId, tags);
+          let appendix = await appendixService.findByIdWithAppendices(appendixId);
+          
           // console.log(appendix[0]['zawartosc'].toString())
           delete appendix[0]['zawartosc'];          
           response(res, false, ['Pomyślnie utworzono nowy załącznik.'], [appendix[0]]);

@@ -20,7 +20,7 @@ router.post('/:taskId', [authMiddleware], (req, res, next) => {
     
   form.parse(req, function(err, fields, files) {
     if(files) {      
-      let promises = Object.values(files).map(file => appendixService.create(taskId, file[0]))
+      let promises = Object.values(files).map(file => appendixService.create(taskId, file[0], fields.tags))
 
       Promise.all(promises).then((results) => {
         response(res, false, ['Pomyślnie utworzono nowe załączniki.'], results.map(result => result.resources.resources[0]));

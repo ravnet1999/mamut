@@ -104,6 +104,49 @@ class AppendixService extends Service {
       });
     }
 
+    findByIdWithAppendices = (appendixId) => {
+      return new Promise((resolve, reject) => {  
+        let sql = 'SELECT ' + this.tableName + '.*, GROUP_CONCAT(CONCAT(' + this.tagsTableName + '.id, ";",' + this.tagsTableName + '.nazwa)) tagi ' +
+        'FROM ' + this.tableName + ' ' +  
+        'JOIN ' + this.appendicesTagsTableName + ' ' +
+        'ON ' + this.tableName + '.id=?' + ' ' + 
+        'AND ' + this.tableName + '.id=' + this.appendicesTagsTableName + '.id_obiektu ' +
+        'LEFT JOIN ' + this.tagsTableName + ' ON ' + this.appendicesTagsTableName + '.id_tagu = tagi.id ' +  
+        'LEFT JOIN ' + this.tagTypesTableName + ' ' + 
+        'ON ' + this.tagsTableName + '.id_typu=' + this.tagTypesTableName + '.id ' + 
+        'AND ' + this.tagTypesTableName + '.nazwa=?' + ' ' +
+        'GROUP BY ' + this.tableName + '.id ' +  
+        'ORDER BY id';
+        
+        connection.query(sql, [appendixId, AppendixService.appendicesTagTypeName], (err, results, fields) => {
+          console.log(results);
+
+            if(err) {            
+              reject(err);
+              return;
+            }
+
+            for(let result of results) {    
+              if(result.tagi) {          
+                let tags = result.tagi.split(',');              
+
+                let tagi = {};
+
+                for(let tag of tags) {
+                  tag = tag.split(';');
+                  tagi[tag[0]] = tag[1];
+                }
+
+                result.tagi = tagi;
+              }
+            }
+            
+            resolve(charset.translateOut(results));
+            return;
+        });
+      });
+    }
+
     deleteTag = (appendixId, tagId) => {
       console.log('DELETE FROM ' + this.tagsTableName + ' WHERE tagi.id IN ' + 
       '(SELECT ' + this.tagsTableName + '.id_typu FROM ' + this.tagTypesTableName + ' ' + 
