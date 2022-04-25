@@ -49,12 +49,13 @@ router.post('/:taskId', (req, res, next) => {
         console.log(fields.path[0]);        
         console.log(fields.size[0]);
         console.log(fields.contentType[0]);
-        console.log(JSON.parse(fields.tags[0]));
+        
         // console.log(fields.data[0]);
         
         // console.log(fields);
 
-        let tags = JSON.parse(fields.tags[0]);
+        let tags = JSON.parse(fields.tags[0])[0].split(',');
+        console.log(tags);
       
         try {
           let appendixId = await appendixService.create(req.params.taskId, fields);
