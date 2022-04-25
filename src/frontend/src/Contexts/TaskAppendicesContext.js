@@ -326,7 +326,7 @@ const TaskAppendicesContextProvider = ({children}) => {
 
         setResponse({
           error: true,
-          messages: ['Pomyślnie dodano tag do załącznika.']
+          messages: ['Pomyślnie dodano tag.']
         });       
       } else {
         setResponse({
