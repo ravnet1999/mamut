@@ -1,4 +1,5 @@
 import React, {createContext, useState } from 'react';
+import ReactDOM from 'react-dom';
 import TaskHandler from '../Handlers/TaskHandler';
 import AppendixHandler from '../Handlers/AppendixHandler';
 import appConfig from '../Config/appConfig.json';
@@ -29,6 +30,9 @@ const TaskAppendicesContextProvider = ({children}) => {
   const [tagToCreateKey, setTagToCreateKey] = useState(null);
   
   const [tagsConfirmed, setTagsConfirmed] = useState([]);
+
+  const [tagsFocus, setTagsFocus] = useState([]);
+  const [tagToCreateFocus, setTagToCreateFocus] = useState(false);  
 
   const onAppendicesChange = event => {
     setSelectedAppendices(event.target.files);       
@@ -264,8 +268,12 @@ const TaskAppendicesContextProvider = ({children}) => {
       console.log(err);
       setResponse(err);
     } finally {
+      let tagsFocusUpdated = [];
+      tagsFocusUpdated[appendixId] = true;
+      setTagsFocus(tagsFocusUpdated);
+      
       setTag(null);
-      setTagKey(Math.random().toString(36));
+      setTagKey(Math.random().toString(36));  
     }
   }
 
@@ -273,12 +281,13 @@ const TaskAppendicesContextProvider = ({children}) => {
     setTagToCreate(tagName);
   }
   
-  const onTagToCreateConfirm = () => {
+  const onTagToCreateConfirm = (event) => {    
     if(!tagsConfirmed.includes(tagToCreate)) { 
       setTagsConfirmed([...tagsConfirmed, tagToCreate]);
     }
     setTagToCreate(null);
     setTagToCreateKey(Math.random().toString(36));
+    setTagToCreateFocus(true);
   }
 
   const onTagConfirmedRemove = tagName => {
@@ -287,7 +296,7 @@ const TaskAppendicesContextProvider = ({children}) => {
 
   return (
     <div>
-      <TaskAppendicesContext.Provider value={{ appendices, setAppendices, selectedAppendices, setSelectedAppendices, appendicesKey, setAppendicesKey, onAppendicesChange, onAppendicesUpload, onAppendixDownload, onAppendixRemove, appendicesUploading, setAppendicesUploading, appendicesDownloading, setAppendicesDownloading, appendicesRemoving, setAppendicesRemoving, appendixRemoveModal, setAppendixRemoveModal, appendixRemoveModalVisible, setAppendixRemoveModalVisible, response, setResponse, onTagRemove, onTagChange, onTagCreate, tags, setTags, tagsToCreate, setTagsToCreate, tagsConfirmed, setTagsConfirmed, onTagToCreateChange, onTagToCreateConfirm, onTagConfirmedRemove, tagToCreate, setTagToCreate, tagToCreateKey, setTagToCreateKey, tag, setTag, tagKey, setTagKey }} >
+      <TaskAppendicesContext.Provider value={{ appendices, setAppendices, selectedAppendices, setSelectedAppendices, appendicesKey, setAppendicesKey, onAppendicesChange, onAppendicesUpload, onAppendixDownload, onAppendixRemove, appendicesUploading, setAppendicesUploading, appendicesDownloading, setAppendicesDownloading, appendicesRemoving, setAppendicesRemoving, appendixRemoveModal, setAppendixRemoveModal, appendixRemoveModalVisible, setAppendixRemoveModalVisible, response, setResponse, onTagRemove, onTagChange, onTagCreate, tags, setTags, tagsToCreate, setTagsToCreate, tagsConfirmed, setTagsConfirmed, onTagToCreateChange, onTagToCreateConfirm, onTagConfirmedRemove, tagToCreate, setTagToCreate, tagToCreateKey, setTagToCreateKey, tag, setTag, tagKey, setTagKey, tagsFocus, setTagsFocus, tagToCreateFocus, setTagToCreateFocus }} >
         {children}
       </TaskAppendicesContext.Provider>
     </div>
