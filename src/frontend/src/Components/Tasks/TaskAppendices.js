@@ -60,24 +60,30 @@ const TaskAppendices = (props) => {
           <label for="task-appendices"><strong>Załączniki:</strong></label><br/>
           <div className="task-appendices-content">
             <div className={'margin-bottom-default'}>
-            <CardColumns style={{columnCount: "1"}}>
-              <Card style={{width: "fit-content"}}>
-                <Card.Body>
-                  <Card.Text>
-                    <input id="tag-to-create" key={tagToCreateKey} value={tagToCreate} onChange={e=>onTagToCreateChange(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && onTagToCreateConfirm(e)} autoFocus={tagToCreateFocus} data-tip="Wpisz tag (min. 3 znaki) i wciśnij ENTER"></input>
-                  </Card.Text>
-                </Card.Body>
-              </Card>
-              { tagsConfirmed.length > 0 }
-                { tagsConfirmed.map((tag) => {
-                  return <Card style={{width: "fit-content"}}>
-                      <Card.Body>
-                        <Card.Text>
-                          <Button onClick={e=>onTagConfirmedRemove(tag)} data-tip="Usuń">{ tag }</Button>
-                        </Card.Text>
-                      </Card.Body>
-                    </Card>
-                })}
+              <CardColumns style={{columnCount: "1"}}>
+                <Card style={{width: "fit-content"}}>
+                  <Card.Body>
+                    <Card.Text>
+                      <Card style={{width: "fit-content"}}>
+                        <Card.Body>
+                          <Card.Text>
+                            <input id="tag-to-create" key={tagToCreateKey} value={tagToCreate} onChange={e=>onTagToCreateChange(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && onTagToCreateConfirm(e)} autoFocus={tagToCreateFocus} data-tip="Wpisz tag (min. 3 znaki) i wciśnij ENTER"></input>
+                          </Card.Text>
+                        </Card.Body>
+                      </Card>
+                      { tagsConfirmed.length > 0 }
+                        { tagsConfirmed.map((tag) => {
+                          return <Card style={{width: "fit-content"}}>
+                            <Card.Body>
+                              <Card.Text>
+                                <Button onClick={e=>onTagConfirmedRemove(tag)} data-tip="Usuń">{ tag }</Button>                        
+                              </Card.Text>
+                            </Card.Body>
+                          </Card>
+                      })}                          
+                    </Card.Text>
+                  </Card.Body>
+                </Card>
               </CardColumns>
             </div>
 
