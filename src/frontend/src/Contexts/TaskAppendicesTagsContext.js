@@ -1,4 +1,5 @@
 import React, {createContext, useState } from 'react';
+import AppendixHandler from '../Handlers/AppendixHandler';
 
 export const TaskAppendicesTagsContext = createContext();
 
@@ -48,8 +49,13 @@ const TaskAppendicesTagsContextProvider = ({children}) => {
     }
   }
   
-  const onTagConfirmedRemove = tagName => {
+  const onTagConfirmedRemove = (tagName, setResponse) => {
     setTagsConfirmed(tagsConfirmed.filter(name => name != tagName));
+
+    setResponse({
+      error: false,
+      messages: ['Pomyślnie usunięto tag.']
+    });
   }
 
   const afterTagCreated = (appendixId) => {
@@ -64,7 +70,20 @@ const TaskAppendicesTagsContextProvider = ({children}) => {
     setTags([...tagsUpdated]);
   }
 
-  const onTagCreate = async (appendix, updateAppendicesOnTagCreate, setResponse) => {    
+  const updateAppendicesOnTagCreate = async (appendixId, tagName, appendices, setAppendices) => {
+    let results = await AppendixHandler.addTags(appendixId, tagName);
+      
+      let appendicesUpdated = appendices.map(appendix => {
+        if(appendix.id == appendixId) {  
+          appendix.tagi[results.resources[0].id] = tagName;
+        }
+        return appendix;
+      });
+  
+      setAppendices([...appendicesUpdated]); 
+  }
+
+  const onTagCreate = async (appendix, setResponse, updateAppendicesOnTagCreate, appendices, setAppendices) => {    
     let appendixId = appendix.id;
     let tagsFiltered = tags.filter(tag => tag.appendixId == appendixId);
 
@@ -83,12 +102,12 @@ const TaskAppendicesTagsContextProvider = ({children}) => {
         error: true,
         messages: [`Tag "${tagName}" już istnieje.`]
       }); 
-      updateAppendicesOnTagCreate(appendixId, tagName);
+      updateAppendicesOnTagCreate(appendixId, tagName, appendices, setAppendices);
       return;   
     }
 
     try {
-      updateAppendicesOnTagCreate(appendixId, tagName);  
+      updateAppendicesOnTagCreate(appendixId, tagName, appendices, setAppendices);  
       
       setResponse({
         error: false,
@@ -102,7 +121,7 @@ const TaskAppendicesTagsContextProvider = ({children}) => {
     }
   }
 
-  const onTagChange = (appendix, tagName, setResponse) => {
+  const onTagChange = (appendix, tagName) => {
     let appendixId = appendix.id;
 
     let tagsUpdated = tags.filter(tag => tag.appendixId != appendixId);
@@ -110,7 +129,20 @@ const TaskAppendicesTagsContextProvider = ({children}) => {
     setTags([...tagsUpdated]);
   }
 
-  const onTagRemove = async (appendix, tagId, updateAppendicesOnTagRemove, setResponse) => {    
+  const updateAppendicesOnTagRemove = async(appendixId, tagId, appendices, setAppendices, setAppendicesKey) => {
+    await AppendixHandler.deleteTag(appendixId, tagId);
+
+    let appendicesUpdated = appendices.map(appendix => {
+      if(appendix.id == appendixId) {
+        delete appendix.tagi[tagId];
+      }
+      return appendix;
+    });
+    setAppendicesKey(Math.random().toString(36));   
+    setAppendices([...appendicesUpdated]);
+  }
+
+  const onTagRemove = async (appendix, tagId, setResponse, updateAppendicesOnTagRemove, appendices, setAppendices, setAppendicesKey) => {    
     if(Object.entries(appendix.tagi).length == 1) { 
       setResponse({
         error: true,
@@ -122,7 +154,7 @@ const TaskAppendicesTagsContextProvider = ({children}) => {
     let appendixId = appendix.id;
 
     try {
-      updateAppendicesOnTagRemove(appendixId, tagId);        
+      updateAppendicesOnTagRemove(appendixId, tagId, appendices, setAppendices, setAppendicesKey);        
       
       setResponse({
         error: false,
@@ -153,6 +185,8 @@ const TaskAppendicesTagsContextProvider = ({children}) => {
         onTagToCreateConfirm,
         onTagConfirmedRemove,
         
+        updateAppendicesOnTagCreate,
+        updateAppendicesOnTagRemove,
         onTagCreate,
         onTagChange,
         onTagRemove
