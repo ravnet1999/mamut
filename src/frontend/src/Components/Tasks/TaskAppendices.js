@@ -61,7 +61,7 @@ const TaskAppendices = (props) => {
           <div className="task-appendices-content">
             <input id="tag-to-create" key={tagToCreateKey} value={tagToCreate} onChange={e=>onTagToCreateChange(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && onTagToCreateConfirm(e)} autoFocus={tagToCreateFocus} data-tip="Wpisz tag (min. 3 znaki) i wciśnij ENTER"></input>
             
-            { tagsConfirmed && <CardColumns style={{columnCount: "1"}}>
+            { tagsConfirmed.length > 0 && <CardColumns style={{columnCount: "1"}}>
               { tagsConfirmed.map((tag) => {
                 return <Card style={{width: "fit-content"}}>
                     <Card.Body>
