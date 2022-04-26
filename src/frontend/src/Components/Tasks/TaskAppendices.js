@@ -102,7 +102,7 @@ const TaskAppendices = (props) => {
                       <Card style={{width: "fit-content"}}>
                         <Card.Body>
                           <Card.Text>
-                            <input className={'form-control'} id="tag-to-create" key={tagToCreateKey} value={tagToCreate} onChange={e=>onTagToCreateChange(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && onTagToCreateConfirm(e, setResponse)} autoFocus={tagToCreateFocus}  placeholder="Wpisz tag" data-tip="Wpisz tag (min. 3 znaki) i wciśnij ENTER"></input>
+                            <input className={'form-control'} id="tag-to-create" key={tagToCreateKey} value={tagToCreate} onChange={e=>onTagToCreateChange(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && onTagToCreateConfirm(e, setResponse)} autoFocus={tagToCreateFocus} placeholder="Wpisz tag" data-tip="Wpisz tag (min. 3 znaki) i wciśnij ENTER"></input>
                           </Card.Text>
                         </Card.Body>
                       </Card>
