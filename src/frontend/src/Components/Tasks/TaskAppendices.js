@@ -111,7 +111,8 @@ const TaskAppendices = (props) => {
                           <ClipLoader loading={appendicesRemoving.includes(appendix.id)} size={20} />
                         </span>
                         <ReactTooltip />
-                        <div>
+
+                        <div className={'margin-top-default'} >
                           { appendix.tagi && Object.entries(appendix.tagi).map((tag) => {
                             return <Card style={{width: "fit-content"}}>
                                 <Card.Body>
