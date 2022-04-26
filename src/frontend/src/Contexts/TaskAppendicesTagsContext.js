@@ -23,6 +23,30 @@ const TaskAppendicesTagsContextProvider = ({children}) => {
     setTagToCreateKey(Math.random().toString(36));
     setTagToCreateFocus(true);
   }
+
+  const onTagToCreateConfirm = (event, setResponse) => {   
+    if(!tagToCreate || tagToCreate.length < 3) {
+      setResponse({
+        error: true,
+        messages: ['Tag musi mieć co najmniej 3 znaki.']
+      });  
+    } else {
+        if(!tagsConfirmed.includes(tagToCreate)) { 
+        setTagsConfirmed([...tagsConfirmed, tagToCreate]);
+
+        setResponse({
+          error: false,
+          messages: ['Pomyślnie dodano tag.']
+        });       
+      } else {
+        setResponse({
+          error: true,
+          messages: [`Tag "${tagToCreate}" już istnieje.`]
+        }); 
+      }
+      afterTagToCreateConfirmed();
+    }
+  }
   
   const onTagConfirmedRemove = tagName => {
     setTagsConfirmed(tagsConfirmed.filter(name => name != tagName));
@@ -126,6 +150,7 @@ const TaskAppendicesTagsContextProvider = ({children}) => {
 
         onTagToCreateChange, 
         afterTagToCreateConfirmed,
+        onTagToCreateConfirm,
         onTagConfirmedRemove,
         
         onTagCreate,
