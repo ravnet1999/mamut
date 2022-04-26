@@ -167,35 +167,9 @@ const TaskAppendicesContextProvider = ({children}) => {
     setAppendixRemoveModalVisible(true);
   }
 
-  const updateAppendicesOnTagCreate = async (appendixId, tagName) => {
-    let results = await AppendixHandler.addTags(appendixId, tagName);
-      
-      let appendicesUpdated = appendices.map(appendix => {
-        if(appendix.id == appendixId) {  
-          appendix.tagi[results.resources[0].id] = tagName;
-        }
-        return appendix;
-      });
-  
-      setAppendices([...appendicesUpdated]); 
-  }
-
-  const updateAppendicesOnTagRemove = async(appendixId, tagId) => {
-    await AppendixHandler.deleteTag(appendixId, tagId);
-
-    let appendicesUpdated = appendices.map(appendix => {
-      if(appendix.id == appendixId) {
-        delete appendix.tagi[tagId];
-      }
-      return appendix;
-    });
-    setAppendicesKey(Math.random().toString(36));   
-    setAppendices([...appendicesUpdated]);
-  }
-
   return (
     <div>
-      <TaskAppendicesContext.Provider value={{ response, setResponse, appendices, setAppendices, selectedAppendices, setSelectedAppendices, appendicesKey, setAppendicesKey, onAppendicesChange, onAppendixDownload, onAppendixRemove, appendicesUploading, setAppendicesUploading, appendicesDownloading, setAppendicesDownloading, appendicesRemoving, setAppendicesRemoving, appendixRemoveModal, setAppendixRemoveModal, appendixRemoveModalVisible, setAppendixRemoveModalVisible, updateAppendicesOnTagCreate, updateAppendicesOnTagRemove }} >
+      <TaskAppendicesContext.Provider value={{ response, setResponse, appendices, setAppendices, selectedAppendices, setSelectedAppendices, appendicesKey, setAppendicesKey, onAppendicesChange, onAppendixDownload, onAppendixRemove, appendicesUploading, setAppendicesUploading, appendicesDownloading, setAppendicesDownloading, appendicesRemoving, setAppendicesRemoving, appendixRemoveModal, setAppendixRemoveModal, appendixRemoveModalVisible, setAppendixRemoveModalVisible }} >
         {children}
       </TaskAppendicesContext.Provider>
     </div>
