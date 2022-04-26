@@ -61,16 +61,18 @@ const TaskAppendices = (props) => {
           <div className="task-appendices-content">
             <input id="tag-to-create" key={tagToCreateKey} value={tagToCreate} onChange={e=>onTagToCreateChange(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && onTagToCreateConfirm(e)} autoFocus={tagToCreateFocus} data-tip="Wpisz tag (min. 3 znaki) i wciśnij ENTER"></input>
             
-            { tagsConfirmed && tagsConfirmed.map((tag) => {
-              return <Card style={{width: "fit-content"}}>
-                  <Card.Body>
-                    <Card.Text>
-                      <Button onClick={e=>onTagConfirmedRemove(tag)} data-tip="Usuń">{ tag }</Button>
-                    </Card.Text>
-                  </Card.Body>
-                </Card>
-            })}             
-            
+            { tagsConfirmed && <CardColumns style={{columnCount: "1"}}>
+              { tagsConfirmed.map((tag) => {
+                return <Card style={{width: "fit-content"}}>
+                    <Card.Body>
+                      <Card.Text>
+                        <Button onClick={e=>onTagConfirmedRemove(tag)} data-tip="Usuń">{ tag }</Button>
+                      </Card.Text>
+                    </Card.Body>
+                  </Card>
+              })}
+            </CardColumns>}
+
             <input id="task-appendices" name="task-appendices" key={appendicesKey||''} multiple className={'form-control', 'margin-top-reduced',  'margin-bottom-default'} type="file" onChange={onAppendicesChange} disabled={appendicesUploading || appendicesDownloading.length>0 || appendicesRemoving.length>0 || tagsConfirmed.length == 0 }/>  
             {/* {!appendicesUploading && 
               <Button data-tip="Dodaj" disabled={!selectedAppendices || appendicesDownloading.length>0 || appendicesRemoving.length>0} className="appendices-add-button" onClick={e=>onAppendicesUpload(task.id)}>
