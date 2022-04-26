@@ -60,9 +60,15 @@ const TaskAppendices = (props) => {
           <label for="task-appendices"><strong>Załączniki:</strong></label><br/>
           <div className="task-appendices-content">
             <div className={'margin-bottom-default'}>
-              <input id="tag-to-create" key={tagToCreateKey} value={tagToCreate} onChange={e=>onTagToCreateChange(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && onTagToCreateConfirm(e)} autoFocus={tagToCreateFocus} data-tip="Wpisz tag (min. 3 znaki) i wciśnij ENTER"></input>
-              
-              { tagsConfirmed.length > 0 && <CardColumns style={{columnCount: "1"}}>
+            <CardColumns style={{columnCount: "1"}}>
+              <Card style={{width: "fit-content"}}>
+                <Card.Body>
+                  <Card.Text>
+                    <input id="tag-to-create" key={tagToCreateKey} value={tagToCreate} onChange={e=>onTagToCreateChange(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && onTagToCreateConfirm(e)} autoFocus={tagToCreateFocus} data-tip="Wpisz tag (min. 3 znaki) i wciśnij ENTER"></input>
+                  </Card.Text>
+                </Card.Body>
+              </Card>
+              { tagsConfirmed.length > 0 }
                 { tagsConfirmed.map((tag) => {
                   return <Card style={{width: "fit-content"}}>
                       <Card.Body>
@@ -72,7 +78,7 @@ const TaskAppendices = (props) => {
                       </Card.Body>
                     </Card>
                 })}
-              </CardColumns>}
+              </CardColumns>
             </div>
 
             <input id="task-appendices" name="task-appendices" key={appendicesKey||''} multiple className={'form-control', 'margin-top-reduced',  'margin-bottom-default'} type="file" onChange={onAppendicesChange} disabled={appendicesUploading || appendicesDownloading.length>0 || appendicesRemoving.length>0 || tagsConfirmed.length == 0 }/>  
