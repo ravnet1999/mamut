@@ -234,10 +234,14 @@ class AppendixService extends Service {
         try {    
           let results = await SelectTagPromise(tagName);
           tagId = results[0].id;
-        } catch(err) {
-          let results = await InsertTagPromise(tagName);
-          tagId = results.insertId;
-        } 
+        } catch(err1) {
+          try {
+            let results = await InsertTagPromise(tagName);
+            tagId = results.insertId;
+          } catch(err2) {
+            reject([err1, err2]);
+          }
+        } finally { 
           try {
             await InsertAppendixTag(appendixId, tagId);
             resolve({id: tagId, name: tagName});
@@ -245,6 +249,7 @@ class AppendixService extends Service {
           } catch(err) {
             reject(err);
           }
+        }
       }));
 
       return Promise.all(promises);

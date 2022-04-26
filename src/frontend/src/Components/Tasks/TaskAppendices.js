@@ -19,14 +19,15 @@ const TaskAppendices = (props) => {
       appendices, setAppendices,
       selectedAppendices, setSelectedAppendices, 
       appendicesKey, setAppendicesKey,
+      onAppendicesChange, onAppendixDownload, onAppendixRemove,       
       appendicesUploading, setAppendicesUploading,
       appendicesDownloading, setAppendicesDownloading,
       appendicesRemoving, setAppendicesRemoving,
       appendixRemoveModal, setAppendixRemoveModal,
-      appendixRemoveModalVisible, setAppendixRemoveModalVisible,
-      onAppendicesChange,
-      onAppendixDownload,
-      onAppendixRemove,
+      appendixRemoveModalVisible, setAppendixRemoveModalVisible,     
+      updateAppendicesOnTagCreate,
+      updateAppendicesOnTagRemove,
+
       tagToCreate, setTagToCreate, 
       tagsToCreate, setTagsToCreate, 
       tagToCreateKey, setTagToCreateKey,
@@ -35,8 +36,6 @@ const TaskAppendices = (props) => {
       onTagToCreateChange, 
       afterTagToCreateConfirmed,
       onTagConfirmedRemove,
-
-
 
       tags, setTags, onTagRemove, onTagChange, onTagCreate,
       tag, setTag, tagKey, setTagKey,
@@ -190,7 +189,7 @@ const TaskAppendices = (props) => {
                           <Card style={{width: "fit-content"}}>
                             <Card.Body>
                               <Card.Text>
-                                <input className={'form-control'} key={tagKey} value={tag} onChange={e=>onTagChange(appendix, e.target.value)} onKeyPress={(e) => e.key === 'Enter' && onTagCreate(appendix)} autoFocus={tagsFocus[appendix.id]} placeholder="Wpisz tag" data-tip="Wpisz tag (min. 3 znaki) i wciśnij ENTER"></input>
+                                <input className={'form-control'} key={tagKey} value={tag} onChange={e=>onTagChange(appendix, e.target.value, setResponse)} onKeyPress={(e) => e.key === 'Enter' && onTagCreate(appendix, updateAppendicesOnTagCreate, setResponse)} autoFocus={tagsFocus[appendix.id]} placeholder="Wpisz tag" data-tip="Wpisz tag (min. 3 znaki) i wciśnij ENTER"></input>
                               </Card.Text>
                             </Card.Body>
                           </Card>
@@ -198,7 +197,7 @@ const TaskAppendices = (props) => {
                             return <Card style={{width: "fit-content"}}>
                                 <Card.Body>
                                   <Card.Text>
-                                    <Button onClick={e=>onTagRemove(appendix, tag[0])} data-tip="Usuń">{ tag[1] }</Button>
+                                    <Button onClick={e=>onTagRemove(appendix, tag[0], updateAppendicesOnTagRemove, setResponse)} data-tip="Usuń">{ tag[1] }</Button>
                                   </Card.Text>
                                 </Card.Body>
                               </Card>

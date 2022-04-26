@@ -1,6 +1,4 @@
 import React, {createContext, useState } from 'react';
-import ReactDOM from 'react-dom';
-import TaskHandler from '../Handlers/TaskHandler';
 import AppendixHandler from '../Handlers/AppendixHandler';
 import appConfig from '../Config/appConfig.json';
 
@@ -21,13 +19,6 @@ const TaskAppendicesContextProvider = ({children}) => {
   });
   const [appendixRemoveModalVisible, setAppendixRemoveModalVisible] = useState(false);
   
-  const [tag, setTag] = useState(null);
-  const [tags, setTags] = useState([]);
-  const [tagKey, setTagKey] = useState(null);
-
-  const [tagsFocus, setTagsFocus] = useState([]);
-   
-
   const onAppendicesChange = event => {
     setSelectedAppendices(event.target.files);       
   };
@@ -176,82 +167,8 @@ const TaskAppendicesContextProvider = ({children}) => {
     setAppendixRemoveModalVisible(true);
   }
 
-  const onTagRemove = async (appendix, tagId) => { 
-    if(Object.entries(appendix.tagi).length == 1) {
-      setResponse({
-        error: true,
-        messages: ['Nie można usunąć jedynego tagu do załącznika.']
-      }); 
-      return;
-    }
-    
-    let appendixId = appendix.id;
-
-    AppendixHandler.deleteTag(appendixId, tagId).then((result) => {  
-      let appendicesUpdated = appendices.map(appendix => {
-        if(appendix.id == appendixId) {
-          delete appendix.tagi[tagId];
-        }
-        return appendix;
-      });
-      setAppendicesKey(Math.random().toString(36));   
-      setAppendices([...appendicesUpdated]);      
-      
-      setResponse({
-        error: false,
-        messages: ['Pomyślnie usunięto tag do załącznika.']
-      });                  
-    }).catch((err) => {
-      console.log(err);
-      setResponse(err);
-    }); 
-  }
-
-  const onTagChange = (appendix, tagName) => {
-    let appendixId = appendix.id;
-
-    let tagsUpdated = tags.filter(tag => tag.appendixId != appendixId);
-    tagsUpdated.push({appendixId, name:tagName});
-    setTags([...tagsUpdated]);
-  }
-
-  const afterTagCreated = (appendixId) => {
-    let tagsFocusUpdated = [];
-    tagsFocusUpdated[appendixId] = true;
-    setTagsFocus(tagsFocusUpdated);
-
-    setTag(null);
-    setTagKey(Math.random().toString(36)); 
-
-    let tagsUpdated = tags.filter(tag => tag.appendixId != appendixId);
-    setTags([...tagsUpdated]);
-  }
-
-  const onTagCreate = async (appendix) => {    
-    let appendixId = appendix.id;
-    let tagsFiltered = tags.filter(tag => tag.appendixId == appendixId);
-
-    if(!tagsFiltered.length || tagsFiltered[0].name.length < 3) {
-      setResponse({
-        error: true,
-        messages: ['Tag musi mieć co najmniej 3 znaki.']
-      }); 
-      return;   
-    } 
-
-    let tagName = tagsFiltered[0].name;
-
-    if(Object.values(appendix.tagi).includes(tagName)) {
-      setResponse({
-        error: true,
-        messages: [`Tag "${tagName}" już istnieje.`]
-      }); 
-      afterTagCreated(appendixId);
-      return;   
-    }
-
-    try {
-      let results = await AppendixHandler.addTags(appendixId, tagName);
+  const updateAppendicesOnTagCreate = async (appendixId, tagName) => {
+    let results = await AppendixHandler.addTags(appendixId, tagName);
       
       let appendicesUpdated = appendices.map(appendix => {
         if(appendix.id == appendixId) {  
@@ -260,23 +177,25 @@ const TaskAppendicesContextProvider = ({children}) => {
         return appendix;
       });
   
-      setAppendices([...appendicesUpdated]);   
-      
-      setResponse({
-        error: false,
-        messages: ['Pomyślnie dodano tag do załącznika.']
-      });  
-    } catch(err) {
-      console.log(err);
-      setResponse(err);
-    } finally {
-      afterTagCreated(appendixId);
-    }
+      setAppendices([...appendicesUpdated]); 
+  }
+
+  const updateAppendicesOnTagRemove = async(appendixId, tagId) => {
+    await AppendixHandler.deleteTag(appendixId, tagId);
+
+    let appendicesUpdated = appendices.map(appendix => {
+      if(appendix.id == appendixId) {
+        delete appendix.tagi[tagId];
+      }
+      return appendix;
+    });
+    setAppendicesKey(Math.random().toString(36));   
+    setAppendices([...appendicesUpdated]);
   }
 
   return (
     <div>
-      <TaskAppendicesContext.Provider value={{ appendices, setAppendices, selectedAppendices, setSelectedAppendices, appendicesKey, setAppendicesKey, onAppendicesChange, onAppendixDownload, onAppendixRemove, appendicesUploading, setAppendicesUploading, appendicesDownloading, setAppendicesDownloading, appendicesRemoving, setAppendicesRemoving, appendixRemoveModal, setAppendixRemoveModal, appendixRemoveModalVisible, setAppendixRemoveModalVisible, response, setResponse, onTagRemove, onTagChange, onTagCreate, tags, setTags, tag, setTag, tagKey, setTagKey, tagsFocus, setTagsFocus }} >
+      <TaskAppendicesContext.Provider value={{ response, setResponse, appendices, setAppendices, selectedAppendices, setSelectedAppendices, appendicesKey, setAppendicesKey, onAppendicesChange, onAppendixDownload, onAppendixRemove, appendicesUploading, setAppendicesUploading, appendicesDownloading, setAppendicesDownloading, appendicesRemoving, setAppendicesRemoving, appendixRemoveModal, setAppendixRemoveModal, appendixRemoveModalVisible, setAppendixRemoveModalVisible, updateAppendicesOnTagCreate, updateAppendicesOnTagRemove }} >
         {children}
       </TaskAppendicesContext.Provider>
     </div>
