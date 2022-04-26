@@ -47,6 +47,10 @@ const TaskAppendices = (props) => {
       onAppendicesUpload(task.id);
     }, [selectedAppendices]);
 
+    useEffect(() => {
+      ReactTooltip.rebuild();
+    }, [tagsConfirmed, appendices.map(appendix => appendix.tagi)]);
+
     return (
       <>
       <Alert response={response}></Alert>
