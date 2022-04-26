@@ -20,6 +20,7 @@ import ReactTooltip from 'react-tooltip';
 import moment from 'moment';
 import TaskAppendices from './TaskAppendices';
 import TaskAppendicesContextProvider from '../../Contexts/TaskAppendicesContext';
+import TaskAppendicesTagsContextProvider from '../../Contexts/TaskAppendicesTagsContext';
 
 registerLocale('pl', pl);
 
@@ -517,7 +518,11 @@ const Task = (props) => {
                 {buildErrorType()}
             </div>
 
-            <TaskAppendicesContextProvider><TaskAppendices {...props} task={task}></TaskAppendices></TaskAppendicesContextProvider>
+            <TaskAppendicesContextProvider>
+              <TaskAppendicesTagsContextProvider>
+                <TaskAppendices {...props} task={task}></TaskAppendices>
+              </TaskAppendicesTagsContextProvider>
+            </TaskAppendicesContextProvider>
 
             {buildLastEpisode()}
             {buildNonLastEpisodes()}
