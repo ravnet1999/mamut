@@ -25,41 +25,11 @@ const TaskAppendicesContextProvider = ({children}) => {
   const [tags, setTags] = useState([]);
   const [tagKey, setTagKey] = useState(null);
 
-  const [tagToCreate, setTagToCreate] = useState(null);
-  const [tagsToCreate, setTagsToCreate] = useState([]);
-  const [tagToCreateKey, setTagToCreateKey] = useState(null);
-  
-  const [tagsConfirmed, setTagsConfirmed] = useState([]);
-
   const [tagsFocus, setTagsFocus] = useState([]);
-  const [tagToCreateFocus, setTagToCreateFocus] = useState(false);  
+   
 
   const onAppendicesChange = event => {
     setSelectedAppendices(event.target.files);       
-  };
-
-  const onAppendicesUpload = (taskId) => {
-    setAppendicesUploading(true);
-
-    const formData = new FormData();
-
-    for (let i = 0; i < selectedAppendices.length; i++) {
-      formData.append(`task-appendices[${i}]`, selectedAppendices[i]);
-      formData.append(`tags`, tagsConfirmed);
-    }
-
-    TaskHandler.addAppendices(taskId, formData, tagsConfirmed).then((result) => {
-      setAppendicesKey(Math.random().toString(36)); 
-      setAppendices([...result.resources, ...appendices]);
-      setResponse(result);
-    }).catch((err) => {
-      console.log(err);
-      setResponse(err);
-    }).finally(() => {
-      setSelectedAppendices(null);
-      setAppendicesUploading(false);
-      setTagsConfirmed([]);
-    });
   };
 
   // const onAppendixDownload = async (appendixId) => {
@@ -304,47 +274,9 @@ const TaskAppendicesContextProvider = ({children}) => {
     }
   }
 
-  const onTagToCreateChange = tagName => {
-    setTagToCreate(tagName);
-  }
-
-  const afterTagToCreateConfirmed = () => {
-    setTagToCreate(null);
-    setTagToCreateKey(Math.random().toString(36));
-    setTagToCreateFocus(true);
-  }
-  
-  const onTagToCreateConfirm = (event) => {   
-    if(!tagToCreate || tagToCreate.length < 3) {
-      setResponse({
-        error: true,
-        messages: ['Tag musi mieć co najmniej 3 znaki.']
-      });  
-    } else {
-        if(!tagsConfirmed.includes(tagToCreate)) { 
-        setTagsConfirmed([...tagsConfirmed, tagToCreate]);
-
-        setResponse({
-          error: true,
-          messages: ['Pomyślnie dodano tag.']
-        });       
-      } else {
-        setResponse({
-          error: true,
-          messages: [`Tag "${tagToCreate}" już istnieje.`]
-        }); 
-      }
-      afterTagToCreateConfirmed();
-    }
-  }
-
-  const onTagConfirmedRemove = tagName => {
-    setTagsConfirmed(tagsConfirmed.filter(name => name != tagName));
-  }
-
   return (
     <div>
-      <TaskAppendicesContext.Provider value={{ appendices, setAppendices, selectedAppendices, setSelectedAppendices, appendicesKey, setAppendicesKey, onAppendicesChange, onAppendicesUpload, onAppendixDownload, onAppendixRemove, appendicesUploading, setAppendicesUploading, appendicesDownloading, setAppendicesDownloading, appendicesRemoving, setAppendicesRemoving, appendixRemoveModal, setAppendixRemoveModal, appendixRemoveModalVisible, setAppendixRemoveModalVisible, response, setResponse, onTagRemove, onTagChange, onTagCreate, tags, setTags, tagsToCreate, setTagsToCreate, tagsConfirmed, setTagsConfirmed, onTagToCreateChange, onTagToCreateConfirm, onTagConfirmedRemove, tagToCreate, setTagToCreate, tagToCreateKey, setTagToCreateKey, tag, setTag, tagKey, setTagKey, tagsFocus, setTagsFocus, tagToCreateFocus, setTagToCreateFocus }} >
+      <TaskAppendicesContext.Provider value={{ appendices, setAppendices, selectedAppendices, setSelectedAppendices, appendicesKey, setAppendicesKey, onAppendicesChange, onAppendixDownload, onAppendixRemove, appendicesUploading, setAppendicesUploading, appendicesDownloading, setAppendicesDownloading, appendicesRemoving, setAppendicesRemoving, appendixRemoveModal, setAppendixRemoveModal, appendixRemoveModalVisible, setAppendixRemoveModalVisible, response, setResponse, onTagRemove, onTagChange, onTagCreate, tags, setTags, tag, setTag, tagKey, setTagKey, tagsFocus, setTagsFocus }} >
         {children}
       </TaskAppendicesContext.Provider>
     </div>
