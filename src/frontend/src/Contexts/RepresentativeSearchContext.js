@@ -23,7 +23,8 @@ const RepresentativeSearchContextProvider = ({children}) => {
     autoFocus: true,
     onChange: (event, { newValue }) => { 
       dispatch(setValue(newValue))
-    }
+    },
+    className: "form-control"
   };
 
   // When suggestion is clicked, Autosuggest needs to populate the input
