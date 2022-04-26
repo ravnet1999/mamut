@@ -1,10 +1,12 @@
 import React, { useEffect } from 'react';
 import AppendixHandler from '../../Handlers/AppendixHandler';
+import TaskHandler from '../../Handlers/TaskHandler';
 import { Container, Row, Col, Button, Form, Card, CardColumns } from '../bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUpload, faDownload, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { WithContexts } from '../../HOCs/WithContexts';
 import { TaskAppendicesContext } from '../../Contexts/TaskAppendicesContext';
+import { TaskAppendicesTagsContext } from '../../Contexts/TaskAppendicesTagsContext';
 import ClipLoader from "react-spinners/ClipLoader";
 import Modal from '../Modal/Modal';
 import Alert from '../Alert/Alert';
@@ -23,12 +25,22 @@ const TaskAppendices = (props) => {
       appendixRemoveModal, setAppendixRemoveModal,
       appendixRemoveModalVisible, setAppendixRemoveModalVisible,
       onAppendicesChange,
-      onAppendicesUpload,
       onAppendixDownload,
       onAppendixRemove,
+      tagToCreate, setTagToCreate, 
+      tagsToCreate, setTagsToCreate, 
+      tagToCreateKey, setTagToCreateKey,
+      tagToCreateFocus, setTagToCreateFocus, 
+      tagsConfirmed, setTagsConfirmed,
+      onTagToCreateChange, 
+      afterTagToCreateConfirmed,
+      onTagConfirmedRemove,
+
+
+
       tags, setTags, onTagRemove, onTagChange, onTagCreate,
-      tagsToCreate, setTagsToCreate, tagsConfirmed, setTagsConfirmed, onTagToCreateChange, onTagToCreateConfirm, onTagConfirmedRemove, tagToCreate, setTagToCreate, tagToCreateKey, setTagToCreateKey, tag, setTag, tagKey, setTagKey,
-      tagsFocus, setTagsFocus, tagToCreateFocus, setTagToCreateFocus
+      tag, setTag, tagKey, setTagKey,
+      tagsFocus, setTagsFocus
     } = props;
 
     useEffect(() => {
@@ -50,6 +62,54 @@ const TaskAppendices = (props) => {
     useEffect(() => {
       ReactTooltip.rebuild();
     }, [tagsConfirmed, appendices.map(appendix => appendix.tagi)]);
+
+    const onAppendicesUpload = (taskId) => {
+      setAppendicesUploading(true);
+  
+      const formData = new FormData();
+  
+      for (let i = 0; i < selectedAppendices.length; i++) {
+        formData.append(`task-appendices[${i}]`, selectedAppendices[i]);
+        formData.append(`tags`, tagsConfirmed);
+      }
+  
+      TaskHandler.addAppendices(taskId, formData, tagsConfirmed).then((result) => {
+        setAppendicesKey(Math.random().toString(36)); 
+        setAppendices([...result.resources, ...appendices]);
+        setResponse(result);
+      }).catch((err) => {
+        console.log(err);
+        setResponse(err);
+      }).finally(() => {
+        setSelectedAppendices(null);
+        setAppendicesUploading(false);
+        setTagsConfirmed([]);
+      });
+    };
+
+    const onTagToCreateConfirm = (event) => {   
+      if(!tagToCreate || tagToCreate.length < 3) {
+        setResponse({
+          error: true,
+          messages: ['Tag musi mieć co najmniej 3 znaki.']
+        });  
+      } else {
+          if(!tagsConfirmed.includes(tagToCreate)) { 
+          setTagsConfirmed([...tagsConfirmed, tagToCreate]);
+  
+          setResponse({
+            error: true,
+            messages: ['Pomyślnie dodano tag.']
+          });       
+        } else {
+          setResponse({
+            error: true,
+            messages: [`Tag "${tagToCreate}" już istnieje.`]
+          }); 
+        }
+        afterTagToCreateConfirmed();
+      }
+    }
 
     return (
       <>
@@ -160,4 +220,4 @@ const TaskAppendices = (props) => {
     );
 }
 
-export default WithContexts(TaskAppendices, [TaskAppendicesContext]);
+export default WithContexts(TaskAppendices, [TaskAppendicesContext, TaskAppendicesTagsContext]);
