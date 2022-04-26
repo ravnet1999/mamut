@@ -81,9 +81,7 @@ router.post('/:appendixId/tags', async (req, res, next) => {
     response(res, false, ['Pomyślnie dodano tagi do załącznika.'], results);    
   } catch(err) {
     response(res, true, ['Wystąpił błąd podczas próby dodania tagów do załącznika', JSON.stringify(err)], []);    
-  }  
-
-  response(res, false, ['Pomyślnie zapisano tagi do załącznika.']);   
+  }   
 });
 
 router.delete('/:appendixId', async (req, res, next) => {  
