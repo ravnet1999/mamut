@@ -127,6 +127,13 @@ const TaskAppendices = (props) => {
                         <ReactTooltip />
 
                         <div className={'margin-top-default'} >
+                          <Card style={{width: "fit-content"}}>
+                            <Card.Body>
+                              <Card.Text>
+                                <input key={tagKey} value={tag} onChange={e=>onTagChange(appendix, e.target.value)} onKeyPress={(e) => e.key === 'Enter' && onTagCreate(appendix)} autoFocus={tagsFocus[appendix.id]} data-tip="Wpisz tag (min. 3 znaki) i wciśnij ENTER"></input>
+                              </Card.Text>
+                            </Card.Body>
+                          </Card>
                           { appendix.tagi && Object.entries(appendix.tagi).map((tag) => {
                             return <Card style={{width: "fit-content"}}>
                                 <Card.Body>
@@ -135,14 +142,7 @@ const TaskAppendices = (props) => {
                                   </Card.Text>
                                 </Card.Body>
                               </Card>
-                          })} 
-                          <Card style={{width: "fit-content"}}>
-                            <Card.Body>
-                              <Card.Text>
-                                <input key={tagKey} value={tag} onChange={e=>onTagChange(appendix, e.target.value)} onKeyPress={(e) => e.key === 'Enter' && onTagCreate(appendix)} autoFocus={tagsFocus[appendix.id]} data-tip="Wpisz tag (min. 3 znaki) i wciśnij ENTER"></input>
-                              </Card.Text>
-                            </Card.Body>
-                          </Card>
+                          })}                           
                         </div>                        
                       </div>
                     </Card.Text>
