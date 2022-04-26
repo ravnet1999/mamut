@@ -54,6 +54,7 @@
 .task-appendices-container .card .card {
   border: none;
   margin-left: 0;
+  margin-bottom: 0;
 }
 
 .task-appendices-container .card-body {
