@@ -95,7 +95,7 @@ const TaskAppendices = (props) => {
                 return <Card style={{width: "fit-content"}}>
                   <Card.Body>
                     <Card.Text>
-                      <div style={{whiteSpace: "nowrap"}}>
+                      <div>
                         {appendix.nazwa_oryginalna}
                         
                         {!appendicesDownloading.includes(appendix.id) && 
