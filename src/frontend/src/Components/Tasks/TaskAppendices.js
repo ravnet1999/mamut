@@ -1,9 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import AppendixHandler from '../../Handlers/AppendixHandler';
 import TaskHandler from '../../Handlers/TaskHandler';
+import TagHandler from '../../Handlers/TagHandler';
 import { Container, Row, Col, Button, Form, Card, CardColumns } from '../bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUpload, faDownload, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faDownload, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { WithContexts } from '../../HOCs/WithContexts';
 import { TaskAppendicesContext } from '../../Contexts/TaskAppendicesContext';
 import { TaskAppendicesTagsContext } from '../../Contexts/TaskAppendicesTagsContext';
@@ -12,7 +13,21 @@ import Modal from '../Modal/Modal';
 import Alert from '../Alert/Alert';
 import ReactTooltip from 'react-tooltip';
 
+import AsyncCreatableSelect from 'react-select/async-creatable';
+
 const TaskAppendices = (props) => {
+    useEffect(() => {
+      TagHandler.get(1).then(tags => setTagsSelectDefaultOptions(tags));      
+    }, []);
+
+    const newAppendicesTagsSelectStyles = { 
+      menu: ({ width, ...css }) => ({ ...css })
+    }
+
+    const tagsSelectStyles = { 
+      menu: ({ width, ...css }) => ({ ...css })
+    }
+
     const { 
       task,
       response, setResponse,
@@ -26,29 +41,41 @@ const TaskAppendices = (props) => {
       appendixRemoveModal, setAppendixRemoveModal,
       appendixRemoveModalVisible, setAppendixRemoveModalVisible, 
       
-      tagToCreate, setTagToCreate, 
-      tagsToCreate, setTagsToCreate, 
-      tagToCreateKey, setTagToCreateKey,
-      tagToCreateFocus, setTagToCreateFocus, 
-      tagsConfirmed, setTagsConfirmed,
-      onTagToCreateChange, 
-      afterTagToCreateConfirmed,
-      onTagToCreateConfirm,
-      onTagConfirmedRemove,
+      tagsSelectPlaceholder,
+      tagsSelectFormatCreateLabel,
+      tagsSelectPromiseOptions,  
+      tagsSelectDefaultOptions, setTagsSelectDefaultOptions,
 
-      updateAppendicesOnTagCreate, updateAppendicesOnTagRemove,
-      tags, setTags, onTagRemove, onTagChange, onTagCreate,
-      tag, setTag, tagKey, setTagKey,
-      tagsFocus, setTagsFocus
+      newAppendicesTags, setNewAppendicesTags,
+      savedAppendicesTags, setSavedAppendicesTags,
+
+      newAppendicesTagsSelectHandleChange,
+      savedAppendicesTagsSelectHandleChange,
     } = props;
 
     useEffect(() => {
       if(!task) return;
   
       AppendixHandler.getByTaskId(task.id).then(result => {
-        setAppendices(result.resources);
+        console.log('resources', result.resources);
+        setAppendices(result.resources);   
       });
     }, [task]);
+
+    useEffect(() => {
+      let savedAppendicesTags = [];
+
+        for(let appendix of appendices) {
+          if(appendix.tagi) {
+            savedAppendicesTags[appendix.id] = Object.entries(appendix.tagi).map(tag => {
+              return {"label": tag[1], "value": tag[1]}
+            });
+          }
+        };
+  
+        setSavedAppendicesTags(savedAppendicesTags);     
+
+    }, [appendices]);
 
     useEffect(() => {
       if(!selectedAppendices) {
@@ -58,21 +85,19 @@ const TaskAppendices = (props) => {
       onAppendicesUpload(task.id);
     }, [selectedAppendices]);
 
-    useEffect(() => {
-      ReactTooltip.rebuild();
-    }, [tagsConfirmed, appendices.map(appendix => appendix.tagi)]);
-
     const onAppendicesUpload = (taskId) => {
       setAppendicesUploading(true);
   
       const formData = new FormData();
   
+      let newAppendicesTagsStr = newAppendicesTags.map(tag => tag.label).join(',');
+
       for (let i = 0; i < selectedAppendices.length; i++) {
-        formData.append(`task-appendices[${i}]`, selectedAppendices[i]);
-        formData.append(`tags`, tagsConfirmed);
+        formData.append(`task-appendices[${i}]`, selectedAppendices[i]);        
+        formData.append(`tags`, newAppendicesTagsStr);
       }
   
-      TaskHandler.addAppendices(taskId, formData, tagsConfirmed).then((result) => {
+      TaskHandler.addAppendices(taskId, formData, newAppendicesTagsStr).then((result) => {
         setAppendicesKey(Math.random().toString(36)); 
         setAppendices([...result.resources, ...appendices]);
         setResponse(result);
@@ -82,7 +107,7 @@ const TaskAppendices = (props) => {
       }).finally(() => {
         setSelectedAppendices(null);
         setAppendicesUploading(false);
-        setTagsConfirmed([]);
+        setNewAppendicesTags([]);
       });
     };
 
@@ -93,36 +118,23 @@ const TaskAppendices = (props) => {
       <Row>
         <Col>
           <label for="task-appendices"><strong>Załączniki:</strong></label><br/>
+
           <div className="task-appendices-content">
             <div className={'margin-bottom-default'}>
-              <CardColumns style={{columnCount: "1"}}>
-                <Card style={{width: "fit-content"}}>
-                  <Card.Body>
-                    <Card.Text>
-                      <Card style={{width: "fit-content"}}>
-                        <Card.Body>
-                          <Card.Text>
-                            <input className={'form-control'} id="tag-to-create" key={tagToCreateKey} value={tagToCreate} onChange={e=>onTagToCreateChange(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && onTagToCreateConfirm(e, setResponse)} autoFocus={tagToCreateFocus} placeholder="Wpisz tag" data-tip="Wpisz tag (min. 3 znaki) i wciśnij ENTER"></input>
-                          </Card.Text>
-                        </Card.Body>
-                      </Card>
-                      { tagsConfirmed.length > 0 }
-                        { tagsConfirmed.map((tag) => {
-                          return <Card style={{width: "fit-content"}}>
-                            <Card.Body>
-                              <Card.Text>
-                                <Button onClick={e=>onTagConfirmedRemove(tag, setResponse)} data-tip="Usuń">{ tag }</Button>                        
-                              </Card.Text>
-                            </Card.Body>
-                          </Card>
-                      })}                          
-                    </Card.Text>
-                  </Card.Body>
-                </Card>
-              </CardColumns>
+              {tagsSelectDefaultOptions.length && <AsyncCreatableSelect
+              cacheOptions  
+              defaultOptions={tagsSelectDefaultOptions}          
+              loadOptions={tagsSelectPromiseOptions}
+              onChange={newAppendicesTagsSelectHandleChange}
+              isMulti={true}
+              placeholder={tagsSelectPlaceholder}
+              formatCreateLabel={tagsSelectFormatCreateLabel}
+              styles={newAppendicesTagsSelectStyles}
+              value={newAppendicesTags}
+              />}  
             </div>
 
-            <input id="task-appendices" name="task-appendices" key={appendicesKey||''} multiple className={'form-control', 'margin-top-reduced',  'margin-bottom-default'} type="file" onChange={onAppendicesChange} disabled={appendicesUploading || appendicesDownloading.length>0 || appendicesRemoving.length>0 || tagsConfirmed.length == 0 }/>  
+            <input id="task-appendices" name="task-appendices" key={appendicesKey||''} multiple className={'form-control', 'margin-top-reduced',  'margin-bottom-default'} type="file" onChange={onAppendicesChange} disabled={appendicesUploading || appendicesDownloading.length>0 || appendicesRemoving.length>0 || newAppendicesTags.length == 0 }/>  
             {/* {!appendicesUploading && 
               <Button data-tip="Dodaj" disabled={!selectedAppendices || appendicesDownloading.length>0 || appendicesRemoving.length>0} className="appendices-add-button" onClick={e=>onAppendicesUpload(task.id)}>
                 <FontAwesomeIcon className="fa-sm" icon={faUpload}></FontAwesomeIcon>
@@ -164,20 +176,21 @@ const TaskAppendices = (props) => {
                         <div className={'margin-top-default'} >
                           <Card style={{width: "fit-content"}}>
                             <Card.Body>
-                              <Card.Text>
-                                <input className={'form-control'} key={tagKey} value={tag} onChange={e=>onTagChange(appendix, e.target.value)} onKeyPress={(e) => e.key === 'Enter' && onTagCreate(appendix, setResponse, updateAppendicesOnTagCreate, appendices, setAppendices)} autoFocus={tagsFocus[appendix.id]} placeholder="Wpisz tag" data-tip="Wpisz tag (min. 3 znaki) i wciśnij ENTER"></input>
+                              <Card.Text>                              
+                                {tagsSelectDefaultOptions.length && <AsyncCreatableSelect
+                                cacheOptions  
+                                defaultOptions={tagsSelectDefaultOptions}          
+                                loadOptions={tagsSelectPromiseOptions}
+                                onChange={savedAppendicesTagsSelectHandleChange(appendix, appendices, setAppendices)}
+                                isMulti={true}
+                                placeholder={tagsSelectPlaceholder}
+                                formatCreateLabel={tagsSelectFormatCreateLabel}
+                                styles={tagsSelectStyles}
+                                value={savedAppendicesTags[appendix.id]}
+                                />}                                
                               </Card.Text>
                             </Card.Body>
-                          </Card>
-                          { appendix.tagi && Object.entries(appendix.tagi).map((tag) => {
-                            return <Card style={{width: "fit-content"}}>
-                                <Card.Body>
-                                  <Card.Text>
-                                    <Button onClick={e=>onTagRemove(appendix, tag[0], setResponse, updateAppendicesOnTagRemove, appendices, setAppendices, setAppendicesKey)} data-tip="Usuń">{ tag[1] }</Button>
-                                  </Card.Text>
-                                </Card.Body>
-                              </Card>
-                          })}                           
+                          </Card>                                                
                         </div>                        
                       </div>
                     </Card.Text>
