@@ -17,42 +17,54 @@ const TaskAppendicesTagsContextProvider = ({children}) => {
   const newAppendicesTagsSelectHandleChange = (selectedOptions) => {
     setNewAppendicesTags(selectedOptions);
   };
+
+  const savedAppendicesTagsSelectHandleAddition = async (appendixId, appendices, setAppendices, tagsAdded) => {
+    let tagAddedName = tagsAdded[0].label;
+    let results = await AppendixHandler.addTags(appendixId, tagAddedName);
+    
+    let appendicesUpdated = appendices.map(appendix => {
+      if(appendix.id == appendixId) {  
+        if(!appendix.tagi) appendix.tagi = [];
+        appendix.tagi[results.resources[0].id] = tagAddedName;
+      }
+      return appendix;
+    });
+
+    setAppendices([...appendicesUpdated]); 
+  };
+
+  const savedAppendicesTagsSelectHandleDeletion = async (appendix, appendixId, appendices, setAppendices, tagsDeleted) => {    
+    let tagDeletedName = tagsDeleted[0].label;
+    let tagId = Object.entries(appendix.tagi).filter(tag => tag[1] ==tagDeletedName)[0][0];
+
+    await AppendixHandler.deleteTag(appendixId, tagId);
+
+    let appendicesUpdated = appendices.map(appendix => {
+      if(appendix.id == appendixId) {                    
+        delete appendix.tagi[tagId];
+      }
+      return appendix;
+    });
+    
+    setAppendices([...appendicesUpdated]);
+  };
   
-  const savedAppendicesTagsSelectHandleChange = (appendix, appendices, setAppendices) => async (selectedOptions) => {
+  const savedAppendicesTagsSelectHandleChange = (appendix, appendices, setAppendices) =>  async (selectedOptions) => { 
     let appendixId = appendix.id;
 
     let tagsAdded = !savedAppendicesTags[appendixId] ? selectedOptions : selectedOptions.filter(newTag => !savedAppendicesTags[appendixId].includes(newTag));
     let tagsDeleted = !savedAppendicesTags[appendixId] ? [] : savedAppendicesTags[appendixId].filter(savedTag => !selectedOptions.includes(savedTag));
 
+    console.log(tagsAdded)
+
     if(tagsAdded.length) {
-      let tagAddedName = tagsAdded[0].label;
-      let results = await AppendixHandler.addTags(appendixId, tagAddedName);
-      
-      let appendicesUpdated = appendices.map(appendix => {
-        if(appendix.id == appendixId) {  
-          if(!appendix.tagi) appendix.tagi = [];
-          appendix.tagi[results.resources[0].id] = tagAddedName;
-        }
-        return appendix;
-      });
-  
-      setAppendices([...appendicesUpdated]); 
+      savedAppendicesTagsSelectHandleAddition(appendixId, appendices, setAppendices, tagsAdded);
     } else if(tagsDeleted.length) {
-      let tagDeletedName = tagsDeleted[0].label;
-      let tagId = Object.entries(appendix.tagi).filter(tag => tag[1] ==tagDeletedName)[0][0];
-
-      await AppendixHandler.deleteTag(appendixId, tagId);
-
-      let appendicesUpdated = appendices.map(appendix => {
-        if(appendix.id == appendixId) {                    
-          delete appendix.tagi[tagId];
-        }
-        return appendix;
-      });
-      
-      setAppendices([...appendicesUpdated]);
+      savedAppendicesTagsSelectHandleDeletion(appendix, appendixId, appendices, setAppendices, tagsDeleted);
     } 
   };
+
+  
   
   return (
     <div>
