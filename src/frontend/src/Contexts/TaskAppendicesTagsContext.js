@@ -14,12 +14,58 @@ const TaskAppendicesTagsContextProvider = ({children}) => {
 
   const tagsSelectPromiseOptions = inputValue => TagHandler.search(1, inputValue);
 
-  const newAppendicesTagsSelectHandleChange = (selectedOptions) => {
+  const getTagsAdded = (oldTags, newTags) => {
+    let tagsAdded = !oldTags ? newTags : newTags.filter(newTag => !oldTags.includes(newTag));
+    return tagsAdded;
+  }
+
+  const getTagsDeleted = (oldTags, newTags, appendixId) => {
+    let tagsDeleted = !oldTags ? [] : oldTags.filter(oldTag => !newTags.includes(oldTag));
+    return tagsDeleted;
+  }
+
+  const newAppendicesTagsSelectHandleChange = setResponse => selectedOptions => {
+    let tagsAdded = getTagsAdded(newAppendicesTags, selectedOptions);
+    let tagsDeleted = getTagsDeleted(newAppendicesTags, selectedOptions);
+
+    if(tagsAdded.length) {
+      setResponse({
+        error: false,
+        messages: ['Dodano tag. Teraz możesz załadować załącznik.']
+      });
+    } else if(tagsDeleted.length) {
+      let tagDeletedName = tagsDeleted[0].label;
+
+      console.log(newAppendicesTags);
+
+      if(newAppendicesTags.length == 1 && newAppendicesTags[0].label == tagDeletedName) {
+        setResponse({
+          error: false,
+          messages: ['Usunięto wszystkie tagi. Dodaj nowe, aby załadować załącznik.']
+        });
+      } else {
+        setResponse({
+          error: false,
+          messages: ['Usunięto tag.']
+        });  
+      }
+    }
+
     setNewAppendicesTags(selectedOptions);
   };
 
-  const savedAppendicesTagsSelectHandleAddition = async (appendixId, appendices, setAppendices, tagsAdded) => {
+  
+  const savedAppendicesTagsSelectHandleAddition = async (appendixId, appendices, setAppendices, tagsAdded, setResponse) => {
     let tagAddedName = tagsAdded[0].label;
+
+    if(tagAddedName.length < 3) {
+      setResponse({
+        error: true,
+        messages: ['Tag musi mieć co najmniej 3 znaki.']
+      }); 
+      return;  
+    }
+
     let results = await AppendixHandler.addTags(appendixId, tagAddedName);
     
     let appendicesUpdated = appendices.map(appendix => {
@@ -31,11 +77,27 @@ const TaskAppendicesTagsContextProvider = ({children}) => {
     });
 
     setAppendices([...appendicesUpdated]); 
+
+    setResponse({
+      error: false,
+      messages: ['Pomyślnie dodano tag do załącznika.']
+    });  
   };
 
-  const savedAppendicesTagsSelectHandleDeletion = async (appendix, appendixId, appendices, setAppendices, tagsDeleted) => {    
+  const savedAppendicesTagsSelectHandleDeletion = async (appendix, appendixId, appendices, setAppendices, tagsDeleted, setResponse) => {    
     let tagDeletedName = tagsDeleted[0].label;
-    let tagId = Object.entries(appendix.tagi).filter(tag => tag[1] ==tagDeletedName)[0][0];
+
+    let savedTags = Object.entries(appendix.tagi);
+
+    if(savedTags.length == 1 && savedTags[0][1] == tagDeletedName) {
+      setResponse({
+        error: true,
+        messages: ['Nie można usunąć jedynego tagu do załącznika.']
+      }); 
+      return;
+    }
+
+    let tagId = savedTags.filter(tag => tag[1] == tagDeletedName)[0][0];
 
     await AppendixHandler.deleteTag(appendixId, tagId);
 
@@ -47,24 +109,25 @@ const TaskAppendicesTagsContextProvider = ({children}) => {
     });
     
     setAppendices([...appendicesUpdated]);
+
+    setResponse({
+      error: false,
+      messages: ['Pomyślnie usunięto tag do załącznika.']
+    });  
   };
-  
-  const savedAppendicesTagsSelectHandleChange = (appendix, appendices, setAppendices) =>  async (selectedOptions) => { 
+
+  const savedAppendicesTagsSelectHandleChange = (appendix, appendices, setAppendices, setResponse) =>  async (selectedOptions) => { 
     let appendixId = appendix.id;
 
-    let tagsAdded = !savedAppendicesTags[appendixId] ? selectedOptions : selectedOptions.filter(newTag => !savedAppendicesTags[appendixId].includes(newTag));
-    let tagsDeleted = !savedAppendicesTags[appendixId] ? [] : savedAppendicesTags[appendixId].filter(savedTag => !selectedOptions.includes(savedTag));
-
-    console.log(tagsAdded)
+    let tagsAdded = getTagsAdded(savedAppendicesTags[appendixId], selectedOptions);
+    let tagsDeleted = getTagsDeleted(savedAppendicesTags[appendixId], selectedOptions);
 
     if(tagsAdded.length) {
-      savedAppendicesTagsSelectHandleAddition(appendixId, appendices, setAppendices, tagsAdded);
+      savedAppendicesTagsSelectHandleAddition(appendixId, appendices, setAppendices, tagsAdded, setResponse);
     } else if(tagsDeleted.length) {
-      savedAppendicesTagsSelectHandleDeletion(appendix, appendixId, appendices, setAppendices, tagsDeleted);
+      savedAppendicesTagsSelectHandleDeletion(appendix, appendixId, appendices, setAppendices, tagsDeleted, setResponse);
     } 
   };
-
-  
   
   return (
     <div>
