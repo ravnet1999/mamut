@@ -5,9 +5,18 @@ import AppendixHandler from '../Handlers/AppendixHandler';
 export const TaskAppendicesTagsContext = createContext();
 
 const TaskAppendicesTagsContextProvider = ({children}) => { 
-  const tagsSelectPlaceholder = <div>Wyszukaj tagi lub dodaj nowe</div>;
+  const tagsSelectPlaceholder = <div>Wyszukaj tagi lub  (min. 3 znaki)</div>;
   const tagsSelectFormatCreateLabel = userInput => `Utwórz nowy tag: ${userInput}`;
   const [tagsSelectDefaultOptions, setTagsSelectDefaultOptions] = useState([]);
+  const minTagLength = 3;
+
+  const isValidNewOption = (tagName) => {
+    if(tagName.length < minTagLength) {        
+      return false;
+    }
+
+    return true;
+  };
 
   const [newAppendicesTags, setNewAppendicesTags] = useState([]);
   const [savedAppendicesTags, setSavedAppendicesTags] = useState([]);
@@ -29,7 +38,7 @@ const TaskAppendicesTagsContextProvider = ({children}) => {
     let tagsDeleted = getTagsDeleted(newAppendicesTags, selectedOptions);
 
     if(tagsAdded.length) {
-      if(selectedOptions.length == 1) {
+      if(selectedOptions.length == 1) {        
         setResponse({
           error: false,
           messages: ['Dodano tag. Teraz możesz załadować załącznik.']
@@ -133,7 +142,7 @@ const TaskAppendicesTagsContextProvider = ({children}) => {
       savedAppendicesTagsSelectHandleDeletion(appendix, appendixId, appendices, setAppendices, tagsDeleted, setResponse);
     } 
   };
-  
+
   return (
     <div>
       <TaskAppendicesTagsContext.Provider value={{ 
@@ -141,6 +150,7 @@ const TaskAppendicesTagsContextProvider = ({children}) => {
         tagsSelectFormatCreateLabel,
         tagsSelectPromiseOptions,  
         tagsSelectDefaultOptions, setTagsSelectDefaultOptions,
+        isValidNewOption,
 
         newAppendicesTags, setNewAppendicesTags,
         savedAppendicesTags, setSavedAppendicesTags,

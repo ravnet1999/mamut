@@ -45,6 +45,7 @@ const TaskAppendices = (props) => {
       tagsSelectFormatCreateLabel,
       tagsSelectPromiseOptions,  
       tagsSelectDefaultOptions, setTagsSelectDefaultOptions,
+      isValidNewOption,
 
       newAppendicesTags, setNewAppendicesTags,
       savedAppendicesTags, setSavedAppendicesTags,
@@ -131,6 +132,7 @@ const TaskAppendices = (props) => {
               formatCreateLabel={tagsSelectFormatCreateLabel}
               styles={newAppendicesTagsSelectStyles}
               value={newAppendicesTags}
+              isValidNewOption={isValidNewOption}
               />}  
             </div>
 
@@ -187,6 +189,7 @@ const TaskAppendices = (props) => {
                                 formatCreateLabel={tagsSelectFormatCreateLabel}
                                 styles={tagsSelectStyles}
                                 value={savedAppendicesTags[appendix.id]}
+                                isValidNewOption={isValidNewOption}
                                 />}                                
                               </Card.Text>
                             </Card.Body>
