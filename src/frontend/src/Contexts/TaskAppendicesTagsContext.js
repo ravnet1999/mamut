@@ -29,10 +29,17 @@ const TaskAppendicesTagsContextProvider = ({children}) => {
     let tagsDeleted = getTagsDeleted(newAppendicesTags, selectedOptions);
 
     if(tagsAdded.length) {
-      setResponse({
-        error: false,
-        messages: ['Dodano tag. Teraz możesz załadować załącznik.']
-      });
+      if(selectedOptions.length == 1) {
+        setResponse({
+          error: false,
+          messages: ['Dodano tag. Teraz możesz załadować załącznik.']
+        });
+      } else {
+        setResponse({
+          error: false,
+          messages: ['Dodano tag.']
+        });  
+      }      
     } else if(tagsDeleted.length) {
       let tagDeletedName = tagsDeleted[0].label;
 
