@@ -43,8 +43,6 @@ const TaskAppendicesTagsContextProvider = ({children}) => {
     } else if(tagsDeleted.length) {
       let tagDeletedName = tagsDeleted[0].label;
 
-      console.log(newAppendicesTags);
-
       if(newAppendicesTags.length == 1 && newAppendicesTags[0].label == tagDeletedName) {
         setResponse({
           error: false,
