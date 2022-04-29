@@ -133,6 +133,7 @@ const TaskAppendices = (props) => {
               styles={newAppendicesTagsSelectStyles}
               value={newAppendicesTags}
               isValidNewOption={isValidNewOption}
+              isClearable={false}
               />}  
             </div>
 
@@ -190,6 +191,7 @@ const TaskAppendices = (props) => {
                                 styles={tagsSelectStyles}
                                 value={savedAppendicesTags[appendix.id]}
                                 isValidNewOption={isValidNewOption}
+                                isClearable={false}
                                 />}                                
                               </Card.Text>
                             </Card.Body>
