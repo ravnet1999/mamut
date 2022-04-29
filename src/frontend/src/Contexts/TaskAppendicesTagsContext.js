@@ -114,7 +114,22 @@ const TaskAppendicesTagsContextProvider = ({children}) => {
   const savedAppendicesTagsSelectHandleChange = (appendix, appendices, setAppendices, setResponse) =>  async (selectedOptions, context) => { 
     let appendixId = appendix.id;
     
-    if(['select-option', 'create-option'].includes(context.action)) {
+    if(context.action == 'clear') {
+      let savedTags = savedAppendicesTags[appendixId];
+      savedTags.shift();
+      
+      let tagsDeletedNames = savedTags.map(savedTag => savedTag.label);
+
+      for(let tagDeletedName of tagsDeletedNames) {
+        await savedAppendicesTagsSelectHandleDeletion(appendix, appendixId, appendices, setAppendices, tagDeletedName, setResponse);
+      }
+
+      setResponse({
+        error: true,
+        messages: ['Nie można usunąć jedynego tagu do załącznika.']
+      }); 
+      return;      
+    } else if(['select-option', 'create-option'].includes(context.action)) {
       savedAppendicesTagsSelectHandleAddition(appendixId, appendices, setAppendices, context.option.label, setResponse);  
     } else if(context.action == 'remove-value') {
       savedAppendicesTagsSelectHandleDeletion(appendix, appendixId, appendices, setAppendices, context.removedValue.label, setResponse);
