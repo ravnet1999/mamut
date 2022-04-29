@@ -125,7 +125,7 @@ const TaskAppendices = (props) => {
               cacheOptions  
               defaultOptions={tagsSelectDefaultOptions}          
               loadOptions={tagsSelectPromiseOptions}
-              onChange={newAppendicesTagsSelectHandleChange}
+              onChange={newAppendicesTagsSelectHandleChange(setResponse)}
               isMulti={true}
               placeholder={tagsSelectPlaceholder}
               formatCreateLabel={tagsSelectFormatCreateLabel}
@@ -181,7 +181,7 @@ const TaskAppendices = (props) => {
                                 cacheOptions  
                                 defaultOptions={tagsSelectDefaultOptions}          
                                 loadOptions={tagsSelectPromiseOptions}
-                                onChange={savedAppendicesTagsSelectHandleChange(appendix, appendices, setAppendices)}
+                                onChange={savedAppendicesTagsSelectHandleChange(appendix, appendices, setAppendices, setResponse)}
                                 isMulti={true}
                                 placeholder={tagsSelectPlaceholder}
                                 formatCreateLabel={tagsSelectFormatCreateLabel}
