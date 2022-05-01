@@ -60,4 +60,14 @@ router.get('/:clientId/locations', [authMiddleware], (req, res, next) => {
   });
 });
 
+router.patch('/:clientId/documentation', [authMiddleware], (req, res, next) => {
+  companyService.updateDocumentation(req.params.clientId, req.body.documentation).then((result) => {
+      response(res, false, ['Pomyślnie zaktualizowano dokumentację klienta.'], result.resources);
+      return;
+  }).catch((err) => {
+      response(res, true, ['Wystąpił błąd poczas próby aktualizacji dokumentacji klienta.', JSON.stringify(err)], []);
+      return;
+  });
+});
+
 module.exports = router;

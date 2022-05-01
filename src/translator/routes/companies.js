@@ -54,4 +54,17 @@ router.get('/:companyId/locations', (req, res, next) => {
   });
 });
 
+router.patch('/:companyId/documentation', (req, res, next) => {
+
+  let documentation = req.body.documentation;
+
+  companyService.updateById(req.params.companyId, ['dokumentacja'], [documentation]).then((result) => {
+      response(res, false, ['Pomyślnie zmodyfikowano dokumentację firmy.'], [result]);
+      return;
+  }).catch((err) => {
+      response(res, true, ['Wystąpił błąd podczas próby modyfikacji dokumentacji firmy', JSON.stringify(err)], []);
+      return;
+  });
+});
+
 module.exports = router;

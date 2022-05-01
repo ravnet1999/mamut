@@ -1,4 +1,5 @@
 const Service = require('../Service');
+const connection = require('../../mysql/connection');
 
 class CompanyService extends Service {
     constructor(tableName) {
