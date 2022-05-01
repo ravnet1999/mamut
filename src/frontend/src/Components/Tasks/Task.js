@@ -21,6 +21,7 @@ import moment from 'moment';
 import TaskAppendices from './TaskAppendices';
 import TaskAppendicesContextProvider from '../../Contexts/TaskAppendicesContext';
 import TaskAppendicesTagsContextProvider from '../../Contexts/TaskAppendicesTagsContext';
+import ClientHandler from '../../Handlers/ClientHandler';
 
 registerLocale('pl', pl);
 
@@ -62,7 +63,8 @@ const Task = (props) => {
     const [datePickerEnabled, enableDatePicker] = useState(false);
     const [dateConfirmEnabled, enableDateConfirm] = useState(true);
     const [pickerInput, setPickerInput] = useState(null);
-    const [descriptionModified, setDescriptionModified] = useState(false);    
+    const [descriptionModified, setDescriptionModified] = useState(false);  
+    const [client, setClient] = useState(null);
 
     const updateDescriptions = (callback = null) => {
         TaskHandler.updateLastEpisodeDescription(lastEpisode.id, appState.episodeDescription).then((result) => {
@@ -121,6 +123,13 @@ const Task = (props) => {
                 }).catch((err) => {
                     setResponse(err);
                 })
+            });
+
+            
+            ClientHandler.getClients(response.resources[0].id_klienta).then((response) => {
+              setClient(response.resources[0]);
+            }).catch((err) => {
+              setResponse(err);
             });
         }).catch((err) => {
             setResponse(err);
@@ -508,7 +517,14 @@ const Task = (props) => {
     return (
         <Page>
             <Alert response={response}></Alert>
-            <h1>Zadanie: {task.id}<br />{task.zglaszajacy}<br />Klient: {task.klient}</h1>
+            <h1>
+              Zadanie: {task.id}<br />
+              {task.zglaszajacy}<br />
+              {client && <>
+                Klient:&nbsp; 
+                { client.dokumentacja ? <a href={client.dokumentacja} target="_blank">{task.klient}</a> : task.klient }
+              </>}
+            </h1>
             {buildRepForm()}
             <div className="form-group task-description-container margin-bottom-default">
                 <label for="task_description">Opis problemu:</label>

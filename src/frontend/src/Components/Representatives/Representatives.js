@@ -14,6 +14,8 @@ import useTaskEffects from '../../Hooks/useTaskEffects';
 
 import RepresentativesList from './RepresentativesList';
 
+import ClientDocumentation from '../Clients/ClientDocumentation';
+
 const Representatives = (props) => {
     useTaskEffects(props);
 
@@ -90,6 +92,7 @@ const Representatives = (props) => {
             <Modal buttons={[]} closeButtonName={'Zamknij'} title={activeTasksModal.title} description={activeTasksModal.description} visible={tasksVisible} onClose={() => setTasksVisible(false)}></Modal>
             <Alert response={response}></Alert>
             <RepresentativesList pickedClient={pickedClient} afterRepCreationButtonClicked={ afterRepCreationButtonClicked } afterRepCreationFormModalClosed={  afterRepCreationFormModalClosed } afterRepCreated={ afterRepCreated } selectRepButtonOnClick={ selectRepButtonOnClick } clientColumns={ clientColumns }></RepresentativesList>
+            <ClientDocumentation clientId={pickedClient}/>
             { startButtonVisible && 
               <div className="bottom-pin-wrapper">
                   <div className="bottom-pin">
