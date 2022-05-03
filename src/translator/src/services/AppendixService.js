@@ -200,7 +200,8 @@ class AppendixService extends Service {
 
       let InsertTagPromise = tagName =>  new Promise((resolve, reject) => {
         connection.query('INSERT INTO ' + this.tagsTableName + '(nazwa, id_typu) ' + 
-        'SELECT ?, id FROM ' + this.tagTypesTableName + ' WHERE ' + this.tagTypesTableName + '.nazwa=?;',
+        'SELECT ?, id FROM ' + this.tagTypesTableName + ' WHERE ' + this.tagTypesTableName + '.nazwa=? ' + 
+        'ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(`' + this.tagsTableName + '`.`id`);',
           [tagName, AppendixService.appendicesTagTypeName], (err, result, fields) => {
             if(err) {            
               reject(err);
