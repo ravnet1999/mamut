@@ -1,6 +1,5 @@
 const Service = require('./Service');
 const connection = require('../mysql/connection');
-const charset = require('../helpers/charset');
 
 class AppendixService extends Service {
     static appendicesTagTypeName = "załączniki do zgłoszeń";
@@ -15,15 +14,10 @@ class AppendixService extends Service {
         this.findByIdEmpty = 'Taki załącznik nie istnieje!';
     }
 
-    translateAppendixOut = file => {
+    create = (taskId, file) => {
       for(let key in file) {
         file[key] = file[key][0];
       }
-      charset.translateOut(file);
-    }
-
-    create = (taskId, file) => {
-      this.translateAppendixOut(file)
 
       return new Promise((resolve, reject) => {
         // connection.query('INSERT INTO `' + this.tableName + '`(id_zgloszenia, nazwa, nazwa_oryginalna, sciezka, rozmiar, typ_mime, zawartosc) VALUES (?,?,?,?,?,?,?)', 
@@ -98,7 +92,7 @@ class AppendixService extends Service {
               }
             }
             
-            resolve(charset.translateOut(results));
+            resolve(results);
             return;
         });
       });
@@ -141,7 +135,7 @@ class AppendixService extends Service {
               }
             }
             
-            resolve(charset.translateOut(results));
+            resolve(results);
             return;
         });
       });
