@@ -98,8 +98,6 @@ class AppendixService {
       fs.unlink(uploadPath, err => {
         if(err) {
           console.log(err);
-          reject(`Wystąpił problem z usunięciem pliku załącznika: ${uploadPath}.`);
-          return;
         }
 
         axios.delete(`${appConfig.URLs.translator}/appendices/${appendixId}`).then((response) => {        
