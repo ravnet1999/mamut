@@ -20,6 +20,7 @@ const TaskAppendicesTagsContextProvider = ({children}) => {
 
   const [newAppendicesTags, setNewAppendicesTags] = useState([]);
   const [savedAppendicesTags, setSavedAppendicesTags] = useState([]);
+  const [savedAppendicesTagsLoaded, setSavedAppendicesTagsLoaded] = useState(false);
 
   const tagsSelectPromiseOptions = inputValue => TagHandler.search(1, inputValue);
 
@@ -132,6 +133,7 @@ const TaskAppendicesTagsContextProvider = ({children}) => {
 
         newAppendicesTags, setNewAppendicesTags,
         savedAppendicesTags, setSavedAppendicesTags,
+        savedAppendicesTagsLoaded, setSavedAppendicesTagsLoaded,
 
         newAppendicesTagsSelectHandleChange,
         savedAppendicesTagsSelectHandleChange

@@ -49,6 +49,7 @@ const TaskAppendices = (props) => {
 
       newAppendicesTags, setNewAppendicesTags,
       savedAppendicesTags, setSavedAppendicesTags,
+      savedAppendicesTagsLoaded, setSavedAppendicesTagsLoaded,
 
       newAppendicesTagsSelectHandleChange,
       savedAppendicesTagsSelectHandleChange,
@@ -74,7 +75,8 @@ const TaskAppendices = (props) => {
           }
         };
   
-        setSavedAppendicesTags(savedAppendicesTags);     
+        setSavedAppendicesTags(savedAppendicesTags);   
+        setSavedAppendicesTagsLoaded(true);  
 
     }, [appendices]);
 
@@ -180,7 +182,7 @@ const TaskAppendices = (props) => {
                           <Card style={{width: "fit-content"}}>
                             <Card.Body>
                               <Card.Text>                              
-                                {tagsSelectDefaultOptions.length && <AsyncCreatableSelect
+                                {tagsSelectDefaultOptions.length && savedAppendicesTagsLoaded && <AsyncCreatableSelect
                                 cacheOptions  
                                 defaultOptions={tagsSelectDefaultOptions}          
                                 loadOptions={tagsSelectPromiseOptions}
