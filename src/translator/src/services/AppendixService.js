@@ -169,20 +169,23 @@ class AppendixService extends Service {
               return;
             }
 
-            connection.query('DELETE FROM ' + this.tagsTableName + ' WHERE tagi.id_typu IN ' + 
-            '(SELECT ' + this.tagsTableName + '.id_typu FROM ' + this.tagTypesTableName + ' ' + 
-            'WHERE ' + this.tagTypesTableName + '.nazwa=?) ' +
-            'AND ' + this.tagsTableName + '.id NOT IN (SELECT id_tagu FROM ' + this.appendicesTagsTableName + ');',
+            resolve();
+            return;
 
-            [AppendixService.appendicesTagTypeName], (err, results, fields) => {
-              if(err) {            
-                reject(err);
-                return;
-              }
+            // connection.query('DELETE FROM ' + this.tagsTableName + ' WHERE tagi.id_typu IN ' + 
+            // '(SELECT ' + this.tagsTableName + '.id_typu FROM ' + this.tagTypesTableName + ' ' + 
+            // 'WHERE ' + this.tagTypesTableName + '.nazwa=?) ' +
+            // 'AND ' + this.tagsTableName + '.id NOT IN (SELECT id_tagu FROM ' + this.appendicesTagsTableName + ');',
+
+            // [AppendixService.appendicesTagTypeName], (err, results, fields) => {
+            //   if(err) {            
+            //     reject(err);
+            //     return;
+            //   }
             
-              resolve();
-              return;
-            });
+            //   resolve();
+            //   return;
+            // });
         });
       });    
     }
