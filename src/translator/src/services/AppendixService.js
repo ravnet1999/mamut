@@ -185,19 +185,6 @@ class AppendixService extends Service {
     }
 
     addTags = (appendixId, tagNames) => {
-      let SelectTagPromise = tagName =>  new Promise((resolve, reject) => {
-        connection.query('SELECT id FROM ' + this.tagsTableName + ' WHERE ' + this.tagsTableName + '.nazwa=?;',
-          [tagName], (err, result, fields) => {
-            if(err) {            
-              reject(err);
-              return;
-            }
-
-            resolve(result);
-            return;
-        });
-      });
-
       let InsertTagPromise = tagName =>  new Promise((resolve, reject) => {
         connection.query('INSERT INTO ' + this.tagsTableName + '(nazwa, id_typu) ' + 
         'SELECT ?, id FROM ' + this.tagTypesTableName + ' WHERE ' + this.tagTypesTableName + '.nazwa=? ' + 
@@ -229,25 +216,16 @@ class AppendixService extends Service {
       let promises = tagNames.map(tagName => new Promise(async (resolve, reject) => { 
         let tagId;
 
-        try {    
-          let results = await SelectTagPromise(tagName);
-          tagId = results[0].id;
-        } catch(err1) {
-          try {
-            let results = await InsertTagPromise(tagName);
-            tagId = results.insertId;
-          } catch(err2) {
-            reject([err1, err2]);
-          }
-        } finally { 
-          try {
-            await InsertAppendixTag(appendixId, tagId);
-            resolve({id: tagId, name: tagName});
-            return;
-          } catch(err) {
-            reject(err);
-          }
-        }
+        try {
+          let results = await InsertTagPromise(tagName);
+          tagId = results.insertId;
+
+          await InsertAppendixTag(appendixId, tagId);
+          resolve({id: tagId, name: tagName});
+          return;
+        } catch(err) {
+          reject(err);
+        } 
       }));
 
       return Promise.all(promises);
