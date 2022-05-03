@@ -10,7 +10,7 @@ class AppendixService extends Service {
     
         this.tagsTableName = 'tagi';
         this.tagTypesTableName = 'tagi_typy';
-        this.appendicesTagsTableName = 'zgloszenia_zalaczniki_tagi';
+        this.appendicesTagsTableName = 'obiekty_tagi';
 
         this.findByIdEmpty = 'Taki załącznik nie istnieje!';
     }
