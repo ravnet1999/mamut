@@ -17,7 +17,7 @@ import AsyncCreatableSelect from 'react-select/async-creatable';
 
 const TaskAppendices = (props) => {
     useEffect(() => {
-      TagHandler.get(1).then(tags => setTagsSelectDefaultOptions(tags));      
+            
     }, []);
 
     const newAppendicesTagsSelectStyles = { 
@@ -60,7 +60,7 @@ const TaskAppendices = (props) => {
   
       AppendixHandler.getByTaskId(task.id).then(result => {
         console.log('resources', result.resources);
-        setAppendices(result.resources);   
+        setAppendices(result.resources);  
       });
     }, [task]);
 
@@ -76,7 +76,9 @@ const TaskAppendices = (props) => {
         };
   
         setSavedAppendicesTags(savedAppendicesTags);   
-        setSavedAppendicesTagsLoaded(true);  
+        setSavedAppendicesTagsLoaded(true);
+        
+        TagHandler.get(1).then(tags => setTagsSelectDefaultOptions(tags));
 
     }, [appendices]);
 
@@ -125,7 +127,6 @@ const TaskAppendices = (props) => {
           <div className="task-appendices-content">
             <div className={'margin-bottom-default'}>
               {tagsSelectDefaultOptions.length && <AsyncCreatableSelect
-              cacheOptions  
               defaultOptions={tagsSelectDefaultOptions}          
               loadOptions={tagsSelectPromiseOptions}
               onChange={newAppendicesTagsSelectHandleChange(setResponse)}
