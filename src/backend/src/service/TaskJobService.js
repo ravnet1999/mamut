@@ -12,10 +12,11 @@ class TaskJobService {
 
     let datetimeToSendMailAt = deadline.clone().subtract(millisecondsBeforeDeadlineToSendMailAt, 'milliseconds');
 
-    let jobId = `${taskId}_termin`;
+    let jobIdPrefix = `${taskId}_termin_`;
+    let jobId = jobIdPrefix + currentDatetime.unix();
     
     let delayedJobs = await mailQueue.getDelayed();
-    let delayedJobsByJobId = delayedJobs.filter(job => job.id == jobId);
+    let delayedJobsByJobId = delayedJobs.filter(job => job.id.includes(jobIdPrefix));
 
     delayedJobsByJobId.forEach(async (job) => {
       await job.remove(); 
