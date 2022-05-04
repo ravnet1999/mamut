@@ -114,14 +114,16 @@ const notifyFirstStop = (taskId, operatorId, callback) => {
 }
 
 router.post('/:taskId/await/:type', [authMiddleware], (req, res, next) => {
+    let taskId = req.params.taskId;
+
     if(req.body.description == 'STOP') {
-        notifyFirstStop(req.params.taskId, req.operatorId, (err) => {
+        notifyFirstStop(taskId, req.operatorId, (err) => {
             if(err) {
                 console.log(err);
                 response(res, true, ['Wystąpił problem podczas próby pobrania stempli zadania.', JSON.stringify(err)], []);
                 return;
             }
-            taskService.stopTask(req.params.taskId, req.operatorId).then((result) => {
+            taskService.stopTask(taskId, req.operatorId).then((result) => {
                 notificationCallback(res);
             }).catch((err) => {
                 response(res, true, ['Wystąpił błąd podczas próby zatrzymania zadania.', JSON.stringify(err)], []);
@@ -135,14 +137,14 @@ router.post('/:taskId/await/:type', [authMiddleware], (req, res, next) => {
             let date = req.body.description.substr(7, req.body.description.length);
             let datetime = moment(date, 'YYYY-MM-DD HH.mm.ss').format('YYYY-MM-DD HH:mm:ss');    
 
-            notifyFirstStop(req.params.taskId, req.operatorId, (err) => {
+            notifyFirstStop(taskId, req.operatorId, (err) => {
                 if(err) {
                     console.log(err);
                     response(res, true, ['Wystąpił problem podczas próby pobrania stempli zadania.', JSON.stringify(err)], []);
                     return;    
                 }
-                taskService.awaitTask(req.params.taskId, req.params.type, req.body.description, req.operatorId).then((awaitResult) => {
-                    return taskService.patchTask(req.params.taskId, { termin: datetime, terminowe: 1 });
+                taskService.awaitTask(taskId, req.params.type, req.body.description, req.operatorId).then((awaitResult) => {
+                    return taskService.patchTask(taskId, { termin: datetime, terminowe: 1 });
                 }).then((result) => {
                     notificationCallback(res);
                 }).catch((err) => {
@@ -151,8 +153,8 @@ router.post('/:taskId/await/:type', [authMiddleware], (req, res, next) => {
                 });
             });
         } else {
-            notifyFirstStop(req.params.taskId, req.operatorId, (err) => {
-                taskService.awaitTask(req.params.taskId, req.params.type, req.body.description, req.operatorId).then((awaitResult) => {
+            notifyFirstStop(taskId, req.operatorId, (err) => {
+                taskService.awaitTask(taskId, req.params.type, req.body.description, req.operatorId).then((awaitResult) => {
                     notificationCallback(res);
                 }).catch((err) => {
                     response(res, true, ['Coś poszło nie tak podczas próby wstrzymania zadania.', JSON.stringify(err)], []);
