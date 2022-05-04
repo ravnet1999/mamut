@@ -9,6 +9,7 @@ const serviceService = require('../src/service/ServiceService');
 const operatorService = require('../src/service/OperatorService');
 const appConfig = require('../config/appConfig.json');
 const moment = require('moment');
+const taskJobService = require('../src/service/TaskJobService');
 
 router.get('/', [authMiddleware], (req, res, next) => {
     taskService.getTasks(9999, 0, 'open', appConfig.tasks.komorka, req.operatorId).then((result) => {
@@ -146,6 +147,7 @@ router.post('/:taskId/await/:type', [authMiddleware], (req, res, next) => {
                 taskService.awaitTask(taskId, req.params.type, req.body.description, req.operatorId).then((awaitResult) => {
                     return taskService.patchTask(taskId, { termin: datetime, terminowe: 1 });
                 }).then((result) => {
+                    taskJobService.addDeadlineMailJob(taskId, moment(date, 'YYYY-MM-DD HH.mm.:ss').subtract(2, 'hours'));
                     notificationCallback(res);
                 }).catch((err) => {
                     response(res, true, ['Coś poszło nie tak podczas próby wstrzymania zadania.', JSON.stringify(err)], []);
