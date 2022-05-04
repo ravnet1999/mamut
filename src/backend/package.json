@@ -9,6 +9,7 @@
   "dependencies": {
     "axios": "^0.19.2",
     "bcryptjs": "^2.4.3",
+    "bull": "^4.8.2",
     "concat-stream": "^2.0.0",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
