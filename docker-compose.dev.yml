@@ -26,6 +26,7 @@ services:
     restart: always
     links:
       - mamut-app-db:mongo
+      - mamut-app-redis:redis
 
   mamut-app-parser:
     container_name: mamut-app-parser
@@ -86,3 +87,26 @@ services:
     volumes:
       - ./src/frontend_parser/:/app/
     restart: always
+
+  mamut-app-redis:
+    container_name: mamut-app-redis
+    image: redis:7.0.0
+    restart: always
+    volumes:
+      - ./redis/data:/var/lib/redis
+    ports:
+      - 6379:6379
+    command: >
+      --requirepass example
+
+  mamut-app-redis-commander:
+    container_name: mamut-app-redis-commander
+    image: rediscommander/redis-commander
+    environment:
+      REDIS_PORT: 6379
+      REDIS_HOST: redis
+      REDIS_PASSWORD: example
+    links:
+      - mamut-app-redis:redis
+    ports:
+      - 8081:8081
