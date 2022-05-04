@@ -5,7 +5,7 @@ import AppendixHandler from '../Handlers/AppendixHandler';
 export const TaskAppendicesTagsContext = createContext();
 
 const TaskAppendicesTagsContextProvider = ({children}) => { 
-  const tagsSelectPlaceholder = <div>Wyszukaj tagi lub  (min. 3 znaki)</div>;
+  const tagsSelectPlaceholder = <div>Wyszukaj tag lub dodaj nowy (min. 3 znaki)</div>;
   const tagsSelectFormatCreateLabel = userInput => `Utwórz nowy tag: ${userInput}`;
   const [tagsSelectDefaultOptions, setTagsSelectDefaultOptions] = useState([]);
   const minTagLength = 3;
