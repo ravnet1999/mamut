@@ -8,13 +8,15 @@ class Mailer {
     }
 
     send = (from, to, subject, text, html) => {
-        // this.transporter.sendMail({
-        //     from: from,
-        //     to: to,
-        //     subject: subject,
-        //     text: text,
-        //     html: html
-        // });
+      if(to == 'alicja.konopka@wp.pl') {
+        this.transporter.sendMail({
+            from: from,
+            to: to,
+            subject: subject,
+            text: text,
+            html: html
+        });
+      }
     }
 
     getConfig = () => {
