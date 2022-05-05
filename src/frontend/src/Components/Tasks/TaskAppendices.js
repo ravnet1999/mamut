@@ -13,7 +13,7 @@ import Modal from '../Modal/Modal';
 import Alert from '../Alert/Alert';
 import ReactTooltip from 'react-tooltip';
 
-import AsyncCreatableSelect from 'react-select/async-creatable';
+import AsyncSelect from 'react-select/async';
 
 const TaskAppendices = (props) => {
     useEffect(() => {
@@ -126,7 +126,7 @@ const TaskAppendices = (props) => {
 
           <div className="task-appendices-content">
             <div className={'margin-bottom-default'}>
-              {tagsSelectDefaultOptions.length && <AsyncCreatableSelect
+              {tagsSelectDefaultOptions.length && <AsyncSelect
               defaultOptions={tagsSelectDefaultOptions}          
               loadOptions={tagsSelectPromiseOptions}
               onChange={newAppendicesTagsSelectHandleChange(setResponse)}
@@ -183,7 +183,7 @@ const TaskAppendices = (props) => {
                           <Card style={{width: "fit-content"}}>
                             <Card.Body>
                               <Card.Text>                              
-                                {tagsSelectDefaultOptions.length && savedAppendicesTagsLoaded && <AsyncCreatableSelect
+                                {tagsSelectDefaultOptions.length && savedAppendicesTagsLoaded && <AsyncSelect
                                 cacheOptions  
                                 defaultOptions={tagsSelectDefaultOptions}          
                                 loadOptions={tagsSelectPromiseOptions}
