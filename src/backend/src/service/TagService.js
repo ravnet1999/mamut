@@ -3,7 +3,7 @@ const axios = require('axios');
 const parseResponse = require('../ResponseParser');
 
 class TagService {
-  get = (typeId, query) => {
+  get = (typeId) => {
     return new Promise((resolve, reject) => {
       axios.get(`${appConfig.URLs.translator}/tags/${typeId}`).then((response) => {        
           parseResponse(response).then((response) => {
