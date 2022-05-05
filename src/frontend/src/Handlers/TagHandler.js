@@ -5,6 +5,7 @@ import appConfig from '../Config/appConfig.json';
 const TagHandler = {
   search: (typeId, query) => {
     return new Promise((resolve, reject) => {
+        query = encodeURIComponent(query);
         axios.get(`${appConfig.URLs.domain}/${appConfig.URLs.tags}/search/${typeId}/${query}`, {
             withCredentials: true
         }).then((response) => {
