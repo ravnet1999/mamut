@@ -22,6 +22,7 @@ class TagService {
 
   search = (typeId, query) => {
     return new Promise((resolve, reject) => {
+      query = encodeURIComponent(query);
       axios.get(`${appConfig.URLs.translator}/tags/search/${typeId}/${query}`).then((response) => {        
           parseResponse(response).then((response) => {
             resolve(response.resources);
