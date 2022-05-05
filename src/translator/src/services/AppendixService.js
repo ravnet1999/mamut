@@ -57,18 +57,16 @@ class AppendixService extends Service {
 
     findByTaskId = (taskId) => {
       return new Promise((resolve, reject) => {  
-        let sql = 'SELECT ' + this.tableName + '.*, GROUP_CONCAT(CONCAT(' + this.tagsTableName + '.id, ";",' + this.tagsTableName + '.nazwa)) tagi ' +
-        'FROM ' + this.tableName + ' ' +  
-        'LEFT JOIN ' + this.appendicesTagsTableName + ' ' + 
-        'ON ' + this.appendicesTagsTableName + '.id_obiektu=' + this.tableName + '.id ' + 
-        'AND ' + this.tableName + '.id_zgloszenia=?' + ' ' + 
-        'LEFT JOIN ' + this.tagsTableName + ' ON ' + this.appendicesTagsTableName + '.id_tagu = tagi.id ' +  
-        'LEFT JOIN ' + this.tagTypesTableName + ' ' + 
-        'ON ' + this.tagsTableName + '.id_typu=' + this.tagTypesTableName + '.id ' + 
-        'AND ' + this.tagTypesTableName + '.nazwa=?' + ' ' +
-        'GROUP BY ' + this.tableName + '.id ' +  
+        let sql = 'SELECT ' + this.tableName + '.*, GROUP_CONCAT(CONCAT(' + this.tagsTableName + '.id, ";",' + this.tagsTableName + '.nazwa)) tagi ' +  
+        'FROM ' + this.tableName + ', obiekty_tagi, ' + this.tagsTableName + ', ' + this.tagTypesTableName + ' ' + 
+        'WHERE ' + this.tableName + '.id_zgloszenia=? ' + 
+        'AND ' + this.appendicesTagsTableName + '.id_obiektu=' + this.tableName + '.id ' + 
+        'AND ' + this.appendicesTagsTableName + '.id_tagu = ' + this.tagsTableName + '.id ' + 
+        'AND ' + this.tagsTableName + '.id_typu=' + this.tagTypesTableName + '.id ' + 
+        'AND ' + this.tagTypesTableName + '.nazwa=? ' + 
+        'GROUP BY ' + this.tableName + '.id ' + 
         'ORDER BY id';
-
+        
         console.log(sql);
         
         connection.query(sql, [taskId, AppendixService.appendicesTagTypeName], (err, results, fields) => {
