@@ -155,7 +155,7 @@ const TaskAppendices = (props) => {
                   <Card.Body>
                     <Card.Text>
                       <div>
-                        {appendix.nazwa_oryginalna}
+                        {appendix.nazwa_oryginalna} ({appendix.id})
                         
                         {!appendicesDownloading.includes(appendix.id) && 
                           <Button data-tip="Pobierz" disabled={appendicesUploading || appendicesDownloading.length>0 || appendicesRemoving.length>0} className="appendix-download-button" onClick={e=>onAppendixDownload(appendix)}>
