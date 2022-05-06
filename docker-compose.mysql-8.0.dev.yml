@@ -14,7 +14,7 @@ services:
     ports:
       - '3306:3306'
     volumes:
-      - /mnt/praca/Imagho/Data/mamut-app/mysql-8.0:/var/lib/mysql
+      - ./mysql-8.0:/var/lib/mysql
       - ./src/mysql-8.0/config/mysql.cnf:/etc/mysql/conf.d/mysql.cnf
       - ./src/mysql-8.0/scripts/:/scripts/:rw
 
