@@ -98,7 +98,7 @@ router.get('/:appendixId/file', [authMiddleware], appendixRoute);
 
 router.get('/:appendixId/file/jwt', [jwtAuthMiddleware], appendixRoute);
 
-router.get('/:appendixId/json', [authMiddleware], async (req, res, next) => { 
+let appendixJsonRoute = async (req, res, next) => { 
   let appendix;
 
   try{
@@ -120,10 +120,14 @@ router.get('/:appendixId/json', [authMiddleware], async (req, res, next) => {
       return;
     }
 
-    appendix['data'] = data;
+    appendix['data'] = data.toString();
     response(res, false, ['Pomyślnie pobrano informacje o załączniku.'], appendix); 
   });
-});
+};
+
+router.get('/:appendixId/json', [authMiddleware], appendixJsonRoute);
+
+router.get('/:appendixId/json/jwt', [jwtAuthMiddleware], appendixJsonRoute);
 
 router.delete('/:appendixId', [authMiddleware], async (req, res, next) => {
   try{
