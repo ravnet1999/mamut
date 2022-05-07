@@ -123,7 +123,7 @@ let appendixJsonRoute = async (req, res, next) => {
       return;
     }
 
-    appendix['data'] = data.toString();
+    appendix['data'] = data.toString('base64');
     response(res, false, ['Pomyślnie pobrano informacje o załączniku.'], appendix); 
   });
 };
