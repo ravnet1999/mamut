@@ -132,7 +132,7 @@ router.get('/:appendixId/json', [authMiddleware], readAppendixJsonRoute);
 
 router.get('/:appendixId/json/jwt', [jwtAuthMiddleware], readAppendixJsonRoute);
 
-router.delete('/:appendixId', [authMiddleware], async (req, res, next) => {
+let deleteAppendixRoute = async (req, res, next) => {
   try{
     await appendixService.delete(req.params.appendixId);    
     response(res, false, ['Pomyślnie usunięto załącznik.'], []);  
@@ -141,7 +141,11 @@ router.delete('/:appendixId', [authMiddleware], async (req, res, next) => {
     response(res, true, ['Wystąpił błąd poczas próby usunięcia załącznika.', JSON.stringify(err)], []);
     return;
   }
-});
+}
+
+router.delete('/:appendixId', [authMiddleware], deleteAppendixRoute);
+
+router.delete('/jwt/:appendixId', [jwtAuthMiddleware], deleteAppendixRoute);
 
 router.post('/:appendixId/tags', [authMiddleware], async(req, res, next) => {
   try{
