@@ -31,7 +31,7 @@ router.post('/:taskId', [authMiddleware], (req, res, next) => {
   });
 });
 
-let appendixRoute = async (req, res, next) => { 
+let readAppendixRoute = async (req, res, next) => { 
   let appendix;
 
   try{
@@ -94,11 +94,11 @@ let appendixRoute = async (req, res, next) => {
   });
 }
 
-router.get('/:appendixId/file', [authMiddleware], appendixRoute);
+router.get('/:appendixId/file', [authMiddleware], readAppendixRoute);
 
-router.get('/:appendixId/file/jwt', [jwtAuthMiddleware], appendixRoute);
+router.get('/:appendixId/file/jwt', [jwtAuthMiddleware], readAppendixRoute);
 
-let appendixJsonRoute = async (req, res, next) => { 
+let readAppendixJsonRoute = async (req, res, next) => { 
   let appendix;
 
   try{
@@ -128,9 +128,9 @@ let appendixJsonRoute = async (req, res, next) => {
   });
 };
 
-router.get('/:appendixId/json', [authMiddleware], appendixJsonRoute);
+router.get('/:appendixId/json', [authMiddleware], readAppendixJsonRoute);
 
-router.get('/:appendixId/json/jwt', [jwtAuthMiddleware], appendixJsonRoute);
+router.get('/:appendixId/json/jwt', [jwtAuthMiddleware], readAppendixJsonRoute);
 
 router.delete('/:appendixId', [authMiddleware], async (req, res, next) => {
   try{
