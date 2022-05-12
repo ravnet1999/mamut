@@ -8,7 +8,7 @@ const multiparty = require('multiparty');
 const appConfig = require('../config/appConfig.json');
 const fs = require('fs');
 
-router.post('/:taskId', [authMiddleware], (req, res, next) => {
+let createAppendixRoute = (req, res, next) =>{
   let taskId = req.params.taskId;
 
   var form = new multiparty.Form({maxFieldsSize: appConfig.maxFieldsSize});
@@ -20,16 +20,26 @@ router.post('/:taskId', [authMiddleware], (req, res, next) => {
     
   form.parse(req, function(err, fields, files) {
     if(files) {      
-      let promises = Object.values(files).map(file => appendixService.create(taskId, file[0], fields.tags))
+      let tags = fields.tags;
 
+      if(!tags) {
+        response(res, true, ['Nie można utworzyć załączników z pustymi tagami.'], []);
+        return;
+      }
+
+      let promises = Object.values(files).map(file => appendixService.create(taskId, file[0], tags));
+            
       Promise.all(promises).then((results) => {
         response(res, false, ['Pomyślnie utworzono nowe załączniki.'], results.map(result => result.resources.resources[0]));
       }).catch((err) => {
-          response(res, true, ['Wystąpił błąd poczas próby utworzenia nowych załączników.', JSON.stringify(err)], []);
+        response(res, true, ['Wystąpił błąd poczas próby utworzenia nowych załączników.', JSON.stringify(err)], []);
       });
     }
   });
-});
+}
+
+router.post('/:taskId', [authMiddleware], createAppendixRoute);
+router.post('/jwt/:taskId', [jwtAuthMiddleware], createAppendixRoute);
 
 let readAppendixRoute = async (req, res, next) => { 
   let appendix;
