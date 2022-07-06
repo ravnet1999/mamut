@@ -86,29 +86,13 @@ let readAppendixRoute = async (req, res, next) => {
     // let mimeType = appendix['typ_mime'];
     // res.writeHead(200, {'Content-Disposition': `attachment; filename="${originalFilename}`, 'Content-Type': mimeType});
 
-    // let newFileName = encodeURIComponent(originalFilename);
-    let newFileName = encodeURIComponent("moodflow wallpapers collection 11.jpg");
-
-    // wersja 1
-    // zwracamy plik spakowany
-    // let newFileName = encodeURIComponent(originalFilename);
-    // 'Content-Type': 'application/octet-stream',
-
-    // wersja 2
-    // rozpakowanie pliku przez przegladarke
-    // let newFileName = encodeURIComponent("moodflow wallpapers collection 11.jpg");
-    // (nie może być rozszerzenia .gz, bo doda wtedy .jpeg jeszcze)
-    // 'Content-Type': `${appendix.typ_mime}`,
-    // 'Content-Encoding': 'gzip',
-
-    // wersja 3 rozpakować  przez zlib
+    let newFileName = encodeURIComponent(originalFilename);
 
     res.writeHead(200, {
       'Content-Description': 'File Transfer',    
       'Content-Disposition': `attachment;filename*=UTF-8\'\'${newFileName}`, 
-      // 'Content-Type': 'application/octet-stream',
-      'Content-Type': `${appendix.typ_mime}`,
-      'Content-Encoding': 'gzip',
+      'Content-Type': 'application/octet-stream',
+      'Content-Transfer-Encoding': 'binary',
       'Expires': 0,
       'Cache-Control': 'must-revalidate',
       'Pragma': 'public',
