@@ -40,8 +40,8 @@ class AppendixService {
       formData.append("filename", filename);
       formData.append("path", uploadPath);
       // TODO
-      formData.append("size", file.size);
-      // formData.append("size", compressedSize);
+      // formData.append("size", file.size);
+      formData.append("size", compressedSize);
       formData.append("contentType", file.headers["content-type"]);
       formData.append("contentEncoding", 'gzip');
       formData.append("tags", JSON.stringify(tags));
