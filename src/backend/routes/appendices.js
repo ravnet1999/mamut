@@ -8,6 +8,9 @@ const multiparty = require('multiparty');
 const appConfig = require('../config/appConfig.json');
 const fs = require('fs');
 
+const { createGunzip } = require('zlib');
+const { pipeline } = require('stream');
+
 let createAppendixRoute = (req, res, next) =>{
   let taskId = req.params.taskId;
 
@@ -67,6 +70,34 @@ let readAppendixRoute = async (req, res, next) => {
   
   let path = appendix['sciezka'];
 
+  const source = fs.createReadStream(path);        
+  const destination = res;
+
+  let newFileName = encodeURIComponent("moodflow wallpapers collection 11.jpg");
+
+  res.writeHead(200, {
+    'Content-Description': 'File Transfer',    
+    'Content-Disposition': `attachment;filename*=UTF-8\'\'${newFileName}`, 
+    'Content-Type': 'application/octet-stream',
+    // 'Content-Type': `${appendix.typ_mime}`,
+    // 'Content-Encoding': 'gzip',
+    'Expires': 0,
+    'Cache-Control': 'must-revalidate',
+    'Pragma': 'public',
+    'Content-Length': `${appendix.rozmiar}`,
+    'Set-Cookie': `appendixDownloaded${appendix.id}=true; path=/; max-age=3600`
+  });
+
+  pipeline(source, createGunzip(), destination, (err) => {
+    if (err) {
+      console.error('An error occurred:', err);
+      process.exitCode = 1;
+    }
+    res.end();
+  }); 
+
+  return;
+
   fs.readFile(path, function(err, data) {
     if (err) {
       console.log(err);
@@ -108,7 +139,7 @@ let readAppendixRoute = async (req, res, next) => {
       'Content-Disposition': `attachment;filename*=UTF-8\'\'${newFileName}`, 
       // 'Content-Type': 'application/octet-stream',
       'Content-Type': `${appendix.typ_mime}`,
-      'Content-Encoding': 'gzip',
+      // 'Content-Encoding': 'gzip',
       'Expires': 0,
       'Cache-Control': 'must-revalidate',
       'Pragma': 'public',
