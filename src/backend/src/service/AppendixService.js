@@ -2,12 +2,15 @@ const appConfig = require('../../config/appConfig.json');
 
 const fs = require('fs');
 const fsExtra = require('fs-extra');
+const { createGzip } = require('zlib');
+const { pipeline } = require('stream');
 
 const axios = require('axios');
 var concat = require('concat-stream');
 var FormData = require('form-data');
 
 const parseResponse = require('../ResponseParser');
+
 
 class AppendixService {
   get = (appendicesIds) => {
@@ -27,10 +30,55 @@ class AppendixService {
     });
   }
 
+  sendToTranslator = (uploadPath,originalFilename, filename, compressedSize, file, taskId, tags, resolve, reject) => {
+    fs.createReadStream(uploadPath).on('error', function(err) {
+      console.log(err);
+      return reject('Wystąpił problem z utworzeniem strumienia do odczytu pliku załącznika.');
+    }).pipe(concat({ encoding: 'buffer' }, function (data) {
+      var formData = new FormData();
+      formData.append("originalFilename", originalFilename);
+      formData.append("filename", filename);
+      formData.append("path", uploadPath);
+      // TODO
+      // formData.append("size", file.size);
+      formData.append("size", compressedSize);
+      formData.append("contentType", file.headers["content-type"]);
+      formData.append("contentEncoding", 'gzip');
+      formData.append("tags", JSON.stringify(tags));
+      // formData.append("data", data);                  
+
+      axios({
+        method: 'post',
+        url: `${appConfig.URLs.translator}/appendices/${taskId}`,
+        data: formData,
+        // maxContentLength: Infinity,
+        // maxBodyLength: Infinity,
+        // headers: {'Content-Type': 'multipart/form-data;boundary=' + formData.getBoundary()}
+        headers: formData.getHeaders()
+      })
+      // axios.post(`${appConfig.URLs.translator}/appendices/${taskId}`, formData, {
+      //   headers: formData.getHeaders()
+      // })
+      .then((response) => {
+        parseResponse(response).then((result) => {
+          return resolve({ resources: result });      
+        }).catch((err) => {
+          console.log(err);
+          return reject(err);                  
+        });
+      }).catch((err) => {
+        console.log(err);
+        return reject('Wystąpił problem z połączeniem z translatorem.');
+      });
+    }))
+  };
+
   create = (taskId, file, tags) => {
+    let ref = this;
+
     return new Promise((resolve, reject) => { 
       let uploadDir = appConfig.tasksAppendicesUploadDir + '/' + taskId;
-      let originalFilename = file.originalFilename;
+      let originalFilename = file.originalFilename + '.gz';
       let filename = Date.now() + '-' + originalFilename;
       let uploadPath = uploadDir + '/' + filename;
       
@@ -43,52 +91,32 @@ class AppendixService {
         })
       }
 
-      try{       
-        fsExtra.moveSync(file.path, uploadPath);
+      try{        
+        const gzip = createGzip();
+        const source = fs.createReadStream(file.path);        
+        const destination = fs.createWriteStream(uploadPath);
+
+        var compressedSize = 0;
+
+        gzip.on('data', function(data) {
+          compressedSize += data.length;
+        }); 
+
+        pipeline(source, gzip, destination, (err) => {
+          if (err) {
+            console.error('An error occurred:', err);
+            process.exitCode = 1;
+          }    
+          ref.sendToTranslator(uploadPath, originalFilename, filename, compressedSize, file, taskId, tags, resolve, reject);     
+        });              
       } catch(err) {
         console.log(err);
         return reject('Wystąpił problem z przeniesieniem załącznika do katalogu docelowego.');
       }
-      
-      fs.createReadStream(uploadPath).on('error', function(err) {
-        console.log(err);
-        return reject('Wystąpił problem z utworzeniem strumienia do odczytu pliku załącznika.');
-      }).pipe(concat({ encoding: 'buffer' }, function (data) {
-        var formData = new FormData();
-        formData.append("originalFilename", originalFilename);
-        formData.append("filename", filename);
-        formData.append("path", uploadPath);
-        formData.append("size", file.size);
-        formData.append("contentType", file.headers["content-type"]);
-        formData.append("tags", JSON.stringify(tags));
-        // formData.append("data", data);                  
-
-        axios({
-          method: 'post',
-          url: `${appConfig.URLs.translator}/appendices/${taskId}`,
-          data: formData,
-          // maxContentLength: Infinity,
-          // maxBodyLength: Infinity,
-          // headers: {'Content-Type': 'multipart/form-data;boundary=' + formData.getBoundary()}
-          headers: formData.getHeaders()
-        })
-        // axios.post(`${appConfig.URLs.translator}/appendices/${taskId}`, formData, {
-        //   headers: formData.getHeaders()
-        // })
-        .then((response) => {
-          parseResponse(response).then((result) => {
-            return resolve({ resources: result });      
-          }).catch((err) => {
-            console.log(err);
-            return reject(err);                  
-          });
-        }).catch((err) => {
-          console.log(err);
-          return reject('Wystąpił problem z połączeniem z translatorem.');
-        });
-      }))
-    })
+    });
   }
+
+  
 
   delete = (appendixId) => {
     return new Promise(async(resolve, reject) => {
