@@ -27,7 +27,49 @@ class AppendixService {
     });
   }
 
+  sendToTranslator = (uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, resolve, reject) => {
+    fs.createReadStream(uploadPath).on('error', function(err) {
+      console.log(err);
+      return reject('Wystąpił problem z utworzeniem strumienia do odczytu pliku załącznika.');
+    }).pipe(concat({ encoding: 'buffer' }, function (data) {
+      var formData = new FormData();
+      formData.append("originalFilename", originalFilename);
+      formData.append("filename", filename);
+      formData.append("path", uploadPath);
+      formData.append("size", fileSize);
+      formData.append("contentType", contentType);
+      formData.append("tags", JSON.stringify(tags));
+      // formData.append("data", data);                  
+
+      axios({
+        method: 'post',
+        url: `${appConfig.URLs.translator}/appendices/${taskId}`,
+        data: formData,
+        // maxContentLength: Infinity,
+        // maxBodyLength: Infinity,
+        // headers: {'Content-Type': 'multipart/form-data;boundary=' + formData.getBoundary()}
+        headers: formData.getHeaders()
+      })
+      // axios.post(`${appConfig.URLs.translator}/appendices/${taskId}`, formData, {
+      //   headers: formData.getHeaders()
+      // })
+      .then((response) => {
+        parseResponse(response).then((result) => {
+          return resolve({ resources: result });      
+        }).catch((err) => {
+          console.log(err);
+          return reject(err);                  
+        });
+      }).catch((err) => {
+        console.log(err);
+        return reject('Wystąpił problem z połączeniem z translatorem.');
+      });
+    }));
+  }
+
   create = (taskId, file, tags) => {
+    let ref = this;
+
     return new Promise((resolve, reject) => { 
       let uploadDir = appConfig.tasksAppendicesUploadDir + '/' + taskId;
       let originalFilename = file.originalFilename;
@@ -52,44 +94,8 @@ class AppendixService {
         console.log(err);
         return reject('Wystąpił problem z przeniesieniem załącznika do katalogu docelowego.');
       }
-      
-      fs.createReadStream(uploadPath).on('error', function(err) {
-        console.log(err);
-        return reject('Wystąpił problem z utworzeniem strumienia do odczytu pliku załącznika.');
-      }).pipe(concat({ encoding: 'buffer' }, function (data) {
-        var formData = new FormData();
-        formData.append("originalFilename", originalFilename);
-        formData.append("filename", filename);
-        formData.append("path", uploadPath);
-        formData.append("size", fileSize);
-        formData.append("contentType", contentType);
-        formData.append("tags", JSON.stringify(tags));
-        // formData.append("data", data);                  
 
-        axios({
-          method: 'post',
-          url: `${appConfig.URLs.translator}/appendices/${taskId}`,
-          data: formData,
-          // maxContentLength: Infinity,
-          // maxBodyLength: Infinity,
-          // headers: {'Content-Type': 'multipart/form-data;boundary=' + formData.getBoundary()}
-          headers: formData.getHeaders()
-        })
-        // axios.post(`${appConfig.URLs.translator}/appendices/${taskId}`, formData, {
-        //   headers: formData.getHeaders()
-        // })
-        .then((response) => {
-          parseResponse(response).then((result) => {
-            return resolve({ resources: result });      
-          }).catch((err) => {
-            console.log(err);
-            return reject(err);                  
-          });
-        }).catch((err) => {
-          console.log(err);
-          return reject('Wystąpił problem z połączeniem z translatorem.');
-        });
-      }))
+      ref.sendToTranslator(uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, resolve, reject);
     })
   }
 
