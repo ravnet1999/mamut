@@ -9,6 +9,10 @@
     },
     "tasksAppendicesUploadDir": "tasks-appendices",
     "tasksAppendicesUploadCompressedSubDir": "compressed",    
+    "tasksAppendicesImgCompressionTypeSharpToFormatJpeg": 1,
+    "tasksAppendicesImgCompressionQualitySharpToFormatJpeg": 10,
+    "tasksAppendicesImgCompressionTypeSharpToFormatPng": 2,
+    "tasksAppendicesImgCompressionQualitySharpToFormatPng": 70,
     "tasks": {
         "id_zglaszajacy": null,
         "zglaszajacy": "",

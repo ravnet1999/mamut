@@ -31,18 +31,6 @@ class AppendixService {
 
   compressImages = (contentType, fileBasename, fileExt, uploadDir, uploadPath) => {
     return new Promise((resolve, reject) => { 
-      let compressedFilenameGen = (fileBasename, fileExt, fileSuffix) => {
-        return fileBasename + fileSuffix + fileExt;
-      }
-
-      let compressedFilePathGen = (uploadDir, compressedFilename) => {
-        return uploadDir + '/' + compressedFilename;
-      }
-
-      let fileSuffix;
-      let compressionTypeName;
-      let compressionParameters;
-
       let uploadCompressedDir = uploadDir + '/' + appConfig.tasksAppendicesUploadCompressedSubDir;
 
       if(!fs.existsSync(uploadCompressedDir)) {   
@@ -54,22 +42,44 @@ class AppendixService {
         })
       }
 
-      if(contentType == "image/jpeg" || contentType == "image/png"){
-        if(contentType == "image/jpeg"){
-          fileSuffix = '_jpg_70_mozjpeg';
-          compressionTypeName = "jpeg";
-          compressionParameters = { quality: 70, mozjpeg: true };        
+      let fileSuffix;
+      let compressionTypeId;
+      let compressionTypeName;
+      let compressionMethod;
+      let compressionOptions;
+      let compressionParameters;
+
+      if(contentType == "image/jpeg" || contentType == "image/png") {
+        if(contentType == "image/jpeg") {
+          let quality = appConfig.tasksAppendicesImgCompressionQualitySharpToFormatJpeg;
+
+          compressionTypeId = appConfig.tasksAppendicesImgCompressionTypeSharpToFormatJpeg;
+          // TODO wyciagnac z bazy danych
+          compressionTypeName = 'sharp_to_format_jpeg';
+          compressionMethod = "toFormat";
+          compressionOptions = ["jpeg"];
+          
+          fileSuffix = `_${compressionTypeName}_quality_${quality}_mozjpeg`;
+          compressionParameters = { quality, mozjpeg: true };       
         } else if(contentType == "image/png") { 
-          fileSuffix = '_png_70';
-          compressionTypeName = "png";
-          compressionParameters = { quality: 70};
+          let quality = appConfig.tasksAppendicesImgCompressionQualitySharpToFormatPng;
+
+          compressionTypeId = appConfig.tasksAppendicesImgCompressionTypeSharpToFormatPng;
+          // TODO wyciagnac z bazy danych
+          compressionTypeName = 'sharp_to_format_png';
+          compressionMethod = "toFormat";
+          compressionOptions = ["png"];
+          
+          fileSuffix = `_${compressionTypeName}_quality_${quality}`;          
+          compressionParameters = { quality };        
         }
 
-        let compressedFilename = compressedFilenameGen(fileBasename, fileExt, fileSuffix);
-        let compressedFilePath = compressedFilePathGen(uploadCompressedDir, compressedFilename);
+        let compressedFilename = fileBasename + fileSuffix + fileExt;
+        let compressedFilePath = uploadDir + '/' + compressedFilename;
 
-        sharp(uploadPath).toFormat(compressionTypeName, compressionParameters)
-        .toFile(compressedFilePath).then((image) => {
+        console.log(compressionMethod, compressionOptions, compressedFilePath);
+
+        sharp(uploadPath)[compressionMethod](...compressionOptions).toFile(compressedFilePath).then((image) => {
           let compressedFileSize = image.size;          
           resolve({ compressedFileSize, compressionTypeName, compressionParameters, compressedFilename, compressedFilePath });
         });
@@ -80,8 +90,6 @@ class AppendixService {
   }
 
   sendToTranslator = (uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, resolve, reject, compressedFileData) => {
-    if(compressedFileData) console.log(compressedFileData);
-    
     fs.createReadStream(uploadPath).on('error', function(err) {
       console.log(err);
       return reject('Wystąpił problem z utworzeniem strumienia do odczytu pliku załącznika.');
@@ -94,6 +102,13 @@ class AppendixService {
       formData.append("contentType", contentType);
       formData.append("tags", JSON.stringify(tags));
       // formData.append("data", data);                  
+
+      if(compressedFileData) {
+        formData.append("compressed", 1);
+        formData.append("compressedFileData", JSON.stringify(compressedFileData));
+      } else {
+        formData.append("compressed", 0);
+      }
 
       axios({
         method: 'post',
