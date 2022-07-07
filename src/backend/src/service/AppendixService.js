@@ -2,6 +2,8 @@ const appConfig = require('../../config/appConfig.json');
 
 const fs = require('fs');
 const fsExtra = require('fs-extra');
+const sharp = require("sharp");
+const path = require('path');
 
 const axios = require('axios');
 var concat = require('concat-stream');
@@ -27,7 +29,59 @@ class AppendixService {
     });
   }
 
-  sendToTranslator = (uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, resolve, reject) => {
+  compressImages = (contentType, fileBasename, fileExt, uploadDir, uploadPath) => {
+    return new Promise((resolve, reject) => { 
+      let compressedFilenameGen = (fileBasename, fileExt, fileSuffix) => {
+        return fileBasename + fileSuffix + fileExt;
+      }
+
+      let compressedFilePathGen = (uploadDir, compressedFilename) => {
+        return uploadDir + '/' + compressedFilename;
+      }
+
+      let fileSuffix;
+      let compressionTypeName;
+      let compressionParameters;
+
+      let uploadCompressedDir = uploadDir + '/' + appConfig.tasksAppendicesUploadCompressedSubDir;
+
+      if(!fs.existsSync(uploadCompressedDir)) {   
+        fs.mkdirSync(uploadCompressedDir, null, err => {
+          if(err) {
+            console.log(err);
+            return reject('Wystąpił problem z utworzeniem katalogu do zapisu skompresowanych załączników w formacie jpg i png.');
+          }
+        })
+      }
+
+      if(contentType == "image/jpeg" || contentType == "image/png"){
+        if(contentType == "image/jpeg"){
+          fileSuffix = '_jpg_70_mozjpeg';
+          compressionTypeName = "jpeg";
+          compressionParameters = { quality: 70, mozjpeg: true };        
+        } else if(contentType == "image/png") { 
+          fileSuffix = '_png_70';
+          compressionTypeName = "png";
+          compressionParameters = { quality: 70};
+        }
+
+        let compressedFilename = compressedFilenameGen(fileBasename, fileExt, fileSuffix);
+        let compressedFilePath = compressedFilePathGen(uploadCompressedDir, compressedFilename);
+
+        sharp(uploadPath).toFormat(compressionTypeName, compressionParameters)
+        .toFile(compressedFilePath).then((image) => {
+          let compressedFileSize = image.size;          
+          resolve({ compressedFileSize, compressionTypeName, compressionParameters, compressedFilename, compressedFilePath });
+        });
+      } else {
+        reject();
+      }
+    });
+  }
+
+  sendToTranslator = (uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, resolve, reject, compressedFileData) => {
+    if(compressedFileData) console.log(compressedFileData);
+    
     fs.createReadStream(uploadPath).on('error', function(err) {
       console.log(err);
       return reject('Wystąpił problem z utworzeniem strumienia do odczytu pliku załącznika.');
@@ -78,6 +132,8 @@ class AppendixService {
       let filePath = file.path;
       let fileSize = file.size;
       let contentType = file.headers["content-type"];
+      let fileExt =  path.extname(uploadPath);
+      let fileBasename = path.basename(filename, fileExt);
 
       if(!fs.existsSync(uploadDir)) {   
         fs.mkdirSync(uploadDir, {'recursive': true}, err => {
@@ -95,8 +151,15 @@ class AppendixService {
         return reject('Wystąpił problem z przeniesieniem załącznika do katalogu docelowego.');
       }
 
-      ref.sendToTranslator(uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, resolve, reject);
-    })
+      ref.compressImages(contentType, fileBasename, fileExt, uploadDir, uploadPath).then(
+        compressedFileData => {
+          ref.sendToTranslator(uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, resolve, reject, compressedFileData);
+        }
+      ).catch(() => {
+        ref.sendToTranslator(uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, resolve, reject);
+      });
+    });
+      
   }
 
   delete = (appendixId) => {
