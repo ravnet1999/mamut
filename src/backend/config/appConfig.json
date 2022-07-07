@@ -8,6 +8,7 @@
         }
     },
     "tasksAppendicesUploadDir": "tasks-appendices",
+    "tasksAppendicesUploadCompressedSubDir": "compressed",    
     "tasks": {
         "id_zglaszajacy": null,
         "zglaszajacy": "",
