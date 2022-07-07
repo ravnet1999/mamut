@@ -33,7 +33,10 @@ class AppendixService {
       let originalFilename = file.originalFilename;
       let filename = Date.now() + '-' + originalFilename;
       let uploadPath = uploadDir + '/' + filename;
-      
+      let filePath = file.path;
+      let fileSize = file.size;
+      let contentType = file.headers["content-type"];
+
       if(!fs.existsSync(uploadDir)) {   
         fs.mkdirSync(uploadDir, {'recursive': true}, err => {
           if(err) {
@@ -44,7 +47,7 @@ class AppendixService {
       }
 
       try{       
-        fsExtra.moveSync(file.path, uploadPath);
+        fsExtra.moveSync(filePath, uploadPath);
       } catch(err) {
         console.log(err);
         return reject('Wystąpił problem z przeniesieniem załącznika do katalogu docelowego.');
@@ -58,8 +61,8 @@ class AppendixService {
         formData.append("originalFilename", originalFilename);
         formData.append("filename", filename);
         formData.append("path", uploadPath);
-        formData.append("size", file.size);
-        formData.append("contentType", file.headers["content-type"]);
+        formData.append("size", fileSize);
+        formData.append("contentType", contentType);
         formData.append("tags", JSON.stringify(tags));
         // formData.append("data", data);                  
 
