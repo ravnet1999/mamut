@@ -22,11 +22,15 @@ class AppendixService extends Service {
       return new Promise((resolve, reject) => {
         // connection.query('INSERT INTO `' + this.tableName + '`(id_zgloszenia, nazwa, nazwa_oryginalna, sciezka, rozmiar, typ_mime, zawartosc) VALUES (?,?,?,?,?,?,?)', 
         // [taskId, file.filename[0], file.originalFilename[0], file.path[0], parseInt(file.size[0]), file.contentType[0], file.data[0]], (err, results, fields) => {
-        connection.query('INSERT INTO `' + this.tableName + '`(id_zgloszenia, nazwa, nazwa_oryginalna, sciezka, rozmiar, typ_mime, godzina) VALUES (?,?,?,?,?,?,NOW())', 
-          [taskId, file.filename, file.originalFilename, file.path, parseInt(file.size), file.contentType], (err, results, fields) => {
+        connection.query('INSERT INTO `' + this.tableName + '`(id_zgloszenia, nazwa, nazwa_oryginalna, sciezka, rozmiar, typ_mime, kompresja, godzina) VALUES (?,?,?,?,?,?,?,NOW())', 
+          [taskId, file.filename, file.originalFilename, file.path, parseInt(file.size), file.contentType,  file.compressed], (err, results, fields) => {
             if(err) {            
               reject(err);
               return;
+            }
+
+            if(file.compressed == 1 && file.hasOwnProperty("compressedFileData")) {
+              console.log(JSON.parse(file['compressedFileData']));
             }
             
             resolve(results.insertId);
