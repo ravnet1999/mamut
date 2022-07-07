@@ -44,44 +44,37 @@ class AppendixService {
 
       let fileSuffix;
       let compressionTypeId;
-      let compressionTypeName;
-      let compressionMethod;
+      let compressionTypeNamePrefix;
+      let compressionFormat;
       let compressionOptions;
-      let compressionParameters;
 
       if(contentType == "image/jpeg" || contentType == "image/png") {
         if(contentType == "image/jpeg") {
           let quality = appConfig.tasksAppendicesImgCompressionQualitySharpToFormatJpeg;
 
           compressionTypeId = appConfig.tasksAppendicesImgCompressionTypeSharpToFormatJpeg;
-          // TODO wyciagnac z bazy danych
-          compressionTypeName = 'sharp_to_format_jpeg';
-          compressionMethod = "toFormat";
-          compressionOptions = ["jpeg"];
+          compressionTypeNamePrefix = appConfig.tasksAppendicesImgCompressionTypeNamePrefixSharpToFormatJpeg;
+          compressionFormat = "jpeg";
           
-          fileSuffix = `_${compressionTypeName}_quality_${quality}_mozjpeg`;
-          compressionParameters = { quality, mozjpeg: true };       
+          fileSuffix = `_${compressionTypeNamePrefix}_quality_${quality}_mozjpeg`;
+          compressionOptions = { quality, mozjpeg: true };       
         } else if(contentType == "image/png") { 
           let quality = appConfig.tasksAppendicesImgCompressionQualitySharpToFormatPng;
 
           compressionTypeId = appConfig.tasksAppendicesImgCompressionTypeSharpToFormatPng;
-          // TODO wyciagnac z bazy danych
-          compressionTypeName = 'sharp_to_format_png';
-          compressionMethod = "toFormat";
-          compressionOptions = ["png"];
+          compressionTypeNamePrefix = appConfig.tasksAppendicesImgCompressionTypeNamePrefixSharpToFormatPng;
+          compressionFormat = "png";
           
-          fileSuffix = `_${compressionTypeName}_quality_${quality}`;          
-          compressionParameters = { quality };        
+          fileSuffix = `_${compressionTypeNamePrefix}_quality_${quality}`;          
+          compressionOptions = { quality };        
         }
 
         let compressedFilename = fileBasename + fileSuffix + fileExt;
-        let compressedFilePath = uploadDir + '/' + compressedFilename;
-
-        console.log(compressionMethod, compressionOptions, compressedFilePath);
-
-        sharp(uploadPath)[compressionMethod](...compressionOptions).toFile(compressedFilePath).then((image) => {
+        let compressedFilePath = uploadCompressedDir + '/' + compressedFilename;
+        
+        sharp(uploadPath).toFormat(compressionFormat, compressionOptions).toFile(compressedFilePath).then((image) => {
           let compressedFileSize = image.size;          
-          resolve({ compressedFileSize, compressionTypeName, compressionParameters, compressedFilename, compressedFilePath });
+          resolve({ compressedFileSize, compressionTypeId, compressionOptions, compressedFilename, compressedFilePath });
         });
       } else {
         reject();

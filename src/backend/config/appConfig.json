@@ -11,8 +11,10 @@
     "tasksAppendicesUploadCompressedSubDir": "compressed",    
     "tasksAppendicesImgCompressionTypeSharpToFormatJpeg": 1,
     "tasksAppendicesImgCompressionQualitySharpToFormatJpeg": 10,
+    "tasksAppendicesImgCompressionTypeNamePrefixSharpToFormatJpeg":"sharp_to_format_jpeg",
     "tasksAppendicesImgCompressionTypeSharpToFormatPng": 2,
     "tasksAppendicesImgCompressionQualitySharpToFormatPng": 70,
+    "tasksAppendicesImgCompressionTypeNamePrefixSharpToFormatPng":"sharp_to_format_png",
     "tasks": {
         "id_zglaszajacy": null,
         "zglaszajacy": "",
