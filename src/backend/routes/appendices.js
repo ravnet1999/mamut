@@ -65,7 +65,8 @@ let readAppendixRoute = async (req, res, next) => {
 
   let originalFilename = appendix['nazwa_oryginalna'];
   
-  let path = appendix['sciezka'];
+  let path = appendix['kompresja'] == 1 ? appendix['kompresja_sciezka'] : appendix['sciezka'];
+  let size = appendix['kompresja'] == 1 ? appendix['kompresja_rozmiar'] : appendix['rozmiar'];
 
   fs.readFile(path, function(err, data) {
     if (err) {
@@ -96,7 +97,7 @@ let readAppendixRoute = async (req, res, next) => {
       'Expires': 0,
       'Cache-Control': 'must-revalidate',
       'Pragma': 'public',
-      'Content-Length': `${appendix.rozmiar}`,
+      'Content-Length': `${size}`,
       'Set-Cookie': `appendixDownloaded${appendix.id}=true; path=/; max-age=3600`
     });
 
