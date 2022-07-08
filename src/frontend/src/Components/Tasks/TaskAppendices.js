@@ -155,8 +155,20 @@ const TaskAppendices = (props) => {
                   <Card.Body>
                     <Card.Text>
                       <div>
-                        {appendix.nazwa_oryginalna} ({appendix.id})
-                        
+                        {appendix.nazwa_oryginalna}<br/>
+                        ID {appendix.id}<br/>
+                        {appendix.kompresja == 1 &&
+                        <div>
+                          JAKOŚĆ KOMPRESJI {appendix.kompresja_jakosc}<br/>
+                          ROZMIAR ORYG. {appendix.rozmiar}<br/>
+                          ROZMIAR PO KOMPRESJI {appendix.kompresja_rozmiar}<br/>
+                          ROZMIAR PO KOMPRESJI / ORYG { Math.round(appendix.kompresja_rozmiar/appendix.rozmiar * 10000) / 100 }%
+                        </div>}
+                        {appendix.kompresja == 0 &&
+                        <div>
+                          BRAK KOMPRESJI
+                        </div>}
+
                         {!appendicesDownloading.includes(appendix.id) && 
                           <Button data-tip="Pobierz" disabled={appendicesUploading || appendicesDownloading.length>0 || appendicesRemoving.length>0} className="appendix-download-button" onClick={e=>onAppendixDownload(appendix)}>
                             <FontAwesomeIcon className="fa-sm" icon={faDownload}></FontAwesomeIcon>
