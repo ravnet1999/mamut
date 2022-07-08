@@ -1,4 +1,5 @@
 const appConfig = require('../../config/appConfig.json');
+const taskAppendicesConfig = require('../../config/taskAppendices.json');
 
 const fs = require('fs');
 const fsExtra = require('fs-extra');
@@ -31,7 +32,7 @@ class AppendixService {
 
   compressImages = (contentType, fileBasename, fileExt, uploadDir, uploadPath) => {
     return new Promise((resolve, reject) => { 
-      let uploadCompressedDir = uploadDir + '/' + appConfig.tasksAppendicesUploadCompressedSubDir;
+      let uploadCompressedDir = uploadDir + '/' + taskAppendicesConfig.uploadCompressedSubDir;
 
       if(!fs.existsSync(uploadCompressedDir)) {   
         fs.mkdirSync(uploadCompressedDir, null, err => {
@@ -55,22 +56,22 @@ class AppendixService {
 
         if(contentType == "image/jpeg") {
           compressionFormat = "jpeg";
-          quality = appConfig.tasksAppendicesImgCompressionQualitySharpToFormatJpeg;
+          quality = taskAppendicesConfig.imgCompressionQualitySharpToFormatJpeg;
           compressionOptions = { quality, mozjpeg: true };
           
-          compressionTypeNameSuffix = appConfig.tasksAppendicesImgCompressionTypeNameSuffixSharpToFormatJpeg;
+          compressionTypeNameSuffix = taskAppendicesConfig.imgCompressionTypeNameSuffixSharpToFormatJpeg;
           fileSuffix = `_${compressionTypeNameSuffix}_quality_${quality}_mozjpeg`;          
           
-          compressionTypeId = appConfig.tasksAppendicesImgCompressionTypeSharpToFormatJpeg;      
+          compressionTypeId = taskAppendicesConfig.imgCompressionTypeSharpToFormatJpeg;      
         } else if(contentType == "image/png") { 
           compressionFormat = "png";
-          quality = appConfig.tasksAppendicesImgCompressionQualitySharpToFormatPng;
+          quality = taskAppendicesConfig.imgCompressionQualitySharpToFormatPng;
           compressionOptions = { quality };
           
-          compressionTypeNameSuffix = appConfig.tasksAppendicesImgCompressionTypeNameSuffixSharpToFormatPng;
+          compressionTypeNameSuffix = taskAppendicesConfig.imgCompressionTypeNameSuffixSharpToFormatPng;
           fileSuffix = `_${compressionTypeNameSuffix}_quality_${quality}`;           
           
-          compressionTypeId = appConfig.tasksAppendicesImgCompressionTypeSharpToFormatPng;
+          compressionTypeId = taskAppendicesConfig.imgCompressionTypeSharpToFormatPng;
         }
 
         let compressedFilename = fileBasename + fileSuffix + fileExt;
@@ -139,7 +140,7 @@ class AppendixService {
     let ref = this;
 
     return new Promise((resolve, reject) => { 
-      let uploadDir = appConfig.tasksAppendicesUploadDir + '/' + taskId;
+      let uploadDir = taskAppendicesConfig.uploadDir + '/' + taskId;
       let originalFilename = file.originalFilename;
       let filename = Date.now() + '-' + originalFilename;
       let uploadPath = uploadDir + '/' + filename;
