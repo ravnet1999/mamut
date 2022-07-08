@@ -10,6 +10,7 @@ class AppendixService extends Service {
         this.tagsTableName = 'tagi';
         this.tagTypesTableName = 'tagi_typy';
         this.appendicesTagsTableName = 'obiekty_tagi';
+        this.appendicesCompressionTableName = 'zgloszenia_zalaczniki_kompresja';
 
         this.findByIdEmpty = 'Taki załącznik nie istnieje!';
     }
@@ -24,16 +25,29 @@ class AppendixService extends Service {
         // [taskId, file.filename[0], file.originalFilename[0], file.path[0], parseInt(file.size[0]), file.contentType[0], file.data[0]], (err, results, fields) => {
         connection.query('INSERT INTO `' + this.tableName + '`(id_zgloszenia, nazwa, nazwa_oryginalna, sciezka, rozmiar, typ_mime, kompresja, godzina) VALUES (?,?,?,?,?,?,?,NOW())', 
           [taskId, file.filename, file.originalFilename, file.path, parseInt(file.size), file.contentType,  file.compressed], (err, results, fields) => {
-            if(err) {            
+            if(err) { 
+              console.log(err);           
               reject(err);
               return;
             }
 
-            if(file.compressed == 1 && file.hasOwnProperty("compressedFileData")) {
-              console.log(JSON.parse(file['compressedFileData']));
+            let taskAppendixId = results.insertId;
+
+            if(file.compressed == 1 && file.hasOwnProperty("compression")) {
+              let compressionData = JSON.parse(file.compression);
+              console.log(compressionData);
+
+              connection.query('INSERT INTO `' + this.appendicesCompressionTableName + '`(id_zalacznika, id_typu_kompresji, godzina, nazwa, sciezka, rozmiar, opcje) VALUES (?,?,NOW(),?,?,?,?)', 
+                [taskAppendixId, compressionData.typeId, compressionData.filename, compressionData.filePath, parseInt(compressionData.fileSize), JSON.stringify(compressionData.options)], (err, results, fields) => {
+                  if(err) {   
+                    console.log(err);         
+                    reject(err);
+                    return;
+                  }
+              });
             }
             
-            resolve(results.insertId);
+            resolve(taskAppendixId);
             return;
         });
       });

@@ -78,7 +78,7 @@ class AppendixService {
 
         sharp(uploadPath)[compressionMethod](compressionFormat, compressionOptions).toFile(compressedFilePath).then((image) => {
           let compressedFileSize = image.size;          
-          resolve({ compressedFileSize, compressionTypeId, compressionOptions, compressedFilename, compressedFilePath });
+          resolve({ fileSize: compressedFileSize, typeId: compressionTypeId, options: compressionOptions, filename: compressedFilename, filePath: compressedFilePath });
         });
       } else {
         reject();
@@ -86,7 +86,7 @@ class AppendixService {
     });
   }
 
-  sendToTranslator = (uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, resolve, reject, compressedFileData) => {
+  sendToTranslator = (uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, resolve, reject, compressionData) => {
     fs.createReadStream(uploadPath).on('error', function(err) {
       console.log(err);
       return reject('Wystąpił problem z utworzeniem strumienia do odczytu pliku załącznika.');
@@ -100,9 +100,9 @@ class AppendixService {
       formData.append("tags", JSON.stringify(tags));
       // formData.append("data", data);                  
 
-      if(compressedFileData) {
+      if(compressionData) {
         formData.append("compressed", 1);
-        formData.append("compressedFileData", JSON.stringify(compressedFileData));
+        formData.append("compression", JSON.stringify(compressionData));
       } else {
         formData.append("compressed", 0);
       }
@@ -164,8 +164,8 @@ class AppendixService {
       }
 
       ref.compressImages(contentType, fileBasename, fileExt, uploadDir, uploadPath).then(
-        compressedFileData => {
-          ref.sendToTranslator(uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, resolve, reject, compressedFileData);
+        compressionData => {
+          ref.sendToTranslator(uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, resolve, reject, compressionData);
         }
       ).catch(() => {
         ref.sendToTranslator(uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, resolve, reject);
