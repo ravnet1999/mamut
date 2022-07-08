@@ -73,21 +73,31 @@ class AppendixService extends Service {
       });
     }
 
-    findByTaskId = (taskId) => {
-      return new Promise((resolve, reject) => {  
-        let sql = 'SELECT ' + this.tableName + '.*, GROUP_CONCAT(CONCAT(' + this.tagsTableName + '.id, ";",' + this.tagsTableName + '.nazwa)) tagi ' +  
-        'FROM ' + this.tableName + ', obiekty_tagi, ' + this.tagsTableName + ', ' + this.tagTypesTableName + ' ' + 
-        'WHERE ' + this.tableName + '.id_zgloszenia=? ' + 
-        'AND ' + this.appendicesTagsTableName + '.id_obiektu=' + this.tableName + '.id ' + 
-        'AND ' + this.appendicesTagsTableName + '.id_tagu = ' + this.tagsTableName + '.id ' + 
-        'AND ' + this.tagsTableName + '.id_typu=' + this.tagTypesTableName + '.id ' + 
-        'AND ' + this.tagTypesTableName + '.nazwa=? ' + 
-        'GROUP BY ' + this.tableName + '.id ' + 
-        'ORDER BY id';
-        
-        console.log(sql);
-        
-        connection.query(sql, [taskId, AppendixService.appendicesTagTypeName], (err, results, fields) => {
+    findQuery = (condition, parameters) => {
+      const appendicesCompressionTableName = 'zgloszenia_zalaczniki_kompresja';
+      const appendicesCompressionTypesTableName = 'zgloszenia_zalaczniki_typy_kompresji';
+
+      let sql = `
+        SELECT
+        ${this.tableName}.*,
+        GROUP_CONCAT(CONCAT(${this.tagsTableName}.id, ";",${this.tagsTableName}.nazwa)) tagi,
+        ${appendicesCompressionTableName}.sciezka AS kompresja_sciezka,
+        ${appendicesCompressionTableName}.rozmiar AS kompresja_rozmiar,
+        ${appendicesCompressionTypesTableName}.typ_mime AS kompresja_typ_mime,
+        JSON_EXTRACT(${appendicesCompressionTableName}.opcje, "$.quality") AS kompresja_jakosc
+        FROM ${this.tableName}
+        LEFT JOIN ${this.appendicesTagsTableName} ON ${this.tableName}.id=${this.appendicesTagsTableName}.id_obiektu
+        LEFT JOIN ${this.tagsTableName} ON ${this.appendicesTagsTableName}.id_tagu=${this.tagsTableName}.id
+        LEFT JOIN ${this.tagTypesTableName} ON ${this.tagsTableName}.id_typu=${this.tagTypesTableName}.id
+        LEFT JOIN ${appendicesCompressionTableName} ON ${this.tableName}.id=${appendicesCompressionTableName}.id_zalacznika
+        LEFT JOIN ${appendicesCompressionTypesTableName} ON ${appendicesCompressionTableName}.id_typu_kompresji = zgloszenia_zalaczniki_typy_kompresji.id
+        GROUP BY ${this.tableName}.id, ${appendicesCompressionTableName}.id
+        HAVING ${condition}`;
+
+      console.log(sql);
+
+      return new Promise((resolve, reject) => { 
+        connection.query(sql, parameters, (err, results, fields) => {
           console.log(results);
 
             if(err) {            
@@ -113,50 +123,15 @@ class AppendixService extends Service {
             resolve(results);
             return;
         });
-      });
+      });      
+    }
+
+    findByTaskId = (taskId) => {
+      return this.findQuery(`${this.tableName}.id_zgloszenia=?`,[taskId, AppendixService.appendicesTagTypeName]);
     }
 
     findByIdWithAllData = (appendixId) => {
-      return new Promise((resolve, reject) => {  
-        let sql = 'SELECT ' + this.tableName + '.*, GROUP_CONCAT(CONCAT(' + this.tagsTableName + '.id, ";",' + this.tagsTableName + '.nazwa)) tagi ' +
-        'FROM ' + this.tableName + ' ' +  
-        'JOIN ' + this.appendicesTagsTableName + ' ' +
-        'ON ' + this.tableName + '.id=?' + ' ' + 
-        'AND ' + this.tableName + '.id=' + this.appendicesTagsTableName + '.id_obiektu ' +
-        'LEFT JOIN ' + this.tagsTableName + ' ON ' + this.appendicesTagsTableName + '.id_tagu = tagi.id ' +  
-        'LEFT JOIN ' + this.tagTypesTableName + ' ' + 
-        'ON ' + this.tagsTableName + '.id_typu=' + this.tagTypesTableName + '.id ' + 
-        'AND ' + this.tagTypesTableName + '.nazwa=?' + ' ' +
-        'GROUP BY ' + this.tableName + '.id ' +  
-        'ORDER BY id';
-        
-        connection.query(sql, [appendixId, AppendixService.appendicesTagTypeName], (err, results, fields) => {
-          console.log(results);
-
-            if(err) {            
-              reject(err);
-              return;
-            }
-
-            for(let result of results) {    
-              if(result.tagi) {          
-                let tags = result.tagi.split(',');              
-
-                let tagi = {};
-
-                for(let tag of tags) {
-                  tag = tag.split(';');
-                  tagi[tag[0]] = tag[1];
-                }
-
-                result.tagi = tagi;
-              }
-            }
-            
-            resolve(results);
-            return;
-        });
-      });
+      return this.findQuery(`${this.tableName}.id=?`, [appendixId, AppendixService.appendicesTagTypeName]);
     }
 
     deleteTag = (appendixId, tagId) => {

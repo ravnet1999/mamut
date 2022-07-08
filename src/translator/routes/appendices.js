@@ -8,7 +8,7 @@ const charset = require('../src/helpers/charset');
 
 router.get('/:appendicesIds', (req, res, next) => {
   let appendicesIds = req.params.appendicesIds.split(',');
-  appendixService.findById(appendicesIds).then((appendices) => {
+  appendixService.findByIdWithAllData(appendicesIds).then((appendices) => {
     appendices = appendices.map((appendix) => {
       delete appendix['zawartosc'];
       return charset.translateIn(appendix);
@@ -67,6 +67,7 @@ router.post('/:taskId', (req, res, next) => {
           response(res, false, ['Pomyślnie utworzono nowy załącznik.'], [appendix[0]]);
           return;
         } catch(err) {
+          console.log(err);
           response(res, true, ['Wystąpił błąd podczas próby utworzenia nowego załącznika', JSON.stringify(err)], []);
           return;
         }
