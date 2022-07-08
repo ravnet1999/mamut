@@ -7,14 +7,6 @@
             "name": "mamut_app_auth"
         }
     },
-    "tasksAppendicesUploadDir": "tasks-appendices",
-    "tasksAppendicesUploadCompressedSubDir": "compressed",    
-    "tasksAppendicesImgCompressionTypeSharpToFormatJpeg": 1,
-    "tasksAppendicesImgCompressionQualitySharpToFormatJpeg": 10,
-    "tasksAppendicesImgCompressionTypeNameSuffixSharpToFormatJpeg":"sharp_to_format_jpeg",
-    "tasksAppendicesImgCompressionTypeSharpToFormatPng": 2,
-    "tasksAppendicesImgCompressionQualitySharpToFormatPng": 70,
-    "tasksAppendicesImgCompressionTypeNameSuffixSharpToFormatPng":"sharp_to_format_png",
     "tasks": {
         "id_zglaszajacy": null,
         "zglaszajacy": "",
