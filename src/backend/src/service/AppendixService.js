@@ -46,7 +46,6 @@ class AppendixService {
       let compressionTypeId;
       let compressionTypeNameSuffix;
       let fileSuffix;
-      let compressionData;
 
       if(contentType == "image/jpeg" || contentType == "image/png") {
         let compressionMethod = 'toFormat';
@@ -77,11 +76,9 @@ class AppendixService {
         let compressedFilename = fileBasename + fileSuffix + fileExt;
         let compressedFilePath = uploadCompressedDir + '/' + compressedFilename;
 
-        let compressionData = { compressionMethod,  compressionFormat, compressionOptions };
-
         sharp(uploadPath)[compressionMethod](compressionFormat, compressionOptions).toFile(compressedFilePath).then((image) => {
           let compressedFileSize = image.size;          
-          resolve({ compressedFileSize, compressionTypeId, compressionData, compressedFilename, compressedFilePath });
+          resolve({ compressedFileSize, compressionTypeId, compressionOptions, compressedFilename, compressedFilePath });
         });
       } else {
         reject();
