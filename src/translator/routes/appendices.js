@@ -60,7 +60,7 @@ router.post('/:taskId', (req, res, next) => {
         try {
           let appendixId = await appendixService.create(req.params.taskId, fields);
           await appendixService.addTags(appendixId, tags);
-          let appendix = await appendixService.findByIdWithAppendices(appendixId);
+          let appendix = await appendixService.findByIdWithAllData(appendixId);
           
           // console.log(appendix[0]['zawartosc'].toString())
           delete appendix[0]['zawartosc'];          

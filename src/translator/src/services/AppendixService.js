@@ -116,7 +116,7 @@ class AppendixService extends Service {
       });
     }
 
-    findByIdWithAppendices = (appendixId) => {
+    findByIdWithAllData = (appendixId) => {
       return new Promise((resolve, reject) => {  
         let sql = 'SELECT ' + this.tableName + '.*, GROUP_CONCAT(CONCAT(' + this.tagsTableName + '.id, ";",' + this.tagsTableName + '.nazwa)) tagi ' +
         'FROM ' + this.tableName + ' ' +  
