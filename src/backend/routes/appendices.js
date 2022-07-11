@@ -65,8 +65,19 @@ let readAppendixRoute = async (req, res, next) => {
 
   let originalFilename = appendix['nazwa_oryginalna'];
   
-  let path = appendix['kompresja'] == 1 ? appendix['kompresja_sciezka'] : appendix['sciezka'];
-  let size = appendix['kompresja'] == 1 ? appendix['kompresja_rozmiar'] : appendix['rozmiar'];
+  let path;
+  let size; 
+
+  if(appendix['archiwizacja'] == 1) {
+    path = appendix['archiwizacja_sciezka'];
+    size = appendix['archiwizacja_rozmiar'];    
+  } else if(appendix['kompresja'] == 1) {
+    path = appendix['kompresja_sciezka'];
+    size = appendix['kompresja_rozmiar'];    
+  } else {
+    path = appendix['sciezka'];    
+    size = appendix['rozmiar'];
+  }
 
   fs.readFile(path, function(err, data) {
     if (err) {
@@ -89,7 +100,7 @@ let readAppendixRoute = async (req, res, next) => {
 
     let newFileName = encodeURIComponent(originalFilename);
 
-    res.writeHead(200, {
+    let headers = {
       'Content-Description': 'File Transfer',    
       'Content-Disposition': `attachment;filename*=UTF-8\'\'${newFileName}`, 
       'Content-Type': 'application/octet-stream',
@@ -99,7 +110,15 @@ let readAppendixRoute = async (req, res, next) => {
       'Pragma': 'public',
       'Content-Length': `${size}`,
       'Set-Cookie': `appendixDownloaded${appendix.id}=true; path=/; max-age=3600`
-    });
+    };
+
+    if(appendix['archiwizacja']) {
+      headers['Content-Encoding'] = 'gzip';
+    }
+
+    console.log(appendix, path, size, headers);
+
+    res.writeHead(200, headers);
 
     res.end(data);
   });
