@@ -47,7 +47,7 @@ class AppendixService {
       let compressionTypeNameSuffix;
       let fileSuffix;
 
-      if(contentType == "image/jpeg" || contentType == "image/png") {
+      try {
         let compressionMethod = 'toFormat';
         let compressionFormat;
         let quality;
@@ -80,8 +80,8 @@ class AppendixService {
           let compressedFileSize = image.size;          
           resolve({ fileSize: compressedFileSize, typeId: compressionTypeId, options: compressionOptions, filename: compressedFilename, filePath: compressedFilePath });
         });
-      } else {
-        reject();
+      } catch(err) {        
+        reject(err);
       }
     });
   }
@@ -163,13 +163,19 @@ class AppendixService {
         return reject('Wystąpił problem z przeniesieniem załącznika do katalogu docelowego.');
       }
 
-      ref.compressImages(contentType, fileBasename, fileExt, uploadDir, uploadPath).then(
-        compressionData => {
-          ref.sendToTranslator(uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, resolve, reject, compressionData);
-        }
-      ).catch(() => {
-        ref.sendToTranslator(uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, resolve, reject);
-      });
+      if(contentType == "image/jpeg" || contentType == "image/png") {
+        ref.compressImages(contentType, fileBasename, fileExt, uploadDir, uploadPath).then(
+          compressionData => {
+              ref.sendToTranslator(uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, resolve, reject, compressionData);
+            }
+        ).catch((err) => {
+          console.log(err);
+          ref.sendToTranslator(uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, resolve, reject);
+        });
+      } else {
+        ref.sendToTranslator(uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, resolve, reject);  
+      }
+
     });
       
   }

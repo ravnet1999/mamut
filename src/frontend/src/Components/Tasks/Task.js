@@ -121,6 +121,7 @@ const Task = (props) => {
                     setAppState(newAppState);
                     modifyEpisodeDescription(episodes.resources[0].rozwiazanie);
                 }).catch((err) => {
+                    console.log(err);
                     setResponse(err);
                 })
             });
