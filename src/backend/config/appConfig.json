@@ -66,5 +66,16 @@
         "problem_zadanie": "zadanie",
         "rozliczone": "",
         "powiadomienie_email": "on"
+    },
+    "errorTypes": {
+        "allowed": [89, 90, 91, 73, 93, 36]
+    },
+    "errorTypeNames": {
+      "93": "Z",
+      "91": "C",
+      "90": "B",
+      "89": "A",
+      "73": "K",
+      "36": "W"       
     }
 }
