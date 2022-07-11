@@ -10,7 +10,9 @@ class AppendixService extends Service {
         this.tagsTableName = 'tagi';
         this.tagTypesTableName = 'tagi_typy';
         this.appendicesTagsTableName = 'obiekty_tagi';
-        this.appendicesCompressionTableName = 'zgloszenia_zalaczniki_kompresja';
+        this.appendicesOperationTableName = 'zgloszenia_zalaczniki_operacje';
+        this.appendicesOperationKindTableName = 'zgloszenia_zalaczniki_rodzaje_operacji';
+        this.appendicesOperationTypesTableName = 'zgloszenia_zalaczniki_typy_operacji';
 
         this.findByIdEmpty = 'Taki załącznik nie istnieje!';
     }
@@ -23,8 +25,8 @@ class AppendixService extends Service {
       return new Promise((resolve, reject) => {
         // connection.query('INSERT INTO `' + this.tableName + '`(id_zgloszenia, nazwa, nazwa_oryginalna, sciezka, rozmiar, typ_mime, zawartosc) VALUES (?,?,?,?,?,?,?)', 
         // [taskId, file.filename[0], file.originalFilename[0], file.path[0], parseInt(file.size[0]), file.contentType[0], file.data[0]], (err, results, fields) => {
-        connection.query('INSERT INTO `' + this.tableName + '`(id_zgloszenia, nazwa, nazwa_oryginalna, sciezka, rozmiar, typ_mime, kompresja, godzina) VALUES (?,?,?,?,?,?,?,NOW())', 
-          [taskId, file.filename, file.originalFilename, file.path, parseInt(file.size), file.contentType,  file.compressed], (err, results, fields) => {
+        connection.query('INSERT INTO `' + this.tableName + '`(id_zgloszenia, nazwa, nazwa_oryginalna, sciezka, rozmiar, typ_mime, kompresja, archiwizacja, godzina) VALUES (?,?,?,?,?,?,?,?,NOW())', 
+          [taskId, file.filename, file.originalFilename, file.path, parseInt(file.size), file.contentType,  file.compressed, file.archived], (err, results, fields) => {
             if(err) { 
               console.log(err);           
               reject(err);
@@ -37,8 +39,22 @@ class AppendixService extends Service {
               let compressionData = JSON.parse(file.compression);
               console.log(compressionData);
 
-              connection.query('INSERT INTO `' + this.appendicesCompressionTableName + '`(id_zalacznika, id_typu_kompresji, godzina, nazwa, sciezka, rozmiar, opcje) VALUES (?,?,NOW(),?,?,?,?)', 
+              connection.query('INSERT INTO `' + this.appendicesOperationTableName + '`(id_zalacznika, id_typu_operacji, godzina, nazwa, sciezka, rozmiar, opcje) VALUES (?,?,NOW(),?,?,?,?)', 
                 [taskAppendixId, compressionData.typeId, compressionData.filename, compressionData.filePath, parseInt(compressionData.fileSize), JSON.stringify(compressionData.options)], (err, results, fields) => {
+                  if(err) {   
+                    console.log(err);         
+                    reject(err);
+                    return;
+                  }
+              });
+            }
+
+            if(file.archived == 1 && file.hasOwnProperty("archivisation")) {
+              let archivisationData = JSON.parse(file.archivisation);
+              console.log(archivisationData);
+
+              connection.query('INSERT INTO `' + this.appendicesOperationTableName + '`(id_zalacznika, id_typu_operacji, godzina, nazwa, sciezka, rozmiar) VALUES (?,?,NOW(),?,?,?)', 
+                [taskAppendixId, archivisationData.typeId, archivisationData.filename, archivisationData.filePath, parseInt(archivisationData.fileSize)], (err, results, fields) => {
                   if(err) {   
                     console.log(err);         
                     reject(err);
@@ -74,25 +90,54 @@ class AppendixService extends Service {
     }
 
     findQuery = (condition, parameters) => {
-      const appendicesCompressionTableName = 'zgloszenia_zalaczniki_kompresja';
-      const appendicesCompressionTypesTableName = 'zgloszenia_zalaczniki_typy_kompresji';
+      let tagsQuery = `(SELECT zgloszenia_zalaczniki.id,
+        GROUP_CONCAT(CONCAT(tagi.id, ";",tagi.nazwa)) tagi
+        FROM zgloszenia_zalaczniki
+        LEFT JOIN obiekty_tagi ON zgloszenia_zalaczniki.id=obiekty_tagi.id_obiektu
+        LEFT JOIN tagi ON obiekty_tagi.id_tagu=tagi.id
+        LEFT JOIN tagi_typy ON tagi.id_typu=tagi_typy.id
+        GROUP BY zgloszenia_zalaczniki.id) tagi`;
+
+      let operationCondition = (operationTypeId) => {
+        return `
+          FROM zgloszenia_zalaczniki AS zgloszenia_zalaczniki2
+          LEFT JOIN zgloszenia_zalaczniki_operacje
+          ON zgloszenia_zalaczniki2.id=zgloszenia_zalaczniki_operacje.id_zalacznika
+          JOIN zgloszenia_zalaczniki_typy_operacji
+          ON zgloszenia_zalaczniki_operacje.id_typu_operacji=zgloszenia_zalaczniki_typy_operacji.id
+          AND zgloszenia_zalaczniki_typy_operacji.id_rodzaju_operacji=${operationTypeId}
+          GROUP BY zgloszenia_zalaczniki2.id, zgloszenia_zalaczniki_operacje.id`;
+      }
+
+      let compressionCondition = operationCondition(1);
+      let archivisationCondition = operationCondition(2);
 
       let sql = `
-        SELECT
-        ${this.tableName}.*,
-        GROUP_CONCAT(CONCAT(${this.tagsTableName}.id, ";",${this.tagsTableName}.nazwa)) tagi,
-        ${appendicesCompressionTableName}.sciezka AS kompresja_sciezka,
-        ${appendicesCompressionTableName}.rozmiar AS kompresja_rozmiar,
-        ${appendicesCompressionTypesTableName}.typ_mime AS kompresja_typ_mime,
-        JSON_EXTRACT(${appendicesCompressionTableName}.opcje, "$.quality") AS kompresja_jakosc
-        FROM ${this.tableName}
-        LEFT JOIN ${this.appendicesTagsTableName} ON ${this.tableName}.id=${this.appendicesTagsTableName}.id_obiektu
-        LEFT JOIN ${this.tagsTableName} ON ${this.appendicesTagsTableName}.id_tagu=${this.tagsTableName}.id
-        LEFT JOIN ${this.tagTypesTableName} ON ${this.tagsTableName}.id_typu=${this.tagTypesTableName}.id
-        LEFT JOIN ${appendicesCompressionTableName} ON ${this.tableName}.id=${appendicesCompressionTableName}.id_zalacznika
-        LEFT JOIN ${appendicesCompressionTypesTableName} ON ${appendicesCompressionTableName}.id_typu_kompresji = zgloszenia_zalaczniki_typy_kompresji.id
-        GROUP BY ${this.tableName}.id, ${appendicesCompressionTableName}.id
-        HAVING ${condition}`;
+      SELECT * FROM
+      zgloszenia_zalaczniki 
+      LEFT JOIN ${tagsQuery}
+      ON tagi.id=zgloszenia_zalaczniki.id
+      LEFT JOIN
+        (SELECT
+          zgloszenia_zalaczniki2.id,
+          zgloszenia_zalaczniki_typy_operacji.id_rodzaju_operacji,
+          zgloszenia_zalaczniki_operacje.sciezka AS kompresja_sciezka,
+          zgloszenia_zalaczniki_operacje.rozmiar AS kompresja_rozmiar,
+          zgloszenia_zalaczniki_typy_operacji.typ_mime AS kompresja_typ_mime,
+          JSON_EXTRACT(zgloszenia_zalaczniki_operacje.opcje, "$.quality") AS kompresja_jakosc
+          ${compressionCondition}) kompresja
+      ON kompresja.id=zgloszenia_zalaczniki.id    
+      LEFT JOIN
+        (SELECT
+          zgloszenia_zalaczniki2.id,
+          zgloszenia_zalaczniki_typy_operacji.id_rodzaju_operacji,
+          zgloszenia_zalaczniki_operacje.sciezka AS archiwizacja_sciezka,
+          zgloszenia_zalaczniki_operacje.rozmiar AS archiwizacja_rozmiar,
+          zgloszenia_zalaczniki_typy_operacji.typ_mime AS archiwizacja_typ_mime,
+          zgloszenia_zalaczniki_typy_operacji.typ_zawartosci AS archiwizacja_typ_zawartosci
+          ${archivisationCondition}) archiwizacja
+      ON archiwizacja.id=zgloszenia_zalaczniki.id
+      HAVING ${condition};`;
 
       console.log(sql);
 

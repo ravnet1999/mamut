@@ -5,6 +5,8 @@ const fs = require('fs');
 const fsExtra = require('fs-extra');
 const sharp = require("sharp");
 const path = require('path');
+const { createGzip } = require('zlib');
+const { pipeline } = require('stream');
 
 const axios = require('axios');
 var concat = require('concat-stream');
@@ -38,7 +40,7 @@ class AppendixService {
         fs.mkdirSync(uploadCompressedDir, null, err => {
           if(err) {
             console.log(err);
-            return reject('Wystąpił problem z utworzeniem katalogu do zapisu skompresowanych załączników w formacie jpg i png.');
+            reject('Wystąpił problem z utworzeniem katalogu do zapisu skompresowanych załączników w formacie jpg i png.');
           }
         })
       }
@@ -86,7 +88,48 @@ class AppendixService {
     });
   }
 
-  sendToTranslator = (uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, resolve, reject, compressionData) => {
+  createArchive = (filePath, fileBasename, fileExt, uploadDir) => {
+    return new Promise((resolve, reject) => {
+      let archivisationTypeNameSuffix = taskAppendicesConfig.archivisationTypeNameSuffixZlibGzip;
+      let fileSuffix = `_${archivisationTypeNameSuffix}`;
+      let archivedFilename = fileBasename + fileSuffix + fileExt + '.gz';
+      let uploadArchivedDir = uploadDir + '/' + taskAppendicesConfig.uploadArchivedSubDir;
+      let archivedFilePath = uploadArchivedDir + '/' + archivedFilename;
+      let archivisationTypeId = taskAppendicesConfig.archivisationTypeZlibGzip;    
+
+      if(!fs.existsSync(uploadArchivedDir)) {   
+        fs.mkdirSync(uploadArchivedDir, null, err => {
+          if(err) {
+            console.log(err);
+            reject('Wystąpił problem z utworzeniem katalogu do zapisu zarchiwizowanych załączników.');
+          }
+        })
+      }
+
+      const gzip = createGzip();
+      const source = fs.createReadStream(filePath);        
+      const destination = fs.createWriteStream(archivedFilePath);
+
+      var archivedFileSize = 0;
+      
+      gzip.on('data', function(data) {
+        archivedFileSize += data.length;
+      }); 
+      
+      pipeline(source, gzip, destination, (err) => {
+        if (err) {          
+          process.exitCode = 1;
+          console.log(err);
+          reject(err);
+        }  
+        
+        let archivisationData = { fileSize: archivedFileSize, typeId: archivisationTypeId, filename: archivedFilename, filePath: archivedFilePath };  
+        resolve(archivisationData);
+      });  
+    });     
+  }
+
+  sendToTranslator = (uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, resolve, reject, archivisationData, compressionData) => {
     fs.createReadStream(uploadPath).on('error', function(err) {
       console.log(err);
       return reject('Wystąpił problem z utworzeniem strumienia do odczytu pliku załącznika.');
@@ -105,6 +148,13 @@ class AppendixService {
         formData.append("compression", JSON.stringify(compressionData));
       } else {
         formData.append("compressed", 0);
+      }
+
+      if(archivisationData) {
+        formData.append("archived", 1);
+        formData.append("archivisation", JSON.stringify(archivisationData));
+      } else {
+        formData.append("archived", 0);
       }
 
       axios({
@@ -151,7 +201,7 @@ class AppendixService {
         fs.mkdirSync(uploadDir, {'recursive': true}, err => {
           if(err) {
             console.log(err);
-            return reject('Wystąpił problem z utworzeniem katalogu do zapisu załączników.');
+            reject('Wystąpił problem z utworzeniem katalogu do zapisu załączników.');
           }
         })
       }
@@ -160,22 +210,27 @@ class AppendixService {
         fsExtra.moveSync(filePath, uploadPath);
       } catch(err) {
         console.log(err);
-        return reject('Wystąpił problem z przeniesieniem załącznika do katalogu docelowego.');
+        reject('Wystąpił problem z przeniesieniem załącznika do katalogu docelowego.');
       }
 
       if(contentType == "image/jpeg" || contentType == "image/png") {
         ref.compressImages(contentType, fileBasename, fileExt, uploadDir, uploadPath).then(
           compressionData => {
-              ref.sendToTranslator(uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, resolve, reject, compressionData);
-            }
+            ref.createArchive(compressionData.filePath, compressionData.filename, path.extname(compressionData.filename), uploadDir).then((archivisationData) => {
+              console.log({archivisationData});
+              ref.sendToTranslator(uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, resolve, reject, archivisationData, compressionData);
+            });
+          }
         ).catch((err) => {
           console.log(err);
-          ref.sendToTranslator(uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, resolve, reject);
+          reject(err);
         });
       } else {
-        ref.sendToTranslator(uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, resolve, reject);  
+        ref.createArchive(uploadPath, fileBasename, fileExt, uploadDir).then((archivisationData) => {
+          console.log({archivisationData});
+          ref.sendToTranslator(uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, resolve, reject, archivisationData);
+        });
       }
-
     });
       
   }
