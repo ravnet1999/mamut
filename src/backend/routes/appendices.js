@@ -7,6 +7,8 @@ const appendixService = require('../src/service/AppendixService');
 const multiparty = require('multiparty');
 const appConfig = require('../config/appConfig.json');
 const fs = require('fs');
+const { createGunzip } = require('zlib');
+const { pipeline } = require('stream');
 
 let createAppendixRoute = (req, res, next) =>{
   let taskId = req.params.taskId;
@@ -65,63 +67,65 @@ let readAppendixRoute = async (req, res, next) => {
 
   let originalFilename = appendix['nazwa_oryginalna'];
   
-  let path;
-  let size; 
+  let size = appendix['kompresja'] == 1 ? appendix['kompresja_rozmiar'] : appendix['rozmiar']; 
 
   if(appendix['archiwizacja'] == 1) {
-    path = appendix['archiwizacja_sciezka'];
-    size = appendix['archiwizacja_rozmiar'];    
+    path = appendix['archiwizacja_sciezka'];   
   } else if(appendix['kompresja'] == 1) {
-    path = appendix['kompresja_sciezka'];
-    size = appendix['kompresja_rozmiar'];    
+    path = appendix['kompresja_sciezka'];   
   } else {
-    path = appendix['sciezka'];    
-    size = appendix['rozmiar'];
+    path = appendix['sciezka'];
   }
 
-  fs.readFile(path, function(err, data) {
-    if (err) {
-      console.log(err);
-      let newFileName = encodeURIComponent("błąd pobierania");
-      res.writeHead(200, {
-        'Content-Description': 'File Transfer',    
-        'Content-Disposition': `attachment;filename*=UTF-8\'\'${newFileName}`,
-        'Content-Type': 'application/octet-stream',
-        'Expires': 0,
-        'Cache-Control': 'must-revalidate',
-        'Pragma': 'public',
-        'Set-Cookie': `appendixDownloaded${appendix.id}=false; path=/; max-age=3600`
-      });
-      return res.end("Wystąpił błąd poczas próby wczytania załącznika z pliku.");
-    }
+  let newFileName = encodeURIComponent(originalFilename);
 
-    // let mimeType = appendix['typ_mime'];
-    // res.writeHead(200, {'Content-Disposition': `attachment; filename="${originalFilename}`, 'Content-Type': mimeType});
+  let headers = {
+    'Content-Description': 'File Transfer',    
+    'Content-Disposition': `attachment;filename*=UTF-8\'\'${newFileName}`, 
+    'Content-Type': 'application/octet-stream',
+    'Content-Transfer-Encoding': 'binary',
+    'Expires': 0,
+    'Cache-Control': 'must-revalidate',
+    'Pragma': 'public',
+    'Content-Length': `${size}`,
+    'Set-Cookie': `appendixDownloaded${appendix.id}=true; path=/; max-age=3600`
+  };
 
-    let newFileName = encodeURIComponent(originalFilename);
+  res.writeHead(200, headers);
 
-    let headers = {
-      'Content-Description': 'File Transfer',    
-      'Content-Disposition': `attachment;filename*=UTF-8\'\'${newFileName}`, 
-      'Content-Type': 'application/octet-stream',
-      'Content-Transfer-Encoding': 'binary',
-      'Expires': 0,
-      'Cache-Control': 'must-revalidate',
-      'Pragma': 'public',
-      'Content-Length': `${size}`,
-      'Set-Cookie': `appendixDownloaded${appendix.id}=true; path=/; max-age=3600`
-    };
+  console.log(appendix, path, size, headers);
 
-    if(appendix['archiwizacja']) {
-      headers['Content-Encoding'] = 'gzip';
-    }
+  if(appendix['archiwizacja'] == 1) {
+    pipeline(fs.createReadStream(path), createGunzip(), res, (err) => {
+      if (err) {
+        console.error('An error occurred:', err);
+        process.exitCode = 1;
+      }
+      res.end();
+    });
+  } else {
+    fs.readFile(path, function(err, data) {
+      if (err) {
+        console.log(err);
+        let newFileName = encodeURIComponent("błąd pobierania");
+        res.writeHead(200, {
+          'Content-Description': 'File Transfer',    
+          'Content-Disposition': `attachment;filename*=UTF-8\'\'${newFileName}`,
+          'Content-Type': 'application/octet-stream',
+          'Expires': 0,
+          'Cache-Control': 'must-revalidate',
+          'Pragma': 'public',
+          'Set-Cookie': `appendixDownloaded${appendix.id}=false; path=/; max-age=3600`
+        });
+        return res.end("Wystąpił błąd poczas próby wczytania załącznika z pliku.");
+      }
 
-    console.log(appendix, path, size, headers);
+      // let mimeType = appendix['typ_mime'];
+      // res.writeHead(200, {'Content-Disposition': `attachment; filename="${originalFilename}`, 'Content-Type': mimeType});
 
-    res.writeHead(200, headers);
-
-    res.end(data);
-  });
+      res.end(data);
+    });
+  }
 }
 
 router.get('/:appendixId/file', [authMiddleware], readAppendixRoute);
