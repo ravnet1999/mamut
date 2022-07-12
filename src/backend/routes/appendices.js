@@ -91,13 +91,24 @@ let readAppendixRoute = async (req, res, next) => {
     'Set-Cookie': `appendixDownloaded${appendix.id}=true; path=/; max-age=3600`
   };
 
+  let errorHeaders = {
+    'Content-Description': 'File Transfer',    
+    'Content-Disposition': `attachment;filename*=UTF-8\'\'błąd pobierania`,
+    'Content-Type': 'application/octet-stream',
+    'Expires': 0,
+    'Cache-Control': 'must-revalidate',
+    'Pragma': 'public',
+    'Set-Cookie': `appendixDownloaded${appendix.id}=false; path=/; max-age=3600`
+  };
+
   console.log(appendix, path, size, headers);
 
   if(appendix['archiwizacja'] == 1) {
     pipeline(fs.createReadStream(path), createGunzip(), res, (err) => {
       if (err) {
-        console.error('An error occurred:', err);
-        process.exitCode = 1;
+        console.log(err);
+        res.writeHead(200, errorHeaders);
+        return res.end("Wystąpił błąd poczas próby wczytania załącznika z pliku.");
       }
       res.writeHead(200, headers);
       res.end();
@@ -106,16 +117,7 @@ let readAppendixRoute = async (req, res, next) => {
     fs.readFile(path, function(err, data) {
       if (err) {
         console.log(err);
-        let newFileName = encodeURIComponent("błąd pobierania");
-        res.writeHead(200, {
-          'Content-Description': 'File Transfer',    
-          'Content-Disposition': `attachment;filename*=UTF-8\'\'${newFileName}`,
-          'Content-Type': 'application/octet-stream',
-          'Expires': 0,
-          'Cache-Control': 'must-revalidate',
-          'Pragma': 'public',
-          'Set-Cookie': `appendixDownloaded${appendix.id}=false; path=/; max-age=3600`
-        });
+        res.writeHead(200, errorHeaders);
         return res.end("Wystąpił błąd poczas próby wczytania załącznika z pliku.");
       }
 
