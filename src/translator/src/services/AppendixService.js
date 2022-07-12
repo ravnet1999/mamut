@@ -113,8 +113,18 @@ class AppendixService extends Service {
       let archivisationCondition = operationCondition(2);
 
       let sql = `
-      SELECT * FROM
-      zgloszenia_zalaczniki 
+      SELECT 
+        zgloszenia_zalaczniki.*, 
+        tagi.tagi,        
+        kompresja.kompresja_sciezka,
+        kompresja.kompresja_rozmiar,
+        kompresja.kompresja_typ_mime,
+        kompresja.kompresja_jakosc,
+        archiwizacja.archiwizacja_sciezka,
+        archiwizacja.archiwizacja_rozmiar,
+        archiwizacja.archiwizacja_typ_mime,
+        archiwizacja.archiwizacja_typ_zawartosci
+      FROM zgloszenia_zalaczniki 
       LEFT JOIN ${tagsQuery}
       ON tagi.id=zgloszenia_zalaczniki.id
       LEFT JOIN
