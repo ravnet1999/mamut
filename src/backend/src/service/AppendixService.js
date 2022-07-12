@@ -131,10 +131,10 @@ class AppendixService {
   }
 
   sendToTranslator = (uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, resolve, reject, archivisationData, compressionData) => {
-    fs.createReadStream(uploadPath).on('error', function(err) {
-      console.log(err);
-      return reject('Wystąpił problem z utworzeniem strumienia do odczytu pliku załącznika.');
-    }).pipe(concat({ encoding: 'buffer' }, function (data) {
+    // fs.createReadStream(uploadPath).on('error', function(err) {
+    //   console.log(err);
+    //   return reject('Wystąpił problem z utworzeniem strumienia do odczytu pliku załącznika.');
+    // }).pipe(concat({ encoding: 'buffer' }, function (data) {
       var formData = new FormData();
       formData.append("originalFilename", originalFilename);
       formData.append("filename", filename);
@@ -181,7 +181,7 @@ class AppendixService {
         console.log(err);
         return reject('Wystąpił problem z połączeniem z translatorem.');
       });
-    }));
+    // }));
   }
 
   create = async (taskId, file, tags) =>  {
