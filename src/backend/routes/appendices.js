@@ -91,8 +91,6 @@ let readAppendixRoute = async (req, res, next) => {
     'Set-Cookie': `appendixDownloaded${appendix.id}=true; path=/; max-age=3600`
   };
 
-  res.writeHead(200, headers);
-
   console.log(appendix, path, size, headers);
 
   if(appendix['archiwizacja'] == 1) {
@@ -101,6 +99,7 @@ let readAppendixRoute = async (req, res, next) => {
         console.error('An error occurred:', err);
         process.exitCode = 1;
       }
+      res.writeHead(200, headers);
       res.end();
     });
   } else {
@@ -123,6 +122,7 @@ let readAppendixRoute = async (req, res, next) => {
       // let mimeType = appendix['typ_mime'];
       // res.writeHead(200, {'Content-Disposition': `attachment; filename="${originalFilename}`, 'Content-Type': mimeType});
 
+      res.writeHead(200, headers);
       res.end(data);
     });
   }
