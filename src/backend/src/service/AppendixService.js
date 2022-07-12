@@ -136,7 +136,6 @@ class AppendixService {
         let archivisationData = { fileSize: archivedFileSize, typeId: archivisationTypeId, filename: archivedFilename, filePath: archivedFilePath };  
         resolve(archivisationData);
       } catch(err) {
-        process.exitCode = 1;
         console.log(err);
       }
     });  
