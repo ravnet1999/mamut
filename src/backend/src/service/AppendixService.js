@@ -232,7 +232,7 @@ class AppendixService {
           let archivisationData = await ref.createArchive(compressionData.filePath, compressionData.filename, path.extname(compressionData.filename), uploadDir);
           ref.sendToTranslator(uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, resolve, reject, archivisationData, compressionData);
         } else {
-          let archivisationData = ref.createArchive(uploadPath, fileBasename, fileExt, uploadDir);
+          let archivisationData = await ref.createArchive(uploadPath, fileBasename, fileExt, uploadDir);
           ref.sendToTranslator(uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, resolve, reject, archivisationData);
         }
       } catch(err) {
