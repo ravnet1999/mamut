@@ -6,7 +6,9 @@ const fsExtra = require('fs-extra');
 const sharp = require("sharp");
 const path = require('path');
 const { createGzip } = require('zlib');
+const { promisify } = require('util');
 const { pipeline } = require('stream');
+const pipelineAsync = promisify(pipeline);
 
 const axios = require('axios');
 var concat = require('concat-stream');
@@ -88,8 +90,8 @@ class AppendixService {
     });
   }
 
-  createArchive = (filePath, fileBasename, fileExt, uploadDir) => {
-    return new Promise((resolve, reject) => {
+  createArchive = async(filePath, fileBasename, fileExt, uploadDir) => {
+    return new Promise(async(resolve, reject) => {
       let archivisationTypeNameSuffix = taskAppendicesConfig.archivisationTypeNameSuffixZlibGzip;
       let fileSuffix = `_${archivisationTypeNameSuffix}`;
       let archivedFilename = fileBasename + fileSuffix + fileExt + '.gz';
@@ -116,17 +118,16 @@ class AppendixService {
         archivedFileSize += data.length;
       }); 
       
-      pipeline(source, gzip, destination, (err) => {
-        if (err) {          
-          process.exitCode = 1;
-          console.log(err);
-          reject(err);
-        }  
-        
+      try {
+        await pipelineAsync(source, gzip, destination);
+
         let archivisationData = { fileSize: archivedFileSize, typeId: archivisationTypeId, filename: archivedFilename, filePath: archivedFilePath };  
         resolve(archivisationData);
-      });  
-    });     
+      } catch(err) {
+        process.exitCode = 1;
+        console.log(err);
+      }
+    });  
   }
 
   sendToTranslator = (uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, resolve, reject, archivisationData, compressionData) => {
