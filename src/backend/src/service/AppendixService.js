@@ -234,16 +234,24 @@ class AppendixService {
   delete = (appendixId) => {
     return new Promise(async(resolve, reject) => {
       let appendix = await this.get(appendixId);
-      let uploadPath = appendix.sciezka;
+      let path;
+      
+      if(appendix['archiwizacja'] == 1) {
+        path = appendix['archiwizacja_sciezka'];
+      } else if(appendix['kompresja'] == 1) {
+        path = appendix['kompresja_sciezka'];   
+      } else {
+        path = appendix['sciezka'];
+      }
 
-      fs.unlink(uploadPath, err => {
+      fs.unlink(path, err => {
         if(err) {
           console.log(err);
         }
 
         axios.delete(`${appConfig.URLs.translator}/appendices/${appendixId}`).then((response) => {        
           parseResponse(response).then((response) => {            
-            resolve(`Pomyślnie usunięto plik załącznika ${uploadPath}.`);
+            resolve(`Pomyślnie usunięto plik załącznika ${path}.`);
             return;
           }).catch((err) => {
               reject(err);
