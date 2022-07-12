@@ -131,17 +131,12 @@ let readAppendixRoute = async (req, res, next) => {
     
     pipeline(source, gunzip, res, sentErrorHeaders);
   } else {
-    fs.readFile(path, function(err, data) {
-      if (err) {
-        console.log(err);
-        return res.end("Wystąpił błąd poczas próby wczytania załącznika z pliku.");
-      }
+    let source = fs.createReadStream(path);
+    source.on('error', sentErrorHeaders);
 
-      // let mimeType = appendix['typ_mime'];
-      // res.writeHead(200, {'Content-Disposition': `attachment; filename="${originalFilename}`, 'Content-Type': mimeType});
-
-      res.writeHead(200, headers);
-      res.end(data);
+    source.on('open', function () {
+      sentSuccessfulHeaders();
+      source.pipe(res);
     });
   }
 }
