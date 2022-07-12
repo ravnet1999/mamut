@@ -183,10 +183,10 @@ class AppendixService {
     }));
   }
 
-  create = (taskId, file, tags) => {
+  create = async (taskId, file, tags) =>  {
     let ref = this;
 
-    return new Promise((resolve, reject) => { 
+    return new Promise(async (resolve, reject) => { 
       let uploadDir = taskAppendicesConfig.uploadDir + '/' + taskId;
       let originalFilename = file.originalFilename;
       let filename = Date.now() + '-' + originalFilename;
@@ -213,23 +213,18 @@ class AppendixService {
         reject('Wystąpił problem z przeniesieniem załącznika do katalogu docelowego.');
       }
 
-      if(contentType == "image/jpeg" || contentType == "image/png") {
-        ref.compressImages(contentType, fileBasename, fileExt, uploadDir, uploadPath).then(
-          compressionData => {
-            ref.createArchive(compressionData.filePath, compressionData.filename, path.extname(compressionData.filename), uploadDir).then((archivisationData) => {
-              console.log({archivisationData});
-              ref.sendToTranslator(uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, resolve, reject, archivisationData, compressionData);
-            });
-          }
-        ).catch((err) => {
-          console.log(err);
-          reject(err);
-        });
-      } else {
-        ref.createArchive(uploadPath, fileBasename, fileExt, uploadDir).then((archivisationData) => {
-          console.log({archivisationData});
+      try{
+        if(contentType == "image/jpeg" || contentType == "image/png") {
+          let compressionData = await ref.compressImages(contentType, fileBasename, fileExt, uploadDir, uploadPath);
+          let archivisationData = await ref.createArchive(compressionData.filePath, compressionData.filename, path.extname(compressionData.filename), uploadDir);
+          ref.sendToTranslator(uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, resolve, reject, archivisationData, compressionData);
+        } else {
+          let archivisationData = ref.createArchive(uploadPath, fileBasename, fileExt, uploadDir);
           ref.sendToTranslator(uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, resolve, reject, archivisationData);
-        });
+        }
+      } catch(err) {
+        console.log(err);
+        reject(err);
       }
     });
       
