@@ -81,6 +81,12 @@ class AppendixService {
         let compressedFilePath = uploadCompressedDir + '/' + compressedFilename;
 
         sharp(uploadPath)[compressionMethod](compressionFormat, compressionOptions).toFile(compressedFilePath).then((image) => {
+          fs.unlink(uploadPath, err => {
+            if(err) {
+              console.log(err);
+            }
+          });
+
           let compressedFileSize = image.size;          
           resolve({ fileSize: compressedFileSize, typeId: compressionTypeId, options: compressionOptions, filename: compressedFilename, filePath: compressedFilePath });
         });
@@ -120,6 +126,12 @@ class AppendixService {
       
       try {
         await pipelineAsync(source, gzip, destination);
+
+        fs.unlink(filePath, err => {
+          if(err) {
+            console.log(err);
+          }
+        });
 
         let archivisationData = { fileSize: archivedFileSize, typeId: archivisationTypeId, filename: archivedFilename, filePath: archivedFilePath };  
         resolve(archivisationData);
