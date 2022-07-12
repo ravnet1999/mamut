@@ -91,9 +91,11 @@ let readAppendixRoute = async (req, res, next) => {
     'Set-Cookie': `appendixDownloaded${appendix.id}=true; path=/; max-age=3600`
   };
 
+  let errorFilename = 'blad pobierania';
+
   let errorHeaders = {
     'Content-Description': 'File Transfer',    
-    'Content-Disposition': `attachment;filename*=UTF-8\'\'błąd pobierania`,
+    'Content-Disposition': `attachment;filename*=UTF-8\'\'${errorFilename}`,
     'Content-Type': 'application/octet-stream',
     'Expires': 0,
     'Cache-Control': 'must-revalidate',
