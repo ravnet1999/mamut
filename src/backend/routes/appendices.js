@@ -103,23 +103,37 @@ let readAppendixRoute = async (req, res, next) => {
     'Set-Cookie': `appendixDownloaded${appendix.id}=false; path=/; max-age=3600`
   };
 
-  console.log(appendix, path, size, headers);
+  let headersSent = false;
+
+  let sentSuccessfulHeaders = function() {
+    if(!headersSent) {
+      res.writeHead(200, headers); 
+      headersSent = true;
+    }
+  };
+
+  let sentErrorHeaders = function(err) {
+    console.log(err);
+    if(!headersSent) { 
+      headersSent = true;     
+      res.writeHead(200, errorHeaders); 
+      res.end("Wystąpił błąd poczas próby wczytania załącznika z pliku.");
+    }
+  };
 
   if(appendix['archiwizacja'] == 1) {
-    pipeline(fs.createReadStream(path), createGunzip(), res, (err) => {
-      if (err) {
-        console.log(err);
-        res.writeHead(200, errorHeaders);
-        return res.end("Wystąpił błąd poczas próby wczytania załącznika z pliku.");
-      }
-      res.writeHead(200, headers);
-      res.end();
-    });
+    let source = fs.createReadStream(path);
+    let gunzip = createGunzip();
+
+    source.on('error', sentErrorHeaders);
+    gunzip.on('error', sentErrorHeaders);
+    gunzip.on('data', sentSuccessfulHeaders);
+    
+    pipeline(source, gunzip, res, sentErrorHeaders);
   } else {
     fs.readFile(path, function(err, data) {
       if (err) {
         console.log(err);
-        res.writeHead(200, errorHeaders);
         return res.end("Wystąpił błąd poczas próby wczytania załącznika z pliku.");
       }
 
