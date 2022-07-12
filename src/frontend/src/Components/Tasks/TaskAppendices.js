@@ -157,10 +157,10 @@ const TaskAppendices = (props) => {
                       <div>
                         {appendix.nazwa_oryginalna}<br/>
                         ID {appendix.id}<br/>
+                        ROZMIAR ORYG. {appendix.rozmiar}<br/>
                         {appendix.kompresja == 1 &&
                         <>
-                          JAKOŚĆ KOMPRESJI {appendix.kompresja_jakosc}<br/>
-                          ROZMIAR ORYG. {appendix.rozmiar}<br/>
+                          JAKOŚĆ KOMPRESJI {appendix.kompresja_jakosc}<br/>                          
                           ROZMIAR PO KOMPRESJI {appendix.kompresja_rozmiar}<br/>
                           ROZMIAR PO KOMPRESJI / ORYG { Math.round(appendix.kompresja_rozmiar/appendix.rozmiar * 10000) / 100 }%<br/>                           
                         </>}
