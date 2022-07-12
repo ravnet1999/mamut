@@ -158,16 +158,27 @@ const TaskAppendices = (props) => {
                         {appendix.nazwa_oryginalna}<br/>
                         ID {appendix.id}<br/>
                         {appendix.kompresja == 1 &&
-                        <div>
+                        <>
                           JAKOŚĆ KOMPRESJI {appendix.kompresja_jakosc}<br/>
                           ROZMIAR ORYG. {appendix.rozmiar}<br/>
                           ROZMIAR PO KOMPRESJI {appendix.kompresja_rozmiar}<br/>
-                          ROZMIAR PO KOMPRESJI / ORYG { Math.round(appendix.kompresja_rozmiar/appendix.rozmiar * 10000) / 100 }%
-                        </div>}
+                          ROZMIAR PO KOMPRESJI / ORYG { Math.round(appendix.kompresja_rozmiar/appendix.rozmiar * 10000) / 100 }%<br/>                           
+                        </>}
+                        
+                        {appendix.archiwizacja == 1 &&
+                        <>
+                          ROZMIAR PO ARCHIWIZACJI {appendix.archiwizacja_rozmiar}<br/>                          
+                          {appendix.kompresja == 1 &&
+                          <>                            
+                            ROZMIAR PO ARCHIWIZACJI / PO KOMPRESJI { Math.round(appendix.archiwizacja_rozmiar/appendix.kompresja_rozmiar * 10000) / 100 }%<br/>
+                          </>}
+                          ROZMIAR PO ARCHIWIZACJI / ORYG { Math.round(appendix.archiwizacja_rozmiar/appendix.rozmiar * 10000) / 100 }%<br/>
+                        </>}
+
                         {appendix.kompresja == 0 &&
-                        <div>
+                        <>
                           BRAK KOMPRESJI
-                        </div>}
+                        </>}
 
                         {!appendicesDownloading.includes(appendix.id) && 
                           <Button data-tip="Pobierz" disabled={appendicesUploading || appendicesDownloading.length>0 || appendicesRemoving.length>0} className="appendix-download-button" onClick={e=>onAppendixDownload(appendix)}>
