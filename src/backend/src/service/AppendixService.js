@@ -34,8 +34,8 @@ class AppendixService {
     });
   }
 
-  compressImages = (contentType, fileBasename, fileExt, uploadDir, uploadPath) => {
-    return new Promise((resolve, reject) => { 
+  compressImages = async(contentType, fileBasename, fileExt, uploadDir, uploadPath) => {
+    return new Promise(async(resolve, reject) => { 
       let uploadCompressedDir = uploadDir + '/' + taskAppendicesConfig.uploadCompressedSubDir;
 
       if(!fs.existsSync(uploadCompressedDir)) {   
@@ -80,16 +80,17 @@ class AppendixService {
         let compressedFilename = fileBasename + fileSuffix + fileExt;
         let compressedFilePath = uploadCompressedDir + '/' + compressedFilename;
 
-        sharp(uploadPath)[compressionMethod](compressionFormat, compressionOptions).toFile(compressedFilePath).then((image) => {
-          fs.unlink(uploadPath, err => {
+        let originalImage = await sharp(uploadPath);
+        let compressedImage = await originalImage[compressionMethod](compressionFormat, compressionOptions).toFile(compressedFilePath);
+        
+        fs.unlink(uploadPath, err => {
             if(err) {
               console.log(err);
             }
           });
 
-          let compressedFileSize = image.size;          
-          resolve({ fileSize: compressedFileSize, typeId: compressionTypeId, options: compressionOptions, filename: compressedFilename, filePath: compressedFilePath });
-        });
+        resolve({ fileSize: compressedImage.size, typeId: compressionTypeId, options: compressionOptions, filename: compressedFilename, filePath: compressedFilePath });
+        
       } catch(err) {        
         reject(err);
       }
