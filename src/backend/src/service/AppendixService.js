@@ -135,7 +135,8 @@ class AppendixService {
             originalHeight: originalMetadata.height
           }, 
           typeId: compressionTypeId, 
-          options: compressionOptions, 
+          options: { toFormat: compressionOptions, resize: resizeOptions.options},
+          parameters: { resize: { minDimension: taskAppendicesConfig.imgResizeMinDimension, maxDimension: taskAppendicesConfig.imgResizeMaxDimension, calculatedRatio: resizeOptions.ratio } },
           filename: compressedFilename, 
           filePath: compressedFilePath 
         });
