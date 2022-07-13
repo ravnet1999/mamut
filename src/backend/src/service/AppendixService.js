@@ -53,7 +53,7 @@ class AppendixService {
       width: Math.round(width / ratio)
     };
 
-    return options;
+    return { options, ratio };
   }
 
   compressImages = async(contentType, fileBasename, fileExt, uploadDir, uploadPath) => {
@@ -108,9 +108,15 @@ class AppendixService {
         let originalMetadata = await originalImage.metadata();
         let resizeOptions = await ref.resizeOptions(originalMetadata);
 
-        let compressedImage = await originalImage[compressionMethod](compressionFormat, compressionOptions)
-          .resize(resizeOptions)
-          .toFile(compressedFilePath);
+        let compressedImage = await originalImage[compressionMethod](compressionFormat, compressionOptions);
+
+        let shouldBeResized = resizeOptions.ratio > 1;
+
+        if(shouldBeResized) {
+          compressedImage = await compressedImage.resize(resizeOptions.options);  
+        }
+
+        compressedImage = await compressedImage.toFile(compressedFilePath);
 
         console.log(originalMetadata, compressedImage);
         
