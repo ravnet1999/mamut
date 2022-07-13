@@ -155,31 +155,49 @@ const TaskAppendices = (props) => {
                   <Card.Body>
                     <Card.Text>
                       <div>
-                        {appendix.nazwa_oryginalna}<br/>
-                        ID: {appendix.id}<br/>
-                        ROZMIAR ORYG.: {appendix.rozmiar}<br/>
-                        {appendix.kompresja == 1 &&
-                        <>
-                          JAKOŚĆ KOMPRESJI: {appendix.kompresja_jakosc}<br/>                          
+                        [ {appendix.id} ] {appendix.nazwa_oryginalna}<br/><br/>
 
-                          ROZMIAR PO KOMPRESJI: {appendix.kompresja_rozmiar}<br/>
-                          ROZMIAR PO KOMPRESJI / ORYG.: { Math.round(appendix.kompresja_rozmiar/appendix.rozmiar * 10000) / 100 }%<br/>
-                        </>}
-                        
-                        {appendix.archiwizacja == 1 &&
-                        <>
-                          ROZMIAR PO ARCHIWIZACJI: {appendix.archiwizacja_rozmiar}<br/>                          
+                        <div style={{fontSize: "12px"}}>
                           {appendix.kompresja == 1 &&
-                          <>                            
-                            ROZMIAR PO ARCHIWIZACJI / PO KOMPRESJI: { Math.round(appendix.archiwizacja_rozmiar/appendix.kompresja_rozmiar * 10000) / 100 }%<br/>
+                          <>
+                            <b>JAKOŚĆ KOMPRESJI:</b> {appendix.kompresja_jakosc}<br/>
+                            <b>DOCELOWY WYMIAR:</b> {appendix.kompresja_maksymalny_wymiar} x {appendix.kompresja_minimalny_wymiar}<br/><br/>
                           </>}
-                          ROZMIAR PO ARCHIWIZACJI / ORYG.: { Math.round(appendix.archiwizacja_rozmiar/appendix.rozmiar * 10000) / 100 }%<br/>
-                        </>}
 
-                        {appendix.kompresja == 0 &&
-                        <>
-                          BRAK KOMPRESJI
-                        </>}
+                          {appendix.kompresja == 0 &&
+                          <>
+                            <b>BRAK KOMPRESJI</b><br/><br/>
+                          </>}
+
+                          {appendix.kompresja == 1 &&
+                          <>
+                            <b>WYMIARY ORYG:</b> {appendix.kompresja_szerokosc_oryginalna} x {appendix.kompresja_wysokosc_oryginalna}<br/>
+                            <b>WYLICZONA SKALA:</b> {appendix.kompresja_wyliczona_skala}<br/> 
+                            <b>WYMIARY PO PRZESKALOWANIU:</b> {appendix.kompresja_szerokosc} x {appendix.kompresja_wysokosc}<br/><br/> 
+                          </>}  
+
+                          <b>ROZMIAR ORYG.:</b> {appendix.rozmiar}<br/>
+                          {appendix.kompresja == 1 &&
+                          <>
+                            <b>ROZMIAR PO KOMPRESJI I PRZESKALOWANIU:</b> {appendix.kompresja_rozmiar}<br/>
+                            <b>ROZMIAR PO KOMPRESJI I PRZESKALOWANIU / ROZMIAR ORYG.:</b> { Math.round(appendix.kompresja_rozmiar/appendix.rozmiar * 10000) / 100 }%<br/><br/>
+                          </>}
+
+                          {appendix.archiwizacja == 1 &&
+                          <>
+                            <b>ROZMIAR PO ARCHIWIZACJI:</b> {appendix.archiwizacja_rozmiar}<br/>                          
+                            {appendix.kompresja == 1 &&
+                            <>                            
+                            <b>ROZMIAR PO ARCHIWIZACJI / ROZMIAR PO KOMPRESJI I PRZESKALOWANIU:</b> { Math.round(appendix.archiwizacja_rozmiar/appendix.kompresja_rozmiar * 10000) / 100 }%<br/>
+                            </>}
+                            <b>ROZMIAR PO ARCHIWIZACJI / ROZMIAR ORYG.:</b> { Math.round(appendix.archiwizacja_rozmiar/appendix.rozmiar * 10000) / 100 }%<br/><br/>
+                          </>}
+
+                          {appendix.archiwizacja == 0 &&
+                          <>
+                            <b>BRAK ARCHIWIZACJI</b><br/><br/>
+                          </>}
+                        </div>
 
                         {!appendicesDownloading.includes(appendix.id) && 
                           <Button data-tip="Pobierz" disabled={appendicesUploading || appendicesDownloading.length>0 || appendicesRemoving.length>0} className="appendix-download-button" onClick={e=>onAppendixDownload(appendix)}>
