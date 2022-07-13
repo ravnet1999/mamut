@@ -34,8 +34,7 @@ class AppendixService {
     });
   }
 
-  resizeOptions = async (image) => {
-    let metadata = await image.metadata();
+  resizeOptions = async (metadata) => {
     let width = metadata.width;
     let height = metadata.height;
 
@@ -106,11 +105,14 @@ class AppendixService {
         let compressedFilePath = uploadCompressedDir + '/' + compressedFilename;
 
         let originalImage = await sharp(uploadPath);
-        let resizeOptions = await ref.resizeOptions(originalImage);
+        let originalMetadata = await originalImage.metadata();
+        let resizeOptions = await ref.resizeOptions(originalMetadata);
 
         let compressedImage = await originalImage[compressionMethod](compressionFormat, compressionOptions)
           .resize(resizeOptions)
           .toFile(compressedFilePath);
+
+        console.log(originalMetadata, compressedImage);
         
         fs.unlink(uploadPath, err => {
             if(err) {
@@ -118,7 +120,19 @@ class AppendixService {
             }
           });
 
-        resolve({ fileSize: compressedImage.size, typeId: compressionTypeId, options: compressionOptions, filename: compressedFilename, filePath: compressedFilePath });
+        resolve({ 
+          fileSize: compressedImage.size, 
+          metaData: { 
+            width: compressedImage.width, 
+            height: compressedImage.height, 
+            originalWidth: originalMetadata.width , 
+            originalHeight: originalMetadata.height
+          }, 
+          typeId: compressionTypeId, 
+          options: compressionOptions, 
+          filename: compressedFilename, 
+          filePath: compressedFilePath 
+        });
         
       } catch(err) {        
         reject(err);
