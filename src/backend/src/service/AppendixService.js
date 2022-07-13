@@ -34,7 +34,32 @@ class AppendixService {
     });
   }
 
+  resizeOptions = async (image) => {
+    let metadata = await image.metadata();
+    let width = metadata.width;
+    let height = metadata.height;
+
+    let maxDimension = Math.max(width, height);
+    let minDimension = Math.min(width, height);
+
+    let preferredMaxDimension = taskAppendicesConfig.imgResizeMaxDimension;
+    let preferredMinDimension = taskAppendicesConfig.imgResizeMinDimension;
+
+    let ratioMaxDimension = maxDimension / preferredMaxDimension;
+    let ratioMinDimension = minDimension / preferredMinDimension;
+
+    let ratio = Math.max(ratioMaxDimension, ratioMinDimension);
+    
+    let options = {
+      width: Math.round(width / ratio)
+    };
+
+    return options;
+  }
+
   compressImages = async(contentType, fileBasename, fileExt, uploadDir, uploadPath) => {
+    let ref = this;
+
     return new Promise(async(resolve, reject) => { 
       let uploadCompressedDir = uploadDir + '/' + taskAppendicesConfig.uploadCompressedSubDir;
 
@@ -81,7 +106,11 @@ class AppendixService {
         let compressedFilePath = uploadCompressedDir + '/' + compressedFilename;
 
         let originalImage = await sharp(uploadPath);
-        let compressedImage = await originalImage[compressionMethod](compressionFormat, compressionOptions).toFile(compressedFilePath);
+        let resizeOptions = await ref.resizeOptions(originalImage);
+
+        let compressedImage = await originalImage[compressionMethod](compressionFormat, compressionOptions)
+          .resize(resizeOptions)
+          .toFile(compressedFilePath);
         
         fs.unlink(uploadPath, err => {
             if(err) {
