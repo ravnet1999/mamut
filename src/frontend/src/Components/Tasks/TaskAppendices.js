@@ -185,6 +185,7 @@ const TaskAppendices = (props) => {
 
                           {appendix.archiwizacja == 1 &&
                           <>
+                            <b>TYP ARCHIWIZACJI:</b> {appendix.archiwizacja_typ}<br/> 
                             <b>ROZMIAR PO ARCHIWIZACJI:</b> {appendix.archiwizacja_rozmiar}<br/>                          
                             {appendix.kompresja == 1 &&
                             <>                            
