@@ -2,12 +2,12 @@
   "uploadDir": "tasks-appendices",
   "compression": { 
     "uploadDir": "compressed",
-    "sharpToFormatJpeg": {
+    "sharp_to_format_jpeg": {
       "type": 1, 
       "quality": 60,
       "filenameSuffix":"sharp_to_format_jpeg"
     },
-    "sharpToFormatPng": {
+    "sharp_to_format_png": {
       "type": 2, 
       "quality": 60,
       "filenameSuffix":"sharp_to_format_png"
@@ -18,10 +18,17 @@
     "minDimension": 768
   },
   "archivisation": { 
-    "uploadDir": "archived",      
-    "zlibGzip": {
+    "uploadDir": "archived",
+    "type": "zlib_gzip",
+    "zlib_gzip": {
       "type": 3,
-      "filenameSuffix":"zlib_gzip"
+      "filenameSuffix":"zlib_gzip",
+      "fileExt": "gz"
+    },
+    "zlib_brotli": {
+      "type": 4,
+      "filenameSuffix":"zlib_brotli",
+      "fileExt": "br"
     }
   }
 }
