@@ -5,7 +5,8 @@ const fs = require('fs');
 const fsExtra = require('fs-extra');
 const sharp = require("sharp");
 const path = require('path');
-const { createGzip } = require('zlib');
+const { createGzip, createBrotliCompress } = require('zlib');
+const zlib = require('zlib');
 const { promisify } = require('util');
 const { pipeline } = require('stream');
 const pipelineAsync = promisify(pipeline);
@@ -80,10 +81,10 @@ class AppendixService {
 
         if(contentType == "image/jpeg") {
           compressionFormat = "jpeg";
-          compressionConfig = taskAppendicesConfig.compression.sharpToFormatJpeg;
+          compressionConfig = taskAppendicesConfig.compression["sharp_to_format_jpeg"];
         } else if(contentType == "image/png") { 
           compressionFormat = "png";
-          compressionConfig = taskAppendicesConfig.compression.sharpToFormatPng;
+          compressionConfig = taskAppendicesConfig.compression["sharp_to_format_png"];
         }
 
         let quality = compressionConfig.quality;
@@ -143,11 +144,29 @@ class AppendixService {
     });
   }
 
-  createArchive = async(filePath, fileBasename, fileExt, uploadDir) => {
-    return new Promise(async(resolve, reject) => {
-      let archivisationConfig = taskAppendicesConfig.archivisation.zlibGzip;
+  createArchivisationObject = (fileSize) => {
+    console.log(taskAppendicesConfig.archivisation.type);
+
+    switch(taskAppendicesConfig.archivisation.type) {
+      case("zlib_brotli"): return createBrotliCompress({
+        chunkSize: 32 * 1024,
+        params: {
+          [zlib.constants.BROTLI_PARAM_QUALITY]: 1,
+          [zlib.constants.BROTLI_PARAM_SIZE_HINT]: fileSize
+        }
+      });
+      case("zlib_gzip"): return createGzip();
+      default: return createGzip();
+    }
+  }
+
+  createArchive = async(filePath, fileBasename, fileExt, fileSize, uploadDir) => {
+    let ref = this;
+
+    return new Promise(async(resolve, reject) => {      
+      let archivisationConfig = taskAppendicesConfig.archivisation[taskAppendicesConfig.archivisation.type];
       let filenameSuffix = `_${archivisationConfig.filenameSuffix}`;
-      let archivedFilename = fileBasename + filenameSuffix + fileExt + '.gz';
+      let archivedFilename = fileBasename + filenameSuffix + fileExt + archivisationConfig.fileExt;
       let archivisationUploadDir = uploadDir + '/' + taskAppendicesConfig.archivisation.uploadDir;
       let archivedFilePath = archivisationUploadDir + '/' + archivedFilename;
       let archivisationTypeId = archivisationConfig.type;    
@@ -161,18 +180,21 @@ class AppendixService {
         })
       }
 
-      const gzip = createGzip();
+      const archivisationObject = ref.createArchivisationObject(fileSize);      
       const source = fs.createReadStream(filePath);        
       const destination = fs.createWriteStream(archivedFilePath);
 
       var archivedFileSize = 0;
       
-      gzip.on('data', function(data) {
+      archivisationObject.on('data', function(data) {
         archivedFileSize += data.length;
       }); 
       
       try {
-        await pipelineAsync(source, gzip, destination);
+        let start = Date.now();
+        await pipelineAsync(source, archivisationObject, destination);
+        let stop = Date.now();
+        console.log(`archivisation time = ${(stop - start)/1000} seconds`);
 
         fs.unlink(filePath, err => {
           if(err) {
@@ -275,10 +297,10 @@ class AppendixService {
       try{
         if(contentType == "image/jpeg" || contentType == "image/png") {
           let compressionData = await ref.compressImages(contentType, fileBasename, fileExt, uploadDir, uploadPath);
-          let archivisationData = await ref.createArchive(compressionData.filePath, compressionData.filename, path.extname(compressionData.filename), uploadDir);
+          let archivisationData = await ref.createArchive(compressionData.filePath, compressionData.filename, path.extname(compressionData.filename), fileSize, uploadDir);
           ref.sendToTranslator(uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, resolve, reject, archivisationData, compressionData);
         } else {
-          let archivisationData = await ref.createArchive(uploadPath, fileBasename, fileExt, uploadDir);
+          let archivisationData = await ref.createArchive(uploadPath, fileBasename, fileExt, fileSize, uploadDir);
           ref.sendToTranslator(uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, resolve, reject, archivisationData);
         }
       } catch(err) {

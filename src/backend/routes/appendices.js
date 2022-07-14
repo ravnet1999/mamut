@@ -7,7 +7,7 @@ const appendixService = require('../src/service/AppendixService');
 const multiparty = require('multiparty');
 const appConfig = require('../config/appConfig.json');
 const fs = require('fs');
-const { createGunzip } = require('zlib');
+const { createGunzip, createBrotliDecompress } = require('zlib');
 const { pipeline } = require('stream');
 
 let createAppendixRoute = (req, res, next) =>{
@@ -42,6 +42,15 @@ let createAppendixRoute = (req, res, next) =>{
 
 router.post('/:taskId', [authMiddleware], createAppendixRoute);
 router.post('/jwt/:taskId', [jwtAuthMiddleware], createAppendixRoute);
+
+
+let createDearchivisationObject = (archivisationType) => {
+  switch(archivisationType) {
+    case("zlib_brotli"): return createBrotliDecompress();
+    case("zlib_gzip"): return createGunzip();
+    default: return createGunzip();
+  }
+}
 
 let readAppendixRoute = async (req, res, next) => { 
   let appendix;
@@ -123,13 +132,16 @@ let readAppendixRoute = async (req, res, next) => {
 
   if(appendix['archiwizacja'] == 1) {
     let source = fs.createReadStream(path);
-    let gunzip = createGunzip();
+    let dearchivisationObject = createDearchivisationObject(appendix['archiwizacja_typ']);
 
     source.on('error', sentErrorHeaders);
-    gunzip.on('error', sentErrorHeaders);
-    gunzip.on('data', sentSuccessfulHeaders);
+    dearchivisationObject.on('error', sentErrorHeaders);
+    dearchivisationObject.on('data', sentSuccessfulHeaders);
     
-    pipeline(source, gunzip, res, sentErrorHeaders);
+    let start = Date.now();
+    pipeline(source, dearchivisationObject, res, sentErrorHeaders);
+    let stop = Date.now();
+    console.log(`dearchivisation time = ${(stop - start)/1000} seconds`);
   } else {
     let source = fs.createReadStream(path);
     source.on('error', sentErrorHeaders);

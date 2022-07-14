@@ -130,7 +130,8 @@ class AppendixService extends Service {
         archiwizacja.archiwizacja_sciezka,
         archiwizacja.archiwizacja_rozmiar,
         archiwizacja.archiwizacja_typ_mime,
-        archiwizacja.archiwizacja_typ_zawartosci
+        archiwizacja.archiwizacja_typ_zawartosci,
+        archiwizacja.archiwizacja_typ
       FROM zgloszenia_zalaczniki 
       LEFT JOIN ${tagsQuery}
       ON tagi.id=zgloszenia_zalaczniki.id
@@ -158,7 +159,8 @@ class AppendixService extends Service {
           zgloszenia_zalaczniki_operacje.sciezka AS archiwizacja_sciezka,
           zgloszenia_zalaczniki_operacje.rozmiar AS archiwizacja_rozmiar,
           zgloszenia_zalaczniki_typy_operacji.typ_mime AS archiwizacja_typ_mime,
-          zgloszenia_zalaczniki_typy_operacji.typ_zawartosci AS archiwizacja_typ_zawartosci
+          zgloszenia_zalaczniki_typy_operacji.typ_zawartosci AS archiwizacja_typ_zawartosci,
+          zgloszenia_zalaczniki_typy_operacji.nazwa AS archiwizacja_typ
           ${archivisationCondition}) archiwizacja
       ON archiwizacja.id=zgloszenia_zalaczniki.id
       HAVING ${condition};`;
