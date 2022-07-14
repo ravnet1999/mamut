@@ -41,11 +41,13 @@ class AppendixService {
     let maxDimension = Math.max(width, height);
     let minDimension = Math.min(width, height);
 
-    let preferredMaxDimension = taskAppendicesConfig.imgResizeMaxDimension;
-    let preferredMinDimension = taskAppendicesConfig.imgResizeMinDimension;
+    let resizeConfig = taskAppendicesConfig.resize;
 
-    let ratioMaxDimension = maxDimension / preferredMaxDimension;
-    let ratioMinDimension = minDimension / preferredMinDimension;
+    let resizeMaxDimension = resizeConfig.maxDimension;
+    let resizeMinDimension = resizeConfig.minDimension;
+
+    let ratioMaxDimension = maxDimension / resizeMaxDimension;
+    let ratioMinDimension = minDimension / resizeMinDimension;
 
     let ratio = Math.max(ratioMaxDimension, ratioMinDimension);
     
@@ -60,10 +62,10 @@ class AppendixService {
     let ref = this;
 
     return new Promise(async(resolve, reject) => { 
-      let uploadCompressedDir = uploadDir + '/' + taskAppendicesConfig.uploadCompressedSubDir;
+      let compressionUploadDir = uploadDir + '/' + taskAppendicesConfig.compression.uploadDir;
 
-      if(!fs.existsSync(uploadCompressedDir)) {   
-        fs.mkdirSync(uploadCompressedDir, null, err => {
+      if(!fs.existsSync(compressionUploadDir)) {   
+        fs.mkdirSync(compressionUploadDir, null, err => {
           if(err) {
             console.log(err);
             reject('Wystąpił problem z utworzeniem katalogu do zapisu skompresowanych załączników w formacie jpg i png.');
@@ -71,38 +73,32 @@ class AppendixService {
         })
       }
 
-      let compressionTypeId;
-      let compressionTypeNameSuffix;
-      let fileSuffix;
-
       try {
         let compressionMethod = 'toFormat';
         let compressionFormat;
-        let quality;
-        let compressionOptions;        
+        let compressionConfig;
 
         if(contentType == "image/jpeg") {
           compressionFormat = "jpeg";
-          quality = taskAppendicesConfig.imgCompressionQualitySharpToFormatJpeg;
-          compressionOptions = { quality, mozjpeg: true };
-          
-          compressionTypeNameSuffix = taskAppendicesConfig.imgCompressionTypeNameSuffixSharpToFormatJpeg;
-          fileSuffix = `_${compressionTypeNameSuffix}_quality_${quality}_mozjpeg`;          
-          
-          compressionTypeId = taskAppendicesConfig.imgCompressionTypeSharpToFormatJpeg;      
+          compressionConfig = taskAppendicesConfig.compression.sharpToFormatJpeg;
         } else if(contentType == "image/png") { 
           compressionFormat = "png";
-          quality = taskAppendicesConfig.imgCompressionQualitySharpToFormatPng;
-          compressionOptions = { quality };
-          
-          compressionTypeNameSuffix = taskAppendicesConfig.imgCompressionTypeNameSuffixSharpToFormatPng;
-          fileSuffix = `_${compressionTypeNameSuffix}_quality_${quality}`;           
-          
-          compressionTypeId = taskAppendicesConfig.imgCompressionTypeSharpToFormatPng;
+          compressionConfig = taskAppendicesConfig.compression.sharpToFormatPng;
         }
 
-        let compressedFilename = fileBasename + fileSuffix + fileExt;
-        let compressedFilePath = uploadCompressedDir + '/' + compressedFilename;
+        let quality = compressionConfig.quality;
+        let compressionOptions = { quality };
+        let filenameSuffix = `_${compressionConfig.filenameSuffix}_quality_${quality}`;
+        
+        if(contentType == "image/jpeg") { 
+          compressionOptions.mozjpeg = true; 
+          filenameSuffix += ' _mozjpeg';
+        }                 
+        
+        let compressionTypeId = compressionConfig.type;
+
+        let compressedFilename = fileBasename + filenameSuffix + fileExt;
+        let compressedFilePath = compressionUploadDir + '/' + compressedFilename;
 
         let originalImage = await sharp(uploadPath);
         let originalMetadata = await originalImage.metadata();
@@ -136,7 +132,7 @@ class AppendixService {
           }, 
           typeId: compressionTypeId, 
           options: { toFormat: compressionOptions, resize: resizeOptions.options},
-          parameters: { toFormat: { quality }, resize: { minDimension: taskAppendicesConfig.imgResizeMinDimension, maxDimension: taskAppendicesConfig.imgResizeMaxDimension, calculatedRatio: resizeOptions.ratio } },
+          parameters: { toFormat: { quality }, resize: { minDimension: taskAppendicesConfig.resize.minDimension, maxDimension: taskAppendicesConfig.resize.maxDimension, calculatedRatio: resizeOptions.ratio } },
           filename: compressedFilename, 
           filePath: compressedFilePath 
         });
@@ -149,15 +145,15 @@ class AppendixService {
 
   createArchive = async(filePath, fileBasename, fileExt, uploadDir) => {
     return new Promise(async(resolve, reject) => {
-      let archivisationTypeNameSuffix = taskAppendicesConfig.archivisationTypeNameSuffixZlibGzip;
-      let fileSuffix = `_${archivisationTypeNameSuffix}`;
-      let archivedFilename = fileBasename + fileSuffix + fileExt + '.gz';
-      let uploadArchivedDir = uploadDir + '/' + taskAppendicesConfig.uploadArchivedSubDir;
-      let archivedFilePath = uploadArchivedDir + '/' + archivedFilename;
-      let archivisationTypeId = taskAppendicesConfig.archivisationTypeZlibGzip;    
+      let archivisationConfig = taskAppendicesConfig.archivisation.zlibGzip;
+      let filenameSuffix = `_${archivisationConfig.filenameSuffix}`;
+      let archivedFilename = fileBasename + filenameSuffix + fileExt + '.gz';
+      let archivisationUploadDir = uploadDir + '/' + taskAppendicesConfig.archivisation.uploadDir;
+      let archivedFilePath = archivisationUploadDir + '/' + archivedFilename;
+      let archivisationTypeId = archivisationConfig.type;    
 
-      if(!fs.existsSync(uploadArchivedDir)) {   
-        fs.mkdirSync(uploadArchivedDir, null, err => {
+      if(!fs.existsSync(archivisationUploadDir)) {   
+        fs.mkdirSync(archivisationUploadDir, null, err => {
           if(err) {
             console.log(err);
             reject('Wystąpił problem z utworzeniem katalogu do zapisu zarchiwizowanych załączników.');

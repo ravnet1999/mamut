@@ -1,15 +1,27 @@
 {
   "uploadDir": "tasks-appendices",
-  "uploadCompressedSubDir": "compressed",    
-  "imgCompressionTypeSharpToFormatJpeg": 1,
-  "imgCompressionQualitySharpToFormatJpeg": 60,
-  "imgCompressionTypeNameSuffixSharpToFormatJpeg":"sharp_to_format_jpeg",
-  "imgCompressionTypeSharpToFormatPng": 2,
-  "imgCompressionQualitySharpToFormatPng": 60,
-  "imgCompressionTypeNameSuffixSharpToFormatPng":"sharp_to_format_png",
-  "imgResizeMaxDimension": 1024,
-  "imgResizeMinDimension": 768,
-  "uploadArchivedSubDir": "archived",
-  "archivisationTypeZlibGzip": 3,
-  "archivisationTypeNameSuffixZlibGzip": "zlib_gzip" 
+  "compression": { 
+    "uploadDir": "compressed",
+    "sharpToFormatJpeg": {
+      "type": 1, 
+      "quality": 60,
+      "filenameSuffix":"sharp_to_format_jpeg"
+    },
+    "sharpToFormatPng": {
+      "type": 2, 
+      "quality": 60,
+      "filenameSuffix":"sharp_to_format_png"
+    }
+  },
+  "resize": {
+    "maxDimension": 1024,
+    "minDimension": 768
+  },
+  "archivisation": { 
+    "uploadDir": "archived",      
+    "zlibGzip": {
+      "type": 3,
+      "filenameSuffix":"zlib_gzip"
+    }
+  }
 }
