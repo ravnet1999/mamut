@@ -18,6 +18,8 @@ class AppendixService extends Service {
     }
 
     create = (taskId, file) => {
+      let ref = this;
+
       for(let key in file) {
         file[key] = file[key][0];
       }
@@ -37,33 +39,35 @@ class AppendixService extends Service {
 
             if(file.compressed == 1 && file.hasOwnProperty("compression")) {
               let compressionData = JSON.parse(file.compression);
-              console.log(compressionData);
-
-              connection.query('INSERT INTO `' + this.appendicesOperationTableName + '`(id_zalacznika, id_typu_operacji, godzina, nazwa, sciezka, rozmiar, argumenty, wymiary, parametry) VALUES (?,?,NOW(),?,?,?,?,?,?)', 
-                [taskAppendixId, compressionData.typeId, compressionData.filename, compressionData.filePath, parseInt(compressionData.fileSize), JSON.stringify(compressionData.options), JSON.stringify(compressionData.dimensions), JSON.stringify(compressionData.parameters)], (err, results, fields) => {
-                  if(err) {   
-                    console.log(err);         
-                    reject(err);
-                    return;
-                  }
-              });
+              ref.createOperation(taskAppendixId, compressionData);
             }
 
             if(file.archived == 1 && file.hasOwnProperty("archivisation")) {
               let archivisationData = JSON.parse(file.archivisation);
-              console.log(archivisationData);
-
-              connection.query('INSERT INTO `' + this.appendicesOperationTableName + '`(id_zalacznika, id_typu_operacji, godzina, nazwa, sciezka, rozmiar) VALUES (?,?,NOW(),?,?,?)', 
-                [taskAppendixId, archivisationData.typeId, archivisationData.filename, archivisationData.filePath, parseInt(archivisationData.fileSize)], (err, results, fields) => {
-                  if(err) {   
-                    console.log(err);         
-                    reject(err);
-                    return;
-                  }
-              });
+              ref.createOperation(taskAppendixId, archivisationData);
             }
             
             resolve(taskAppendixId);
+            return;
+        });
+      });
+    }
+
+    createOperation = (taskAppendixId, operation) => {
+      console.log(operation)
+      return new Promise((resolve, reject) => {
+        console.log(operation.typeId);
+          connection.query('INSERT INTO `' + this.appendicesOperationTableName + '`(id_zalacznika, id_typu_operacji, godzina, nazwa, sciezka, rozmiar, argumenty, wymiary, parametry) VALUES (?,?,NOW(),?,?,?,?,?,?)', 
+          [taskAppendixId, operation.typeId, operation.filename, operation.filePath, operation.fileSize, JSON.stringify(operation.options), JSON.stringify(operation.dimensions), JSON.stringify(operation.parameters)], (err, results, fields) => {
+            if(err) {   
+              console.log(err);         
+              reject(err);
+              return;
+            }
+
+            let operationId = results.insertId;
+            
+            resolve(operationId);
             return;
         });
       });
