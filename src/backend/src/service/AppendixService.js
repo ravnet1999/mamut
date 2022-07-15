@@ -210,46 +210,74 @@ class AppendixService {
     });  
   }
 
-  sendToTranslator = (uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, resolve, reject, archived, compressed) => {
-    // fs.createReadStream(uploadPath).on('error', function(err) {
-    //   console.log(err);
-    //   return reject('Wystąpił problem z utworzeniem strumienia do odczytu pliku załącznika.');
-    // }).pipe(concat({ encoding: 'buffer' }, function (data) {
-      var formData = new FormData();
-      formData.append("originalFilename", originalFilename);
-      formData.append("filename", filename);
-      formData.append("path", uploadPath);
-      formData.append("size", fileSize);
-      formData.append("contentType", contentType);
-      formData.append("tags", JSON.stringify(tags));
-      // formData.append("data", data);                  
-      formData.append("compressed", parseInt(archived));
-      formData.append("archived", parseInt(compressed));
+  sendToTranslator = async(uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, archived, compressed) => {
+    return new Promise(async(resolve, reject) => {      
+      // fs.createReadStream(uploadPath).on('error', function(err) {
+      //   console.log(err);
+      //   return reject('Wystąpił problem z utworzeniem strumienia do odczytu pliku załącznika.');
+      // }).pipe(concat({ encoding: 'buffer' }, function (data) {
+        var formData = new FormData();
+        formData.append("originalFilename", originalFilename);
+        formData.append("filename", filename);
+        formData.append("path", uploadPath);
+        formData.append("size", fileSize);
+        formData.append("contentType", contentType);
+        formData.append("tags", JSON.stringify(tags));
+        // formData.append("data", data);                  
+        formData.append("compressed", compressed);
+        formData.append("archived", archived);
 
-      axios({
-        method: 'post',
-        url: `${appConfig.URLs.translator}/appendices/${taskId}`,
-        data: formData,
-        // maxContentLength: Infinity,
-        // maxBodyLength: Infinity,
-        // headers: {'Content-Type': 'multipart/form-data;boundary=' + formData.getBoundary()}
-        headers: formData.getHeaders()
-      })
-      // axios.post(`${appConfig.URLs.translator}/appendices/${taskId}`, formData, {
-      //   headers: formData.getHeaders()
-      // })
-      .then((response) => {
-        parseResponse(response).then((result) => {
-          return resolve({ resources: result });      
+        axios({
+          method: 'post',
+          url: `${appConfig.URLs.translator}/appendices/${taskId}`,
+          data: formData,
+          // maxContentLength: Infinity,
+          // maxBodyLength: Infinity,
+          // headers: {'Content-Type': 'multipart/form-data;boundary=' + formData.getBoundary()}
+          headers: formData.getHeaders()
+        })
+        // axios.post(`${appConfig.URLs.translator}/appendices/${taskId}`, formData, {
+        //   headers: formData.getHeaders()
+        // })
+        .then((response) => {
+          parseResponse(response).then((result) => {
+            resolve({ resources: result });      
+          }).catch((err) => {
+            console.log(err);
+            reject(err);                  
+          });
         }).catch((err) => {
           console.log(err);
-          return reject(err);                  
+          reject('Wystąpił problem z połączeniem z translatorem.');
         });
-      }).catch((err) => {
-        console.log(err);
-        return reject('Wystąpił problem z połączeniem z translatorem.');
-      });
-    // }));
+      // }));
+    });
+  }
+
+  sendOperationToTranslator = async(appendixId, operationData) => {
+    return new Promise(async(resolve, reject) => {
+        var formData = new FormData();
+        formData.append("operationData", JSON.stringify(operationData));
+
+        axios({
+          method: 'post',
+          url: `${appConfig.URLs.translator}/appendices/operations/${appendixId}`,
+          data: formData,
+          headers: formData.getHeaders()
+        })
+        .then((response) => {
+          parseResponse(response).then((result) => {
+            resolve({ resources: result });      
+          }).catch((err) => {
+            console.log(err);
+            reject(err);                  
+          });
+        }).catch((err) => {
+          console.log(err);
+          reject('Wystąpił problem z połączeniem z translatorem.');
+        });
+      // }));
+    });
   }
 
   create = async (taskId, file, tags) =>  {
@@ -283,14 +311,22 @@ class AppendixService {
       }
 
       try{
+        let result;
         if(contentType == "image/jpeg" || contentType == "image/png") {
-          let compressionData = await ref.compressImages(contentType, fileBasename, fileExt, uploadDir, uploadPath);
+          let compressionData = await ref.compressImages(contentType, fileBasename, fileExt, uploadDir, uploadPath);          
+          result = await ref.sendToTranslator(uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, "1", "1");          
+          let appendixId = result.resources.resources[0].id;
           let archivisationData = await ref.createArchive(compressionData.filePath, compressionData.filename, path.extname(compressionData.filename), fileSize, uploadDir);
-          ref.sendToTranslator(uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, resolve, reject, false, false);
-        } else {
+          result = ref.sendOperationToTranslator(appendixId, compressionData);
+          result = ref.sendOperationToTranslator(appendixId, archivisationData);
+        } else {          
+          result = await ref.sendToTranslator(uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, "1", "0");
+          let appendixId = result.resources.resources[0].id;
           let archivisationData = await ref.createArchive(uploadPath, fileBasename, fileExt, fileSize, uploadDir);
-          ref.sendToTranslator(uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, resolve, reject, false, false);
+          result = ref.sendOperationToTranslator(appendixId, archivisationData);
         }
+        
+        resolve(result);
       } catch(err) {
         console.log(err);
         reject(err);

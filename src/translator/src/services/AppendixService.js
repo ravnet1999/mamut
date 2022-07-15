@@ -18,13 +18,12 @@ class AppendixService extends Service {
     }
 
     create = (taskId, file) => {
-      let ref = this;
-
       for(let key in file) {
         file[key] = file[key][0];
       }
 
       return new Promise((resolve, reject) => {
+        console.log([taskId, file.filename, file.originalFilename, file.path, parseInt(file.size), file.contentType,  parseInt(file.compressed), parseInt(file.archived)]);
         // connection.query('INSERT INTO `' + this.tableName + '`(id_zgloszenia, nazwa, nazwa_oryginalna, sciezka, rozmiar, typ_mime, zawartosc) VALUES (?,?,?,?,?,?,?)', 
         // [taskId, file.filename[0], file.originalFilename[0], file.path[0], parseInt(file.size[0]), file.contentType[0], file.data[0]], (err, results, fields) => {
         connection.query('INSERT INTO `' + this.tableName + '`(id_zgloszenia, nazwa, nazwa_oryginalna, sciezka, rozmiar, typ_mime, kompresja, archiwizacja, godzina) VALUES (?,?,?,?,?,?,?,?,NOW())', 
@@ -36,16 +35,6 @@ class AppendixService extends Service {
             }
 
             let taskAppendixId = results.insertId;
-
-            // if(file.compressed == 1 && file.hasOwnProperty("compression")) {
-            //   let compressionData = JSON.parse(file.compression);
-            //   ref.createOperation(taskAppendixId, compressionData);
-            // }
-
-            // if(file.archived == 1 && file.hasOwnProperty("archivisation")) {
-            //   let archivisationData = JSON.parse(file.archivisation);
-            //   ref.createOperation(taskAppendixId, archivisationData);
-            // }
             
             resolve(taskAppendixId);
             return;

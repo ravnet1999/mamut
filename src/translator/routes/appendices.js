@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const response = require('../src/response');
 const appendixService = require('../src/services/AppendixService');
+const appendixOperationService = require('../src/services/AppendixOperationService');
 const multiparty = require('multiparty');
 const config = require('../config/config.json');
 const charset = require('../src/helpers/charset');
@@ -69,6 +70,33 @@ router.post('/:taskId', (req, res, next) => {
         } catch(err) {
           console.log(err);
           response(res, true, ['Wystąpił błąd podczas próby utworzenia nowego załącznika', JSON.stringify(err)], []);
+          return;
+        }
+      }
+    });        
+  });
+});
+
+router.post('/operations/:appendixId', (req, res, next) => {
+  var form = new multiparty.Form({maxFieldsSize: config.appendices.maxFieldsSize});
+  
+  return new Promise((resolve, reject) => {  
+    form.on('error', function(err) {
+      return reject(err);
+    });
+
+    form.parse(req, async function(err, fields, files) {   
+      if(fields) {         
+        try {
+          let appendixId = req.params.appendixId;
+          let operationId = await appendixService.createOperation(appendixId, JSON.parse(fields.operationData[0]));
+          // let operation = await appendixOperationService.findById(operationId);
+          let appendix = await appendixService.findByIdWithAllData(appendixId);
+          response(res, false, ['Pomyślnie utworzono nową operację na załączniku.'], [appendix[0]]);
+          return;
+        } catch(err) {
+          console.log(err);
+          response(res, true, ['Wystąpił błąd podczas próby utworzenia nowej operacji na załączniku', JSON.stringify(err)], []);
           return;
         }
       }
