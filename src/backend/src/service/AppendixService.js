@@ -56,6 +56,8 @@ class AppendixService {
 
   compressImages = async(contentType, fileBasename, fileExt, uploadDir, uploadPath) => {
     return new Promise(async(resolve, reject) => { 
+      let start = Date.now();
+      
       let compressionUploadDir = uploadDir + '/' + taskAppendicesConfig.compression.uploadDir;
 
       if(!fs.existsSync(compressionUploadDir)) {   
@@ -93,8 +95,10 @@ class AppendixService {
 
         let compressedFilename = fileBasename + filenameSuffix + fileExt;
         let compressedFilePath = compressionUploadDir + '/' + compressedFilename;
-
+        
         let compressedImage = await sharp(uploadPath)[compressionMethod](compressionFormat, compressionArgs).toFile(compressedFilePath);
+        let stop = Date.now();
+        let timeElapsed = (stop - start) / 1000;
         
         fs.unlink(uploadPath, err => {
           if(err) {
@@ -111,6 +115,7 @@ class AppendixService {
           typeId: compressionTypeId, 
           args: compressionArgs,
           configuration: compressionConfig,
+          runtimeVars: { timeElapsed },
           filename: compressedFilename, 
           filePath: compressedFilePath 
         });
@@ -125,6 +130,8 @@ class AppendixService {
     let ref = this;
 
     return new Promise(async(resolve, reject) => { 
+      let start = Date.now();
+
       let operationUploadDir = uploadDir + '/' + taskAppendicesConfig.resize.uploadDir;
 
       if(!fs.existsSync(operationUploadDir)) {   
@@ -158,9 +165,15 @@ class AppendixService {
         let processedFilename = fileBasename + filenameSuffix + fileExt;
         let processedFilePath = operationUploadDir + '/' + processedFilename;
 
-        console.log(uploadPath, shouldBeResized, operationMethod, operationArgs.args);
+        let processedImage = originalImage;
+        let timeElapsed;
 
-        let processedImage = shouldBeResized ? await originalImage[operationMethod](operationArgs.args) : originalImage;
+        if(shouldBeResized) {          
+          processedImage = await originalImage[operationMethod](operationArgs.args);
+          let stop = Date.now();
+          timeElapsed = (stop - start) / 1000;
+        }
+
         processedImage = await processedImage.toFile(processedFilePath);
         
         fs.unlink(uploadPath, err => {
@@ -168,6 +181,10 @@ class AppendixService {
               console.log(err);
             }
           });
+
+        let runtimeVars = { scale: operationArgs.scale };
+        
+        if(shouldBeResized) runtimeVars.timeElapsed = timeElapsed;
 
         resolve({ 
           fileSize: processedImage.size, 
@@ -178,7 +195,7 @@ class AppendixService {
           typeId: operationTypeId, 
           args: operationArgs.args,
           configuration: operationConfig,
-          runtimeVars: { scale: operationArgs.scale },
+          runtimeVars,
           filename: processedFilename, 
           filePath: processedFilePath 
         });
@@ -190,7 +207,9 @@ class AppendixService {
   }
 
   createArchive = async(filePath, fileBasename, fileExt, fileSize, uploadDir) => {
-    return new Promise(async(resolve, reject) => {      
+    return new Promise(async(resolve, reject) => { 
+      let start = Date.now();
+
       let archivisationConfig = taskAppendicesConfig.archivisation[taskAppendicesConfig.archivisation.type];
       let filenameSuffix = `_${archivisationConfig.filenameSuffix}`;
       let archivedFilename = fileBasename + filenameSuffix + fileExt + '.' + archivisationConfig.fileExt;
@@ -215,7 +234,7 @@ class AppendixService {
           archivisationArgs = {
             chunkSize: 32 * 1024,
             params: {
-              [zlib.constants.BROTLI_PARAM_QUALITY]: 1,
+              [zlib.constants.BROTLI_PARAM_QUALITY]: 9,
               [zlib.constants.BROTLI_PARAM_SIZE_HINT]: fileSize
             }
           };
@@ -234,11 +253,10 @@ class AppendixService {
         archivedFileSize += data.length;
       }); 
       
-      try {
-        let start = Date.now();
+      try {        
         await pipelineAsync(source, archivisationObject, destination);
         let stop = Date.now();
-        console.log(`archivisation time = ${(stop - start)/1000} seconds`);
+        let timeElapsed = (stop - start)/1000;
 
         fs.unlink(filePath, err => {
           if(err) {
@@ -252,7 +270,8 @@ class AppendixService {
           args: archivisationArgs,
           configuration: archivisationConfig,
           filename: archivedFilename, 
-          filePath: archivedFilePath
+          filePath: archivedFilePath,
+          runtimeVars: { timeElapsed },
         };
 
         resolve(archivisationData);
