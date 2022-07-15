@@ -204,9 +204,13 @@ const TaskAppendices = (props) => {
                           <>
                             <b>TYP ARCHIWIZACJI:</b> {appendix.archiwizacja_typ}<br/> 
                             <b>ROZMIAR PO ARCHIWIZACJI:</b> {appendix.archiwizacja_rozmiar}<br/>                          
-                            {appendix.kompresja == 1 &&
+                            {appendix.kompresja == 1 && appendix.skalowanie == 1 &&
                             <>                            
                             <b>ROZMIAR PO ARCHIWIZACJI / ROZMIAR PO KOMPRESJI I PRZESKALOWANIU:</b> { Math.round(appendix.archiwizacja_rozmiar/appendix.skalowanie_rozmiar * 10000) / 100 }%<br/>
+                            </>}
+                            {appendix.kompresja == 1 && appendix.skalowanie == 0 &&
+                            <>                            
+                            <b>ROZMIAR PO ARCHIWIZACJI / ROZMIAR PO KOMPRESJI:</b> { Math.round(appendix.archiwizacja_rozmiar/appendix.kompresja_rozmiar * 10000) / 100 }%<br/>
                             </>}
                             <b>ROZMIAR PO ARCHIWIZACJI / ROZMIAR ORYG.:</b> { Math.round(appendix.archiwizacja_rozmiar/appendix.rozmiar * 10000) / 100 }%<br/><br/>
                           </>}
