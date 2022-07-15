@@ -189,25 +189,7 @@ class AppendixService {
     });
   }
 
-  createArchivisationObject = (fileSize) => {
-    console.log(taskAppendicesConfig.archivisation.type);
-
-    switch(taskAppendicesConfig.archivisation.type) {
-      case("zlib_brotli"): return createBrotliCompress({
-        chunkSize: 32 * 1024,
-        params: {
-          [zlib.constants.BROTLI_PARAM_QUALITY]: 1,
-          [zlib.constants.BROTLI_PARAM_SIZE_HINT]: fileSize
-        }
-      });
-      case("zlib_gzip"): return createGzip();
-      default: return createGzip();
-    }
-  }
-
   createArchive = async(filePath, fileBasename, fileExt, fileSize, uploadDir) => {
-    let ref = this;
-
     return new Promise(async(resolve, reject) => {      
       let archivisationConfig = taskAppendicesConfig.archivisation[taskAppendicesConfig.archivisation.type];
       let filenameSuffix = `_${archivisationConfig.filenameSuffix}`;
@@ -225,7 +207,24 @@ class AppendixService {
         })
       }
 
-      const archivisationObject = ref.createArchivisationObject(fileSize);      
+      let archivisationObject;
+      let archivisationArgs;
+      
+      switch(taskAppendicesConfig.archivisation.type) {
+        case("zlib_brotli"): 
+          archivisationArgs = {
+            chunkSize: 32 * 1024,
+            params: {
+              [zlib.constants.BROTLI_PARAM_QUALITY]: 1,
+              [zlib.constants.BROTLI_PARAM_SIZE_HINT]: fileSize
+            }
+          };
+          archivisationObject = createBrotliCompress(archivisationArgs);
+          break;
+        case("zlib_gzip"): archivisationObject = createGzip();
+        default: archivisationObject = createGzip();
+      }
+
       const source = fs.createReadStream(filePath);        
       const destination = fs.createWriteStream(archivedFilePath);
 
@@ -247,7 +246,15 @@ class AppendixService {
           }
         });
 
-        let archivisationData = { fileSize: archivedFileSize, typeId: archivisationTypeId, filename: archivedFilename, filePath: archivedFilePath};  
+        let archivisationData = { 
+          fileSize: archivedFileSize, 
+          typeId: archivisationTypeId, 
+          args: archivisationArgs,
+          configuration: archivisationConfig,
+          filename: archivedFilename, 
+          filePath: archivedFilePath
+        };
+
         resolve(archivisationData);
       } catch(err) {
         console.log(err);
