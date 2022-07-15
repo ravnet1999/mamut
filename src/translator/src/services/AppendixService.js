@@ -37,15 +37,15 @@ class AppendixService extends Service {
 
             let taskAppendixId = results.insertId;
 
-            if(file.compressed == 1 && file.hasOwnProperty("compression")) {
-              let compressionData = JSON.parse(file.compression);
-              ref.createOperation(taskAppendixId, compressionData);
-            }
+            // if(file.compressed == 1 && file.hasOwnProperty("compression")) {
+            //   let compressionData = JSON.parse(file.compression);
+            //   ref.createOperation(taskAppendixId, compressionData);
+            // }
 
-            if(file.archived == 1 && file.hasOwnProperty("archivisation")) {
-              let archivisationData = JSON.parse(file.archivisation);
-              ref.createOperation(taskAppendixId, archivisationData);
-            }
+            // if(file.archived == 1 && file.hasOwnProperty("archivisation")) {
+            //   let archivisationData = JSON.parse(file.archivisation);
+            //   ref.createOperation(taskAppendixId, archivisationData);
+            // }
             
             resolve(taskAppendixId);
             return;

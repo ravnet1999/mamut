@@ -210,7 +210,7 @@ class AppendixService {
     });  
   }
 
-  sendToTranslator = (uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, resolve, reject, archivisationData, compressionData) => {
+  sendToTranslator = (uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, resolve, reject, archived, compressed) => {
     // fs.createReadStream(uploadPath).on('error', function(err) {
     //   console.log(err);
     //   return reject('Wystąpił problem z utworzeniem strumienia do odczytu pliku załącznika.');
@@ -223,20 +223,8 @@ class AppendixService {
       formData.append("contentType", contentType);
       formData.append("tags", JSON.stringify(tags));
       // formData.append("data", data);                  
-
-      if(compressionData) {
-        formData.append("compressed", 1);
-        formData.append("compression", JSON.stringify(compressionData));
-      } else {
-        formData.append("compressed", 0);
-      }
-
-      if(archivisationData) {
-        formData.append("archived", 1);
-        formData.append("archivisation", JSON.stringify(archivisationData));
-      } else {
-        formData.append("archived", 0);
-      }
+      formData.append("compressed", parseInt(archived));
+      formData.append("archived", parseInt(compressed));
 
       axios({
         method: 'post',
@@ -298,10 +286,10 @@ class AppendixService {
         if(contentType == "image/jpeg" || contentType == "image/png") {
           let compressionData = await ref.compressImages(contentType, fileBasename, fileExt, uploadDir, uploadPath);
           let archivisationData = await ref.createArchive(compressionData.filePath, compressionData.filename, path.extname(compressionData.filename), fileSize, uploadDir);
-          ref.sendToTranslator(uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, resolve, reject, archivisationData, compressionData);
+          ref.sendToTranslator(uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, resolve, reject, false, false);
         } else {
           let archivisationData = await ref.createArchive(uploadPath, fileBasename, fileExt, fileSize, uploadDir);
-          ref.sendToTranslator(uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, resolve, reject, archivisationData);
+          ref.sendToTranslator(uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, resolve, reject, false, false);
         }
       } catch(err) {
         console.log(err);
