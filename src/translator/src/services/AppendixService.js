@@ -115,6 +115,7 @@ class AppendixService extends Service {
         kompresja_jakosc,
         kompresja_szerokosc,
         kompresja_wysokosc,
+        kompresja_czas_wykonania,
         skalowanie_sciezka,
         skalowanie_rozmiar,
         skalowanie_typ_mime,
@@ -123,11 +124,13 @@ class AppendixService extends Service {
         skalowanie_konfiguracja_szerokosc,
         skalowanie_konfiguracja_wysokosc,
         skalowanie_wyliczona_skala,
+        skalowanie_czas_wykonania,
         archiwizacja_sciezka,
         archiwizacja_rozmiar,
         archiwizacja_typ_mime,
         archiwizacja_typ_zawartosci,
-        archiwizacja_typ
+        archiwizacja_typ,
+        archiwizacja_czas_wykonania
       FROM zgloszenia_zalaczniki 
       LEFT JOIN ${tagsQuery}
       ON tagi.id=zgloszenia_zalaczniki.id
@@ -140,7 +143,8 @@ class AppendixService extends Service {
           zgloszenia_zalaczniki_typy_operacji.typ_mime AS kompresja_typ_mime,          
           JSON_EXTRACT(zgloszenia_zalaczniki_operacje.wymiary, "$.height") AS kompresja_wysokosc,
           JSON_EXTRACT(zgloszenia_zalaczniki_operacje.wymiary, "$.width") AS kompresja_szerokosc,
-          JSON_EXTRACT(zgloszenia_zalaczniki_operacje.konfiguracja, "$.quality") AS kompresja_jakosc
+          JSON_EXTRACT(zgloszenia_zalaczniki_operacje.konfiguracja, "$.quality") AS kompresja_jakosc,
+          JSON_EXTRACT(zgloszenia_zalaczniki_operacje.zmienne_czasu_wykonania, "$.timeElapsed") AS kompresja_czas_wykonania
           ${compressionCondition}) kompresja
       ON kompresja.id=zgloszenia_zalaczniki.id 
       LEFT JOIN
@@ -154,7 +158,8 @@ class AppendixService extends Service {
           JSON_EXTRACT(zgloszenia_zalaczniki_operacje.wymiary, "$.width") AS skalowanie_wysokosc,
           JSON_EXTRACT(zgloszenia_zalaczniki_operacje.konfiguracja, "$.height") AS skalowanie_konfiguracja_wysokosc,
           JSON_EXTRACT(zgloszenia_zalaczniki_operacje.konfiguracja, "$.width") AS skalowanie_konfiguracja_szerokosc,
-          JSON_EXTRACT(zgloszenia_zalaczniki_operacje.zmienne_czasu_wykonania, "$.scale") AS skalowanie_wyliczona_skala
+          JSON_EXTRACT(zgloszenia_zalaczniki_operacje.zmienne_czasu_wykonania, "$.scale") AS skalowanie_wyliczona_skala,
+          JSON_EXTRACT(zgloszenia_zalaczniki_operacje.zmienne_czasu_wykonania, "$.timeElapsed") AS skalowanie_czas_wykonania
           ${scaleCondition}) skalowanie
       ON skalowanie.id=zgloszenia_zalaczniki.id    
       LEFT JOIN
@@ -165,7 +170,8 @@ class AppendixService extends Service {
           zgloszenia_zalaczniki_operacje.rozmiar AS archiwizacja_rozmiar,
           zgloszenia_zalaczniki_typy_operacji.typ_mime AS archiwizacja_typ_mime,
           zgloszenia_zalaczniki_typy_operacji.typ_zawartosci AS archiwizacja_typ_zawartosci,
-          zgloszenia_zalaczniki_typy_operacji.nazwa AS archiwizacja_typ
+          zgloszenia_zalaczniki_typy_operacji.nazwa AS archiwizacja_typ,
+          JSON_EXTRACT(zgloszenia_zalaczniki_operacje.zmienne_czasu_wykonania, "$.timeElapsed") AS archiwizacja_czas_wykonania
           ${archivisationCondition}) archiwizacja
       ON archiwizacja.id=zgloszenia_zalaczniki.id
       HAVING ${condition}
