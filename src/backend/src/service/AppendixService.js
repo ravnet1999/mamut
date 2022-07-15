@@ -35,7 +35,7 @@ class AppendixService {
     });
   }
 
-  resizeOptions = async (resizeConfig, metadata) => {
+  resizeArgs = async (resizeConfig, metadata) => {
     let width = metadata.width;
     let height = metadata.height;
 
@@ -50,11 +50,11 @@ class AppendixService {
 
     let ratio = Math.max(ratioMaxDimension, ratioMinDimension);
     
-    let options = {
+    let args = {
       width: Math.round(width / ratio)
     };
 
-    return { options, ratio };
+    return { args, ratio };
   }
 
   compressImages = async(contentType, fileBasename, fileExt, uploadDir, uploadPath) => {
@@ -84,11 +84,11 @@ class AppendixService {
         }
 
         let quality = compressionConfig.quality;
-        let compressionOptions = { quality };
+        let compressionArgs = { quality };
         let filenameSuffix = `_${compressionConfig.filenameSuffix}_quality_${quality}`;
         
         if(contentType == "image/jpeg") { 
-          compressionOptions.mozjpeg = true; 
+          compressionArgs.mozjpeg = true; 
           filenameSuffix += ' _mozjpeg';
         }                 
         
@@ -97,7 +97,7 @@ class AppendixService {
         let compressedFilename = fileBasename + filenameSuffix + fileExt;
         let compressedFilePath = compressionUploadDir + '/' + compressedFilename;
 
-        let compressedImage = await sharp(uploadPath)[compressionMethod](compressionFormat, compressionOptions).toFile(compressedFilePath);
+        let compressedImage = await sharp(uploadPath)[compressionMethod](compressionFormat, compressionArgs).toFile(compressedFilePath);
         
         fs.unlink(uploadPath, err => {
           if(err) {
@@ -112,7 +112,7 @@ class AppendixService {
             height: compressedImage.height
           }, 
           typeId: compressionTypeId, 
-          options: compressionOptions,
+          args: compressionArgs,
           configuration: { quality },
           filename: compressedFilename, 
           filePath: compressedFilePath 
@@ -145,25 +145,25 @@ class AppendixService {
 
         let originalImage = await sharp(uploadPath);
         let originalMetadata = await originalImage.metadata();
-        let operationOptions = await ref.resizeOptions(operationConfig, originalMetadata);
+        let operationArgs = await ref.resizeArgs(operationConfig, originalMetadata);
         
-        let shouldBeResized = operationOptions.ratio > 1;
+        let shouldBeResized = operationArgs.ratio > 1;
 
         if(!shouldBeResized) {
           resolve(false);
           return;
         }
 
-        let filenameSuffix = `_${operationConfig.filenameSuffix}_ratio_${operationOptions.ratio}`;
+        let filenameSuffix = `_${operationConfig.filenameSuffix}_ratio_${operationArgs.ratio}`;
         
         let operationTypeId = operationConfig.type;
 
         let processedFilename = fileBasename + filenameSuffix + fileExt;
         let processedFilePath = operationUploadDir + '/' + processedFilename;
 
-        console.log(uploadPath, shouldBeResized, operationMethod, operationOptions.options);
+        console.log(uploadPath, shouldBeResized, operationMethod, operationArgs.args);
 
-        let processedImage = shouldBeResized ? await originalImage[operationMethod](operationOptions.options) : originalImage;
+        let processedImage = shouldBeResized ? await originalImage[operationMethod](operationArgs.args) : originalImage;
         processedImage = await processedImage.toFile(processedFilePath);
         
         fs.unlink(uploadPath, err => {
@@ -179,9 +179,9 @@ class AppendixService {
             height: processedImage.height
           }, 
           typeId: operationTypeId, 
-          options: operationOptions.options,
+          args: operationArgs.args,
           configuration: { minDimension: operationConfig.minDimension, maxDimension: operationConfig.maxDimension },
-          runtimeVars: { ratio: operationOptions.ratio },
+          runtimeVars: { ratio: operationArgs.ratio },
           filename: processedFilename, 
           filePath: processedFilePath 
         });

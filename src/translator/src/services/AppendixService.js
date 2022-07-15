@@ -44,7 +44,7 @@ class AppendixService extends Service {
     createOperation = (taskAppendixId, operation) => {
       return new Promise((resolve, reject) => {
           connection.query('INSERT INTO `' + this.appendicesOperationTableName + '`(id_zalacznika, id_typu_operacji, godzina, nazwa, sciezka, rozmiar, argumenty, wymiary, konfiguracja, zmienne_czasu_wykonania) VALUES (?,?,NOW(),?,?,?,?,?,?,?)', 
-          [taskAppendixId, operation.typeId, operation.filename, operation.filePath, operation.fileSize, JSON.stringify(operation.options), JSON.stringify(operation.dimensions), JSON.stringify(operation.configuration), JSON.stringify(operation.runtimeVars)], (err, results, fields) => {
+          [taskAppendixId, operation.typeId, operation.filename, operation.filePath, operation.fileSize, JSON.stringify(operation.args), JSON.stringify(operation.dimensions), JSON.stringify(operation.configuration), JSON.stringify(operation.runtimeVars)], (err, results, fields) => {
             if(err) {   
               console.log(err);         
               reject(err);
