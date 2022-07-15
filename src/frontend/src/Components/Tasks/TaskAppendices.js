@@ -168,10 +168,11 @@ const TaskAppendices = (props) => {
                           <>
                             <b>BRAK KOMPRESJI</b><br/><br/>
                           </>}
+                          
+                          <b>WYMIARY ORYG:</b> {appendix.szerokosc} x {appendix.wysokosc}<br/>
 
                           {appendix.kompresja == 1 &&
-                          <>
-                            <b>WYMIARY ORYG:</b> {appendix.kompresja_szerokosc_oryginalna} x {appendix.kompresja_wysokosc_oryginalna}<br/>
+                          <>                            
                             <b>WYLICZONA SKALA:</b> {appendix.kompresja_wyliczona_skala}<br/> 
                             <b>WYMIARY PO PRZESKALOWANIU:</b> {appendix.kompresja_szerokosc} x {appendix.kompresja_wysokosc}<br/><br/> 
                           </>}  
