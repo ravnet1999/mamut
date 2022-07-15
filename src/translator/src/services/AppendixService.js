@@ -39,8 +39,8 @@ class AppendixService extends Service {
               let compressionData = JSON.parse(file.compression);
               console.log(compressionData);
 
-              connection.query('INSERT INTO `' + this.appendicesOperationTableName + '`(id_zalacznika, id_typu_operacji, godzina, nazwa, sciezka, rozmiar, argumenty, metadane, parametry) VALUES (?,?,NOW(),?,?,?,?,?,?)', 
-                [taskAppendixId, compressionData.typeId, compressionData.filename, compressionData.filePath, parseInt(compressionData.fileSize), JSON.stringify(compressionData.options), JSON.stringify(compressionData.metaData), JSON.stringify(compressionData.parameters)], (err, results, fields) => {
+              connection.query('INSERT INTO `' + this.appendicesOperationTableName + '`(id_zalacznika, id_typu_operacji, godzina, nazwa, sciezka, rozmiar, argumenty, wymiary, parametry) VALUES (?,?,NOW(),?,?,?,?,?,?)', 
+                [taskAppendixId, compressionData.typeId, compressionData.filename, compressionData.filePath, parseInt(compressionData.fileSize), JSON.stringify(compressionData.options), JSON.stringify(compressionData.dimensions), JSON.stringify(compressionData.parameters)], (err, results, fields) => {
                   if(err) {   
                     console.log(err);         
                     reject(err);
@@ -142,10 +142,10 @@ class AppendixService extends Service {
           zgloszenia_zalaczniki_operacje.sciezka AS kompresja_sciezka,
           zgloszenia_zalaczniki_operacje.rozmiar AS kompresja_rozmiar,
           zgloszenia_zalaczniki_typy_operacji.typ_mime AS kompresja_typ_mime,          
-          JSON_EXTRACT(zgloszenia_zalaczniki_operacje.metadane, "$.height") AS kompresja_szerokosc,
-          JSON_EXTRACT(zgloszenia_zalaczniki_operacje.metadane, "$.width") AS kompresja_wysokosc,
-          JSON_EXTRACT(zgloszenia_zalaczniki_operacje.metadane, "$.originalHeight") AS kompresja_szerokosc_oryginalna,
-          JSON_EXTRACT(zgloszenia_zalaczniki_operacje.metadane, "$.originalWidth") AS kompresja_wysokosc_oryginalna,
+          JSON_EXTRACT(zgloszenia_zalaczniki_operacje.wymiary, "$.height") AS kompresja_szerokosc,
+          JSON_EXTRACT(zgloszenia_zalaczniki_operacje.wymiary, "$.width") AS kompresja_wysokosc,
+          JSON_EXTRACT(zgloszenia_zalaczniki_operacje.wymiary, "$.originalHeight") AS kompresja_szerokosc_oryginalna,
+          JSON_EXTRACT(zgloszenia_zalaczniki_operacje.wymiary, "$.originalWidth") AS kompresja_wysokosc_oryginalna,
           JSON_EXTRACT(zgloszenia_zalaczniki_operacje.parametry, "$.toFormat.quality") AS kompresja_jakosc,
           JSON_EXTRACT(zgloszenia_zalaczniki_operacje.parametry, "$.resize.minDimension") AS kompresja_minimalny_wymiar,
           JSON_EXTRACT(zgloszenia_zalaczniki_operacje.parametry, "$.resize.maxDimension") AS kompresja_maksymalny_wymiar,

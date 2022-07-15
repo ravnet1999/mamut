@@ -125,7 +125,7 @@ class AppendixService {
 
         resolve({ 
           fileSize: compressedImage.size, 
-          metaData: { 
+          dimensions: { 
             width: compressedImage.width, 
             height: compressedImage.height, 
             originalWidth: originalMetadata.width , 
