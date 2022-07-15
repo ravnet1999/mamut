@@ -154,7 +154,7 @@ class AppendixService extends Service {
           JSON_EXTRACT(zgloszenia_zalaczniki_operacje.wymiary, "$.width") AS skalowanie_wysokosc,
           JSON_EXTRACT(zgloszenia_zalaczniki_operacje.konfiguracja, "$.minDimension") AS skalowanie_minimalny_wymiar,
           JSON_EXTRACT(zgloszenia_zalaczniki_operacje.konfiguracja, "$.maxDimension") AS skalowanie_maksymalny_wymiar,
-          JSON_EXTRACT(zgloszenia_zalaczniki_operacje.zmienne_czasu_wykonania, "$.ratio") AS skalowanie_wyliczona_skala
+          JSON_EXTRACT(zgloszenia_zalaczniki_operacje.zmienne_czasu_wykonania, "$.scale") AS skalowanie_wyliczona_skala
           ${scaleCondition}) skalowanie
       ON skalowanie.id=zgloszenia_zalaczniki.id    
       LEFT JOIN

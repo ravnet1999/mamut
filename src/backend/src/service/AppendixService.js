@@ -48,13 +48,13 @@ class AppendixService {
     let ratioMaxDimension = maxDimension / resizeMaxDimension;
     let ratioMinDimension = minDimension / resizeMinDimension;
 
-    let ratio = Math.max(ratioMaxDimension, ratioMinDimension);
+    let scale = Math.max(ratioMaxDimension, ratioMinDimension);
     
     let args = {
-      width: Math.round(width / ratio)
+      width: Math.round(width / scale)
     };
 
-    return { args, ratio };
+    return { args, scale };
   }
 
   compressImages = async(contentType, fileBasename, fileExt, uploadDir, uploadPath) => {
@@ -147,14 +147,14 @@ class AppendixService {
         let originalMetadata = await originalImage.metadata();
         let operationArgs = await ref.resizeArgs(operationConfig, originalMetadata);
         
-        let shouldBeResized = operationArgs.ratio > 1;
+        let shouldBeResized = operationArgs.scale > 1;
 
         if(!shouldBeResized) {
           resolve(false);
           return;
         }
 
-        let filenameSuffix = `_${operationConfig.filenameSuffix}_ratio_${operationArgs.ratio}`;
+        let filenameSuffix = `_${operationConfig.filenameSuffix}_ratio_${operationArgs.scale}`;
         
         let operationTypeId = operationConfig.type;
 
@@ -181,7 +181,7 @@ class AppendixService {
           typeId: operationTypeId, 
           args: operationArgs.args,
           configuration: { minDimension: operationConfig.minDimension, maxDimension: operationConfig.maxDimension },
-          runtimeVars: { ratio: operationArgs.ratio },
+          runtimeVars: { scale: operationArgs.scale },
           filename: processedFilename, 
           filePath: processedFilePath 
         });
