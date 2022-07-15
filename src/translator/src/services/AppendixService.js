@@ -120,8 +120,8 @@ class AppendixService extends Service {
         skalowanie_typ_mime,
         skalowanie_szerokosc,
         skalowanie_wysokosc,
-        skalowanie_minimalny_wymiar,
-        skalowanie_maksymalny_wymiar,
+        skalowanie_konfiguracja_szerokosc,
+        skalowanie_konfiguracja_wysokosc,
         skalowanie_wyliczona_skala,
         archiwizacja_sciezka,
         archiwizacja_rozmiar,
@@ -138,8 +138,8 @@ class AppendixService extends Service {
           zgloszenia_zalaczniki_operacje.sciezka AS kompresja_sciezka,
           zgloszenia_zalaczniki_operacje.rozmiar AS kompresja_rozmiar,
           zgloszenia_zalaczniki_typy_operacji.typ_mime AS kompresja_typ_mime,          
-          JSON_EXTRACT(zgloszenia_zalaczniki_operacje.wymiary, "$.height") AS kompresja_szerokosc,
-          JSON_EXTRACT(zgloszenia_zalaczniki_operacje.wymiary, "$.width") AS kompresja_wysokosc,
+          JSON_EXTRACT(zgloszenia_zalaczniki_operacje.wymiary, "$.height") AS kompresja_wysokosc,
+          JSON_EXTRACT(zgloszenia_zalaczniki_operacje.wymiary, "$.width") AS kompresja_szerokosc,
           JSON_EXTRACT(zgloszenia_zalaczniki_operacje.konfiguracja, "$.quality") AS kompresja_jakosc
           ${compressionCondition}) kompresja
       ON kompresja.id=zgloszenia_zalaczniki.id 
@@ -152,8 +152,8 @@ class AppendixService extends Service {
           zgloszenia_zalaczniki_typy_operacji.typ_mime AS skalowanie_typ_mime,          
           JSON_EXTRACT(zgloszenia_zalaczniki_operacje.wymiary, "$.height") AS skalowanie_szerokosc,
           JSON_EXTRACT(zgloszenia_zalaczniki_operacje.wymiary, "$.width") AS skalowanie_wysokosc,
-          JSON_EXTRACT(zgloszenia_zalaczniki_operacje.konfiguracja, "$.minDimension") AS skalowanie_minimalny_wymiar,
-          JSON_EXTRACT(zgloszenia_zalaczniki_operacje.konfiguracja, "$.maxDimension") AS skalowanie_maksymalny_wymiar,
+          JSON_EXTRACT(zgloszenia_zalaczniki_operacje.konfiguracja, "$.height") AS skalowanie_konfiguracja_wysokosc,
+          JSON_EXTRACT(zgloszenia_zalaczniki_operacje.konfiguracja, "$.width") AS skalowanie_konfiguracja_szerokosc,
           JSON_EXTRACT(zgloszenia_zalaczniki_operacje.zmienne_czasu_wykonania, "$.scale") AS skalowanie_wyliczona_skala
           ${scaleCondition}) skalowanie
       ON skalowanie.id=zgloszenia_zalaczniki.id    

@@ -165,7 +165,12 @@ const TaskAppendices = (props) => {
 
                           {appendix.kompresja == 0 &&
                           <>
-                            <b>BRAK KOMPRESJI</b><br/><br/>
+                            <b>KOMPRESJA:</b> NIE<br/>
+                            {appendix.skalowanie == 0 &&
+                            <>                            
+                                <b>SKALOWANIE:</b> NIE<br/>
+                            </>}
+                            <br/>
                           </>}
 
                           <b>ROZMIAR ORYG.:</b> {appendix.rozmiar}<br/>
@@ -175,23 +180,26 @@ const TaskAppendices = (props) => {
                             <b>ROZMIAR PO KOMPRESJI / ROZMIAR ORYG.:</b> { Math.round(appendix.kompresja_rozmiar/appendix.rozmiar * 10000) / 100 }%<br/><br/>
                           </>}
                           
-                          <b>WYMIARY ORYG:</b> {appendix.szerokosc} x {appendix.wysokosc}<br/>
+                          {appendix.szerokosc && appendix.wysokosc &&
+                          <>
+                            <b>WYMIARY ORYG:</b> {appendix.szerokosc} x {appendix.wysokosc}<br/>
 
-                          {appendix.skalowanie == 1 &&
-                          <>                            
-                            <b>DOCELOWY WYMIAR:</b> {appendix.skalowanie_maksymalny_wymiar} x {appendix.skalowanie_minimalny_wymiar}<br/>
-                            <b>WYLICZONA SKALA:</b> {appendix.skalowanie_wyliczona_skala}<br/> 
-                            <b>WYMIARY PO PRZESKALOWANIU:</b> {appendix.skalowanie_szerokosc} x {appendix.skalowanie_wysokosc}<br/>
-                            <b>ROZMIAR PO PRZESKALOWANIU:</b> {appendix.skalowanie_rozmiar}<br/>
-                            <b>ROZMIAR PO PRZESKALOWANIU / ROZMIAR PO KOMPRESJI.:</b> { Math.round(appendix.skalowanie_rozmiar/appendix.kompresja_rozmiar * 10000) / 100 }%<br/>
-                            <b>ROZMIAR PO PRZESKALOWANIU / ROZMIAR ORYG.:</b> { Math.round(appendix.skalowanie_rozmiar/appendix.rozmiar * 10000) / 100 }%<br/><br/>
+                            {appendix.skalowanie == 1 &&
+                            <>                            
+                              <b>DOCELOWY WYMIAR:</b> {appendix.skalowanie_konfiguracja_szerokosc} x {appendix.skalowanie_konfiguracja_wysokosc}<br/>
+                              <b>WYLICZONA SKALA:</b> {appendix.skalowanie_wyliczona_skala}<br/> 
+                              <b>WYMIARY PO PRZESKALOWANIU:</b> {appendix.skalowanie_szerokosc} x {appendix.skalowanie_wysokosc}<br/>
+                              <b>ROZMIAR PO PRZESKALOWANIU:</b> {appendix.skalowanie_rozmiar}<br/>
+                              <b>ROZMIAR PO PRZESKALOWANIU / ROZMIAR PO KOMPRESJI.:</b> { Math.round(appendix.skalowanie_rozmiar/appendix.kompresja_rozmiar * 10000) / 100 }%<br/>
+                              <b>ROZMIAR PO PRZESKALOWANIU / ROZMIAR ORYG.:</b> { Math.round(appendix.skalowanie_rozmiar/appendix.rozmiar * 10000) / 100 }%<br/><br/>
+                            </>}                                                        
                           </>}
 
-                          {appendix.skalowanie == 0 &&
+                          {appendix.skalowanie == 0 && appendix.kompresja == 1 &&
                           <>                            
-                            <b>SKALOWANIE:</b> NIE<br/><br/>
+                              <b>SKALOWANIE:</b> NIE<br/><br/>
                           </>}
-
+                          
                           {appendix.archiwizacja == 1 &&
                           <>
                             <b>TYP ARCHIWIZACJI:</b> {appendix.archiwizacja_typ}<br/> 

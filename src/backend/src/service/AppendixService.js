@@ -39,16 +39,13 @@ class AppendixService {
     let width = metadata.width;
     let height = metadata.height;
 
-    let maxDimension = Math.max(width, height);
-    let minDimension = Math.min(width, height);
+    let longerSide = Math.max(width, height);
+    let shorterSide = Math.min(width, height);
 
-    let resizeMaxDimension = resizeConfig.maxDimension;
-    let resizeMinDimension = resizeConfig.minDimension;
+    let expectedLongerSide = Math.max(resizeConfig.width, resizeConfig.height);
+    let expectedShorterSide = Math.min(resizeConfig.width, resizeConfig.height);
 
-    let ratioMaxDimension = maxDimension / resizeMaxDimension;
-    let ratioMinDimension = minDimension / resizeMinDimension;
-
-    let scale = Math.max(ratioMaxDimension, ratioMinDimension);
+    let scale = Math.max(longerSide / expectedLongerSide, shorterSide / expectedShorterSide);
     
     let args = {
       width: Math.round(width / scale)
@@ -144,7 +141,7 @@ class AppendixService {
         let operationConfig = taskAppendicesConfig.resize["sharp_resize"];
 
         let originalImage = await sharp(uploadPath);
-        let originalMetadata = await originalImage.metadata();
+        let originalMetadata = await originalImage.metadata();        
         let operationArgs = await ref.resizeArgs(operationConfig, originalMetadata);
         
         let shouldBeResized = operationArgs.scale > 1;
@@ -180,7 +177,7 @@ class AppendixService {
           }, 
           typeId: operationTypeId, 
           args: operationArgs.args,
-          configuration: { minDimension: operationConfig.minDimension, maxDimension: operationConfig.maxDimension },
+          configuration: { height: operationConfig.height, width: operationConfig.width },
           runtimeVars: { scale: operationArgs.scale },
           filename: processedFilename, 
           filePath: processedFilePath 
@@ -214,7 +211,7 @@ class AppendixService {
     return new Promise(async(resolve, reject) => {      
       let archivisationConfig = taskAppendicesConfig.archivisation[taskAppendicesConfig.archivisation.type];
       let filenameSuffix = `_${archivisationConfig.filenameSuffix}`;
-      let archivedFilename = fileBasename + filenameSuffix + fileExt + archivisationConfig.fileExt;
+      let archivedFilename = fileBasename + filenameSuffix + fileExt + '.' + archivisationConfig.fileExt;
       let archivisationUploadDir = uploadDir + '/' + taskAppendicesConfig.archivisation.uploadDir;
       let archivedFilePath = archivisationUploadDir + '/' + archivedFilename;
       let archivisationTypeId = archivisationConfig.type;    
@@ -272,7 +269,7 @@ class AppendixService {
         formData.append("contentType", contentType);
         formData.append("tags", JSON.stringify(tags));
         // formData.append("data", data);                  
-        formData.append("dimensions", JSON.stringify(dimensions));
+        if(dimensions) formData.append("dimensions", JSON.stringify(dimensions));
         formData.append("compressed", compressed);
         formData.append("archived", archived);
         formData.append("resized", resized);
@@ -363,17 +360,17 @@ class AppendixService {
       let dimensions;      
 
       try{
-        let metadata = await sharp(uploadPath).metadata();
-        dimensions = { width: metadata.width, height: metadata.height };
-        
         let result;
         if(contentType == "image/jpeg" || contentType == "image/png") {
+          let metadata = await sharp(uploadPath).metadata();
+          dimensions = { width: metadata.width, height: metadata.height };
+
           let compressionData = await ref.compressImages(contentType, fileBasename, fileExt, uploadDir, uploadPath);
           let resizeData = await ref.resizeImages(path.basename(compressionData.filename, fileExt), fileExt, uploadDir, compressionData.filePath);
 
           let archivisationData;
 
-          if(resizeData) { 
+          if(resizeData) {             
             archivisationData = await ref.createArchive(resizeData.filePath, resizeData.filename, path.extname(resizeData.filename), resizeData.fileSize, uploadDir);            
           } else {
             archivisationData = await ref.createArchive(compressionData.filePath, compressionData.filename, path.extname(compressionData.filename), compressionData.fileSize, uploadDir);            
@@ -388,9 +385,9 @@ class AppendixService {
           if(resizeData) {            
             result = ref.sendOperationToTranslator(appendixId, resizeData);
           }
-        } else {          
+        } else {                    
           result = await ref.sendToTranslator(uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, dimensions, "1", "0", "0");
-          let appendixId = result.resources.resources[0].id;
+          let appendixId = result.resources.resources[0].id;          
           let archivisationData = await ref.createArchive(uploadPath, fileBasename, fileExt, fileSize, uploadDir);
           result = ref.sendOperationToTranslator(appendixId, archivisationData);
         }

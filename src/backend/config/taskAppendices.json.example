@@ -14,12 +14,17 @@
     }
   },
   "resize": {
-    "maxDimension": 1024,
-    "minDimension": 768
+    "uploadDir": "resized",
+    "sharp_resize": {
+      "type": 5,
+      "filenameSuffix":"sharp_resize",
+      "height": 1024,
+      "width": 768
+    }
   },
   "archivisation": { 
     "uploadDir": "archived",
-    "type": "zlib_gzip",
+    "type": "zlib_brotli",
     "zlib_gzip": {
       "type": 3,
       "filenameSuffix":"zlib_gzip",
