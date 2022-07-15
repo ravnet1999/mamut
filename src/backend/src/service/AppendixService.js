@@ -110,7 +110,7 @@ class AppendixService {
           }, 
           typeId: compressionTypeId, 
           args: compressionArgs,
-          configuration: { quality },
+          configuration: compressionConfig,
           filename: compressedFilename, 
           filePath: compressedFilePath 
         });
@@ -177,7 +177,7 @@ class AppendixService {
           }, 
           typeId: operationTypeId, 
           args: operationArgs.args,
-          configuration: { height: operationConfig.height, width: operationConfig.width },
+          configuration: operationConfig,
           runtimeVars: { scale: operationArgs.scale },
           filename: processedFilename, 
           filePath: processedFilePath 
