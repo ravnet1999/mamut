@@ -114,8 +114,6 @@ class AppendixService {
         }
 
         compressedImage = await compressedImage.toFile(compressedFilePath);
-
-        console.log(originalMetadata, compressedImage);
         
         fs.unlink(uploadPath, err => {
             if(err) {
@@ -127,9 +125,7 @@ class AppendixService {
           fileSize: compressedImage.size, 
           dimensions: { 
             width: compressedImage.width, 
-            height: compressedImage.height, 
-            originalWidth: originalMetadata.width , 
-            originalHeight: originalMetadata.height
+            height: compressedImage.height
           }, 
           typeId: compressionTypeId, 
           options: { toFormat: compressionOptions, resize: resizeOptions.options},
@@ -210,7 +206,7 @@ class AppendixService {
     });  
   }
 
-  sendToTranslator = async(uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, archived, compressed) => {
+  sendToTranslator = async(uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, dimensions, archived, compressed) => {
     return new Promise(async(resolve, reject) => {      
       // fs.createReadStream(uploadPath).on('error', function(err) {
       //   console.log(err);
@@ -224,9 +220,10 @@ class AppendixService {
         formData.append("contentType", contentType);
         formData.append("tags", JSON.stringify(tags));
         // formData.append("data", data);                  
+        formData.append("dimensions", JSON.stringify(dimensions));
         formData.append("compressed", compressed);
         formData.append("archived", archived);
-
+        
         axios({
           method: 'post',
           url: `${appConfig.URLs.translator}/appendices/${taskId}`,
@@ -310,17 +307,22 @@ class AppendixService {
         reject('Wystąpił problem z przeniesieniem załącznika do katalogu docelowego.');
       }
 
+      let dimensions;      
+
       try{
+        let metadata = await sharp(uploadPath).metadata();
+        dimensions = { width: metadata.width, height: metadata.height };
+        
         let result;
         if(contentType == "image/jpeg" || contentType == "image/png") {
           let compressionData = await ref.compressImages(contentType, fileBasename, fileExt, uploadDir, uploadPath);          
-          result = await ref.sendToTranslator(uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, "1", "1");          
+          result = await ref.sendToTranslator(uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, dimensions, "1", "1");          
           let appendixId = result.resources.resources[0].id;
           let archivisationData = await ref.createArchive(compressionData.filePath, compressionData.filename, path.extname(compressionData.filename), fileSize, uploadDir);
           result = ref.sendOperationToTranslator(appendixId, compressionData);
           result = ref.sendOperationToTranslator(appendixId, archivisationData);
         } else {          
-          result = await ref.sendToTranslator(uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, "1", "0");
+          result = await ref.sendToTranslator(uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, dimensions, "1", "0");
           let appendixId = result.resources.resources[0].id;
           let archivisationData = await ref.createArchive(uploadPath, fileBasename, fileExt, fileSize, uploadDir);
           result = ref.sendOperationToTranslator(appendixId, archivisationData);

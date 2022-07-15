@@ -23,11 +23,10 @@ class AppendixService extends Service {
       }
 
       return new Promise((resolve, reject) => {
-        console.log([taskId, file.filename, file.originalFilename, file.path, parseInt(file.size), file.contentType,  parseInt(file.compressed), parseInt(file.archived)]);
         // connection.query('INSERT INTO `' + this.tableName + '`(id_zgloszenia, nazwa, nazwa_oryginalna, sciezka, rozmiar, typ_mime, zawartosc) VALUES (?,?,?,?,?,?,?)', 
         // [taskId, file.filename[0], file.originalFilename[0], file.path[0], parseInt(file.size[0]), file.contentType[0], file.data[0]], (err, results, fields) => {
-        connection.query('INSERT INTO `' + this.tableName + '`(id_zgloszenia, nazwa, nazwa_oryginalna, sciezka, rozmiar, typ_mime, kompresja, archiwizacja, godzina) VALUES (?,?,?,?,?,?,?,?,NOW())', 
-          [taskId, file.filename, file.originalFilename, file.path, parseInt(file.size), file.contentType,  file.compressed, file.archived], (err, results, fields) => {
+        connection.query('INSERT INTO `' + this.tableName + '`(id_zgloszenia, nazwa, nazwa_oryginalna, sciezka, rozmiar, typ_mime, wymiary, kompresja, archiwizacja, godzina) VALUES (?,?,?,?,?,?,?,?,?,NOW())', 
+          [taskId, file.filename, file.originalFilename, file.path, parseInt(file.size), file.contentType, file.dimensions, file.compressed, file.archived], (err, results, fields) => {
             if(err) { 
               console.log(err);           
               reject(err);
@@ -43,9 +42,7 @@ class AppendixService extends Service {
     }
 
     createOperation = (taskAppendixId, operation) => {
-      console.log(operation)
       return new Promise((resolve, reject) => {
-        console.log(operation.typeId);
           connection.query('INSERT INTO `' + this.appendicesOperationTableName + '`(id_zalacznika, id_typu_operacji, godzina, nazwa, sciezka, rozmiar, argumenty, wymiary, parametry) VALUES (?,?,NOW(),?,?,?,?,?,?)', 
           [taskAppendixId, operation.typeId, operation.filename, operation.filePath, operation.fileSize, JSON.stringify(operation.options), JSON.stringify(operation.dimensions), JSON.stringify(operation.parameters)], (err, results, fields) => {
             if(err) {   
@@ -108,6 +105,8 @@ class AppendixService extends Service {
       let sql = `
       SELECT 
         zgloszenia_zalaczniki.*, 
+        JSON_EXTRACT(zgloszenia_zalaczniki.wymiary, "$.height") AS szerokosc,
+        JSON_EXTRACT(zgloszenia_zalaczniki.wymiary, "$.width") AS wysokosc,
         tagi.tagi,        
         kompresja.kompresja_sciezka,
         kompresja.kompresja_rozmiar,
