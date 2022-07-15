@@ -371,9 +371,9 @@ class AppendixService {
           let archivisationData;
 
           if(resizeData) {             
-            archivisationData = await ref.createArchive(resizeData.filePath, resizeData.filename, path.extname(resizeData.filename), resizeData.fileSize, uploadDir);            
+            archivisationData = await ref.createArchive(resizeData.filePath, resizeData.filename, fileExt, resizeData.fileSize, uploadDir);            
           } else {
-            archivisationData = await ref.createArchive(compressionData.filePath, compressionData.filename, path.extname(compressionData.filename), compressionData.fileSize, uploadDir);            
+            archivisationData = await ref.createArchive(compressionData.filePath, compressionData.filename, fileExt, compressionData.fileSize, uploadDir);            
           }
 
           result = await ref.sendToTranslator(uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, dimensions, "1", "1", resizeData ? "1" : "0");                                  
