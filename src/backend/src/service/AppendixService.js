@@ -198,7 +198,7 @@ class AppendixService {
           }
         });
 
-        let archivisationData = { fileSize: archivedFileSize, typeId: archivisationTypeId, filename: archivedFilename, filePath: archivedFilePath, dimensions: {}, options: {}, parameters: {} };  
+        let archivisationData = { fileSize: archivedFileSize, typeId: archivisationTypeId, filename: archivedFilename, filePath: archivedFilePath};  
         resolve(archivisationData);
       } catch(err) {
         console.log(err);
