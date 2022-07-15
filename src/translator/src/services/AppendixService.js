@@ -151,7 +151,8 @@ class AppendixService extends Service {
           zgloszenia_zalaczniki_typy_operacji.nazwa AS archiwizacja_typ
           ${archivisationCondition}) archiwizacja
       ON archiwizacja.id=zgloszenia_zalaczniki.id
-      HAVING ${condition};`;
+      HAVING ${condition}
+      ORDER BY zgloszenia_zalaczniki.id DESC;`;
 
       console.log(sql);
 
