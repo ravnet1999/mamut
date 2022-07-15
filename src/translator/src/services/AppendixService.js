@@ -43,8 +43,8 @@ class AppendixService extends Service {
 
     createOperation = (taskAppendixId, operation) => {
       return new Promise((resolve, reject) => {
-          connection.query('INSERT INTO `' + this.appendicesOperationTableName + '`(id_zalacznika, id_typu_operacji, godzina, nazwa, sciezka, rozmiar, argumenty, wymiary, konfiguracja) VALUES (?,?,NOW(),?,?,?,?,?,?)', 
-          [taskAppendixId, operation.typeId, operation.filename, operation.filePath, operation.fileSize, JSON.stringify(operation.options), JSON.stringify(operation.dimensions), JSON.stringify(operation.configuration)], (err, results, fields) => {
+          connection.query('INSERT INTO `' + this.appendicesOperationTableName + '`(id_zalacznika, id_typu_operacji, godzina, nazwa, sciezka, rozmiar, argumenty, wymiary, konfiguracja, zmienne_czasu_wykonania) VALUES (?,?,NOW(),?,?,?,?,?,?,?)', 
+          [taskAppendixId, operation.typeId, operation.filename, operation.filePath, operation.fileSize, JSON.stringify(operation.options), JSON.stringify(operation.dimensions), JSON.stringify(operation.configuration), JSON.stringify(operation.runtimeVars)], (err, results, fields) => {
             if(err) {   
               console.log(err);         
               reject(err);
@@ -137,7 +137,7 @@ class AppendixService extends Service {
           JSON_EXTRACT(zgloszenia_zalaczniki_operacje.konfiguracja, "$.toFormat.quality") AS kompresja_jakosc,
           JSON_EXTRACT(zgloszenia_zalaczniki_operacje.konfiguracja, "$.resize.minDimension") AS kompresja_minimalny_wymiar,
           JSON_EXTRACT(zgloszenia_zalaczniki_operacje.konfiguracja, "$.resize.maxDimension") AS kompresja_maksymalny_wymiar,
-          JSON_EXTRACT(zgloszenia_zalaczniki_operacje.konfiguracja, "$.resize.calculatedRatio") AS kompresja_wyliczona_skala
+          JSON_EXTRACT(zgloszenia_zalaczniki_operacje.zmienne_czasu_wykonania, "$.resize.ratio") AS kompresja_wyliczona_skala
           ${compressionCondition}) kompresja
       ON kompresja.id=zgloszenia_zalaczniki.id    
       LEFT JOIN
