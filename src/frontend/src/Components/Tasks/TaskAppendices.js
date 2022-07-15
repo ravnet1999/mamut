@@ -160,28 +160,36 @@ const TaskAppendices = (props) => {
                         <div style={{fontSize: "12px"}}>
                           {appendix.kompresja == 1 &&
                           <>
-                            <b>JAKOŚĆ KOMPRESJI:</b> {appendix.kompresja_jakosc}<br/>
-                            <b>DOCELOWY WYMIAR:</b> {appendix.kompresja_maksymalny_wymiar} x {appendix.kompresja_minimalny_wymiar}<br/><br/>
+                            <b>JAKOŚĆ KOMPRESJI:</b> {appendix.kompresja_jakosc}<br/>                            
                           </>}
 
                           {appendix.kompresja == 0 &&
                           <>
                             <b>BRAK KOMPRESJI</b><br/><br/>
                           </>}
-                          
-                          <b>WYMIARY ORYG:</b> {appendix.szerokosc} x {appendix.wysokosc}<br/>
-
-                          {appendix.kompresja == 1 &&
-                          <>                            
-                            <b>WYLICZONA SKALA:</b> {appendix.kompresja_wyliczona_skala}<br/> 
-                            <b>WYMIARY PO PRZESKALOWANIU:</b> {appendix.kompresja_szerokosc} x {appendix.kompresja_wysokosc}<br/><br/> 
-                          </>}  
 
                           <b>ROZMIAR ORYG.:</b> {appendix.rozmiar}<br/>
                           {appendix.kompresja == 1 &&
                           <>
-                            <b>ROZMIAR PO KOMPRESJI I PRZESKALOWANIU:</b> {appendix.kompresja_rozmiar}<br/>
-                            <b>ROZMIAR PO KOMPRESJI I PRZESKALOWANIU / ROZMIAR ORYG.:</b> { Math.round(appendix.kompresja_rozmiar/appendix.rozmiar * 10000) / 100 }%<br/><br/>
+                            <b>ROZMIAR PO KOMPRESJI:</b> {appendix.kompresja_rozmiar}<br/>
+                            <b>ROZMIAR PO KOMPRESJI / ROZMIAR ORYG.:</b> { Math.round(appendix.kompresja_rozmiar/appendix.rozmiar * 10000) / 100 }%<br/><br/>
+                          </>}
+                          
+                          <b>WYMIARY ORYG:</b> {appendix.szerokosc} x {appendix.wysokosc}<br/>
+
+                          {appendix.skalowanie == 1 &&
+                          <>                            
+                            <b>DOCELOWY WYMIAR:</b> {appendix.skalowanie_maksymalny_wymiar} x {appendix.skalowanie_minimalny_wymiar}<br/>
+                            <b>WYLICZONA SKALA:</b> {appendix.skalowanie_wyliczona_skala}<br/> 
+                            <b>WYMIARY PO PRZESKALOWANIU:</b> {appendix.skalowanie_szerokosc} x {appendix.skalowanie_wysokosc}<br/>
+                            <b>ROZMIAR PO PRZESKALOWANIU:</b> {appendix.skalowanie_rozmiar}<br/>
+                            <b>ROZMIAR PO PRZESKALOWANIU / ROZMIAR PO KOMPRESJI.:</b> { Math.round(appendix.skalowanie_rozmiar/appendix.kompresja_rozmiar * 10000) / 100 }%<br/>
+                            <b>ROZMIAR PO PRZESKALOWANIU / ROZMIAR ORYG.:</b> { Math.round(appendix.skalowanie_rozmiar/appendix.rozmiar * 10000) / 100 }%<br/><br/>
+                          </>}
+
+                          {appendix.skalowanie == 0 &&
+                          <>                            
+                            <b>SKALOWANIE:</b> NIE<br/><br/>
                           </>}
 
                           {appendix.archiwizacja == 1 &&
@@ -190,7 +198,7 @@ const TaskAppendices = (props) => {
                             <b>ROZMIAR PO ARCHIWIZACJI:</b> {appendix.archiwizacja_rozmiar}<br/>                          
                             {appendix.kompresja == 1 &&
                             <>                            
-                            <b>ROZMIAR PO ARCHIWIZACJI / ROZMIAR PO KOMPRESJI I PRZESKALOWANIU:</b> { Math.round(appendix.archiwizacja_rozmiar/appendix.kompresja_rozmiar * 10000) / 100 }%<br/>
+                            <b>ROZMIAR PO ARCHIWIZACJI / ROZMIAR PO KOMPRESJI I PRZESKALOWANIU:</b> { Math.round(appendix.archiwizacja_rozmiar/appendix.skalowanie_rozmiar * 10000) / 100 }%<br/>
                             </>}
                             <b>ROZMIAR PO ARCHIWIZACJI / ROZMIAR ORYG.:</b> { Math.round(appendix.archiwizacja_rozmiar/appendix.rozmiar * 10000) / 100 }%<br/><br/>
                           </>}

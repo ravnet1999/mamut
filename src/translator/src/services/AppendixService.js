@@ -25,8 +25,8 @@ class AppendixService extends Service {
       return new Promise((resolve, reject) => {
         // connection.query('INSERT INTO `' + this.tableName + '`(id_zgloszenia, nazwa, nazwa_oryginalna, sciezka, rozmiar, typ_mime, zawartosc) VALUES (?,?,?,?,?,?,?)', 
         // [taskId, file.filename[0], file.originalFilename[0], file.path[0], parseInt(file.size[0]), file.contentType[0], file.data[0]], (err, results, fields) => {
-        connection.query('INSERT INTO `' + this.tableName + '`(id_zgloszenia, nazwa, nazwa_oryginalna, sciezka, rozmiar, typ_mime, wymiary, kompresja, archiwizacja, godzina) VALUES (?,?,?,?,?,?,?,?,?,NOW())', 
-          [taskId, file.filename, file.originalFilename, file.path, parseInt(file.size), file.contentType, file.dimensions, file.compressed, file.archived], (err, results, fields) => {
+        connection.query('INSERT INTO `' + this.tableName + '`(id_zgloszenia, nazwa, nazwa_oryginalna, sciezka, rozmiar, typ_mime, wymiary, kompresja, skalowanie, archiwizacja, godzina) VALUES (?,?,?,?,?,?,?,?,?,?,NOW())', 
+          [taskId, file.filename, file.originalFilename, file.path, parseInt(file.size), file.contentType, file.dimensions, file.compressed, file.resized, file.archived], (err, results, fields) => {
             if(err) { 
               console.log(err);           
               reject(err);
@@ -101,6 +101,7 @@ class AppendixService extends Service {
 
       let compressionCondition = operationCondition(1);
       let archivisationCondition = operationCondition(2);
+      let scaleCondition = operationCondition(3);
 
       let sql = `
       SELECT 
@@ -108,20 +109,25 @@ class AppendixService extends Service {
         JSON_EXTRACT(zgloszenia_zalaczniki.wymiary, "$.height") AS szerokosc,
         JSON_EXTRACT(zgloszenia_zalaczniki.wymiary, "$.width") AS wysokosc,
         tagi.tagi,        
-        kompresja.kompresja_sciezka,
-        kompresja.kompresja_rozmiar,
-        kompresja.kompresja_typ_mime,
-        kompresja.kompresja_jakosc,
+        kompresja_sciezka,
+        kompresja_rozmiar,
+        kompresja_typ_mime,
+        kompresja_jakosc,
         kompresja_szerokosc,
         kompresja_wysokosc,
-        kompresja_minimalny_wymiar,
-        kompresja_maksymalny_wymiar,
-        kompresja_wyliczona_skala,
-        archiwizacja.archiwizacja_sciezka,
-        archiwizacja.archiwizacja_rozmiar,
-        archiwizacja.archiwizacja_typ_mime,
-        archiwizacja.archiwizacja_typ_zawartosci,
-        archiwizacja.archiwizacja_typ
+        skalowanie_sciezka,
+        skalowanie_rozmiar,
+        skalowanie_typ_mime,
+        skalowanie_szerokosc,
+        skalowanie_wysokosc,
+        skalowanie_minimalny_wymiar,
+        skalowanie_maksymalny_wymiar,
+        skalowanie_wyliczona_skala,
+        archiwizacja_sciezka,
+        archiwizacja_rozmiar,
+        archiwizacja_typ_mime,
+        archiwizacja_typ_zawartosci,
+        archiwizacja_typ
       FROM zgloszenia_zalaczniki 
       LEFT JOIN ${tagsQuery}
       ON tagi.id=zgloszenia_zalaczniki.id
@@ -134,12 +140,23 @@ class AppendixService extends Service {
           zgloszenia_zalaczniki_typy_operacji.typ_mime AS kompresja_typ_mime,          
           JSON_EXTRACT(zgloszenia_zalaczniki_operacje.wymiary, "$.height") AS kompresja_szerokosc,
           JSON_EXTRACT(zgloszenia_zalaczniki_operacje.wymiary, "$.width") AS kompresja_wysokosc,
-          JSON_EXTRACT(zgloszenia_zalaczniki_operacje.konfiguracja, "$.toFormat.quality") AS kompresja_jakosc,
-          JSON_EXTRACT(zgloszenia_zalaczniki_operacje.konfiguracja, "$.resize.minDimension") AS kompresja_minimalny_wymiar,
-          JSON_EXTRACT(zgloszenia_zalaczniki_operacje.konfiguracja, "$.resize.maxDimension") AS kompresja_maksymalny_wymiar,
-          JSON_EXTRACT(zgloszenia_zalaczniki_operacje.zmienne_czasu_wykonania, "$.resize.ratio") AS kompresja_wyliczona_skala
+          JSON_EXTRACT(zgloszenia_zalaczniki_operacje.konfiguracja, "$.quality") AS kompresja_jakosc
           ${compressionCondition}) kompresja
-      ON kompresja.id=zgloszenia_zalaczniki.id    
+      ON kompresja.id=zgloszenia_zalaczniki.id 
+      LEFT JOIN
+        (SELECT
+          zgloszenia_zalaczniki2.id,
+          zgloszenia_zalaczniki_typy_operacji.id_rodzaju_operacji,
+          zgloszenia_zalaczniki_operacje.sciezka AS skalowanie_sciezka,
+          zgloszenia_zalaczniki_operacje.rozmiar AS skalowanie_rozmiar,
+          zgloszenia_zalaczniki_typy_operacji.typ_mime AS skalowanie_typ_mime,          
+          JSON_EXTRACT(zgloszenia_zalaczniki_operacje.wymiary, "$.height") AS skalowanie_szerokosc,
+          JSON_EXTRACT(zgloszenia_zalaczniki_operacje.wymiary, "$.width") AS skalowanie_wysokosc,
+          JSON_EXTRACT(zgloszenia_zalaczniki_operacje.konfiguracja, "$.minDimension") AS skalowanie_minimalny_wymiar,
+          JSON_EXTRACT(zgloszenia_zalaczniki_operacje.konfiguracja, "$.maxDimension") AS skalowanie_maksymalny_wymiar,
+          JSON_EXTRACT(zgloszenia_zalaczniki_operacje.zmienne_czasu_wykonania, "$.ratio") AS skalowanie_wyliczona_skala
+          ${scaleCondition}) skalowanie
+      ON skalowanie.id=zgloszenia_zalaczniki.id    
       LEFT JOIN
         (SELECT
           zgloszenia_zalaczniki2.id,

@@ -35,14 +35,12 @@ class AppendixService {
     });
   }
 
-  resizeOptions = async (metadata) => {
+  resizeOptions = async (resizeConfig, metadata) => {
     let width = metadata.width;
     let height = metadata.height;
 
     let maxDimension = Math.max(width, height);
     let minDimension = Math.min(width, height);
-
-    let resizeConfig = taskAppendicesConfig.resize;
 
     let resizeMaxDimension = resizeConfig.maxDimension;
     let resizeMinDimension = resizeConfig.minDimension;
@@ -60,8 +58,6 @@ class AppendixService {
   }
 
   compressImages = async(contentType, fileBasename, fileExt, uploadDir, uploadPath) => {
-    let ref = this;
-
     return new Promise(async(resolve, reject) => { 
       let compressionUploadDir = uploadDir + '/' + taskAppendicesConfig.compression.uploadDir;
 
@@ -101,25 +97,13 @@ class AppendixService {
         let compressedFilename = fileBasename + filenameSuffix + fileExt;
         let compressedFilePath = compressionUploadDir + '/' + compressedFilename;
 
-        let originalImage = await sharp(uploadPath);
-        let originalMetadata = await originalImage.metadata();
-        let resizeOptions = await ref.resizeOptions(originalMetadata);
-
-        let compressedImage = await originalImage[compressionMethod](compressionFormat, compressionOptions);
-
-        let shouldBeResized = resizeOptions.ratio > 1;
-
-        if(shouldBeResized) {
-          compressedImage = await compressedImage.resize(resizeOptions.options);  
-        }
-
-        compressedImage = await compressedImage.toFile(compressedFilePath);
+        let compressedImage = await sharp(uploadPath)[compressionMethod](compressionFormat, compressionOptions).toFile(compressedFilePath);
         
         fs.unlink(uploadPath, err => {
-            if(err) {
-              console.log(err);
-            }
-          });
+          if(err) {
+            console.log(err);
+          }
+        });
 
         resolve({ 
           fileSize: compressedImage.size, 
@@ -128,11 +112,78 @@ class AppendixService {
             height: compressedImage.height
           }, 
           typeId: compressionTypeId, 
-          options: { toFormat: compressionOptions, resize: resizeOptions.options},
-          configuration: { toFormat: { quality }, resize: { minDimension: taskAppendicesConfig.resize.minDimension, maxDimension: taskAppendicesConfig.resize.maxDimension, calculatedRatio: resizeOptions.ratio } },
-          runtimeVars: { resize: { ratio: resizeOptions.ratio } },
+          options: compressionOptions,
+          configuration: { quality },
           filename: compressedFilename, 
           filePath: compressedFilePath 
+        });
+        
+      } catch(err) {        
+        reject(err);
+      }
+    });
+  }
+
+  resizeImages = async(fileBasename, fileExt, uploadDir, uploadPath) => {
+    let ref = this;
+
+    return new Promise(async(resolve, reject) => { 
+      let operationUploadDir = uploadDir + '/' + taskAppendicesConfig.resize.uploadDir;
+
+      if(!fs.existsSync(operationUploadDir)) {   
+        fs.mkdirSync(operationUploadDir, null, err => {
+          if(err) {
+            console.log(err);
+            reject('Wystąpił problem z utworzeniem katalogu do zapisu przeskalowanych załączników w formacie jpg i png.');
+          }
+        })
+      }
+
+      try {
+        let operationMethod = "resize";
+        let operationConfig = taskAppendicesConfig.resize["sharp_resize"];
+
+        let originalImage = await sharp(uploadPath);
+        let originalMetadata = await originalImage.metadata();
+        let operationOptions = await ref.resizeOptions(operationConfig, originalMetadata);
+        
+        let shouldBeResized = operationOptions.ratio > 1;
+
+        if(!shouldBeResized) {
+          resolve(false);
+          return;
+        }
+
+        let filenameSuffix = `_${operationConfig.filenameSuffix}_ratio_${operationOptions.ratio}`;
+        
+        let operationTypeId = operationConfig.type;
+
+        let processedFilename = fileBasename + filenameSuffix + fileExt;
+        let processedFilePath = operationUploadDir + '/' + processedFilename;
+
+        console.log(uploadPath, shouldBeResized, operationMethod, operationOptions.options);
+
+        let processedImage = shouldBeResized ? await originalImage[operationMethod](operationOptions.options) : originalImage;
+        processedImage = await processedImage.toFile(processedFilePath);
+        
+        fs.unlink(uploadPath, err => {
+            if(err) {
+              console.log(err);
+            }
+          });
+
+        resolve({ 
+          fileSize: processedImage.size, 
+          dimensions: { 
+            width: processedImage.width, 
+            height: processedImage.height
+          }, 
+          typeId: operationTypeId, 
+          options: operationOptions.options,
+          configuration: { minDimension: operationConfig.minDimension, maxDimension: operationConfig.maxDimension },
+          runtimeVars: { ratio: operationOptions.ratio },
+          filename: processedFilename, 
+          filePath: processedFilePath 
         });
         
       } catch(err) {        
@@ -207,7 +258,7 @@ class AppendixService {
     });  
   }
 
-  sendToTranslator = async(uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, dimensions, archived, compressed) => {
+  sendToTranslator = async(uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, dimensions, archived, compressed, resized) => {
     return new Promise(async(resolve, reject) => {      
       // fs.createReadStream(uploadPath).on('error', function(err) {
       //   console.log(err);
@@ -224,6 +275,7 @@ class AppendixService {
         formData.append("dimensions", JSON.stringify(dimensions));
         formData.append("compressed", compressed);
         formData.append("archived", archived);
+        formData.append("resized", resized);
         
         axios({
           method: 'post',
@@ -316,14 +368,28 @@ class AppendixService {
         
         let result;
         if(contentType == "image/jpeg" || contentType == "image/png") {
-          let compressionData = await ref.compressImages(contentType, fileBasename, fileExt, uploadDir, uploadPath);          
-          result = await ref.sendToTranslator(uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, dimensions, "1", "1");          
+          let compressionData = await ref.compressImages(contentType, fileBasename, fileExt, uploadDir, uploadPath);
+          let resizeData = await ref.resizeImages(path.basename(compressionData.filename, fileExt), fileExt, uploadDir, compressionData.filePath);
+
+          let archivisationData;
+
+          if(resizeData) { 
+            archivisationData = await ref.createArchive(resizeData.filePath, resizeData.filename, path.extname(resizeData.filename), resizeData.fileSize, uploadDir);            
+          } else {
+            archivisationData = await ref.createArchive(compressionData.filePath, compressionData.filename, path.extname(compressionData.filename), compressionData.fileSize, uploadDir);            
+          }
+
+          result = await ref.sendToTranslator(uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, dimensions, "1", "1", resizeData ? "1" : "0");                                  
           let appendixId = result.resources.resources[0].id;
-          let archivisationData = await ref.createArchive(compressionData.filePath, compressionData.filename, path.extname(compressionData.filename), fileSize, uploadDir);
+          
           result = ref.sendOperationToTranslator(appendixId, compressionData);
           result = ref.sendOperationToTranslator(appendixId, archivisationData);
+
+          if(resizeData) {            
+            result = ref.sendOperationToTranslator(appendixId, resizeData);
+          }
         } else {          
-          result = await ref.sendToTranslator(uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, dimensions, "1", "0");
+          result = await ref.sendToTranslator(uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, dimensions, "1", "0", "0");
           let appendixId = result.resources.resources[0].id;
           let archivisationData = await ref.createArchive(uploadPath, fileBasename, fileExt, fileSize, uploadDir);
           result = ref.sendOperationToTranslator(appendixId, archivisationData);
