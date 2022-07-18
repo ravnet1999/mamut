@@ -98,20 +98,12 @@ class AppendixService {
       let compressionUploadDir = ref.createUploadDir(uploadDir, taskAppendicesConfig.compression);
 
       try {
-        let compressionConfig;
-
-        if(contentType == "image/jpeg") {
-          compressionConfig = taskAppendicesConfig.compression["sharp_to_format_jpeg"];
-        } else if(contentType == "image/png") { 
-          compressionConfig = taskAppendicesConfig.compression["sharp_to_format_png"];
-        }
-
-        let quality = compressionConfig.quality;
-        let compressionArgs = { quality };
-
+        let compressionConfig = ref.getCompressionConfig(contentType);        
+        let compressionArgs = ref.getCompressionArgs(compressionConfig);
         let filenameSuffix = ref.getCompressionFilenameSuffix(compressionConfig, compressionArgs, contentType);
         let { filename: compressedFilename, filePath: compressedFilePath } = ref.getProcessedFileData(fileBasename, filenameSuffix, fileExt, compressionUploadDir);
-          
+
+        let compressionObject = await sharp(uploadPath);  
         let compressionMethod = 'toFormat';
         let compressionFormat;
         
@@ -121,7 +113,7 @@ class AppendixService {
           compressionFormat = "png";          
         }
 
-        let compressedImage = await sharp(uploadPath)[compressionMethod](compressionFormat, compressionArgs).toFile(compressedFilePath);
+        let compressedImage = await compressionObject[compressionMethod](compressionFormat, compressionArgs).toFile(compressedFilePath);
 
         let timeElapsed = ref.stopTrackingTime(start);        
         ref.afterAppendixOperation(uploadPath);
@@ -156,14 +148,10 @@ class AppendixService {
       let resizeUploadDir = ref.createUploadDir(uploadDir, taskAppendicesConfig.resize);
 
       try {
-        let resizeMethod = "resize";
-        let resizeConfig = taskAppendicesConfig[resizeMethod]["sharp_resize"];
+        let resizeConfig = await ref.getResizeConfig();        
+        let { resizeObject, resizeArgs, runtimeVars } = await ref.getResizeObjectArgsAndRuntimeVars(uploadPath, resizeConfig);
 
-        let originalImage = await sharp(uploadPath);
-        let originalMetadata = await originalImage.metadata();        
-        let resizeArgs = await ref.resizeArgs(resizeConfig, originalMetadata);
-        
-        let shouldBeResized = resizeArgs.scale > 1;
+        let shouldBeResized = runtimeVars.scale > 1;
 
         if(!shouldBeResized) {
           resolve(false);
@@ -173,13 +161,13 @@ class AppendixService {
         let filenameSuffix = ref.getResizeFilenameSuffix(resizeConfig, resizeArgs);
         let { filename: resizedFilename, filePath: resizedFilePath } = ref.getProcessedFileData(fileBasename, filenameSuffix, fileExt, resizeUploadDir);
 
-        let resizedImage = originalImage;
+        let resizeMethod = 'resize';
         
         if(shouldBeResized) {          
-          resizedImage = await originalImage[resizeMethod](resizeArgs.args);
+          resizeObject = await resizeObject[resizeMethod](resizeArgs);          
         }
 
-        resizedImage = await resizedImage.toFile(resizedFilePath);
+        resizeObject = await resizeObject.toFile(resizedFilePath);
 
         let timeElapsed;
 
@@ -188,18 +176,16 @@ class AppendixService {
         }
         
         ref.afterAppendixOperation(uploadPath);
-
-        let runtimeVars = { scale: resizeArgs.scale };
         
         if(shouldBeResized) runtimeVars.timeElapsed = timeElapsed;
 
         let resizeTypeId = resizeConfig.type;
 
         resolve({ 
-          fileSize: resizedImage.size, 
+          fileSize: resizeObject.size, 
           dimensions: { 
-            width: resizedImage.width, 
-            height: resizedImage.height
+            width: resizeObject.width, 
+            height: resizeObject.height
           }, 
           typeId: resizeTypeId, 
           args: resizeArgs.args,
@@ -215,57 +201,18 @@ class AppendixService {
     });
   }
 
-  resizeArgs = async (resizeConfig, metadata) => {
-    let width = metadata.width;
-    let height = metadata.height;
-
-    let longerSide = Math.max(width, height);
-    let shorterSide = Math.min(width, height);
-
-    let expectedLongerSide = Math.max(resizeConfig.width, resizeConfig.height);
-    let expectedShorterSide = Math.min(resizeConfig.width, resizeConfig.height);
-
-    let scale = Math.max(longerSide / expectedLongerSide, shorterSide / expectedShorterSide);
-    
-    let args = {
-      width: Math.round(width / scale)
-    };
-
-    return { args, scale };
-  }
-
   createArchive = async(uploadPath, fileBasename, fileExt, fileSize, uploadDir) => {
     let ref = this;
 
     return new Promise(async(resolve, reject) => { 
       let start = ref.startTrackingTime();
-
       let archivisationUploadDir = ref.createUploadDir(uploadDir, taskAppendicesConfig.archivisation);
-
-      let archivisationConfig = taskAppendicesConfig.archivisation[taskAppendicesConfig.archivisation.type];
-      let fileExtToAppend = archivisationConfig.fileExtToAppend;
-      
+      let archivisationConfig = ref.getArchivisationConfig();
       let filenameSuffix = ref.getArchivisationFilenameSuffix(archivisationConfig);
+      let fileExtToAppend = archivisationConfig.fileExtToAppend;
       let { filename: archivedFilename, filePath: archivedFilePath } = ref.getProcessedFileData(fileBasename, filenameSuffix, fileExt, archivisationUploadDir, fileExtToAppend);
-
-      let archivisationObject;
-      let archivisationArgs;
+      let { archivisationObject, archivisationArgs } = ref.getArchivsationObjectAndArgs(fileSize);
       
-      switch(taskAppendicesConfig.archivisation.type) {
-        case("zlib_brotli"): 
-          archivisationArgs = {
-            chunkSize: 32 * 1024,
-            params: {
-              [zlib.constants.BROTLI_PARAM_QUALITY]: 9,
-              [zlib.constants.BROTLI_PARAM_SIZE_HINT]: fileSize
-            }
-          };
-          archivisationObject = createBrotliCompress(archivisationArgs);
-          break;
-        case("zlib_gzip"): archivisationObject = createGzip();
-        default: archivisationObject = createGzip();
-      }
-
       const source = fs.createReadStream(uploadPath);        
       const destination = fs.createWriteStream(archivedFilePath);
 
@@ -275,29 +222,29 @@ class AppendixService {
         archivedFileSize += data.length;
       }); 
              
-        pipeline(source, archivisationObject, destination, (err) => {
-          if(err) {
-            console.log(err);
-            reject(err);
-          }
+      pipeline(source, archivisationObject, destination, (err) => {
+        if(err) {
+          console.log(err);
+          reject(err);
+        }
 
-          let timeElapsed = ref.stopTrackingTime(start);
-          ref.afterAppendixOperation(uploadPath);
+        let timeElapsed = ref.stopTrackingTime(start);
+        ref.afterAppendixOperation(uploadPath);
 
-          let archivisationTypeId = archivisationConfig.type;
+        let archivisationTypeId = archivisationConfig.type;
 
-          let archivisationData = { 
-            fileSize: archivedFileSize, 
-            typeId: archivisationTypeId, 
-            args: archivisationArgs,
-            configuration: archivisationConfig,
-            filename: archivedFilename, 
-            filePath: archivedFilePath,
-            runtimeVars: { timeElapsed },
-          };
+        let archivisationData = { 
+          fileSize: archivedFileSize, 
+          typeId: archivisationTypeId, 
+          args: archivisationArgs,
+          configuration: archivisationConfig,
+          filename: archivedFilename, 
+          filePath: archivedFilePath,
+          runtimeVars: { timeElapsed },
+        };
 
-          resolve(archivisationData);
-        });
+        resolve(archivisationData);
+      });
     });  
   }
 
@@ -316,20 +263,99 @@ class AppendixService {
     return operationUploadDir;
   }
 
+  getCompressionConfig = (contentType) => {
+    let compressionConfig;
+
+    if(contentType == "image/jpeg") {
+      compressionConfig = taskAppendicesConfig.compression["sharp_to_format_jpeg"];
+    } else if(contentType == "image/png") { 
+      compressionConfig = taskAppendicesConfig.compression["sharp_to_format_png"];
+    }
+
+    return compressionConfig;
+  }
+
+  getCompressionArgs = (compressionConfig) => {
+    let quality = compressionConfig.quality;
+    let compressionArgs = { quality };
+    return compressionArgs;
+  }
+
   getCompressionFilenameSuffix = (compressionConfig, compressionArgs, contentType) => {    
     let filenameSuffix = `_${compressionConfig.filenameSuffix}_quality_${compressionArgs.quality}`;
         
     if(contentType == "image/jpeg") { 
       compressionArgs.mozjpeg = true; 
-      filenameSuffix += ' _mozjpeg';
+      filenameSuffix += '_mozjpeg';
     } 
         
     return filenameSuffix;
   }
 
+  getResizeConfig = () => {
+    let resizeConfig = taskAppendicesConfig.resize["sharp_resize"];
+    return resizeConfig;
+  }
+
   getResizeFilenameSuffix = (resizeConfig, resizeArgs) => {    
     let filenameSuffix = `_${resizeConfig.filenameSuffix}_ratio_${resizeArgs.scale}`;
     return filenameSuffix;
+  }
+
+  getResizeObjectArgsAndRuntimeVars = async (uploadPath, resizeConfig) => {   
+    return new Promise(async(resolve, reject) => {  
+      try{
+        let resizeObject = await sharp(uploadPath);
+        let metadata = await resizeObject.metadata();
+        
+        let width = metadata.width;
+        let height = metadata.height;
+
+        let longerSide = Math.max(width, height);
+        let shorterSide = Math.min(width, height);
+
+        let expectedLongerSide = Math.max(resizeConfig.width, resizeConfig.height);
+        let expectedShorterSide = Math.min(resizeConfig.width, resizeConfig.height);
+
+        let scale = Math.max(longerSide / expectedLongerSide, shorterSide / expectedShorterSide);
+        
+        let resizeArgs = {
+          width: Math.round(width / scale)
+        };
+
+        let runtimeVars = { scale };
+        resolve({ resizeObject, resizeArgs, runtimeVars });
+      } catch(err) {
+        reject(err);
+      }
+    });
+  }
+
+  getArchivisationConfig = () => {
+    let archivisationConfig = taskAppendicesConfig.archivisation[taskAppendicesConfig.archivisation.type];
+    return archivisationConfig;
+  }
+
+  getArchivsationObjectAndArgs = (fileSize) => {
+    let archivisationObject;
+    let archivisationArgs;
+    
+    switch(taskAppendicesConfig.archivisation.type) {
+      case("zlib_brotli"): 
+        archivisationArgs = {
+          chunkSize: 32 * 1024,
+          params: {
+            [zlib.constants.BROTLI_PARAM_QUALITY]: 9,
+            [zlib.constants.BROTLI_PARAM_SIZE_HINT]: fileSize
+          }
+        };
+        archivisationObject = createBrotliCompress(archivisationArgs);
+        break;
+      case("zlib_gzip"): archivisationObject = createGzip();
+      default: archivisationObject = createGzip();
+    }
+
+    return { archivisationObject, archivisationArgs };
   }
 
   getArchivisationFilenameSuffix = (archivisationConfig) => { 
