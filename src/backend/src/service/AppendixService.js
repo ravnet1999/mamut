@@ -159,32 +159,32 @@ class AppendixService {
     return new Promise(async(resolve, reject) => { 
       let start = Date.now();
 
-      let operationUploadDir = ref.createUploadDir(uploadDir, taskAppendicesConfig.resize);
+      let resizedUploadDir = ref.createUploadDir(uploadDir, taskAppendicesConfig.resize);
 
       try {
-        let operationMethod = "resize";
-        let operationConfig = taskAppendicesConfig.resize["sharp_resize"];
+        let resizeMethod = "resize";
+        let resizeConfig = taskAppendicesConfig.resize["sharp_resize"];
 
         let originalImage = await sharp(uploadPath);
         let originalMetadata = await originalImage.metadata();        
-        let operationArgs = await ref.resizeArgs(operationConfig, originalMetadata);
+        let resizeArgs = await ref.resizeArgs(resizeConfig, originalMetadata);
         
-        let shouldBeResized = operationArgs.scale > 1;
+        let shouldBeResized = resizeArgs.scale > 1;
 
         if(!shouldBeResized) {
           resolve(false);
           return;
         }
 
-        let filenameSuffix = `_${operationConfig.filenameSuffix}_ratio_${operationArgs.scale}`;
+        let filenameSuffix = `_${resizeConfig.filenameSuffix}_ratio_${resizeArgs.scale}`;
         
-        let { filename: processedFilename, filePath: processedFilePath } = ref.getProcessedFileData(fileBasename, filenameSuffix, fileExt, operationUploadDir, operationConfig.fileExtToAppend);
+        let { filename: processedFilename, filePath: processedFilePath } = ref.getProcessedFileData(fileBasename, filenameSuffix, fileExt, resizedUploadDir, resizeConfig.fileExtToAppend);
 
         let processedImage = originalImage;
         let timeElapsed;
 
         if(shouldBeResized) {          
-          processedImage = await originalImage[operationMethod](operationArgs.args);
+          processedImage = await originalImage[resizeMethod](resizeArgs.args);
           let stop = Date.now();
           timeElapsed = (stop - start) / 1000;
         }
@@ -197,11 +197,11 @@ class AppendixService {
             }
           });
 
-        let runtimeVars = { scale: operationArgs.scale };
+        let runtimeVars = { scale: resizeArgs.scale };
         
         if(shouldBeResized) runtimeVars.timeElapsed = timeElapsed;
 
-        let operationTypeId = operationConfig.type;
+        let resizeTypeId = resizeConfig.type;
 
         resolve({ 
           fileSize: processedImage.size, 
@@ -209,9 +209,9 @@ class AppendixService {
             width: processedImage.width, 
             height: processedImage.height
           }, 
-          typeId: operationTypeId, 
-          args: operationArgs.args,
-          configuration: operationConfig,
+          typeId: resizeTypeId, 
+          args: resizeArgs.args,
+          configuration: resizeConfig,
           runtimeVars,
           filename: processedFilename, 
           filePath: processedFilePath 
