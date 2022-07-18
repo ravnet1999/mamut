@@ -93,7 +93,7 @@ class AppendixService {
     let ref = this;
 
     return new Promise(async(resolve, reject) => { 
-      let start = Date.now();
+      let start = ref.startTrackingTime();
       
       let compressionUploadDir = ref.createUploadDir(uploadDir, taskAppendicesConfig.compression);
 
@@ -122,8 +122,8 @@ class AppendixService {
         let { filename: compressedFilename, filePath: compressedFilePath } = ref.getProcessedFileData(fileBasename, filenameSuffix, fileExt, compressionUploadDir);
                 
         let compressedImage = await sharp(uploadPath)[compressionMethod](compressionFormat, compressionArgs).toFile(compressedFilePath);
-        let stop = Date.now();
-        let timeElapsed = (stop - start) / 1000;
+
+        let timeElapsed = ref.stopTrackingTime(start);
         
         fs.unlink(uploadPath, err => {
           if(err) {
@@ -157,7 +157,7 @@ class AppendixService {
     let ref = this;
 
     return new Promise(async(resolve, reject) => { 
-      let start = Date.now();
+      let start = ref.startTrackingTime();
 
       let resizedUploadDir = ref.createUploadDir(uploadDir, taskAppendicesConfig.resize);
 
@@ -181,17 +181,17 @@ class AppendixService {
         let { filename: resizedFilename, filePath: resizedFilePath } = ref.getProcessedFileData(fileBasename, filenameSuffix, fileExt, resizedUploadDir, resizeConfig.fileExtToAppend);
 
         let resizedImage = originalImage;
-        let timeElapsed;
-
+        
         if(shouldBeResized) {          
           resizedImage = await originalImage[resizeMethod](resizeArgs.args);
         }
 
         resizedImage = await resizedImage.toFile(resizedFilePath);
 
+        let timeElapsed;
+
         if(shouldBeResized) {          
-          let stop = Date.now();
-          timeElapsed = (stop - start) / 1000;
+          timeElapsed = ref.stopTrackingTime(start);
         }
         
         fs.unlink(uploadPath, err => {
@@ -249,7 +249,7 @@ class AppendixService {
     let ref = this;
 
     return new Promise(async(resolve, reject) => { 
-      let start = Date.now();
+      let start = ref.startTrackingTime();
 
       let archivisationUploadDir = ref.createUploadDir(uploadDir, taskAppendicesConfig.archivisation);
 
@@ -291,8 +291,8 @@ class AppendixService {
             reject(err);
           }
 
-          let stop = Date.now();
-          let timeElapsed = (stop - start)/1000;
+          let timeElapsed = ref.stopTrackingTime(start);
+
 
           fs.unlink(filePath, err => {
             if(err) {
@@ -337,6 +337,13 @@ class AppendixService {
     let filePath = uploadDir + '/' + filename;
     if(fileExtToAppend) filePath += `.${fileExtToAppend}`;
     return { filename, filePath };
+  }
+
+  startTrackingTime = () => Date.now();
+  stopTrackingTime = start => {
+    let stop = Date.now();
+    let timeElapsed = (stop - start)/1000;
+    return timeElapsed;
   }
 
   sendToTranslator = async(uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, dimensions, archived, compressed, resized) => {
