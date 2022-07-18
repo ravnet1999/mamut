@@ -76,26 +76,8 @@ let readAppendixRoute = async (req, res, next) => {
 
   let originalFilename = appendix['nazwa_oryginalna'];
 
-  let path;
-  let size;
-
-  if(appendix['archiwizacja'] == 1) {
-    path = appendix['archiwizacja_sciezka'];
-  } else if(appendix['skalowanie'] == 1) {
-    path = appendix['skalowanie_sciezka'];   
-  } else if(appendix['kompresja'] == 1) {
-    path = appendix['kompresja_sciezka'];   
-  } else {
-    path = appendix['sciezka'];
-  }
-
-  if(appendix['skalowanie'] == 1) {
-    size = appendix['skalowanie_rozmiar']
-  } else if(appendix['kompresja'] == 1) {
-    size = appendix['kompresja_rozmiar']
-  } else {
-    size = appendix['rozmiar'];
-  }
+  let path = appendixService.getPath(appendix);
+  let size = appendixService.getSize(appendix);  
 
   let newFileName = encodeURIComponent(originalFilename);
 
