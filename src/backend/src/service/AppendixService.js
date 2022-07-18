@@ -185,11 +185,14 @@ class AppendixService {
 
         if(shouldBeResized) {          
           resizedImage = await originalImage[resizeMethod](resizeArgs.args);
-          let stop = Date.now();
-          timeElapsed = (stop - start) / 1000;
         }
 
         resizedImage = await resizedImage.toFile(resizedFilePath);
+
+        if(shouldBeResized) {          
+          let stop = Date.now();
+          timeElapsed = (stop - start) / 1000;
+        }
         
         fs.unlink(uploadPath, err => {
             if(err) {
