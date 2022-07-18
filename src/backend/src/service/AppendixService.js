@@ -178,18 +178,18 @@ class AppendixService {
 
         let filenameSuffix = `_${resizeConfig.filenameSuffix}_ratio_${resizeArgs.scale}`;
         
-        let { filename: processedFilename, filePath: processedFilePath } = ref.getProcessedFileData(fileBasename, filenameSuffix, fileExt, resizedUploadDir, resizeConfig.fileExtToAppend);
+        let { filename: resizedFilename, filePath: resizedFilePath } = ref.getProcessedFileData(fileBasename, filenameSuffix, fileExt, resizedUploadDir, resizeConfig.fileExtToAppend);
 
-        let processedImage = originalImage;
+        let resizedImage = originalImage;
         let timeElapsed;
 
         if(shouldBeResized) {          
-          processedImage = await originalImage[resizeMethod](resizeArgs.args);
+          resizedImage = await originalImage[resizeMethod](resizeArgs.args);
           let stop = Date.now();
           timeElapsed = (stop - start) / 1000;
         }
 
-        processedImage = await processedImage.toFile(processedFilePath);
+        resizedImage = await resizedImage.toFile(resizedFilePath);
         
         fs.unlink(uploadPath, err => {
             if(err) {
@@ -204,17 +204,17 @@ class AppendixService {
         let resizeTypeId = resizeConfig.type;
 
         resolve({ 
-          fileSize: processedImage.size, 
+          fileSize: resizedImage.size, 
           dimensions: { 
-            width: processedImage.width, 
-            height: processedImage.height
+            width: resizedImage.width, 
+            height: resizedImage.height
           }, 
           typeId: resizeTypeId, 
           args: resizeArgs.args,
           configuration: resizeConfig,
           runtimeVars,
-          filename: processedFilename, 
-          filePath: processedFilePath 
+          filename: resizedFilename, 
+          filePath: resizedFilePath 
         });
         
       } catch(err) {        
