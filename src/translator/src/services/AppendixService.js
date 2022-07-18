@@ -10,8 +10,7 @@ class AppendixService extends Service {
         this.tagsTableName = 'tagi';
         this.tagTypesTableName = 'tagi_typy';
         this.appendicesTagsTableName = 'obiekty_tagi';
-        this.appendicesOperationTableName = 'zgloszenia_zalaczniki_operacje';
-        this.appendicesOperationKindTableName = 'zgloszenia_zalaczniki_rodzaje_operacji';
+        this.appendicesOperationsTableName = 'zgloszenia_zalaczniki_operacje';
         this.appendicesOperationTypesTableName = 'zgloszenia_zalaczniki_typy_operacji';
 
         this.findByIdEmpty = 'Taki załącznik nie istnieje!';
@@ -43,7 +42,7 @@ class AppendixService extends Service {
 
     createOperation = (taskAppendixId, operation) => {
       return new Promise((resolve, reject) => {
-          connection.query('INSERT INTO `' + this.appendicesOperationTableName + '`(id_zalacznika, id_typu_operacji, godzina, nazwa, sciezka, rozmiar, argumenty, wymiary, konfiguracja, zmienne_czasu_wykonania) VALUES (?,?,NOW(),?,?,?,?,?,?,?)', 
+          connection.query('INSERT INTO `' + this.appendicesOperationsTableName + '`(id_zalacznika, id_typu_operacji, godzina, nazwa, sciezka, rozmiar, argumenty, wymiary, konfiguracja, zmienne_czasu_wykonania) VALUES (?,?,NOW(),?,?,?,?,?,?,?)', 
           [taskAppendixId, operation.typeId, operation.filename, operation.filePath, operation.fileSize, JSON.stringify(operation.args), JSON.stringify(operation.dimensions), JSON.stringify(operation.configuration), JSON.stringify(operation.runtimeVars)], (err, results, fields) => {
             if(err) {   
               console.log(err);         
@@ -80,23 +79,23 @@ class AppendixService extends Service {
     }
 
     findQuery = (condition, parameters) => {
-      let tagsQuery = `(SELECT zgloszenia_zalaczniki.id,
-        GROUP_CONCAT(CONCAT(tagi.id, ";",tagi.nazwa)) tagi
-        FROM zgloszenia_zalaczniki
-        LEFT JOIN obiekty_tagi ON zgloszenia_zalaczniki.id=obiekty_tagi.id_obiektu
-        LEFT JOIN tagi ON obiekty_tagi.id_tagu=tagi.id
-        LEFT JOIN tagi_typy ON tagi.id_typu=tagi_typy.id
-        GROUP BY zgloszenia_zalaczniki.id) tagi`;
+      let tagsQuery = `(SELECT ${this.tableName}.id,
+        GROUP_CONCAT(CONCAT(${this.tagsTableName}.id, ";",${this.tagsTableName}.nazwa)) ${this.tagsTableName}
+        FROM ${this.tableName}
+        LEFT JOIN ${this.appendicesTagsTableName} ON ${this.tableName}.id=obiekty_${this.tagsTableName}.id_obiektu
+        LEFT JOIN ${this.tagsTableName} ON obiekty_${this.tagsTableName}.id_tagu=${this.tagsTableName}.id
+        LEFT JOIN ${this.tagTypesTableName} ON ${this.tagsTableName}.id_typu=${this.tagTypesTableName}.id
+        GROUP BY ${this.tableName}.id) ${this.tagsTableName}`;
 
       let operationCondition = (operationTypeId) => {
         return `
-          FROM zgloszenia_zalaczniki AS zgloszenia_zalaczniki2
-          LEFT JOIN zgloszenia_zalaczniki_operacje
-          ON zgloszenia_zalaczniki2.id=zgloszenia_zalaczniki_operacje.id_zalacznika
-          JOIN zgloszenia_zalaczniki_typy_operacji
-          ON zgloszenia_zalaczniki_operacje.id_typu_operacji=zgloszenia_zalaczniki_typy_operacji.id
-          AND zgloszenia_zalaczniki_typy_operacji.id_rodzaju_operacji=${operationTypeId}
-          GROUP BY zgloszenia_zalaczniki2.id, zgloszenia_zalaczniki_operacje.id`;
+          FROM ${this.tableName} AS ${this.tableName}${operationTypeId}
+          LEFT JOIN ${this.appendicesOperationsTableName}
+          ON ${this.tableName}${operationTypeId}.id=${this.appendicesOperationsTableName}.id_zalacznika
+          JOIN ${this.appendicesOperationTypesTableName}
+          ON ${this.appendicesOperationsTableName}.id_typu_operacji=${this.appendicesOperationTypesTableName}.id
+          AND ${this.appendicesOperationTypesTableName}.id_rodzaju_operacji=${operationTypeId}
+          GROUP BY ${this.tableName}${operationTypeId}.id, ${this.appendicesOperationsTableName}.id`;
       }
 
       let compressionCondition = operationCondition(1);
@@ -105,10 +104,10 @@ class AppendixService extends Service {
 
       let sql = `
       SELECT 
-        zgloszenia_zalaczniki.*, 
-        JSON_EXTRACT(zgloszenia_zalaczniki.wymiary, "$.height") AS szerokosc,
-        JSON_EXTRACT(zgloszenia_zalaczniki.wymiary, "$.width") AS wysokosc,
-        tagi.tagi,        
+        ${this.tableName}.*, 
+        JSON_EXTRACT(${this.tableName}.wymiary, "$.height") AS szerokosc,
+        JSON_EXTRACT(${this.tableName}.wymiary, "$.width") AS wysokosc,
+        ${this.tagsTableName}.tagi,        
         kompresja_sciezka,
         kompresja_rozmiar,
         kompresja_typ_mime,
@@ -131,51 +130,51 @@ class AppendixService extends Service {
         archiwizacja_typ_zawartosci,
         archiwizacja_typ,
         archiwizacja_czas_wykonania
-      FROM zgloszenia_zalaczniki 
+      FROM ${this.tableName} 
       LEFT JOIN ${tagsQuery}
-      ON tagi.id=zgloszenia_zalaczniki.id
+      ON ${this.tagsTableName}.id=${this.tableName}.id
       LEFT JOIN
         (SELECT
-          zgloszenia_zalaczniki2.id,
-          zgloszenia_zalaczniki_typy_operacji.id_rodzaju_operacji,
-          zgloszenia_zalaczniki_operacje.sciezka AS kompresja_sciezka,
-          zgloszenia_zalaczniki_operacje.rozmiar AS kompresja_rozmiar,
-          zgloszenia_zalaczniki_typy_operacji.typ_mime AS kompresja_typ_mime,          
-          JSON_EXTRACT(zgloszenia_zalaczniki_operacje.wymiary, "$.height") AS kompresja_wysokosc,
-          JSON_EXTRACT(zgloszenia_zalaczniki_operacje.wymiary, "$.width") AS kompresja_szerokosc,
-          JSON_EXTRACT(zgloszenia_zalaczniki_operacje.konfiguracja, "$.quality") AS kompresja_jakosc,
-          JSON_EXTRACT(zgloszenia_zalaczniki_operacje.zmienne_czasu_wykonania, "$.timeElapsed") AS kompresja_czas_wykonania
+          ${this.tableName}1.id,
+          ${this.appendicesOperationTypesTableName}.id_rodzaju_operacji,
+          ${this.appendicesOperationsTableName}.sciezka AS kompresja_sciezka,
+          ${this.appendicesOperationsTableName}.rozmiar AS kompresja_rozmiar,
+          ${this.appendicesOperationTypesTableName}.typ_mime AS kompresja_typ_mime,          
+          JSON_EXTRACT(${this.appendicesOperationsTableName}.wymiary, "$.height") AS kompresja_wysokosc,
+          JSON_EXTRACT(${this.appendicesOperationsTableName}.wymiary, "$.width") AS kompresja_szerokosc,
+          JSON_EXTRACT(${this.appendicesOperationsTableName}.konfiguracja, "$.quality") AS kompresja_jakosc,
+          JSON_EXTRACT(${this.appendicesOperationsTableName}.zmienne_czasu_wykonania, "$.timeElapsed") AS kompresja_czas_wykonania
           ${compressionCondition}) kompresja
-      ON kompresja.id=zgloszenia_zalaczniki.id 
+      ON kompresja.id=${this.tableName}.id 
       LEFT JOIN
         (SELECT
-          zgloszenia_zalaczniki2.id,
-          zgloszenia_zalaczniki_typy_operacji.id_rodzaju_operacji,
-          zgloszenia_zalaczniki_operacje.sciezka AS skalowanie_sciezka,
-          zgloszenia_zalaczniki_operacje.rozmiar AS skalowanie_rozmiar,
-          zgloszenia_zalaczniki_typy_operacji.typ_mime AS skalowanie_typ_mime,          
-          JSON_EXTRACT(zgloszenia_zalaczniki_operacje.wymiary, "$.height") AS skalowanie_szerokosc,
-          JSON_EXTRACT(zgloszenia_zalaczniki_operacje.wymiary, "$.width") AS skalowanie_wysokosc,
-          JSON_EXTRACT(zgloszenia_zalaczniki_operacje.konfiguracja, "$.height") AS skalowanie_konfiguracja_wysokosc,
-          JSON_EXTRACT(zgloszenia_zalaczniki_operacje.konfiguracja, "$.width") AS skalowanie_konfiguracja_szerokosc,
-          JSON_EXTRACT(zgloszenia_zalaczniki_operacje.zmienne_czasu_wykonania, "$.scale") AS skalowanie_wyliczona_skala,
-          JSON_EXTRACT(zgloszenia_zalaczniki_operacje.zmienne_czasu_wykonania, "$.timeElapsed") AS skalowanie_czas_wykonania
+          ${this.tableName}3.id,
+          ${this.appendicesOperationTypesTableName}.id_rodzaju_operacji,
+          ${this.appendicesOperationsTableName}.sciezka AS skalowanie_sciezka,
+          ${this.appendicesOperationsTableName}.rozmiar AS skalowanie_rozmiar,
+          ${this.appendicesOperationTypesTableName}.typ_mime AS skalowanie_typ_mime,          
+          JSON_EXTRACT(${this.appendicesOperationsTableName}.wymiary, "$.height") AS skalowanie_szerokosc,
+          JSON_EXTRACT(${this.appendicesOperationsTableName}.wymiary, "$.width") AS skalowanie_wysokosc,
+          JSON_EXTRACT(${this.appendicesOperationsTableName}.konfiguracja, "$.height") AS skalowanie_konfiguracja_wysokosc,
+          JSON_EXTRACT(${this.appendicesOperationsTableName}.konfiguracja, "$.width") AS skalowanie_konfiguracja_szerokosc,
+          JSON_EXTRACT(${this.appendicesOperationsTableName}.zmienne_czasu_wykonania, "$.scale") AS skalowanie_wyliczona_skala,
+          JSON_EXTRACT(${this.appendicesOperationsTableName}.zmienne_czasu_wykonania, "$.timeElapsed") AS skalowanie_czas_wykonania
           ${scaleCondition}) skalowanie
-      ON skalowanie.id=zgloszenia_zalaczniki.id    
+      ON skalowanie.id=${this.tableName}.id    
       LEFT JOIN
         (SELECT
-          zgloszenia_zalaczniki2.id,
-          zgloszenia_zalaczniki_typy_operacji.id_rodzaju_operacji,
-          zgloszenia_zalaczniki_operacje.sciezka AS archiwizacja_sciezka,
-          zgloszenia_zalaczniki_operacje.rozmiar AS archiwizacja_rozmiar,
-          zgloszenia_zalaczniki_typy_operacji.typ_mime AS archiwizacja_typ_mime,
-          zgloszenia_zalaczniki_typy_operacji.typ_zawartosci AS archiwizacja_typ_zawartosci,
-          zgloszenia_zalaczniki_typy_operacji.nazwa AS archiwizacja_typ,
-          JSON_EXTRACT(zgloszenia_zalaczniki_operacje.zmienne_czasu_wykonania, "$.timeElapsed") AS archiwizacja_czas_wykonania
+          ${this.tableName}2.id,
+          ${this.appendicesOperationTypesTableName}.id_rodzaju_operacji,
+          ${this.appendicesOperationsTableName}.sciezka AS archiwizacja_sciezka,
+          ${this.appendicesOperationsTableName}.rozmiar AS archiwizacja_rozmiar,
+          ${this.appendicesOperationTypesTableName}.typ_mime AS archiwizacja_typ_mime,
+          ${this.appendicesOperationTypesTableName}.typ_zawartosci AS archiwizacja_typ_zawartosci,
+          ${this.appendicesOperationTypesTableName}.nazwa AS archiwizacja_typ,
+          JSON_EXTRACT(${this.appendicesOperationsTableName}.zmienne_czasu_wykonania, "$.timeElapsed") AS archiwizacja_czas_wykonania
           ${archivisationCondition}) archiwizacja
-      ON archiwizacja.id=zgloszenia_zalaczniki.id
+      ON archiwizacja.id=${this.tableName}.id
       HAVING ${condition}
-      ORDER BY zgloszenia_zalaczniki.id DESC;`;
+      ORDER BY ${this.tableName}.id DESC;`;
 
       console.log(sql);
 
@@ -218,7 +217,7 @@ class AppendixService extends Service {
     }
 
     deleteTag = (appendixId, tagId) => {
-      console.log('DELETE FROM ' + this.tagsTableName + ' WHERE tagi.id IN ' + 
+      console.log('DELETE FROM ' + this.tagsTableName + ' WHERE ${tagsTableName}.id IN ' + 
       '(SELECT ' + this.tagsTableName + '.id_typu FROM ' + this.tagTypesTableName + ' ' + 
       'WHERE ' + this.tagTypesTableName + '.nazwa=?) ' +
       'AND ' + this.tagsTableName + '.id NOT IN (SELECT id_tagu FROM ' + this.appendicesTagsTableName + ');');
@@ -242,7 +241,7 @@ class AppendixService extends Service {
             resolve();
             return;
 
-            // connection.query('DELETE FROM ' + this.tagsTableName + ' WHERE tagi.id_typu IN ' + 
+            // connection.query('DELETE FROM ' + this.tagsTableName + ' WHERE ${tagsTableName}.id_typu IN ' + 
             // '(SELECT ' + this.tagsTableName + '.id_typu FROM ' + this.tagTypesTableName + ' ' + 
             // 'WHERE ' + this.tagTypesTableName + '.nazwa=?) ' +
             // 'AND ' + this.tagsTableName + '.id NOT IN (SELECT id_tagu FROM ' + this.appendicesTagsTableName + ');',
