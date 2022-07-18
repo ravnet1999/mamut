@@ -513,6 +513,36 @@ class AppendixService {
       });
     });
   }
+
+  getPath = (appendix) => {
+    let path;
+
+    if(appendix['archiwizacja'] == 1) {
+      path = appendix['archiwizacja_sciezka'];
+    } else if(appendix['skalowanie'] == 1) {
+      path = appendix['skalowanie_sciezka'];   
+    } else if(appendix['kompresja'] == 1) {
+      path = appendix['kompresja_sciezka'];   
+    } else {
+      path = appendix['sciezka'];
+    }
+
+    return path;
+  }
+
+  getSize = (appendix) => {
+    let size;
+  
+    if(appendix['skalowanie'] == 1) {
+      size = appendix['skalowanie_rozmiar']
+    } else if(appendix['kompresja'] == 1) {
+      size = appendix['kompresja_rozmiar']
+    } else {
+      size = appendix['rozmiar'];
+    }
+
+    return size;
+  }
 }
 
 module.exports = new AppendixService();
