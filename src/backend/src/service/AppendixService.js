@@ -7,9 +7,7 @@ const sharp = require("sharp");
 const path = require('path');
 const { createGzip, createBrotliCompress } = require('zlib');
 const zlib = require('zlib');
-const { promisify } = require('util');
 const { pipeline } = require('stream');
-const pipelineAsync = promisify(pipeline);
 
 const axios = require('axios');
 var concat = require('concat-stream');
@@ -252,32 +250,34 @@ class AppendixService {
       archivisationObject.on('data', function(data) {
         archivedFileSize += data.length;
       }); 
-      
-      try {        
-        await pipelineAsync(source, archivisationObject, destination);
-        let stop = Date.now();
-        let timeElapsed = (stop - start)/1000;
-
-        fs.unlink(filePath, err => {
+             
+        pipeline(source, archivisationObject, destination, (err) => {
           if(err) {
             console.log(err);
+            reject(err);
           }
+
+          let stop = Date.now();
+          let timeElapsed = (stop - start)/1000;
+
+          fs.unlink(filePath, err => {
+            if(err) {
+              console.log(err);
+            }
+          });
+
+          let archivisationData = { 
+            fileSize: archivedFileSize, 
+            typeId: archivisationTypeId, 
+            args: archivisationArgs,
+            configuration: archivisationConfig,
+            filename: archivedFilename, 
+            filePath: archivedFilePath,
+            runtimeVars: { timeElapsed },
+          };
+
+          resolve(archivisationData);
         });
-
-        let archivisationData = { 
-          fileSize: archivedFileSize, 
-          typeId: archivisationTypeId, 
-          args: archivisationArgs,
-          configuration: archivisationConfig,
-          filename: archivedFilename, 
-          filePath: archivedFilePath,
-          runtimeVars: { timeElapsed },
-        };
-
-        resolve(archivisationData);
-      } catch(err) {
-        console.log(err);
-      }
     });  
   }
 
