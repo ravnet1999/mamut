@@ -166,7 +166,7 @@ let readAppendixJsonRoute = async (req, res, next) => {
     return;
   }
 
-  let path = appendix['sciezka'];
+  let path = appendixService.getPath(appendix);
 
   fs.readFile(path, function(err, data) {
     if (err) {
