@@ -54,8 +54,8 @@ class AppendixService {
           let metadata = await sharp(uploadPath).metadata();
           dimensions = { width: metadata.width, height: metadata.height };
 
-          let compressionData = await ref.compressImages(contentType, fileBasename, fileExt, uploadDir, uploadPath);
-          let resizeData = await ref.resizeImages(path.basename(compressionData.filename, fileExt), fileExt, uploadDir, compressionData.filePath);
+          let compressionData = await ref.compressImage(contentType, fileBasename, fileExt, uploadDir, uploadPath);
+          let resizeData = await ref.resizeImage(path.basename(compressionData.filename, fileExt), fileExt, uploadDir, compressionData.filePath);
 
           let archivisationData;
 
@@ -89,7 +89,7 @@ class AppendixService {
     });      
   }
 
-  compressImages = async(contentType, fileBasename, fileExt, uploadDir, uploadPath) => {
+  compressImage = async(contentType, fileBasename, fileExt, uploadDir, uploadPath) => {
     let ref = this;
 
     return new Promise(async(resolve, reject) => { 
@@ -123,13 +123,8 @@ class AppendixService {
                 
         let compressedImage = await sharp(uploadPath)[compressionMethod](compressionFormat, compressionArgs).toFile(compressedFilePath);
 
-        let timeElapsed = ref.stopTrackingTime(start);
-        
-        fs.unlink(uploadPath, err => {
-          if(err) {
-            console.log(err);
-          }
-        });
+        let timeElapsed = ref.stopTrackingTime(start);        
+        ref.afterAppendixOperation(uploadPath);
 
         let compressionTypeId = compressionConfig.type;
 
@@ -153,7 +148,7 @@ class AppendixService {
     });
   }
 
-  resizeImages = async(fileBasename, fileExt, uploadDir, uploadPath) => {
+  resizeImage = async(fileBasename, fileExt, uploadDir, uploadPath) => {
     let ref = this;
 
     return new Promise(async(resolve, reject) => { 
@@ -194,11 +189,7 @@ class AppendixService {
           timeElapsed = ref.stopTrackingTime(start);
         }
         
-        fs.unlink(uploadPath, err => {
-            if(err) {
-              console.log(err);
-            }
-          });
+        ref.afterAppendixOperation(uploadPath);
 
         let runtimeVars = { scale: resizeArgs.scale };
         
@@ -245,7 +236,7 @@ class AppendixService {
     return { args, scale };
   }
 
-  createArchive = async(filePath, fileBasename, fileExt, fileSize, uploadDir) => {
+  createArchive = async(uploadPath, fileBasename, fileExt, fileSize, uploadDir) => {
     let ref = this;
 
     return new Promise(async(resolve, reject) => { 
@@ -276,7 +267,7 @@ class AppendixService {
         default: archivisationObject = createGzip();
       }
 
-      const source = fs.createReadStream(filePath);        
+      const source = fs.createReadStream(uploadPath);        
       const destination = fs.createWriteStream(archivedFilePath);
 
       var archivedFileSize = 0;
@@ -292,13 +283,7 @@ class AppendixService {
           }
 
           let timeElapsed = ref.stopTrackingTime(start);
-
-
-          fs.unlink(filePath, err => {
-            if(err) {
-              console.log(err);
-            }
-          });
+          ref.afterAppendixOperation(uploadPath);
 
           let archivisationTypeId = archivisationConfig.type;
 
@@ -344,6 +329,14 @@ class AppendixService {
     let stop = Date.now();
     let timeElapsed = (stop - start)/1000;
     return timeElapsed;
+  }
+
+  afterAppendixOperation = (uploadPath) => {
+    fs.unlink(uploadPath, err => {
+      if(err) {
+        console.log(err);
+      }
+    });
   }
 
   sendToTranslator = async(uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, dimensions, archived, compressed, resized) => {
