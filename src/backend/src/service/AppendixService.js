@@ -119,11 +119,8 @@ class AppendixService {
           filenameSuffix += ' _mozjpeg';
         }                 
         
-        let compressionTypeId = compressionConfig.type;
-
-        let compressedFilename = fileBasename + filenameSuffix + fileExt;
-        let compressedFilePath = compressionUploadDir + '/' + compressedFilename;
-        
+        let { filename: compressedFilename, filePath: compressedFilePath } = ref.getProcessedFileData(fileBasename, filenameSuffix, fileExt, compressionUploadDir);
+                
         let compressedImage = await sharp(uploadPath)[compressionMethod](compressionFormat, compressionArgs).toFile(compressedFilePath);
         let stop = Date.now();
         let timeElapsed = (stop - start) / 1000;
@@ -133,6 +130,8 @@ class AppendixService {
             console.log(err);
           }
         });
+
+        let compressionTypeId = compressionConfig.type;
 
         resolve({ 
           fileSize: compressedImage.size, 
@@ -179,10 +178,7 @@ class AppendixService {
 
         let filenameSuffix = `_${operationConfig.filenameSuffix}_ratio_${operationArgs.scale}`;
         
-        let operationTypeId = operationConfig.type;
-
-        let processedFilename = fileBasename + filenameSuffix + fileExt;
-        let processedFilePath = operationUploadDir + '/' + processedFilename;
+        let { filename: processedFilename, filePath: processedFilePath } = ref.getProcessedFileData(fileBasename, filenameSuffix, fileExt, operationUploadDir, operationConfig.fileExtToAppend);
 
         let processedImage = originalImage;
         let timeElapsed;
@@ -204,6 +200,8 @@ class AppendixService {
         let runtimeVars = { scale: operationArgs.scale };
         
         if(shouldBeResized) runtimeVars.timeElapsed = timeElapsed;
+
+        let operationTypeId = operationConfig.type;
 
         resolve({ 
           fileSize: processedImage.size, 
@@ -254,9 +252,8 @@ class AppendixService {
 
       let archivisationConfig = taskAppendicesConfig.archivisation[taskAppendicesConfig.archivisation.type];
       let filenameSuffix = `_${archivisationConfig.filenameSuffix}`;
-      let archivedFilename = fileBasename + filenameSuffix + fileExt + '.' + archivisationConfig.fileExt;
-      let archivedFilePath = archivisationUploadDir + '/' + archivedFilename;
-      let archivisationTypeId = archivisationConfig.type; 
+      
+      let { filename: archivedFilename, filePath: archivedFilePath } = ref.getProcessedFileData(fileBasename, filenameSuffix, fileExt, archivisationUploadDir);
 
       let archivisationObject;
       let archivisationArgs;
@@ -300,6 +297,8 @@ class AppendixService {
             }
           });
 
+          let archivisationTypeId = archivisationConfig.type;
+
           let archivisationData = { 
             fileSize: archivedFileSize, 
             typeId: archivisationTypeId, 
@@ -328,6 +327,13 @@ class AppendixService {
     }
 
     return operationUploadDir;
+  }
+
+  getProcessedFileData = (fileBasename, filenameSuffix, fileExt, uploadDir, fileExtToAppend) => {
+    let filename = fileBasename + filenameSuffix + fileExt;
+    let filePath = uploadDir + '/' + filename;
+    if(fileExtToAppend) filePath += `.${fileExtToAppend}`;
+    return { filename, filePath };
   }
 
   sendToTranslator = async(uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, dimensions, archived, compressed, resized) => {
