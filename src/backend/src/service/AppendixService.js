@@ -153,12 +153,11 @@ class AppendixService {
 
     return new Promise(async(resolve, reject) => { 
       let start = ref.startTrackingTime();
-
       let resizeUploadDir = ref.createUploadDir(uploadDir, taskAppendicesConfig.resize);
 
       try {
         let resizeMethod = "resize";
-        let resizeConfig = taskAppendicesConfig.resize["sharp_resize"];
+        let resizeConfig = taskAppendicesConfig[resizeMethod]["sharp_resize"];
 
         let originalImage = await sharp(uploadPath);
         let originalMetadata = await originalImage.metadata();        
