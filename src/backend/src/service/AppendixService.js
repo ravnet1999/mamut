@@ -90,19 +90,12 @@ class AppendixService {
   }
 
   compressImages = async(contentType, fileBasename, fileExt, uploadDir, uploadPath) => {
+    let ref = this;
+
     return new Promise(async(resolve, reject) => { 
       let start = Date.now();
       
-      let compressionUploadDir = uploadDir + '/' + taskAppendicesConfig.compression.uploadDir;
-
-      if(!fs.existsSync(compressionUploadDir)) {   
-        fs.mkdirSync(compressionUploadDir, null, err => {
-          if(err) {
-            console.log(err);
-            reject('Wystąpił problem z utworzeniem katalogu do zapisu skompresowanych załączników w formacie jpg i png.');
-          }
-        })
-      }
+      let compressionUploadDir = ref.createUploadDir(uploadDir, taskAppendicesConfig.compression);
 
       try {
         let compressionMethod = 'toFormat';
@@ -167,16 +160,7 @@ class AppendixService {
     return new Promise(async(resolve, reject) => { 
       let start = Date.now();
 
-      let operationUploadDir = uploadDir + '/' + taskAppendicesConfig.resize.uploadDir;
-
-      if(!fs.existsSync(operationUploadDir)) {   
-        fs.mkdirSync(operationUploadDir, null, err => {
-          if(err) {
-            console.log(err);
-            reject('Wystąpił problem z utworzeniem katalogu do zapisu przeskalowanych załączników w formacie jpg i png.');
-          }
-        })
-      }
+      let operationUploadDir = ref.createUploadDir(uploadDir, taskAppendicesConfig.resize);
 
       try {
         let operationMethod = "resize";
@@ -261,24 +245,18 @@ class AppendixService {
   }
 
   createArchive = async(filePath, fileBasename, fileExt, fileSize, uploadDir) => {
+    let ref = this;
+
     return new Promise(async(resolve, reject) => { 
       let start = Date.now();
+
+      let archivisationUploadDir = ref.createUploadDir(uploadDir, taskAppendicesConfig.archivisation);
 
       let archivisationConfig = taskAppendicesConfig.archivisation[taskAppendicesConfig.archivisation.type];
       let filenameSuffix = `_${archivisationConfig.filenameSuffix}`;
       let archivedFilename = fileBasename + filenameSuffix + fileExt + '.' + archivisationConfig.fileExt;
-      let archivisationUploadDir = uploadDir + '/' + taskAppendicesConfig.archivisation.uploadDir;
       let archivedFilePath = archivisationUploadDir + '/' + archivedFilename;
-      let archivisationTypeId = archivisationConfig.type;    
-
-      if(!fs.existsSync(archivisationUploadDir)) {   
-        fs.mkdirSync(archivisationUploadDir, null, err => {
-          if(err) {
-            console.log(err);
-            reject('Wystąpił problem z utworzeniem katalogu do zapisu zarchiwizowanych załączników.');
-          }
-        })
-      }
+      let archivisationTypeId = archivisationConfig.type; 
 
       let archivisationObject;
       let archivisationArgs;
@@ -335,6 +313,21 @@ class AppendixService {
           resolve(archivisationData);
         });
     });  
+  }
+
+  createUploadDir = (uploadDir, operationConfig) => {
+    let operationUploadDir = uploadDir + '/' + operationConfig.uploadDir;
+
+    if(!fs.existsSync(operationUploadDir)) {   
+      fs.mkdirSync(operationUploadDir, null, err => {
+        if(err) {
+          console.log(err);            
+        }
+        return operationUploadDir;
+      })
+    }
+
+    return operationUploadDir;
   }
 
   sendToTranslator = async(uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, dimensions, archived, compressed, resized) => {
