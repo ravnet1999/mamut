@@ -16,40 +16,77 @@ var FormData = require('form-data');
 const parseResponse = require('../ResponseParser');
 
 class AppendixService {
-  get = (appendicesIds) => {
-    return new Promise((resolve, reject) => {
-      axios.get(`${appConfig.URLs.translator}/appendices/${appendicesIds}`).then((response) => {        
-          parseResponse(response).then((response) => {
-            resolve(response.resources[0]);
-            return;
-          }).catch((err) => {
-              reject(err);
-              return;
-          });
-      }).catch((err) => {
-          reject(err);
-          return;
-      });
-    });
-  }
+  create = async (taskId, file, tags) =>  {
+    let ref = this;
 
-  resizeArgs = async (resizeConfig, metadata) => {
-    let width = metadata.width;
-    let height = metadata.height;
+    return new Promise(async (resolve, reject) => { 
+      let uploadDir = taskAppendicesConfig.uploadDir + '/' + taskId;
+      let originalFilename = file.originalFilename;
+      let filename = Date.now() + '-' + originalFilename;
+      let uploadPath = uploadDir + '/' + filename;
+      let filePath = file.path;
+      let fileSize = file.size;
+      let contentType = file.headers["content-type"];
+      let fileExt =  path.extname(uploadPath);
+      let fileBasename = path.basename(filename, fileExt);
 
-    let longerSide = Math.max(width, height);
-    let shorterSide = Math.min(width, height);
+      if(!fs.existsSync(uploadDir)) {   
+        fs.mkdirSync(uploadDir, {'recursive': true}, err => {
+          if(err) {
+            console.log(err);
+            reject('Wystąpił problem z utworzeniem katalogu do zapisu załączników.');
+          }
+        })
+      }
 
-    let expectedLongerSide = Math.max(resizeConfig.width, resizeConfig.height);
-    let expectedShorterSide = Math.min(resizeConfig.width, resizeConfig.height);
+      try{       
+        fsExtra.moveSync(filePath, uploadPath);
+      } catch(err) {
+        console.log(err);
+        reject('Wystąpił problem z przeniesieniem załącznika do katalogu docelowego.');
+      }
 
-    let scale = Math.max(longerSide / expectedLongerSide, shorterSide / expectedShorterSide);
-    
-    let args = {
-      width: Math.round(width / scale)
-    };
+      let dimensions;      
 
-    return { args, scale };
+      try{
+        let result;
+        if(contentType == "image/jpeg" || contentType == "image/png") {
+          let metadata = await sharp(uploadPath).metadata();
+          dimensions = { width: metadata.width, height: metadata.height };
+
+          let compressionData = await ref.compressImages(contentType, fileBasename, fileExt, uploadDir, uploadPath);
+          let resizeData = await ref.resizeImages(path.basename(compressionData.filename, fileExt), fileExt, uploadDir, compressionData.filePath);
+
+          let archivisationData;
+
+          if(resizeData) {             
+            archivisationData = await ref.createArchive(resizeData.filePath, resizeData.filename, fileExt, resizeData.fileSize, uploadDir);            
+          } else {
+            archivisationData = await ref.createArchive(compressionData.filePath, compressionData.filename, fileExt, compressionData.fileSize, uploadDir);            
+          }
+
+          result = await ref.sendToTranslator(uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, dimensions, "1", "1", resizeData ? "1" : "0");                                  
+          let appendixId = result.resources.resources[0].id;
+          
+          result = ref.sendOperationToTranslator(appendixId, compressionData);
+          result = ref.sendOperationToTranslator(appendixId, archivisationData);
+
+          if(resizeData) {            
+            result = ref.sendOperationToTranslator(appendixId, resizeData);
+          }
+        } else {                    
+          result = await ref.sendToTranslator(uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, dimensions, "1", "0", "0");
+          let appendixId = result.resources.resources[0].id;          
+          let archivisationData = await ref.createArchive(uploadPath, fileBasename, fileExt, fileSize, uploadDir);
+          result = ref.sendOperationToTranslator(appendixId, archivisationData);
+        }
+        
+        resolve(result);
+      } catch(err) {
+        console.log(err);
+        reject(err);
+      }
+    });      
   }
 
   compressImages = async(contentType, fileBasename, fileExt, uploadDir, uploadPath) => {
@@ -204,6 +241,25 @@ class AppendixService {
     });
   }
 
+  resizeArgs = async (resizeConfig, metadata) => {
+    let width = metadata.width;
+    let height = metadata.height;
+
+    let longerSide = Math.max(width, height);
+    let shorterSide = Math.min(width, height);
+
+    let expectedLongerSide = Math.max(resizeConfig.width, resizeConfig.height);
+    let expectedShorterSide = Math.min(resizeConfig.width, resizeConfig.height);
+
+    let scale = Math.max(longerSide / expectedLongerSide, shorterSide / expectedShorterSide);
+    
+    let args = {
+      width: Math.round(width / scale)
+    };
+
+    return { args, scale };
+  }
+
   createArchive = async(filePath, fileBasename, fileExt, fileSize, uploadDir) => {
     return new Promise(async(resolve, reject) => { 
       let start = Date.now();
@@ -353,78 +409,38 @@ class AppendixService {
     });
   }
 
-  create = async (taskId, file, tags) =>  {
-    let ref = this;
-
-    return new Promise(async (resolve, reject) => { 
-      let uploadDir = taskAppendicesConfig.uploadDir + '/' + taskId;
-      let originalFilename = file.originalFilename;
-      let filename = Date.now() + '-' + originalFilename;
-      let uploadPath = uploadDir + '/' + filename;
-      let filePath = file.path;
-      let fileSize = file.size;
-      let contentType = file.headers["content-type"];
-      let fileExt =  path.extname(uploadPath);
-      let fileBasename = path.basename(filename, fileExt);
-
-      if(!fs.existsSync(uploadDir)) {   
-        fs.mkdirSync(uploadDir, {'recursive': true}, err => {
-          if(err) {
-            console.log(err);
-            reject('Wystąpił problem z utworzeniem katalogu do zapisu załączników.');
-          }
-        })
-      }
-
-      try{       
-        fsExtra.moveSync(filePath, uploadPath);
-      } catch(err) {
-        console.log(err);
-        reject('Wystąpił problem z przeniesieniem załącznika do katalogu docelowego.');
-      }
-
-      let dimensions;      
-
-      try{
-        let result;
-        if(contentType == "image/jpeg" || contentType == "image/png") {
-          let metadata = await sharp(uploadPath).metadata();
-          dimensions = { width: metadata.width, height: metadata.height };
-
-          let compressionData = await ref.compressImages(contentType, fileBasename, fileExt, uploadDir, uploadPath);
-          let resizeData = await ref.resizeImages(path.basename(compressionData.filename, fileExt), fileExt, uploadDir, compressionData.filePath);
-
-          let archivisationData;
-
-          if(resizeData) {             
-            archivisationData = await ref.createArchive(resizeData.filePath, resizeData.filename, fileExt, resizeData.fileSize, uploadDir);            
-          } else {
-            archivisationData = await ref.createArchive(compressionData.filePath, compressionData.filename, fileExt, compressionData.fileSize, uploadDir);            
-          }
-
-          result = await ref.sendToTranslator(uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, dimensions, "1", "1", resizeData ? "1" : "0");                                  
-          let appendixId = result.resources.resources[0].id;
-          
-          result = ref.sendOperationToTranslator(appendixId, compressionData);
-          result = ref.sendOperationToTranslator(appendixId, archivisationData);
-
-          if(resizeData) {            
-            result = ref.sendOperationToTranslator(appendixId, resizeData);
-          }
-        } else {                    
-          result = await ref.sendToTranslator(uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, dimensions, "1", "0", "0");
-          let appendixId = result.resources.resources[0].id;          
-          let archivisationData = await ref.createArchive(uploadPath, fileBasename, fileExt, fileSize, uploadDir);
-          result = ref.sendOperationToTranslator(appendixId, archivisationData);
-        }
-        
-        resolve(result);
-      } catch(err) {
-        console.log(err);
-        reject(err);
-      }
+  get = (appendicesIds) => {
+    return new Promise((resolve, reject) => {
+      axios.get(`${appConfig.URLs.translator}/appendices/${appendicesIds}`).then((response) => {        
+          parseResponse(response).then((response) => {
+            resolve(response.resources[0]);
+            return;
+          }).catch((err) => {
+              reject(err);
+              return;
+          });
+      }).catch((err) => {
+          reject(err);
+          return;
+      });
     });
-      
+  }
+
+  getByTaskId = taskId => {
+    return new Promise((resolve, reject) => {
+      axios.get(`${appConfig.URLs.translator}/appendices/task/${taskId}`).then((response) => {        
+          parseResponse(response).then((response) => {
+            resolve(response.resources);
+            return;
+          }).catch((err) => {
+              reject(err);
+              return;
+          });
+      }).catch((err) => {
+          reject(err);
+          return;
+      });
+    });
   }
 
   delete = (appendixId) => {
@@ -490,23 +506,6 @@ class AppendixService {
             reject(err);
             return;
         });
-      }).catch((err) => {
-          reject(err);
-          return;
-      });
-    });
-  }
-
-  getByTaskId = taskId => {
-    return new Promise((resolve, reject) => {
-      axios.get(`${appConfig.URLs.translator}/appendices/task/${taskId}`).then((response) => {        
-          parseResponse(response).then((response) => {
-            resolve(response.resources);
-            return;
-          }).catch((err) => {
-              reject(err);
-              return;
-          });
       }).catch((err) => {
           reject(err);
           return;
