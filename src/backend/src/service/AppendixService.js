@@ -98,29 +98,29 @@ class AppendixService {
       let compressionUploadDir = ref.createUploadDir(uploadDir, taskAppendicesConfig.compression);
 
       try {
-        let compressionMethod = 'toFormat';
-        let compressionFormat;
         let compressionConfig;
 
         if(contentType == "image/jpeg") {
-          compressionFormat = "jpeg";
           compressionConfig = taskAppendicesConfig.compression["sharp_to_format_jpeg"];
         } else if(contentType == "image/png") { 
-          compressionFormat = "png";
           compressionConfig = taskAppendicesConfig.compression["sharp_to_format_png"];
         }
 
         let quality = compressionConfig.quality;
         let compressionArgs = { quality };
-        let filenameSuffix = `_${compressionConfig.filenameSuffix}_quality_${quality}`;
-        
-        if(contentType == "image/jpeg") { 
-          compressionArgs.mozjpeg = true; 
-          filenameSuffix += ' _mozjpeg';
-        }                 
-        
+
+        let filenameSuffix = ref.getCompressionFilenameSuffix(compressionConfig, compressionArgs, contentType);
         let { filename: compressedFilename, filePath: compressedFilePath } = ref.getProcessedFileData(fileBasename, filenameSuffix, fileExt, compressionUploadDir);
-                
+          
+        let compressionMethod = 'toFormat';
+        let compressionFormat;
+        
+        if(contentType == "image/jpeg") {
+          compressionFormat = "jpeg";
+        } else if(contentType == "image/png") { 
+          compressionFormat = "png";          
+        }
+
         let compressedImage = await sharp(uploadPath)[compressionMethod](compressionFormat, compressionArgs).toFile(compressedFilePath);
 
         let timeElapsed = ref.stopTrackingTime(start);        
@@ -154,7 +154,7 @@ class AppendixService {
     return new Promise(async(resolve, reject) => { 
       let start = ref.startTrackingTime();
 
-      let resizedUploadDir = ref.createUploadDir(uploadDir, taskAppendicesConfig.resize);
+      let resizeUploadDir = ref.createUploadDir(uploadDir, taskAppendicesConfig.resize);
 
       try {
         let resizeMethod = "resize";
@@ -170,10 +170,9 @@ class AppendixService {
           resolve(false);
           return;
         }
-
-        let filenameSuffix = `_${resizeConfig.filenameSuffix}_ratio_${resizeArgs.scale}`;
         
-        let { filename: resizedFilename, filePath: resizedFilePath } = ref.getProcessedFileData(fileBasename, filenameSuffix, fileExt, resizedUploadDir, resizeConfig.fileExtToAppend);
+        let filenameSuffix = ref.getResizeFilenameSuffix(resizeConfig, resizeArgs);
+        let { filename: resizedFilename, filePath: resizedFilePath } = ref.getProcessedFileData(fileBasename, filenameSuffix, fileExt, resizeUploadDir);
 
         let resizedImage = originalImage;
         
@@ -245,9 +244,10 @@ class AppendixService {
       let archivisationUploadDir = ref.createUploadDir(uploadDir, taskAppendicesConfig.archivisation);
 
       let archivisationConfig = taskAppendicesConfig.archivisation[taskAppendicesConfig.archivisation.type];
-      let filenameSuffix = `_${archivisationConfig.filenameSuffix}`;
+      let fileExtToAppend = archivisationConfig.fileExtToAppend;
       
-      let { filename: archivedFilename, filePath: archivedFilePath } = ref.getProcessedFileData(fileBasename, filenameSuffix, fileExt, archivisationUploadDir);
+      let filenameSuffix = ref.getArchivisationFilenameSuffix(archivisationConfig);
+      let { filename: archivedFilename, filePath: archivedFilePath } = ref.getProcessedFileData(fileBasename, filenameSuffix, fileExt, archivisationUploadDir, fileExtToAppend);
 
       let archivisationObject;
       let archivisationArgs;
@@ -315,6 +315,27 @@ class AppendixService {
     }
 
     return operationUploadDir;
+  }
+
+  getCompressionFilenameSuffix = (compressionConfig, compressionArgs, contentType) => {    
+    let filenameSuffix = `_${compressionConfig.filenameSuffix}_quality_${compressionArgs.quality}`;
+        
+    if(contentType == "image/jpeg") { 
+      compressionArgs.mozjpeg = true; 
+      filenameSuffix += ' _mozjpeg';
+    } 
+        
+    return filenameSuffix;
+  }
+
+  getResizeFilenameSuffix = (resizeConfig, resizeArgs) => {    
+    let filenameSuffix = `_${resizeConfig.filenameSuffix}_ratio_${resizeArgs.scale}`;
+    return filenameSuffix;
+  }
+
+  getArchivisationFilenameSuffix = (archivisationConfig) => { 
+    let filenameSuffix = `_${archivisationConfig.filenameSuffix}`;   
+    return filenameSuffix;
   }
 
   getProcessedFileData = (fileBasename, filenameSuffix, fileExt, uploadDir, fileExtToAppend) => {
