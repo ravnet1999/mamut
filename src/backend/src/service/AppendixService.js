@@ -324,6 +324,8 @@ class AppendixService {
           width: Math.round(width / scale)
         };
 
+        scale = Math.round(scale * 100) / 100;
+
         let runtimeVars = { scale };
         resolve({ resizeObject, resizeArgs, runtimeVars });
       } catch(err) {
@@ -374,7 +376,7 @@ class AppendixService {
   startTrackingTime = () => Date.now();
   stopTrackingTime = start => {
     let stop = Date.now();
-    let timeElapsed = (stop - start)/1000;
+    let timeElapsed = Math.round((stop - start) / 1000 * 100) / 100;
     return timeElapsed;
   }
 
