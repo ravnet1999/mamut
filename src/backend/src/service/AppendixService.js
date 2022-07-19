@@ -151,14 +151,15 @@ class AppendixService {
         let resizeConfig = await ref.getResizeConfig();        
         let { resizeObject, resizeArgs, runtimeVars } = await ref.getResizeObjectArgsAndRuntimeVars(uploadPath, resizeConfig);
 
-        let shouldBeResized = runtimeVars.scale > 1;
+        let scale = runtimeVars.scale;
+        let shouldBeResized = scale > 1;
 
         if(!shouldBeResized) {
           resolve(false);
           return;
         }
         
-        let filenameSuffix = ref.getResizeFilenameSuffix(resizeConfig, resizeArgs);
+        let filenameSuffix = ref.getResizeFilenameSuffix(resizeConfig, scale);
         let { filename: resizedFilename, filePath: resizedFilePath } = ref.getProcessedFileData(fileBasename, filenameSuffix, fileExt, resizeUploadDir);
 
         let resizeMethod = 'resize';
@@ -298,8 +299,8 @@ class AppendixService {
     return resizeConfig;
   }
 
-  getResizeFilenameSuffix = (resizeConfig, resizeArgs) => {    
-    let filenameSuffix = `_${resizeConfig.filenameSuffix}_ratio_${resizeArgs.scale}`;
+  getResizeFilenameSuffix = (resizeConfig, runtimeVars) => {    
+    let filenameSuffix = `_${resizeConfig.filenameSuffix}_scale_${runtimeVars.scale}`;
     return filenameSuffix;
   }
 
