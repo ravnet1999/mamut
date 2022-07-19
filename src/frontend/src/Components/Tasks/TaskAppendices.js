@@ -220,7 +220,7 @@ const TaskAppendices = (props) => {
 
                           {appendix.archiwizacja == 0 &&
                           <>
-                            <b>BRAK ARCHIWIZACJI</b><br/><br/>
+                            <b>ARCHIWIZACJA:</b> NIE<br/><br/>
                           </>}
                         </div>
 
