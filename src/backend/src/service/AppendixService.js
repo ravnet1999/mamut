@@ -148,7 +148,7 @@ class AppendixService {
       let resizeUploadDir = ref.createUploadDir(uploadDir, taskAppendicesConfig.resize);
 
       try {
-        let resizeConfig = await ref.getResizeConfig();        
+        let resizeConfig = ref.getResizeConfig();        
         let { resizeObject, resizeArgs, runtimeVars } = await ref.getResizeObjectArgsAndRuntimeVars(uploadPath, resizeConfig);
 
         let scale = runtimeVars.scale;
