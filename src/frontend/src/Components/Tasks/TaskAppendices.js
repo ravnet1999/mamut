@@ -178,7 +178,7 @@ const TaskAppendices = (props) => {
                           <>
                             <b>ROZMIAR PO KOMPRESJI:</b> {appendix.kompresja_rozmiar}<br/>
                             <b>ROZMIAR PO KOMPRESJI / ROZMIAR ORYG.:</b> { Math.round(appendix.kompresja_rozmiar/appendix.rozmiar * 10000) / 100 }%<br/>
-                            <b>CZAS OPERACJI:</b> {appendix.kompresja_czas_wykonania}s<br/><br/>
+                            <b>CZAS OPERACJI:</b> { Math.round(appendix.kompresja_czas_wykonania * 100) / 100 }s<br/><br/>
                           </>}
                           
                           {appendix.szerokosc && appendix.wysokosc &&
@@ -193,7 +193,7 @@ const TaskAppendices = (props) => {
                               <b>ROZMIAR PO PRZESKALOWANIU:</b> {appendix.skalowanie_rozmiar}<br/>
                               <b>ROZMIAR PO PRZESKALOWANIU / ROZMIAR PO KOMPRESJI.:</b> { Math.round(appendix.skalowanie_rozmiar/appendix.kompresja_rozmiar * 10000) / 100 }%<br/>
                               <b>ROZMIAR PO PRZESKALOWANIU / ROZMIAR ORYG.:</b> { Math.round(appendix.skalowanie_rozmiar/appendix.rozmiar * 10000) / 100 }%<br/>
-                              <b>CZAS OPERACJI:</b> {appendix.skalowanie_czas_wykonania}s<br/><br/>
+                              <b>CZAS OPERACJI:</b> { Math.round(appendix.skalowanie_czas_wykonania * 100) / 100 }s<br/><br/>
                             </>}                                                        
                           </>}
 
@@ -215,7 +215,7 @@ const TaskAppendices = (props) => {
                             <b>ROZMIAR PO ARCHIWIZACJI / ROZMIAR PO KOMPRESJI:</b> { Math.round(appendix.archiwizacja_rozmiar/appendix.kompresja_rozmiar * 10000) / 100 }%<br/>
                             </>}
                             <b>ROZMIAR PO ARCHIWIZACJI / ROZMIAR ORYG.:</b> { Math.round(appendix.archiwizacja_rozmiar/appendix.rozmiar * 10000) / 100 }%<br/>
-                            <b>CZAS OPERACJI:</b> {appendix.archiwizacja_czas_wykonania}s<br/><br/>
+                            <b>CZAS OPERACJI:</b> { Math.round(appendix.archiwizacja_czas_wykonania * 100) / 100 }s<br/><br/>
                           </>}
 
                           {appendix.archiwizacja == 0 &&
