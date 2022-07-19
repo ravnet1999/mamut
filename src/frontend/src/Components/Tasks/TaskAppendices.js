@@ -222,6 +222,12 @@ const TaskAppendices = (props) => {
                           <>
                             <b>ARCHIWIZACJA:</b> NIE<br/><br/>
                           </>}
+
+                          {(appendix.kompresja == 1 || appendix.skalowanie == 1 || appendix.archiwizacja == 1) &&
+                          <>
+                            <b>ŁĄCZNY CZAS OPERACJI:</b> {appendix.czas_wykonania}s<br/><br/>
+                          </>
+                          }
                         </div>
 
                         {!appendicesDownloading.includes(appendix.id) && 

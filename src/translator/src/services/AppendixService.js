@@ -129,7 +129,8 @@ class AppendixService extends Service {
         archiwizacja_typ_mime,
         archiwizacja_typ_zawartosci,
         archiwizacja_typ,
-        archiwizacja_czas_wykonania
+        archiwizacja_czas_wykonania,
+        kompresja_czas_wykonania + skalowanie_czas_wykonania + archiwizacja_czas_wykonania AS czas_wykonania
       FROM ${this.tableName} 
       LEFT JOIN ${tagsQuery}
       ON ${this.tagsTableName}.id=${this.tableName}.id
