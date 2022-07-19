@@ -18,8 +18,8 @@
     "sharp_resize": {
       "type": 5,
       "filenameSuffix":"sharp_resize",
-      "height": 1024,
-      "width": 768
+      "height": 768,
+      "width": 1024
     }
   },
   "archivisation": { 
