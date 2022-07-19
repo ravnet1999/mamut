@@ -130,7 +130,7 @@ class AppendixService extends Service {
         archiwizacja_typ_zawartosci,
         archiwizacja_typ,
         archiwizacja_czas_wykonania,
-        coalesce(kompresja_czas_wykonania, 0) + coalesce(skalowanie_czas_wykonania,0) + coalesce(archiwizacja_czas_wykonania, 0) AS czas_wykonania
+        ROUND(coalesce(kompresja_czas_wykonania, 0) + coalesce(skalowanie_czas_wykonania,0) + coalesce(archiwizacja_czas_wykonania, 0), 2) AS czas_wykonania
       FROM ${this.tableName} 
       LEFT JOIN ${tagsQuery}
       ON ${this.tagsTableName}.id=${this.tableName}.id
