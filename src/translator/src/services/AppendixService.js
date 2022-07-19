@@ -105,8 +105,8 @@ class AppendixService extends Service {
       let sql = `
       SELECT 
         ${this.tableName}.*, 
-        JSON_EXTRACT(${this.tableName}.wymiary, "$.height") AS szerokosc,
-        JSON_EXTRACT(${this.tableName}.wymiary, "$.width") AS wysokosc,
+        JSON_EXTRACT(${this.tableName}.wymiary, "$.height") AS wysokosc,
+        JSON_EXTRACT(${this.tableName}.wymiary, "$.width") AS szerokosc,
         ${this.tagsTableName}.tagi,        
         kompresja_sciezka,
         kompresja_rozmiar,
