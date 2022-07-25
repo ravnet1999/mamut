@@ -58,18 +58,24 @@ class AppendixService {
           let resizeData = await ref.resizeImage(path.basename(compressionData.filename, fileExt), fileExt, uploadDir, compressionData.filePath);
 
           let archivisationData;
+          let archivisationEnabledForImages = taskAppendicesConfig.archivisation.enabledForImages
 
-          if(resizeData) {             
-            archivisationData = await ref.createArchive(path.basename(resizeData.filename, fileExt), fileExt, uploadDir, resizeData.filePath, resizeData.fileSize);            
-          } else {
-            archivisationData = await ref.createArchive(path.basename(compressionData.filename, fileExt), fileExt, uploadDir, compressionData.filePath, compressionData.fileSize);            
+          if(archivisationEnabledForImages) {
+            if(resizeData) {             
+              archivisationData = await ref.createArchive(path.basename(resizeData.filename, fileExt), fileExt, uploadDir, resizeData.filePath, resizeData.fileSize);            
+            } else {
+              archivisationData = await ref.createArchive(path.basename(compressionData.filename, fileExt), fileExt, uploadDir, compressionData.filePath, compressionData.fileSize);            
+            }
           }
 
-          result = await ref.sendToTranslator(uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, dimensions, "1", "1", resizeData ? "1" : "0");                                  
+          result = await ref.sendToTranslator(uploadPath, originalFilename, filename, fileSize, contentType, tags, taskId, dimensions, archivisationEnabledForImages, "1", resizeData ? "1" : "0");                                  
           let appendixId = result.resources.resources[0].id;
           
           result = ref.sendOperationToTranslator(appendixId, compressionData);
-          result = ref.sendOperationToTranslator(appendixId, archivisationData);
+
+          if(archivisationEnabledForImages) {
+            result = ref.sendOperationToTranslator(appendixId, archivisationData);
+          }
 
           if(resizeData) {            
             result = ref.sendOperationToTranslator(appendixId, resizeData);

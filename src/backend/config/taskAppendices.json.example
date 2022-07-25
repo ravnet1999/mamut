@@ -23,6 +23,7 @@
     }
   },
   "archivisation": { 
+    "enabledForImages": 0,
     "uploadDir": "archived",
     "type": "zlib_brotli",
     "zlib_gzip": {
