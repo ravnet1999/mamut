@@ -25,7 +25,7 @@
   "archivisation": { 
     "enabledForImages": 0,
     "uploadDir": "archived",
-    "type": "zlib_brotli",
+    "type": "zlib_gzip",
     "zlib_gzip": {
       "type": 3,
       "filenameSuffix":"zlib_gzip",
