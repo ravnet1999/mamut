@@ -28,8 +28,8 @@
     "type": "zlib_gzip",
     "zlib_gzip": {
       "type": 3,
-      "filenameSuffix":"gzip",
-      "fileExtToAppend": ""
+      "filenameSuffix":"",
+      "fileExtToAppend": "gz"
     },
     "zlib_brotli": {
       "type": 4,
