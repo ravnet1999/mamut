@@ -1,7 +1,7 @@
 {
   "uploadDir": "tasks-appendices",
   "compression": { 
-    "uploadDir": "compressed",
+    "uploadDir": "/compressed",
     "sharp_to_format_jpeg": {
       "type": 1, 
       "quality": 60,
@@ -14,7 +14,7 @@
     }
   },
   "resize": {
-    "uploadDir": "resized",
+    "uploadDir": "/resized",
     "sharp_resize": {
       "type": 5,
       "filenameSuffix":"sharp_resize",
@@ -24,7 +24,7 @@
   },
   "archivisation": { 
     "enabledForImages": 0,
-    "uploadDir": "archived",
+    "uploadDir": "/archived",
     "type": "zlib_gzip",
     "zlib_gzip": {
       "type": 3,

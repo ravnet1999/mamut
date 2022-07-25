@@ -256,7 +256,7 @@ class AppendixService {
   }
 
   createUploadDir = (uploadDir, operationConfig) => {
-    let operationUploadDir = uploadDir + '/' + operationConfig.uploadDir;
+    let operationUploadDir = uploadDir + operationConfig.uploadDir;
 
     if(!fs.existsSync(operationUploadDir)) {   
       fs.mkdirSync(operationUploadDir, null, err => {
