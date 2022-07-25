@@ -155,80 +155,86 @@ const TaskAppendices = (props) => {
                   <Card.Body>
                     <Card.Text>
                       <div>
-                        [ {appendix.id} ] {appendix.nazwa_oryginalna}<br/><br/>
+                        { ['development', 'staging'].includes(process.env.NODE_ENV) &&
+                          <>[ {appendix.id} ]</>
+                        }
 
-                        <div style={{fontSize: "12px"}}>
-                          {appendix.kompresja == 1 &&
-                          <>
-                            <b>JAKOŚĆ KOMPRESJI:</b> {appendix.kompresja_jakosc}<br/>                            
-                          </>}
+                        {appendix.nazwa_oryginalna}<br/><br/>
 
-                          {appendix.kompresja == 0 &&
-                          <>
-                            <b>KOMPRESJA:</b> NIE<br/>
-                            {appendix.skalowanie == 0 &&
-                            <>                            
-                                <b>SKALOWANIE:</b> NIE<br/>
+                        { ['development', 'staging'].includes(process.env.NODE_ENV) &&
+                          <div style={{fontSize: "12px"}}>
+                            {appendix.kompresja == 1 &&
+                            <>
+                              <b>JAKOŚĆ KOMPRESJI:</b> {appendix.kompresja_jakosc}<br/>                            
                             </>}
-                            <br/>
-                          </>}
 
-                          <b>ROZMIAR ORYG.:</b> {appendix.rozmiar}<br/>
-                          {appendix.kompresja == 1 &&
-                          <>
-                            <b>ROZMIAR PO KOMPRESJI:</b> {appendix.kompresja_rozmiar}<br/>
-                            <b>ROZMIAR PO KOMPRESJI / ROZMIAR ORYG.:</b> { Math.round(appendix.kompresja_rozmiar/appendix.rozmiar * 10000) / 100 }%<br/>
-                            <b>CZAS OPERACJI:</b> {appendix.kompresja_czas_wykonania}s<br/><br/>
-                          </>}
-                          
-                          {appendix.szerokosc && appendix.wysokosc &&
-                          <>
-                            <b>WYMIARY ORYG:</b> {appendix.szerokosc} x {appendix.wysokosc}<br/>
-
-                            {appendix.skalowanie == 1 &&
-                            <>                            
-                              <b>DOCELOWY WYMIAR:</b> {appendix.skalowanie_konfiguracja_szerokosc} x {appendix.skalowanie_konfiguracja_wysokosc}<br/>
-                              <b>WYLICZONA SKALA:</b> {appendix.skalowanie_wyliczona_skala}<br/> 
-                              <b>WYMIARY PO PRZESKALOWANIU:</b> {appendix.skalowanie_szerokosc} x {appendix.skalowanie_wysokosc}<br/>
-                              <b>ROZMIAR PO PRZESKALOWANIU:</b> {appendix.skalowanie_rozmiar}<br/>
-                              <b>ROZMIAR PO PRZESKALOWANIU / ROZMIAR PO KOMPRESJI.:</b> { Math.round(appendix.skalowanie_rozmiar/appendix.kompresja_rozmiar * 10000) / 100 }%<br/>
-                              <b>ROZMIAR PO PRZESKALOWANIU / ROZMIAR ORYG.:</b> { Math.round(appendix.skalowanie_rozmiar/appendix.rozmiar * 10000) / 100 }%<br/>
-                              <b>CZAS OPERACJI:</b> {appendix.skalowanie_czas_wykonania}s<br/><br/>
-                            </>}                                                        
-                          </>}
-
-                          {appendix.skalowanie == 0 && appendix.kompresja == 1 &&
-                          <>                            
-                              <b>SKALOWANIE:</b> NIE<br/><br/>
-                          </>}
-                          
-                          {appendix.archiwizacja == 1 &&
-                          <>
-                            <b>TYP ARCHIWIZACJI:</b> {appendix.archiwizacja_typ}<br/> 
-                            <b>ROZMIAR PO ARCHIWIZACJI:</b> {appendix.archiwizacja_rozmiar}<br/>                          
-                            {appendix.kompresja == 1 && appendix.skalowanie == 1 &&
-                            <>                            
-                            <b>ROZMIAR PO ARCHIWIZACJI / ROZMIAR PO KOMPRESJI I PRZESKALOWANIU:</b> { Math.round(appendix.archiwizacja_rozmiar/appendix.skalowanie_rozmiar * 10000) / 100 }%<br/>
+                            {appendix.kompresja == 0 &&
+                            <>
+                              <b>KOMPRESJA:</b> NIE<br/>
+                              {appendix.skalowanie == 0 &&
+                              <>                            
+                                  <b>SKALOWANIE:</b> NIE<br/>
+                              </>}
+                              <br/>
                             </>}
-                            {appendix.kompresja == 1 && appendix.skalowanie == 0 &&
-                            <>                            
-                            <b>ROZMIAR PO ARCHIWIZACJI / ROZMIAR PO KOMPRESJI:</b> { Math.round(appendix.archiwizacja_rozmiar/appendix.kompresja_rozmiar * 10000) / 100 }%<br/>
+
+                            <b>ROZMIAR ORYG.:</b> {appendix.rozmiar}<br/>
+                            {appendix.kompresja == 1 &&
+                            <>
+                              <b>ROZMIAR PO KOMPRESJI:</b> {appendix.kompresja_rozmiar}<br/>
+                              <b>ROZMIAR PO KOMPRESJI / ROZMIAR ORYG.:</b> { Math.round(appendix.kompresja_rozmiar/appendix.rozmiar * 10000) / 100 }%<br/>
+                              <b>CZAS OPERACJI:</b> {appendix.kompresja_czas_wykonania}s<br/><br/>
                             </>}
-                            <b>ROZMIAR PO ARCHIWIZACJI / ROZMIAR ORYG.:</b> { Math.round(appendix.archiwizacja_rozmiar/appendix.rozmiar * 10000) / 100 }%<br/>
-                            <b>CZAS OPERACJI:</b> {appendix.archiwizacja_czas_wykonania}s<br/><br/>
-                          </>}
+                            
+                            {appendix.szerokosc && appendix.wysokosc &&
+                            <>
+                              <b>WYMIARY ORYG:</b> {appendix.szerokosc} x {appendix.wysokosc}<br/>
 
-                          {appendix.archiwizacja == 0 &&
-                          <>
-                            <b>ARCHIWIZACJA:</b> NIE<br/><br/>
-                          </>}
+                              {appendix.skalowanie == 1 &&
+                              <>                            
+                                <b>DOCELOWY WYMIAR:</b> {appendix.skalowanie_konfiguracja_szerokosc} x {appendix.skalowanie_konfiguracja_wysokosc}<br/>
+                                <b>WYLICZONA SKALA:</b> {appendix.skalowanie_wyliczona_skala}<br/> 
+                                <b>WYMIARY PO PRZESKALOWANIU:</b> {appendix.skalowanie_szerokosc} x {appendix.skalowanie_wysokosc}<br/>
+                                <b>ROZMIAR PO PRZESKALOWANIU:</b> {appendix.skalowanie_rozmiar}<br/>
+                                <b>ROZMIAR PO PRZESKALOWANIU / ROZMIAR PO KOMPRESJI.:</b> { Math.round(appendix.skalowanie_rozmiar/appendix.kompresja_rozmiar * 10000) / 100 }%<br/>
+                                <b>ROZMIAR PO PRZESKALOWANIU / ROZMIAR ORYG.:</b> { Math.round(appendix.skalowanie_rozmiar/appendix.rozmiar * 10000) / 100 }%<br/>
+                                <b>CZAS OPERACJI:</b> {appendix.skalowanie_czas_wykonania}s<br/><br/>
+                              </>}                                                        
+                            </>}
 
-                          {(appendix.kompresja == 1 || appendix.skalowanie == 1 || appendix.archiwizacja == 1) &&
-                          <>
-                            <b>ŁĄCZNY CZAS OPERACJI:</b> {appendix.czas_wykonania}s<br/><br/>
-                          </>
-                          }
-                        </div>
+                            {appendix.skalowanie == 0 && appendix.kompresja == 1 &&
+                            <>                            
+                                <b>SKALOWANIE:</b> NIE<br/><br/>
+                            </>}
+                            
+                            {appendix.archiwizacja == 1 &&
+                            <>
+                              <b>TYP ARCHIWIZACJI:</b> {appendix.archiwizacja_typ}<br/> 
+                              <b>ROZMIAR PO ARCHIWIZACJI:</b> {appendix.archiwizacja_rozmiar}<br/>                          
+                              {appendix.kompresja == 1 && appendix.skalowanie == 1 &&
+                              <>                            
+                              <b>ROZMIAR PO ARCHIWIZACJI / ROZMIAR PO KOMPRESJI I PRZESKALOWANIU:</b> { Math.round(appendix.archiwizacja_rozmiar/appendix.skalowanie_rozmiar * 10000) / 100 }%<br/>
+                              </>}
+                              {appendix.kompresja == 1 && appendix.skalowanie == 0 &&
+                              <>                            
+                              <b>ROZMIAR PO ARCHIWIZACJI / ROZMIAR PO KOMPRESJI:</b> { Math.round(appendix.archiwizacja_rozmiar/appendix.kompresja_rozmiar * 10000) / 100 }%<br/>
+                              </>}
+                              <b>ROZMIAR PO ARCHIWIZACJI / ROZMIAR ORYG.:</b> { Math.round(appendix.archiwizacja_rozmiar/appendix.rozmiar * 10000) / 100 }%<br/>
+                              <b>CZAS OPERACJI:</b> {appendix.archiwizacja_czas_wykonania}s<br/><br/>
+                            </>}
+
+                            {appendix.archiwizacja == 0 &&
+                            <>
+                              <b>ARCHIWIZACJA:</b> NIE<br/><br/>
+                            </>}
+
+                            {(appendix.kompresja == 1 || appendix.skalowanie == 1 || appendix.archiwizacja == 1) &&
+                            <>
+                              <b>ŁĄCZNY CZAS OPERACJI:</b> {appendix.czas_wykonania}s<br/><br/>
+                            </>
+                            }
+                          </div>
+                        }
 
                         {!appendicesDownloading.includes(appendix.id) && 
                           <Button data-tip="Pobierz" disabled={appendicesUploading || appendicesDownloading.length>0 || appendicesRemoving.length>0} className="appendix-download-button" onClick={e=>onAppendixDownload(appendix)}>
