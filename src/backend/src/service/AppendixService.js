@@ -507,6 +507,8 @@ class AppendixService {
       
       if(appendix['archiwizacja'] == 1) {
         path = appendix['archiwizacja_sciezka'];
+      } else if(appendix['skalowanie'] == 1) {
+        path = appendix['skalowanie_sciezka'];   
       } else if(appendix['kompresja'] == 1) {
         path = appendix['kompresja_sciezka'];   
       } else {
