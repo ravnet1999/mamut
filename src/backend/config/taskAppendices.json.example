@@ -1,39 +1,39 @@
 {
   "uploadDir": "tasks-appendices",
   "compression": { 
-    "uploadDir": "/compressed",
+    "uploadDir": "",
     "sharp_to_format_jpeg": {
       "type": 1, 
       "quality": 60,
-      "filenameSuffix":"sharp_to_format_jpeg"
+      "filenameSuffix":""
     },
     "sharp_to_format_png": {
       "type": 2, 
       "quality": 60,
-      "filenameSuffix":"sharp_to_format_png"
+      "filenameSuffix":""
     }
   },
   "resize": {
-    "uploadDir": "/resized",
+    "uploadDir": "",
     "sharp_resize": {
       "type": 5,
-      "filenameSuffix":"sharp_resize",
+      "filenameSuffix":"",
       "height": 768,
       "width": 1024
     }
   },
   "archivisation": { 
     "enabledForImages": 0,
-    "uploadDir": "/archived",
+    "uploadDir": "",
     "type": "zlib_gzip",
     "zlib_gzip": {
       "type": 3,
-      "filenameSuffix":"zlib_gzip",
-      "fileExtToAppend": "gz"
+      "filenameSuffix":"gzip",
+      "fileExtToAppend": ""
     },
     "zlib_brotli": {
       "type": 4,
-      "filenameSuffix":"zlib_brotli",
+      "filenameSuffix":"",
       "fileExtToAppend": "br"
     }
   }
