@@ -289,7 +289,7 @@ class AppendixService {
   }
 
   getCompressionFilenameSuffix = (compressionConfig, compressionArgs, contentType) => {    
-    let filenameSuffix = `_${compressionConfig.filenameSuffix}_quality_${compressionArgs.quality}`;
+    let filenameSuffix = `_${compressionConfig.filenameSuffix}_qlty_${compressionArgs.quality}`;
         
     if(contentType == "image/jpeg") { 
       compressionArgs.mozjpeg = true; 
