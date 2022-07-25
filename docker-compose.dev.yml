@@ -26,6 +26,8 @@ services:
     restart: always
     links:
       - mamut-app-db:mongo
+    environment:
+      NODE_ENV: development
 
   mamut-app-parser:
     container_name: mamut-app-parser
@@ -75,6 +77,8 @@ services:
     volumes:
       - ./src/frontend/:/app/
     restart: always
+    environment:
+      NODE_ENV: development
 
   mamut-app-frontend-parser:
     container_name: mamut-app-frontend-parser
