@@ -289,7 +289,7 @@ class AppendixService {
   }
 
   getCompressionFilenameSuffix = (compressionConfig, compressionArgs, contentType) => {    
-    let filenameSuffix = `_${compressionConfig.filenameSuffix}_qlty_${compressionArgs.quality}`;
+    let filenameSuffix = `${compressionConfig.filenameSuffix}_qlty_${compressionArgs.quality}`;
         
     if(contentType == "image/jpeg") { 
       compressionArgs.mozjpeg = true; 
@@ -305,7 +305,7 @@ class AppendixService {
   }
 
   getResizeFilenameSuffix = (resizeConfig, runtimeVars) => {    
-    let filenameSuffix = `_${resizeConfig.filenameSuffix}_scale_${runtimeVars.scale}`;
+    let filenameSuffix = `${resizeConfig.filenameSuffix}_scale_${runtimeVars.scale}`;
     return filenameSuffix;
   }
 
@@ -368,7 +368,7 @@ class AppendixService {
   }
 
   getArchivisationFilenameSuffix = (archivisationConfig) => { 
-    let filenameSuffix = `_${archivisationConfig.filenameSuffix}`;   
+    let filenameSuffix = `${archivisationConfig.filenameSuffix}`;   
     return filenameSuffix;
   }
 
