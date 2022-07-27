@@ -17,7 +17,8 @@ const endpoints = [
     'priorities',
     'episodes',
     'appendices',
-    'tags'
+    'tags',
+    'notes'
 ];
 
 let routers = endpoints.map((endpoint) => {
