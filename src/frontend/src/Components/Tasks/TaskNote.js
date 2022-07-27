@@ -13,20 +13,46 @@ const TaskNote = (props) => {
 
     useEffect(() => {
       setSelectedNote(note);
-      setSelectedNoteTypes(JSON.stringify(note.typy.split(",").map(typ => typ.split(";")[0])));
+      
+      let newNoteTypes = note.typy == "" ? [] : note.typy.split(",").map(function (typ) {        
+        let obj = { "id": parseInt(typ.split(";")[0]), "nazwa": typ.split(";")[1] };        
+        return obj;
+      });
+
+      setSelectedNoteTypes(newNoteTypes);
     }, [note]);
+
+    const noteTypeSelected = noteType => selectedNoteTypes.filter(selectedNoteType => {
+      return selectedNoteType.id == noteType.id
+    }).length > 0;
 
     const buildNoteTypes = () => {
       return noteTypes.map((noteType, key) => {
-        return <Form.Check inline label={noteType.nazwa} checked={selectedNoteTypes.includes(noteType.id)} type="checkbox" id="note-type"></Form.Check>
+        return <Form.Check inline label={noteType.nazwa} checked={ noteTypeSelected(noteType) } type="checkbox" id="note-type" onChange={(e) => {
+          let newSelectedNoteTypes = selectedNoteTypes;
+
+          if(noteTypeSelected(noteType)) {               
+            newSelectedNoteTypes = newSelectedNoteTypes.filter(newSelectedNoteType => newSelectedNoteType.id !== noteType.id);
+          } else {         
+            newSelectedNoteTypes.push({ "id": noteType.id, "nazwa": noteType.nazwa });
+          }
+
+          selectedNote.typy = newSelectedNoteTypes.length == 0 ? "" : newSelectedNoteTypes.map(newSelectedNoteType => newSelectedNoteType.id + ";" + newSelectedNoteType.nazwa).join(",");
+          setSelectedNoteTypes(newSelectedNoteTypes);
+          
+          updateNote(selectedNote);
+        }
+      }>
+
+        </Form.Check>
       })
     }
 
     return (
-      selectedNote && noteTypes && <>
+      selectedNote && <>
         { buildNoteTypes() }
         <textarea id="task-note" className={'form-control'} value={selectedNote.tresc} onChange={(e) => {
-            selectedNote.tresc=e.target.value;
+            selectedNote.tresc = e.target.value;
             updateNote(selectedNote);
           }
         }/>

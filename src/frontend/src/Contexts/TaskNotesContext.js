@@ -9,8 +9,7 @@ const TaskNotesContextProvider = ({children}) => {
   const [noteTypesDownloading, setNoteTypesDownloading] = useState(false); 
 
   const updateNote = (note) => {
-    let newNotes = notes.filter(oldNote => oldNote.id != note.id);
-    newNotes.push(note);
+    let newNotes = notes.map(oldNote => oldNote.id == note.id ? note : oldNote);
     setNotes(newNotes);
   }
 
