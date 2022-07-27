@@ -4,6 +4,16 @@ const authMiddleware = require('../middleware/auth');
 const response = require('../src/response');
 const taskNoteService = require('../src/service/TaskNoteService');
 
+router.get('/types', [authMiddleware], async (req, res, next) => { 
+  try{
+    let results = await taskNoteService.getNoteTypes(); 
+    response(res, false, ['Pomyślnie pobrano informacje o typach notatek.'], results);   
+  } catch (err) {
+    console.log(err);
+    response(res, true, ['Wystąpił błąd poczas próby pobrania z translatora informacji o typach notatek.', JSON.stringify(err)], []);
+  }
+});
+
 router.get('/:noteId', [authMiddleware], async (req, res, next) => { 
   try{
     let results = await taskNoteService.get(req.params.noteId); 

@@ -48,6 +48,27 @@ class TaskNoteService extends Service {
         });
       });      
     }
+
+    findTypes = () => {
+      let sql = "SELECT * FROM " + this.taskNotesTypesTableName + " " + 
+      "ORDER BY " + this.taskNotesTypesTableName + ".id;";
+
+      console.log(sql);
+
+      return new Promise((resolve, reject) => { 
+        connection.query(sql, [], (err, results, fields) => {
+          console.log(results);
+
+          if(err) {            
+            reject(err);
+            return;
+          }
+          
+          resolve(results);
+          return;
+        });
+      });   
+    }
 }
 
 module.exports = new TaskNoteService('zgloszenia_notatki');

@@ -3,6 +3,15 @@ const router = express.Router();
 const response = require('../src/response');
 const taskNoteService = require('../src/services/Task/TaskNoteService');
 
+router.get('/types', (req, res, next) => {
+  taskNoteService.findTypes().then((types) => {
+    response(res, false, ['Pomyślnie pobrano dane typów notatek.'], types);
+    return;
+  }).catch((err) => {
+      response(res, true, [`Wystąpił błąd podczas próby pobrania danych typów notatek.`, JSON.stringify(err)], [])
+  });
+});
+
 router.get('/:notesIds', (req, res, next) => {
   let notesIds = req.params.notesIds.split(',');  
   taskNoteService.findById(notesIds).then((note) => {
