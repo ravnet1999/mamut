@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import TaskNoteTypes from './TaskNoteTypes';
 import TaskNote from './TaskNote';
 import { Container, Row, Col, Button, Form, Card, CardColumns } from '../bootstrap';
 
@@ -17,8 +16,7 @@ const TaskNotesList = (props) => {
         return <Card style={{width: "fit-content"}}>
           <Card.Body>
             <Card.Text>
-              <TaskNoteTypes note={note} noteTypes={noteTypes}></TaskNoteTypes>
-              <TaskNote note={note} updateNote={updateNote}></TaskNote>
+              <TaskNote note={note} noteTypes={noteTypes} updateNote={updateNote}></TaskNote>
             </Card.Text>
           </Card.Body>
         </Card>

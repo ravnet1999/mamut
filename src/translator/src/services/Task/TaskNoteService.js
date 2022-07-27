@@ -6,6 +6,7 @@ class TaskNoteService extends Service {
         super(tableName);
         this.findByIdEmpty = 'Taka notatka nie istnieje!';
         this.taskNotesTypesTableName = 'zgloszenia_typy_notatek';
+        this.taskNotesNotesTypesTableName = 'zgloszenia_notatki_typy_notatek';
     }
 
     findById = (noteId) => {
@@ -26,10 +27,13 @@ class TaskNoteService extends Service {
 
     findQuery = (condition, parameters) => {
       let sql = "SELECT "+
-      this.tableName + ".*, " + this.taskNotesTypesTableName + ".nazwa AS typ " + 
-      "FROM " + this.tableName + ", " + this.taskNotesTypesTableName + " " + 
-      "WHERE " + this.tableName + ".id_typu_notatki=" + this.taskNotesTypesTableName + ".id "+ 
+      this.tableName + ".*, " + 
+      'GROUP_CONCAT(CONCAT(' + this.taskNotesTypesTableName + '.id, ";",' + this.taskNotesTypesTableName + ".nazwa)) AS typy " + 
+      "FROM " + this.tableName + ", " + this.taskNotesTypesTableName + ",  " + this.taskNotesNotesTypesTableName + " " +
+      "WHERE " + this.taskNotesNotesTypesTableName + ".id_notatki=" + this.tableName + ".id "+ 
+      "AND " + this.taskNotesNotesTypesTableName + ".id_typu_notatki=" + this.taskNotesTypesTableName + ".id " + 
       "AND " + condition + " " +
+      "GROUP BY " + this.tableName + ".id ";
       "ORDER BY " + this.tableName + ".id DESC;";
 
       console.log(sql);
