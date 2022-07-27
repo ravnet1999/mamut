@@ -10,7 +10,7 @@ const TaskNoteTypes = (props) => {
     return (
       <>
         { noteTypes.map((noteType, key) => {
-          return <Form.Check inline label={noteType.nazwa} type="checkbox" id="note-type"></Form.Check>
+          return <Form.Check inline label={noteType.nazwa} checked={note.id_typu_notatki==noteType.id} type="checkbox" id="note-type"></Form.Check>
           })
         }
       </>
