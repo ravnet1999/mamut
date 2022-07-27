@@ -38,7 +38,7 @@ const TaskNotes = (props) => {
                 return <Card style={{width: "fit-content"}}>
                   <Card.Body>
                     <Card.Text>
-                      {note.tresc}
+                      <textarea id="task-note" className={'form-control'} value={note.tresc}></textarea>
                     </Card.Text>
                   </Card.Body>
                 </Card>
