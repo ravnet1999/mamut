@@ -13,10 +13,10 @@ const TaskNote = (props) => {
 
     useEffect(() => {
       setSelectedNote(note);
-      setSelectedNoteTypes(noteToSelectedNoteTypes(note));
+      setSelectedNoteTypes(noteToNoteTypes(note));
     }, [note]);
 
-    const noteToSelectedNoteTypes = note => {
+    const noteToNoteTypes = note => {
       return note.typy == "" ? [] : note.typy.split(",").map(function (typ) {        
         return { "id": parseInt(typ.split(";")[0]), "nazwa": typ.split(";")[1] };
       });
