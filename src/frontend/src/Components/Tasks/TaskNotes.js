@@ -11,17 +11,25 @@ const TaskNotes = (props) => {
       task,
       response, setResponse,
       notes, setNotes,      
-      notesUploading, setNotesUploading
+      notesUploading, setNotesUploading,
+      noteTypes, setNoteTypes,
     } = props;
     
     useEffect(() => {
       if(!task) return;
   
       TaskNoteHandler.getNotesByTaskId(task.id).then(result => {
-        console.log('resources', result.resources);
+        console.log('notes', result.resources);
         setNotes(result.resources);  
-      });
+      });      
     }, [task]);
+
+    useEffect(() => {
+      TaskNoteHandler.getNoteTypes().then(result => {
+        console.log('note types', result.resources);
+        setNoteTypes(result.resources);  
+      });      
+    }, []);
 
     return (
       <>
