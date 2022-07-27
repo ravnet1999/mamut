@@ -22,6 +22,8 @@ import TaskAppendices from './TaskAppendices';
 import TaskAppendicesContextProvider from '../../Contexts/TaskAppendicesContext';
 import TaskAppendicesTagsContextProvider from '../../Contexts/TaskAppendicesTagsContext';
 import ClientHandler from '../../Handlers/ClientHandler';
+import TaskNotes from './TaskNotes';
+import TaskNotesContextProvider from '../../Contexts/TaskNotesContext';
 
 registerLocale('pl', pl);
 
@@ -537,6 +539,10 @@ const Task = (props) => {
                 </div>
                 {buildErrorType()}
             </div>
+
+            <TaskNotesContextProvider>
+              <TaskNotes {...props} task={task}></TaskNotes>
+            </TaskNotesContextProvider>
 
             <TaskAppendicesContextProvider>
               <TaskAppendicesTagsContextProvider>
