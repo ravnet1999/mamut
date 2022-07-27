@@ -114,12 +114,15 @@ const Task = (props) => {
                 TaskHandler.getEpisodes(props.match.params.taskId).then((episodes) => {
                     setResponse(episodes);
                     setTaskEpisodes(episodes.resources);
-                    setLastEpisode(episodes.resources[0]);
-                    let newAppState = appState;
-                    newAppState.travel = episodes.resources[0].forma_interwencji;
-                    setTravel(episodes.resources[0].forma_interwencji);
-                    setAppState(newAppState);
-                    modifyEpisodeDescription(episodes.resources[0].rozwiazanie);
+
+                    if(episodes.resources.length) {
+                      setLastEpisode(episodes.resources[0]);
+                      let newAppState = appState;
+                      newAppState.travel = episodes.resources[0].forma_interwencji;
+                      setTravel(episodes.resources[0].forma_interwencji);
+                      setAppState(newAppState);
+                      modifyEpisodeDescription(episodes.resources[0].rozwiazanie);
+                    }
                 }).catch((err) => {
                     console.log(err);
                     setResponse(err);
