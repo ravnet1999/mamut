@@ -25,26 +25,26 @@ const TaskNote = (props) => {
     const noteTypeSelected = noteType => selectedNoteTypes.filter(selectedNoteType => {
       return selectedNoteType.id == noteType.id
     }).length > 0;
+
+    const noteTypeCheckboxOnChange = noteType => {
+      let newSelectedNoteTypes = selectedNoteTypes;
+
+      if(noteTypeSelected(noteType)) {               
+        newSelectedNoteTypes = newSelectedNoteTypes.filter(newSelectedNoteType => newSelectedNoteType.id !== noteType.id);
+      } else {         
+        newSelectedNoteTypes.push({ "id": noteType.id, "nazwa": noteType.nazwa });
+      }
+
+      selectedNote.typy = newSelectedNoteTypes.length == 0 ? "" : newSelectedNoteTypes.map(newSelectedNoteType => newSelectedNoteType.id + ";" + newSelectedNoteType.nazwa).join(",");
+      setSelectedNoteTypes(newSelectedNoteTypes);
+
+      updateNote(selectedNote);
+    }
     
     const buildNoteTypes = () => {
       return noteTypes.map((noteType, key) => {
-        return <Form.Check inline label={noteType.nazwa} checked={ noteTypeSelected(noteType) } type="checkbox" id="note-type" onChange={(e) => {
-          let newSelectedNoteTypes = selectedNoteTypes;
-
-          if(noteTypeSelected(noteType)) {               
-            newSelectedNoteTypes = newSelectedNoteTypes.filter(newSelectedNoteType => newSelectedNoteType.id !== noteType.id);
-          } else {         
-            newSelectedNoteTypes.push({ "id": noteType.id, "nazwa": noteType.nazwa });
-          }
-
-          selectedNote.typy = newSelectedNoteTypes.length == 0 ? "" : newSelectedNoteTypes.map(newSelectedNoteType => newSelectedNoteType.id + ";" + newSelectedNoteType.nazwa).join(",");
-          setSelectedNoteTypes(newSelectedNoteTypes);
-          
-          updateNote(selectedNote);
-        }
-      }>
-
-        </Form.Check>
+        return <Form.Check inline label={noteType.nazwa} checked={ noteTypeSelected(noteType) } type="checkbox" id="note-type" 
+          onChange={ e => noteTypeCheckboxOnChange(noteType) }></Form.Check>
       })
     }
 
