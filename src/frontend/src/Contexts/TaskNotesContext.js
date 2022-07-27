@@ -8,12 +8,19 @@ const TaskNotesContextProvider = ({children}) => {
   const [notesDownloading, setNotesDownloading] = useState(false); 
   const [noteTypesDownloading, setNoteTypesDownloading] = useState(false); 
 
+  const updateNote = (note) => {
+    let newNotes = notes.filter(oldNote => oldNote.id != note.id);
+    newNotes.push(note);
+    setNotes(newNotes);
+  }
+
   return (
     <TaskNotesContext.Provider value={{ 
       notes, setNotes, 
       noteTypes, setNoteTypes,
       notesDownloading, setNotesDownloading,
-      noteTypesDownloading, setNoteTypesDownloading
+      noteTypesDownloading, setNoteTypesDownloading,
+      updateNote
     }}>
       {children}
     </TaskNotesContext.Provider>
