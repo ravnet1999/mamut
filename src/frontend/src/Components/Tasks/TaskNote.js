@@ -13,19 +13,19 @@ const TaskNote = (props) => {
 
     useEffect(() => {
       setSelectedNote(note);
-      
-      let newNoteTypes = note.typy == "" ? [] : note.typy.split(",").map(function (typ) {        
-        let obj = { "id": parseInt(typ.split(";")[0]), "nazwa": typ.split(";")[1] };        
-        return obj;
-      });
-
-      setSelectedNoteTypes(newNoteTypes);
+      setSelectedNoteTypes(noteToSelectedNoteTypes(note));
     }, [note]);
+
+    const noteToSelectedNoteTypes = note => {
+      return note.typy == "" ? [] : note.typy.split(",").map(function (typ) {        
+        return { "id": parseInt(typ.split(";")[0]), "nazwa": typ.split(";")[1] };
+      });
+    }
 
     const noteTypeSelected = noteType => selectedNoteTypes.filter(selectedNoteType => {
       return selectedNoteType.id == noteType.id
     }).length > 0;
-
+    
     const buildNoteTypes = () => {
       return noteTypes.map((noteType, key) => {
         return <Form.Check inline label={noteType.nazwa} checked={ noteTypeSelected(noteType) } type="checkbox" id="note-type" onChange={(e) => {
