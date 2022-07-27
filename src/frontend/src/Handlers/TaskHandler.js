@@ -289,29 +289,6 @@ const TaskHandler = {
         });
     },
 
-    updateNote: (taskId, note, noteType) => {
-      return new Promise((resolve, reject) => {
-          axios.patch(`${appConfig.URLs.domain}/tasks/${taskId}/note`, { note }, {
-              withCredentials: true
-          }).then((response) => {
-              parseResponse(response).then((response) => {
-                  resolve(response);
-                  return;
-              }).catch((err) => {
-                  reject(err);
-                  return;
-              });
-          }).catch((err) => {
-              reject({
-                  error: true,
-                  messages: ['Wystąpił problem z połączeniem z serwerem.', JSON.stringify(err)],
-                  resources: []
-              });
-              return;
-          });
-      });
-  },
-
     updateLastEpisodeDescription: (episodeId, description) => {
         return new Promise((resolve, reject) => {
             axios.patch(`${appConfig.URLs.domain}/tasks/${episodeId}/lastEpisodeDescription`, { description: description }, {

@@ -22,8 +22,6 @@ import TaskAppendices from './TaskAppendices';
 import TaskAppendicesContextProvider from '../../Contexts/TaskAppendicesContext';
 import TaskAppendicesTagsContextProvider from '../../Contexts/TaskAppendicesTagsContext';
 import ClientHandler from '../../Handlers/ClientHandler';
-import TaskNotes from './TaskNotes';
-import TaskNotesContextProvider from '../../Contexts/TaskNotesContext';
 
 registerLocale('pl', pl);
 
@@ -66,7 +64,7 @@ const Task = (props) => {
     const [dateConfirmEnabled, enableDateConfirm] = useState(true);
     const [pickerInput, setPickerInput] = useState(null);
     const [descriptionModified, setDescriptionModified] = useState(false);  
-    const [client, setClient] = useState(null);    
+    const [client, setClient] = useState(null);
 
     const updateDescriptions = (callback = null) => {
         TaskHandler.updateLastEpisodeDescription(lastEpisode.id, appState.episodeDescription).then((result) => {
@@ -529,20 +527,13 @@ const Task = (props) => {
               </>}
             </h1>
             {buildRepForm()}
-            <Row className="no-margins">
-              <Col xs="12" md="8" >
-              <div className="form-group task-description-container margin-bottom-default">
-                  <label for="task_description">Opis problemu:</label>
-                  <div className="task-description-content">
-                      <textarea id="task_description" className={'form-control'} value={taskDescription} onChange={(e) => modifyTaskDescription(e.target.value)} disabled={!taskEpisodes || taskEpisodes.length > 1}></textarea>
-                  </div>
-                  {buildErrorType()}
-              </div>
-              </Col>
-              <TaskNotesContextProvider>
-                <TaskNotes {...props} task={task}></TaskNotes>              
-              </TaskNotesContextProvider>
-            </Row>
+            <div className="form-group task-description-container margin-bottom-default">
+                <label for="task_description">Opis problemu:</label>
+                <div className="task-description-content">
+                    <textarea id="task_description" className={'form-control'} value={taskDescription} onChange={(e) => modifyTaskDescription(e.target.value)} disabled={!taskEpisodes || taskEpisodes.length > 1}></textarea>
+                </div>
+                {buildErrorType()}
+            </div>
 
             <TaskAppendicesContextProvider>
               <TaskAppendicesTagsContextProvider>
