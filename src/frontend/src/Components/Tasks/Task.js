@@ -23,7 +23,8 @@ import TaskAppendicesContextProvider from '../../Contexts/TaskAppendicesContext'
 import TaskAppendicesTagsContextProvider from '../../Contexts/TaskAppendicesTagsContext';
 import ClientHandler from '../../Handlers/ClientHandler';
 import TaskNotes from './TaskNotes';
-import TaskNotesContextProvider from '../../Contexts/TaskNotesContext';
+import { TaskNotesContext } from '../../Contexts/TaskNotesContext';
+import { WithContexts } from '../../HOCs/WithContexts';
 
 registerLocale('pl', pl);
 
@@ -68,6 +69,10 @@ const Task = (props) => {
     const [descriptionModified, setDescriptionModified] = useState(false);  
     const [client, setClient] = useState(null);
 
+    const {
+      notes
+    } = props;
+
     const updateDescriptions = (callback = null) => {
         TaskHandler.updateLastEpisodeDescription(lastEpisode.id, appState.episodeDescription).then((result) => {
             TaskHandler.updateTaskDescription(task.id, appState.taskDescription).then((result) => {
@@ -95,6 +100,10 @@ const Task = (props) => {
     const getTaskDescription = () => {
         return taskDescription;
     }
+
+    useEffect(() => {
+      console.log('notatki: ' + JSON.stringify(notes))
+  }, [notes])
 
     useEffect(() => {
         setResponse({
@@ -540,9 +549,7 @@ const Task = (props) => {
                 {buildErrorType()}
             </div>
 
-            <TaskNotesContextProvider>
-              <TaskNotes {...props} task={task}></TaskNotes>
-            </TaskNotesContextProvider>
+            <TaskNotes {...props} task={task}></TaskNotes>
 
             <TaskAppendicesContextProvider>
               <TaskAppendicesTagsContextProvider>
@@ -605,4 +612,4 @@ const Task = (props) => {
     );
 }
 
-export default Task;
+export default WithContexts(Task, [TaskNotesContext]);

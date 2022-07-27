@@ -14,6 +14,7 @@ import RepresentativesSearchPage from './Components/RepresentativesSearch/Repres
 import TaskContextProvider from './Contexts/TaskContext';
 import TaskAppendicesContextProvider from './Contexts/TaskAppendicesContext';
 import TasksContextProvider from './Contexts/TasksContext';
+import TaskNotesContextProvider from './Contexts/TaskNotesContext';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
@@ -75,7 +76,7 @@ function App() {
 				<Route path='/representatives-search' exact render={(props) => <RepresentativesSearchPage {...props} updateTaskCount={updateTaskCount} setCurrentPage={setCurrentPage}></RepresentativesSearchPage>}></Route>
         <Route path='/clients' exact render={(props) => <Clients {...props} updateTaskCount={updateTaskCount} setCurrentPage={setCurrentPage}></Clients>}></Route>
         <Route path='/representatives/:clientId' exact render={(props) => <TaskContextProvider><Representatives {...props} updateTaskCount={updateTaskCount} setCurrentPage={setCurrentPage}></Representatives></TaskContextProvider>}></Route>
-				<Route path='/task/:taskId/:options?' exact render={(props) => <Task {...props} updateTaskCount={updateTaskCount} setCurrentPage={setCurrentPage}></Task>}></Route>
+				<Route path='/task/:taskId/:options?' exact render={(props) => <TaskNotesContextProvider><Task {...props} updateTaskCount={updateTaskCount} setCurrentPage={setCurrentPage}></Task></TaskNotesContextProvider>}></Route>
 				<Route path='/tasks/:general?' exact render={(props) => <TasksContextProvider><Tasks {...props} updateTaskCount={updateTaskCount} setCurrentPage={setCurrentPage}></Tasks></TasksContextProvider>}></Route>
 			</Switch>
 		</div>
