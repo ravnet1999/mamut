@@ -9,7 +9,8 @@
         "services": "services",
         "representatives_clients": "representatives_clients",
         "appendices": "appendices",
-        "tags": "tags"
+        "tags": "tags",
+        "notes": "notes"
     },
     "cookies": {
         "auth": {

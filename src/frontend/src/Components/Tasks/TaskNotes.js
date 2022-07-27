@@ -1,16 +1,22 @@
 import React, { useEffect} from 'react';
 import { WithContexts } from '../../HOCs/WithContexts';
 import { TaskNotesContext } from '../../Contexts/TaskNotesContext';
+import TaskNoteHandler from '../../Handlers/TaskNoteHandler';
 
 const TaskNotes = (props) => {
     const { 
-      task
+      task,
+      notes, setNotes
     } = props;
     
-    useEffect(() => {      
-    }, []);
-
-
+    useEffect(() => {
+      if(!task) return;
+  
+      TaskNoteHandler.getByTaskId(task.id).then(result => {
+        console.log('resources', result.resources);
+        setNotes(result.resources);  
+      });
+    }, [task]);
 
     return (
       <>
