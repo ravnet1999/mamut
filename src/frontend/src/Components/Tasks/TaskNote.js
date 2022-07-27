@@ -26,6 +26,10 @@ const TaskNote = (props) => {
       return selectedNoteType.id == noteType.id
     }).length > 0;
 
+    const updateNoteWithNoteTypes = (note, noteTypes) => {
+      note.typy = noteTypes.length == 0 ? "" : noteTypes.map(noteType => noteType.id + ";" + noteType.nazwa).join(",");
+    }
+
     const noteTypeCheckboxOnChange = noteType => {
       let newSelectedNoteTypes = selectedNoteTypes;
 
@@ -34,10 +38,9 @@ const TaskNote = (props) => {
       } else {         
         newSelectedNoteTypes.push({ "id": noteType.id, "nazwa": noteType.nazwa });
       }
-
-      selectedNote.typy = newSelectedNoteTypes.length == 0 ? "" : newSelectedNoteTypes.map(newSelectedNoteType => newSelectedNoteType.id + ";" + newSelectedNoteType.nazwa).join(",");
+           
       setSelectedNoteTypes(newSelectedNoteTypes);
-
+      updateNoteWithNoteTypes(selectedNote, newSelectedNoteTypes); 
       updateNote(selectedNote);
     }
     
