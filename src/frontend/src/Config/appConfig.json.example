@@ -1,35 +1,45 @@
 {
-    "URLs": {
-        "domain": "/api",
-        "login": "operators/login",
-        "clients": "clients",
-        "tasks": "tasks",
-        "operators": "operators",
-        "representatives": "representatives",
-        "services": "services",
-        "representatives_clients": "representatives_clients",
-        "appendices": "appendices",
-        "tags": "tags"
-    },
-    "cookies": {
-        "auth": {
-            "name": "mamut_app_auth",
-            "settings": {
-                "maxAge": 28800,
-                "secure": false,
-                "path": "/"
-            }
-        }
-    },
-    "errorTypes": {
-        "allowed": [89, 90, 91, 73, 93, 36]
-    },
-    "errorTypeNames": {
-        "93": "Z",
-        "91": "C",
-        "90": "B",
-        "89": "A",
-        "73": "K",
-        "36": "W"       
+  "URLs": {
+    "domain": "http://localhost:8311/api",
+    "login": "operators/login",
+    "clients": "clients",
+    "tasks": "tasks",
+    "operators": "operators",
+    "representatives": "representatives",
+    "services": "services",
+    "representatives_clients": "representatives_clients",
+    "appendices": "appendices",
+    "tags": "tags"
+  },
+  "cookies": {
+    "auth": {
+      "name": "mamut_app_auth",
+      "settings": {
+        "maxAge": 28800,
+        "secure": false,
+        "path": "/"
+      }
     }
+  },
+  "errorTypes": {
+    "allowed": [89, 90, 91, 73, 93, 36]
+  },
+  "errorTypeNames": {
+    "93": "Z",
+    "91": "C",
+    "90": "B",
+    "89": "A",
+    "73": "K",
+    "36": "W"       
+  },
+  "noteTypes": {
+    "salesDepNoteType": {
+      "id": 1,
+      "label": "Notatka dla DzH"
+    },
+    "otherNoteType": {
+      "id": 2,
+      "label": "Jakiś inny typ notatki"
+    }
+  }
 }

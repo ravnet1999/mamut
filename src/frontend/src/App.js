@@ -12,7 +12,6 @@ import TaskHandler from '../src/Handlers/TaskHandler';
 import Representatives from './Components/Representatives/Representatives';
 import RepresentativesSearchPage from './Components/RepresentativesSearch/RepresentativesSearchPage';
 import TaskContextProvider from './Contexts/TaskContext';
-import TaskAppendicesContextProvider from './Contexts/TaskAppendicesContext';
 import TasksContextProvider from './Contexts/TasksContext';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
