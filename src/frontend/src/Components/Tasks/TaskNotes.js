@@ -12,23 +12,30 @@ const TaskNotes = (props) => {
       task,
       response, setResponse,
       notes, setNotes,      
-      notesUploading, setNotesUploading,
+      notesDownloading, setNotesDownloading,
+      noteTypesDownloading, setNoteTypesDownloading,
       noteTypes, setNoteTypes,
     } = props;
     
     useEffect(() => {
       if(!task) return;
   
+      setNotesDownloading(true); 
+
       TaskNoteHandler.getNotesByTaskId(task.id).then(result => {
         console.log('notes', result.resources);
         setNotes(result.resources);  
+        setNotesDownloading(false); 
       });      
     }, [task]);
 
     useEffect(() => {
+      setNoteTypesDownloading(true); 
+
       TaskNoteHandler.getNoteTypes().then(result => {
         console.log('note types', result.resources);
-        setNoteTypes(result.resources);  
+        setNoteTypes(result.resources); 
+        setNoteTypesDownloading(false);  
       });      
     }, []);
 
@@ -41,7 +48,7 @@ const TaskNotes = (props) => {
           <label for="task-notes"><strong>Notatki:</strong></label><br/>
 
           <div className="task-notes-content">
-            <span className="clip-loader"><ClipLoader loading={notesUploading} size={20} /></span>        
+            <span className="clip-loader"><ClipLoader loading={notesDownloading || noteTypesDownloading} size={20} /></span>        
             { notes.length > 0 && noteTypes.length > 0 && <CardColumns style={{columnCount: "1"}}>
               { notes.map((note, key) => {
                 return <Card style={{width: "fit-content"}}>
