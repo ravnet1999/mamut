@@ -5,6 +5,7 @@ import TaskNoteHandler from '../../Handlers/TaskNoteHandler';
 import { Container, Row, Col, Button, Form, Card, CardColumns } from '../bootstrap';
 import ClipLoader from "react-spinners/ClipLoader";
 import Alert from '../Alert/Alert';
+import TaskNoteTypes from './TaskNoteTypes';
 
 const TaskNotes = (props) => {
     const { 
@@ -41,11 +42,13 @@ const TaskNotes = (props) => {
 
           <div className="task-notes-content">
             <span className="clip-loader"><ClipLoader loading={notesUploading} size={20} /></span>        
-            { notes.length > 0 && <CardColumns style={{columnCount: "1"}}>
+            { notes.length > 0 && noteTypes.length > 0 && <CardColumns style={{columnCount: "1"}}>
               { notes.map((note, key) => {
                 return <Card style={{width: "fit-content"}}>
                   <Card.Body>
                     <Card.Text>
+
+                      <TaskNoteTypes note={note} noteTypes={noteTypes}></TaskNoteTypes>
                       <textarea id="task-note" className={'form-control'} value={note.tresc}></textarea>
                     </Card.Text>
                   </Card.Body>
