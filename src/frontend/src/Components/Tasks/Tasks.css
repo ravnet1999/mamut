@@ -74,6 +74,12 @@
   width: 50%;
 }
 
+.task-notes-container {
+  background-color: #B7B7FF;
+  border-radius: 3px;
+  padding: 6px 6px;
+}
+
 .task-main-description {
     font-size: .8em;
     margin: 0 0 3px 20px;
