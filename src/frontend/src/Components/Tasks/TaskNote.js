@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Button, Form, Card, CardColumns } from '../bootstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import ReactTooltip from 'react-tooltip';
 
 const TaskNote = (props) => {
     const { 
@@ -50,6 +53,8 @@ const TaskNote = (props) => {
           onChange={ e => noteTypeCheckboxOnChange(noteType) }></Form.Check>
       })
     }
+    
+    const onNoteRemove = noteId => alert(noteId)
 
     return (
       selectedNote && <>
@@ -59,6 +64,10 @@ const TaskNote = (props) => {
             updateNote(selectedNote);
           }
         }/>
+        <Button data-tip="Usuń" className="note-remove-button" onClick={e=>onNoteRemove(selectedNote.id)}>
+          <FontAwesomeIcon className="fa-sm" icon={faTrash}></FontAwesomeIcon>
+        </Button>
+        <ReactTooltip />
       </>
     );
 }
