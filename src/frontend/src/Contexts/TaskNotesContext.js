@@ -19,11 +19,9 @@ const TaskNotesContextProvider = ({children}) => {
   }
 
   const addNote = () => {
-    let newNotes = notes;
-    newNotes.push({"id":0,"id_zgloszenia":152493,"tresc":"","typy":""});    
+    let newNotes = notes;    
+    newNotes.push({"id":0,"id_zgloszenia":152493,"tresc":"","typy":""});
     setNotes(newNotes);
-    alert("context")
-    alert(JSON.stringify(notes))
   }
 
   return (

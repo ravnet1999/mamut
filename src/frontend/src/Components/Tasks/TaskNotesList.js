@@ -12,21 +12,20 @@ const TaskNotesList = (props) => {
       updateNote, removeNote, addNote
     } = props;
 
-    const [notesList, setNotesList] = useState("");
     const [selectedNotes, setSelectedNotes] = useState([]);
+    const [noteListKey, setNoteListKey] = useState(0)
 
     const onNoteAdd = () => {
-      addNote()
-      alert("list")
-      alert(JSON.stringify(selectedNotes))  
+      addNote();  
+      setNoteListKey(Math.random().toString(36));
     }
 
     useEffect(() => {
       setSelectedNotes(notes);
     }, [notes]);
 
-    useEffect(() => {
-      let newNotesList = selectedNotes.map((note, key) => {
+    const buildNoteList = () => {
+      return selectedNotes.map((note, key) => {
         return <Card style={{width: "fit-content"}}>
           <Card.Body>
             <Card.Text>
@@ -35,12 +34,10 @@ const TaskNotesList = (props) => {
           </Card.Body>
         </Card>
       });
+    }
 
-      setNotesList(newNotesList);
-    }, [selectedNotes]);
-
-    return <CardColumns style={{columnCount: "1"}}>
-      { notesList }
+    return <CardColumns key={noteListKey} style={{columnCount: "1"}}>
+      { buildNoteList() }
       <Button data-tip="Dodaj" className="note-add-button" onClick={e=>onNoteAdd()}>
         <FontAwesomeIcon className="fa-sm" icon={faPlus}></FontAwesomeIcon>
       </Button>
