@@ -15,8 +15,10 @@ const TaskNote = (props) => {
     const [ selectedNoteTypes, setSelectedNoteTypes ] = useState([]);
 
     useEffect(() => {
-      setSelectedNote(note);
-      setSelectedNoteTypes(noteToNoteTypes(note));
+      let newNote = note;
+      newNote.index = Math.random().toString(36);
+      setSelectedNote(newNote);
+      setSelectedNoteTypes(noteToNoteTypes(newNote));
     }, [note]);
 
     const noteToNoteTypes = note => {
@@ -26,7 +28,7 @@ const TaskNote = (props) => {
     }
 
     const noteTypeSelected = noteType => selectedNoteTypes.filter(selectedNoteType => {
-      return selectedNoteType.id == noteType.id
+      return selectedNoteType.index == noteType.index
     }).length > 0;
 
     const updateNoteWithNoteTypes = (note, noteTypes) => {
@@ -54,10 +56,10 @@ const TaskNote = (props) => {
       })
     }
     
-    const onNoteRemove = noteId => {      
+    const onNoteRemove = noteIndex => {      
       setSelectedNote(null);
       setSelectedNoteTypes([]);
-      removeNote(noteId);
+      removeNote(noteIndex);
     }
 
     return (
@@ -68,7 +70,7 @@ const TaskNote = (props) => {
             updateNote(selectedNote);
           }
         }/>
-        <Button data-tip="Usuń" className="note-remove-button" onClick={e=>onNoteRemove(selectedNote.id)}>
+        <Button data-tip="Usuń" className="note-remove-button" onClick={e=>onNoteRemove(selectedNote.index)}>
           <FontAwesomeIcon className="fa-sm" icon={faTrash}></FontAwesomeIcon>
         </Button>
         <ReactTooltip />
