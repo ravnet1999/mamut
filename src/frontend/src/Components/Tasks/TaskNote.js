@@ -28,7 +28,7 @@ const TaskNote = (props) => {
     }
 
     const noteTypeSelected = noteType => selectedNoteTypes.filter(selectedNoteType => {
-      return selectedNoteType.index == noteType.index
+      return selectedNoteType.id == noteType.id
     }).length > 0;
 
     const updateNoteWithNoteTypes = (note, noteTypes) => {
