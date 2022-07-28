@@ -8,7 +8,7 @@ const TaskNote = (props) => {
     const { 
       note,
       noteTypes,      
-      updateNote
+      updateNote, removeNote
     } = props;
 
     const [ selectedNote, setSelectedNote ] = useState(null);
@@ -54,7 +54,11 @@ const TaskNote = (props) => {
       })
     }
     
-    const onNoteRemove = noteId => alert(noteId)
+    const onNoteRemove = noteId => {      
+      setSelectedNote(null);
+      setSelectedNoteTypes([]);
+      removeNote(noteId);
+    }
 
     return (
       selectedNote && <>
