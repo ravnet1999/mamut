@@ -20,13 +20,32 @@ const TaskNoteContextProvider = ({children}) => {
     note.typy = noteTypes.length == 0 ? "" : noteTypes.map(noteType => noteType.id + ";" + noteType.nazwa).join(",");
   }
 
+  const removeNote = () => {
+    setSelectedNote(null);
+    setSelectedNoteTypes([]);
+  }
+
+  const updateNote = noteType => {
+    let newSelectedNoteTypes = selectedNoteTypes;
+
+    if(noteTypeSelected(noteType)) {               
+      newSelectedNoteTypes = newSelectedNoteTypes.filter(newSelectedNoteType => newSelectedNoteType.id !== noteType.id);
+    } else {         
+      newSelectedNoteTypes.push({ "id": noteType.id, "nazwa": noteType.nazwa });
+    }
+         
+    setSelectedNoteTypes(newSelectedNoteTypes);
+    updateNoteWithNoteTypes(selectedNote, newSelectedNoteTypes);
+  }
+
   return (
     <TaskNoteContext.Provider value={{
       selectedNote, setSelectedNote,
       selectedNoteTypes, setSelectedNoteTypes,
       noteToNoteTypes,
       noteTypeSelected,
-      updateNoteWithNoteTypes
+      updateNoteWithNoteTypes,
+      removeNote, updateNote
     }}>
       {children}
     </TaskNoteContext.Provider>

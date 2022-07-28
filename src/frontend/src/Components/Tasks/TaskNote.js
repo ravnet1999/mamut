@@ -15,7 +15,8 @@ const TaskNote = (props) => {
       selectedNoteTypes, setSelectedNoteTypes,
       noteToNoteTypes,
       noteTypeSelected,
-      updateNoteWithNoteTypes
+      updateNoteWithNoteTypes,
+      removeNote, updateNote
     } = props;
 
     useEffect(() => {
@@ -25,20 +26,6 @@ const TaskNote = (props) => {
       setSelectedNoteTypes(noteToNoteTypes(newNote));
     }, [note]);
 
-    const noteTypeCheckboxOnChange = noteType => {
-      let newSelectedNoteTypes = selectedNoteTypes;
-  
-      if(noteTypeSelected(noteType)) {               
-        newSelectedNoteTypes = newSelectedNoteTypes.filter(newSelectedNoteType => newSelectedNoteType.id !== noteType.id);
-      } else {         
-        newSelectedNoteTypes.push({ "id": noteType.id, "nazwa": noteType.nazwa });
-      }
-           
-      setSelectedNoteTypes(newSelectedNoteTypes);
-      updateNoteWithNoteTypes(selectedNote, newSelectedNoteTypes); 
-      updateNotePropagate(selectedNote);
-    }
-
     const buildNoteTypes = () => {
       return noteTypes.map((noteType, key) => {
         return <Form.Check inline label={noteType.nazwa} checked={ noteTypeSelected(noteType) } type="checkbox" id="note-type" 
@@ -46,15 +33,19 @@ const TaskNote = (props) => {
       })
     }
 
-    const noteRemoveButtonOnClick = noteIndex => {      
-      setSelectedNote(null);
-      setSelectedNoteTypes([]);
-      removeNotePropagate(noteIndex);
+    const noteTypeCheckboxOnChange = noteType => {
+      updateNote(noteType); 
+      updateNotePropagate(selectedNote);
     }
 
     const noteContentTextareaValueOnChange = (e) => {
       selectedNote.tresc = e.target.value;
       updateNotePropagate(selectedNote);
+    }
+
+    const noteRemoveButtonOnClick = noteIndex => {      
+      removeNote();
+      removeNotePropagate(noteIndex);
     }
 
     return (
