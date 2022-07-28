@@ -4,6 +4,7 @@ import { Container, Row, Col, Button, Form, Card, CardColumns } from '../bootstr
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import ReactTooltip from 'react-tooltip';
+import TaskNoteContextProvider from '../../Contexts/TaskNoteContext';
 
 const TaskNotesList = (props) => {
     const { 
@@ -29,7 +30,7 @@ const TaskNotesList = (props) => {
         return <Card style={{width: "fit-content"}}>
           <Card.Body>
             <Card.Text>
-              <TaskNote note={note} noteTypes={noteTypes} updateNote={updateNote} removeNote={removeNote}></TaskNote>
+              <TaskNoteContextProvider><TaskNote note={note} noteTypes={noteTypes} updateNote={updateNote} removeNote={removeNote}></TaskNote></TaskNoteContextProvider>
             </Card.Text>
           </Card.Body>
         </Card>
