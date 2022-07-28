@@ -15,7 +15,7 @@ const TaskNotes = (props) => {
       notesDownloading, setNotesDownloading,
       noteTypesDownloading, setNoteTypesDownloading,
       noteTypes, setNoteTypes,
-      updateNote, removeNote, addNote
+      updateNotePropagate, removeNotePropagate, addNote
     } = props;
     
     useEffect(() => {
@@ -50,7 +50,7 @@ const TaskNotes = (props) => {
           <div className="task-notes-content">
             <span className="clip-loader"><ClipLoader loading={notesDownloading || noteTypesDownloading} size={20} /></span>
             {
-              <TaskNotesList notes={notes} noteTypes={noteTypes} updateNote={updateNote} removeNote={removeNote} addNote={addNote}></TaskNotesList>
+              <TaskNotesList notes={notes} noteTypes={noteTypes} updateNotePropagate={updateNotePropagate} removeNotePropagate={removeNotePropagate} addNote={addNote}></TaskNotesList>
             }
           </div>
         </Col>

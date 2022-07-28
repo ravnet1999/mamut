@@ -10,7 +10,7 @@ const TaskNote = (props) => {
     const { 
       note,
       noteTypes,      
-      updateNote, removeNote,
+      updateNotePropagate, removeNotePropagate,
       selectedNote, setSelectedNote,
       selectedNoteTypes, setSelectedNoteTypes,
       noteToNoteTypes,
@@ -36,7 +36,7 @@ const TaskNote = (props) => {
            
       setSelectedNoteTypes(newSelectedNoteTypes);
       updateNoteWithNoteTypes(selectedNote, newSelectedNoteTypes); 
-      updateNote(selectedNote);
+      updateNotePropagate(selectedNote);
     }
 
     const buildNoteTypes = () => {
@@ -49,7 +49,7 @@ const TaskNote = (props) => {
     const noteRemoveButtonOnClick = noteIndex => {      
       setSelectedNote(null);
       setSelectedNoteTypes([]);
-      removeNote(noteIndex);
+      removeNotePropagate(noteIndex);
     }
 
     return (
@@ -57,7 +57,7 @@ const TaskNote = (props) => {
         { buildNoteTypes() }
         <textarea id="task-note" className={'form-control'} value={selectedNote.tresc} onChange={(e) => {
             selectedNote.tresc = e.target.value;
-            updateNote(selectedNote);
+            updateNotePropagate(selectedNote);
           }
         }/>
         <Button data-tip="Usuń" className="note-remove-button" onClick={e=>noteRemoveButtonOnClick(selectedNote.index)}>

@@ -10,7 +10,7 @@ const TaskNotesList = (props) => {
     const { 
       notes,
       noteTypes, 
-      updateNote, removeNote, addNote
+      updateNotePropagate, removeNotePropagate, addNote
     } = props;
 
     const [selectedNotes, setSelectedNotes] = useState([]);
@@ -30,7 +30,7 @@ const TaskNotesList = (props) => {
         return <Card style={{width: "fit-content"}}>
           <Card.Body>
             <Card.Text>
-              <TaskNoteContextProvider><TaskNote note={note} noteTypes={noteTypes} updateNote={updateNote} removeNote={removeNote}></TaskNote></TaskNoteContextProvider>
+              <TaskNoteContextProvider><TaskNote note={note} noteTypes={noteTypes} updateNotePropagate={updateNotePropagate} removeNotePropagate={removeNotePropagate}></TaskNote></TaskNoteContextProvider>
             </Card.Text>
           </Card.Body>
         </Card>
