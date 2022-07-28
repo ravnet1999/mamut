@@ -46,7 +46,7 @@ const TaskNote = (props) => {
       })
     }
 
-    const onNoteRemove = noteIndex => {      
+    const noteRemoveButtonOnClick = noteIndex => {      
       setSelectedNote(null);
       setSelectedNoteTypes([]);
       removeNote(noteIndex);
@@ -60,7 +60,7 @@ const TaskNote = (props) => {
             updateNote(selectedNote);
           }
         }/>
-        <Button data-tip="Usuń" className="note-remove-button" onClick={e=>onNoteRemove(selectedNote.index)}>
+        <Button data-tip="Usuń" className="note-remove-button" onClick={e=>noteRemoveButtonOnClick(selectedNote.index)}>
           <FontAwesomeIcon className="fa-sm" icon={faTrash}></FontAwesomeIcon>
         </Button>
         <ReactTooltip />
