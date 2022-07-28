@@ -51,7 +51,7 @@ const TaskNote = (props) => {
     return (
       selectedNote && <>
         { buildNoteTypes() }
-        <textarea id="task-note-content" className={'form-control'} value={selectedNote.tresc} onChange={noteContentTextareaValueOnChange}/>
+        <textarea id="task-note-content" className={'form-control'} value={selectedNote.tresc} disabled={selectedNoteTypes.length == 0} onChange={noteContentTextareaValueOnChange}/>
         <Button data-tip="Usuń" className="note-remove-button" onClick={e=>noteRemoveButtonOnClick(selectedNote.index)}>
           <FontAwesomeIcon className="fa-sm" icon={faTrash}></FontAwesomeIcon>
         </Button>
