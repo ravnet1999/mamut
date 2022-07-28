@@ -102,10 +102,6 @@ const Task = (props) => {
     }
 
     useEffect(() => {
-      console.log('notatki: ' + JSON.stringify(notes))
-  }, [notes])
-
-    useEffect(() => {
         setResponse({
             error: false,
             messages: ['Pobieranie zadania...']
