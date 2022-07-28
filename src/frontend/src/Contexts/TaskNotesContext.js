@@ -18,13 +18,21 @@ const TaskNotesContextProvider = ({children}) => {
     setNotes(newNotes);
   }
 
+  const addNote = () => {
+    let newNotes = notes;
+    newNotes.push({"id":0,"id_zgloszenia":152493,"tresc":"","typy":""});    
+    setNotes(newNotes);
+    alert("context")
+    alert(JSON.stringify(notes))
+  }
+
   return (
     <TaskNotesContext.Provider value={{ 
       notes, setNotes, 
       noteTypes, setNoteTypes,
       notesDownloading, setNotesDownloading,
       noteTypesDownloading, setNoteTypesDownloading,
-      updateNote, removeNote
+      updateNote, removeNote, addNote
     }}>
       {children}
     </TaskNotesContext.Provider>
