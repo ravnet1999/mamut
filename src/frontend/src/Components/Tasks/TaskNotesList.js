@@ -16,7 +16,7 @@ const TaskNotesList = (props) => {
     const [selectedNotes, setSelectedNotes] = useState([]);
     const [noteListKey, setNoteListKey] = useState(0)
 
-    const onNoteAdd = () => {
+    const onNoteAddButtonClick = () => {
       addNote();  
       setNoteListKey(Math.random().toString(36));
     }
@@ -39,7 +39,7 @@ const TaskNotesList = (props) => {
 
     return <CardColumns key={noteListKey} style={{columnCount: "1"}}>
       { selectedNotes.length>0 && noteTypes.length>0 && buildNoteList() }
-      <Button data-tip="Dodaj" className="note-add-button" onClick={e=>onNoteAdd()}>
+      <Button data-tip="Dodaj" className="note-add-button" onClick={e=>onNoteAddButtonClick()}>
         <FontAwesomeIcon className="fa-sm" icon={faPlus}></FontAwesomeIcon>
       </Button>
       <ReactTooltip />
