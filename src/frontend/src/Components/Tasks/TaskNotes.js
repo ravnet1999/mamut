@@ -50,7 +50,6 @@ const TaskNotes = (props) => {
           <div className="task-notes-content">
             <span className="clip-loader"><ClipLoader loading={notesDownloading || noteTypesDownloading} size={20} /></span>
             {
-              notes.length>0 && noteTypes.length>0 && 
               <TaskNotesList notes={notes} noteTypes={noteTypes} updateNote={updateNote} removeNote={removeNote} addNote={addNote}></TaskNotesList>
             }
           </div>

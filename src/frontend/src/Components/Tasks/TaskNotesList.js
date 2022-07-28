@@ -37,7 +37,7 @@ const TaskNotesList = (props) => {
     }
 
     return <CardColumns key={noteListKey} style={{columnCount: "1"}}>
-      { buildNoteList() }
+      { selectedNotes.length>0 && noteTypes.length>0 && buildNoteList() }
       <Button data-tip="Dodaj" className="note-add-button" onClick={e=>onNoteAdd()}>
         <FontAwesomeIcon className="fa-sm" icon={faPlus}></FontAwesomeIcon>
       </Button>
