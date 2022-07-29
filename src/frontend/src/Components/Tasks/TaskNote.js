@@ -34,14 +34,29 @@ const TaskNote = (props) => {
           onChange={ e => noteTypeCheckboxOnChange(noteType) }></Form.Check>
       })
     }
-
+    
     const noteTypeCheckboxOnChange = noteType => {
       updateNoteType(noteType); 
       updateNotePropagate(selectedNote);
     }
 
+    const updateNoteContent = (content) => {      
+      if(content === "" && selectedNote.id!==0) {
+        let newSelectedNote = selectedNote;
+        newSelectedNote.id = 0;
+        newSelectedNote.index = generateIndex();
+        removeNote(selectedNote).then(result => {
+          setSelectedNote(newSelectedNote); 
+          updateNotePropagate(selectedNote); 
+        }).catch((err) => {
+          console.log(err);
+        });
+      }
+      selectedNote.tresc = content;
+    }
+
     const noteContentTextareaValueOnChange = (e) => {
-      selectedNote.tresc = e.target.value;
+      updateNoteContent(e.target.value);
       updateNotePropagate(selectedNote);
     }
 
