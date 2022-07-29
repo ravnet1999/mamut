@@ -47,6 +47,33 @@ const TaskNoteHandler = {
         return;
       });
     });
+  },
+
+  remove: (noteId) => {
+    return new Promise((resolve, reject) => {
+      if(noteId === 0) {
+        resolve();
+      }
+
+      axios.delete(`${appConfig.URLs.domain}/notes/${noteId}`, {}, {
+          withCredentials: true
+      }).then((response) => {
+          parseResponse(response).then((response) => {
+              resolve(response);
+              return;
+          }).catch((err) => {
+              reject(err);
+              return;
+          });
+      }).catch((err) => {
+          reject({
+              error: true,
+              messages: ['Wystąpił problem z połączeniem z serwerem.', JSON.stringify(err)],
+              resources: []
+          });
+          return;
+      });
+    });   
   }
 }
 

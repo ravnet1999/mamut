@@ -5,6 +5,7 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import ReactTooltip from 'react-tooltip';
 import { WithContexts } from '../../HOCs/WithContexts';
 import { TaskNoteContext } from '../../Contexts/TaskNoteContext';
+import TaskNoteHandler from '../../Handlers/TaskNoteHandler';
 
 const TaskNote = (props) => {
     const { 
@@ -16,7 +17,7 @@ const TaskNote = (props) => {
       noteToNoteTypes,
       noteTypeSelected,
       updateNoteWithNoteTypes,
-      removeNote, updateNoteType
+      updateNoteType
     } = props;
 
     const generateIndex = () => Math.random().toString(36);
@@ -40,12 +41,14 @@ const TaskNote = (props) => {
       updateNotePropagate(selectedNote);
     }
 
-    const updateNoteContent = (content) => {      
-      if(content === "" && selectedNote.id!==0) {
+    const updateNoteContent = (content) => { 
+      let selectedNoteId = selectedNote.id;
+
+      if(content === "" && selectedNoteId!==0) {
         let newSelectedNote = selectedNote;
         newSelectedNote.id = 0;
         newSelectedNote.index = generateIndex();
-        removeNote(selectedNote).then(result => {
+        TaskNoteHandler.remove(selectedNoteId).then(result => {
           setSelectedNote(newSelectedNote); 
           updateNotePropagate(selectedNote); 
         }).catch((err) => {
@@ -61,7 +64,7 @@ const TaskNote = (props) => {
     }
 
     const noteRemoveButtonOnClick = () => {      
-      removeNote(selectedNote).then(result => {
+      TaskNoteHandler.remove(selectedNote.id).then(result => {
         setSelectedNote(null);
         setSelectedNoteTypes([]);
         removeNotePropagate(note);
