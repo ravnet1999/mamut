@@ -19,9 +19,11 @@ const TaskNote = (props) => {
       removeNote, updateNoteType
     } = props;
 
+    const generateIndex = () => Math.random().toString(36);
+
     useEffect(() => {
       let newNote = note;
-      newNote.index = Math.random().toString(36);
+      newNote.index = generateIndex();
       setSelectedNote(newNote);
       setSelectedNoteTypes(noteToNoteTypes(newNote));
     }, [note]);
