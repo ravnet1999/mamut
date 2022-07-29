@@ -16,7 +16,7 @@ const TaskNote = (props) => {
       noteToNoteTypes,
       noteTypeSelected,
       updateNoteWithNoteTypes,
-      removeNote, updateNote
+      removeNote, updateNoteType
     } = props;
 
     useEffect(() => {
@@ -34,7 +34,7 @@ const TaskNote = (props) => {
     }
 
     const noteTypeCheckboxOnChange = noteType => {
-      updateNote(noteType); 
+      updateNoteType(noteType); 
       updateNotePropagate(selectedNote);
     }
 

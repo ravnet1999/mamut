@@ -50,7 +50,7 @@ const TaskNoteContextProvider = ({children}) => {
     });   
   }
 
-  const updateNote = noteType => {
+  const updateNoteType = noteType => {
     let newSelectedNoteTypes = selectedNoteTypes;
 
     if(noteTypeSelected(noteType)) {               
@@ -70,7 +70,7 @@ const TaskNoteContextProvider = ({children}) => {
       noteToNoteTypes,
       noteTypeSelected,
       updateNoteWithNoteTypes,
-      removeNote, updateNote
+      removeNote, updateNoteType
     }}>
       {children}
     </TaskNoteContext.Provider>
