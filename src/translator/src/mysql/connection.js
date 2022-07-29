@@ -5,6 +5,7 @@ dbConfig.connectionLimit = 10;
 dbConfig.charset = 'utf8'
 
 // const connection = mysql.createConnection(dbConfig);
-const connection = mysql2.createPool(dbConfig);
+// const connection = mysql2.createPool(dbConfig);
+const connection = mysql2.createConnection(dbConfig);
 
 module.exports = connection;

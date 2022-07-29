@@ -9,20 +9,34 @@ class TaskNoteService extends Service {
         this.taskNotesNotesTypesTableName = 'zgloszenia_notatki_typy_notatek';
     }
 
-    create = (taskId, note) => {      
-      return new Promise((resolve, reject) => {
-        connection.query('INSERT INTO `' + this.tableName + '`(id_zgloszenia, tresc) VALUES (?,?)', 
-          [taskId, note.tresc], (err, results, fields) => {
-            if(err) { 
-              console.log(err);           
-              reject(err);
-              return;
-            }
+    create = async(taskId, note) => {      
+      return new Promise(async(resolve, reject) => {
+        let promisePool = connection.promise();
 
-            note.id = results.insertId;            
-            resolve([note]);
+        await promisePool.execute('SET SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE');
+        await promisePool.beginTransaction();
+
+        try {
+          await promisePool.execute('INSERT INTO `' + this.tableName + '`(id_zgloszenia, tresc) VALUES (?,?)', [taskId, note.tresc]);          
+          const [rows,] = await promisePool.execute('SELECT LAST_INSERT_ID() AS note_id');
+          let noteId = rows[0].note_id;
+          note.id = noteId;
+
+          await Promise.all(note.typy.split(",").map((type) =>{
+            let typeId = parseInt(type.split(";")[0]);
+            return promisePool.execute('INSERT INTO ' + this.taskNotesNotesTypesTableName + ' (id_notatki, id_typu_notatki) VALUES(?,?)', 
+            [ noteId, typeId ]);
+          }));
+
+          await promisePool.commit();          
+          resolve([note]);
             return;
-        });
+        } catch (err) {
+          promisePool.rollback();
+          console.log(err);           
+          reject(err);
+          return;
+        }
       });
     }
 
@@ -91,20 +105,29 @@ class TaskNoteService extends Service {
       });   
     }
 
-    update = (noteId, note) => {      
-      return new Promise((resolve, reject) => {
-        connection.query('UPDATE `' + this.tableName + '`set tresc=? WHERE id=?', 
-          [note.tresc, noteId], (err, results, fields) => {
-            if(err) { 
-              console.log(err);           
-              reject(err);
-              return;
-            }
-            
-            resolve([note]);
-            return;
-        });
-      });
+    update = async(noteId, note) => {      
+      return new Promise(async(resolve, reject) => {
+        let promisePool = connection.promise();
+
+        await promisePool.execute('SET SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE');
+        await promisePool.beginTransaction();
+
+        try {
+          await promisePool.execute('UPDATE `' + this.tableName + '`set tresc=? WHERE id=?', [note.tresc, noteId]);
+          await promisePool.execute('DELETE FROM ' + this.taskNotesNotesTypesTableName + ' WHERE id_notatki=?', [noteId]);          
+          await Promise.all(note.typy.split(",").map((type) =>{
+            let typeId = parseInt(type.split(";")[0]);
+            return promisePool.execute('INSERT INTO ' + this.taskNotesNotesTypesTableName + ' (id_notatki, id_typu_notatki) VALUES(?,?)', 
+            [ noteId, typeId ]);
+          }));
+          await promisePool.commit();
+        } catch (err) {
+          promisePool.rollback();
+          console.log(err);           
+          reject(err);
+          return;
+        }
+      }); 
     }
 
     delete = (noteIds) => {
