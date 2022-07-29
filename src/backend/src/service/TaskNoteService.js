@@ -88,6 +88,23 @@ class TaskNoteService {
       });
     });
   }
+
+  delete = (noteId) => {
+    return new Promise((resolve, reject) => {
+      axios.delete(`${appConfig.URLs.translator}/notes/${noteId}`).then((response) => {        
+          parseResponse(response).then((response) => {
+            resolve(response.resources);
+            return;
+          }).catch((err) => {
+              reject(err);
+              return;
+          });
+      }).catch((err) => {
+          reject(err);
+          return;
+      });
+    });
+  }
 }
 
 module.exports = new TaskNoteService();

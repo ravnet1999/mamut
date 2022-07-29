@@ -43,16 +43,21 @@ const TaskNote = (props) => {
       updateNotePropagate(selectedNote);
     }
 
-    const noteRemoveButtonOnClick = noteIndex => {      
-      removeNote();
-      removeNotePropagate(noteIndex);
+    const noteRemoveButtonOnClick = note => {      
+      removeNote(note).then(result => {
+        setSelectedNote(null);
+        setSelectedNoteTypes([]);
+        removeNotePropagate(note);
+      }).catch((err) => {
+        console.log(err);
+      });      
     }
 
     return (
       selectedNote && <>
         { buildNoteTypes() }
         <textarea id="task-note-content" className={'form-control'} value={selectedNote.tresc} disabled={selectedNoteTypes.length == 0} onChange={noteContentTextareaValueOnChange}/>
-        <Button data-tip="Usuń" className="note-remove-button" onClick={e=>noteRemoveButtonOnClick(selectedNote.index)}>
+        <Button data-tip="Usuń" className="note-remove-button" onClick={e=>noteRemoveButtonOnClick(selectedNote)}>
           <FontAwesomeIcon className="fa-sm" icon={faTrash}></FontAwesomeIcon>
         </Button>
         <ReactTooltip />

@@ -73,6 +73,26 @@ class TaskNoteService extends Service {
         });
       });   
     }
+
+    delete = (noteIds) => {
+      let sql = "DELETE FROM " + this.tableName + " " + 
+      "WHERE id IN (?);";
+
+      console.log(sql);
+
+      return new Promise((resolve, reject) => { 
+        connection.query(sql, [noteIds], (err, results, fields) => {
+          console.log(results);
+
+          if(err) {            
+            reject(err);
+            return;
+          }
+
+          resolve(results.affectedRows);
+        });
+      });   
+    }
 }
 
 module.exports = new TaskNoteService('zgloszenia_notatki');

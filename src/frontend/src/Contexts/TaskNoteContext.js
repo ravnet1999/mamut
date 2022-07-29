@@ -1,4 +1,7 @@
 import React, {createContext, useState } from 'react';
+import appConfig from '../Config/appConfig.json';
+import axios from 'axios';
+import parseResponse from '../Handlers/ApiParser';
 
 export const TaskNoteContext = createContext();
 
@@ -20,9 +23,31 @@ const TaskNoteContextProvider = ({children}) => {
     note.typy = noteTypes.length == 0 ? "" : noteTypes.map(noteType => noteType.id + ";" + noteType.nazwa).join(",");
   }
 
-  const removeNote = () => {
-    setSelectedNote(null);
-    setSelectedNoteTypes([]);
+  const removeNote = (note) => {
+    return new Promise((resolve, reject) => {
+      if(note.id === 0) {
+        resolve();
+      }
+
+      axios.delete(`${appConfig.URLs.domain}/notes/${note.id}`, {}, {
+          withCredentials: true
+      }).then((response) => {
+          parseResponse(response).then((response) => {
+              resolve(response);
+              return;
+          }).catch((err) => {
+              reject(err);
+              return;
+          });
+      }).catch((err) => {
+          reject({
+              error: true,
+              messages: ['Wystąpił problem z połączeniem z serwerem.', JSON.stringify(err)],
+              resources: []
+          });
+          return;
+      });
+    });   
   }
 
   const updateNote = noteType => {

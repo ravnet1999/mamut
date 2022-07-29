@@ -53,4 +53,14 @@ router.get('/task/:taskId/type/:typeId', (req, res, next) => {
   });
 });
 
+router.delete('/:notesIds', (req, res, next) => {
+  let notesIds = req.params.notesIds.split(',');  
+  taskNoteService.delete(notesIds).then((note) => {
+    response(res, false, ['Pomyślnie pobrano dane notatek.'], note);
+    return;
+  }).catch((err) => {
+      response(res, true, [`Wystąpił błąd podczas próby usunięcia notatek.`, JSON.stringify(err)], [])
+  });
+});
+
 module.exports = router;

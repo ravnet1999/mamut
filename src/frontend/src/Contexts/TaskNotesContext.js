@@ -13,8 +13,8 @@ const TaskNotesContextProvider = ({children}) => {
     setNotes(newNotes);
   }
 
-  const removeNotePropagate = noteIndex => {
-    let newNotes = notes.filter(oldNote => oldNote.index != noteIndex);    
+  const removeNotePropagate = note => {
+    let newNotes = notes.filter(oldNote => oldNote.index != note.index);    
     setNotes(newNotes);
   }
 

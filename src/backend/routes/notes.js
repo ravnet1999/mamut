@@ -54,4 +54,14 @@ router.get('/task/:taskId/type/:typeId', [authMiddleware], async (req, res, next
   }
 });
 
+router.delete('/:noteId', [authMiddleware], async (req, res, next) => {
+  try{
+    let results = await taskNoteService.delete(req.params.noteId); 
+    response(res, false, ['Pomyślnie usunięto notatkę.'], results);   
+  } catch (err) {
+    console.log(err);
+    response(res, true, ['Wystąpił błąd poczas próby usunięcia notatki w translatorze.', JSON.stringify(err)], []);
+  }  
+});
+
 module.exports = router;
