@@ -9,6 +9,23 @@ class TaskNoteService extends Service {
         this.taskNotesNotesTypesTableName = 'zgloszenia_notatki_typy_notatek';
     }
 
+    create = (taskId, note) => {      
+      return new Promise((resolve, reject) => {
+        connection.query('INSERT INTO `' + this.tableName + '`(id_zgloszenia, tresc) VALUES (?,?)', 
+          [taskId, note.tresc], (err, results, fields) => {
+            if(err) { 
+              console.log(err);           
+              reject(err);
+              return;
+            }
+
+            note.id = results.insertId;            
+            resolve([note]);
+            return;
+        });
+      });
+    }
+
     findById = (noteId) => {
       return this.findQuery(`${this.tableName}.id IN (?)`, [noteId]);
     }
@@ -72,6 +89,22 @@ class TaskNoteService extends Service {
           return;
         });
       });   
+    }
+
+    update = (noteId, note) => {      
+      return new Promise((resolve, reject) => {
+        connection.query('UPDATE `' + this.tableName + '`set tresc=? WHERE id=?', 
+          [note.tresc, noteId], (err, results, fields) => {
+            if(err) { 
+              console.log(err);           
+              reject(err);
+              return;
+            }
+            
+            resolve([note]);
+            return;
+        });
+      });
     }
 
     delete = (noteIds) => {

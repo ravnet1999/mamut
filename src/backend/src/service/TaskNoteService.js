@@ -3,6 +3,24 @@ const axios = require('axios');
 const parseResponse = require('../ResponseParser');
 
 class TaskNoteService {
+  create = (taskId, note) => {
+    return new Promise((resolve, reject) => {
+      axios.post(`${appConfig.URLs.translator}/notes/${taskId}`, { note }).then((response) => {  
+          console.log(response);   
+          parseResponse(response).then((response) => {            
+            resolve(response.resources[0]);
+            return;
+          }).catch((err) => {
+              reject(err);
+              return;
+          });
+      }).catch((err) => {
+          reject(err);
+          return;
+      });
+    });
+  }
+
   get = (noteId) => {
     return new Promise((resolve, reject) => {
       axios.get(`${appConfig.URLs.translator}/notes/${noteId}`).then((response) => {   
@@ -77,6 +95,24 @@ class TaskNoteService {
       axios.get(`${appConfig.URLs.translator}/notes/types`).then((response) => {        
           parseResponse(response).then((response) => {
             resolve(response.resources);
+            return;
+          }).catch((err) => {
+              reject(err);
+              return;
+          });
+      }).catch((err) => {
+          reject(err);
+          return;
+      });
+    });
+  }
+
+  update = (noteId, note) => {
+    return new Promise((resolve, reject) => {
+      axios.put(`${appConfig.URLs.translator}/notes/${noteId}`, { note }).then((response) => {  
+          console.log(response);   
+          parseResponse(response).then((response) => {            
+            resolve(response.resources[0]);
             return;
           }).catch((err) => {
               reject(err);

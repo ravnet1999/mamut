@@ -3,6 +3,15 @@ const router = express.Router();
 const response = require('../src/response');
 const taskNoteService = require('../src/services/Task/TaskNoteService');
 
+router.post('/:taskId', async (req, res, next) => {
+  try {
+    let results = await taskNoteService.create(req.params.taskId, req.body.note);
+    response(res, false, ['Pomyślnie utworzono notatkę.'], results);    
+  } catch(err) {
+    response(res, true, ['Wystąpił błąd podczas próby utworzenia notatki', JSON.stringify(err)], []);    
+  }   
+});
+
 router.get('/types', (req, res, next) => {
   taskNoteService.findTypes().then((types) => {
     response(res, false, ['Pomyślnie pobrano dane typów notatek.'], types);
@@ -51,6 +60,15 @@ router.get('/task/:taskId/type/:typeId', (req, res, next) => {
   }).catch((err) => {
       response(res, true, [`Wystąpił błąd podczas próby pobrania danych notatek dla wybranego zadania.`, JSON.stringify(err)], [])
   });
+});
+
+router.put('/:noteId', async (req, res, next) => {
+  try {
+    let results = await taskNoteService.update(req.params.noteId, req.body.note);
+    response(res, false, ['Pomyślnie uaktualniono notatkę.'], results);    
+  } catch(err) {
+    response(res, true, ['Wystąpił błąd podczas próby uaktualnienia notatki', JSON.stringify(err)], []);    
+  }   
 });
 
 router.delete('/:notesIds', (req, res, next) => {

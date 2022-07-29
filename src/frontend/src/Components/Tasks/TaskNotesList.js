@@ -8,6 +8,7 @@ import TaskNoteContextProvider from '../../Contexts/TaskNoteContext';
 
 const TaskNotesList = (props) => {
     const { 
+      task,
       notes,
       noteTypes, 
       updateNotePropagate, removeNotePropagate, addNote
@@ -30,7 +31,7 @@ const TaskNotesList = (props) => {
         return <Card style={{width: "fit-content"}}>
           <Card.Body>
             <Card.Text>
-              <TaskNoteContextProvider><TaskNote note={note} noteTypes={noteTypes} updateNotePropagate={updateNotePropagate} removeNotePropagate={removeNotePropagate}></TaskNote></TaskNoteContextProvider>
+              <TaskNoteContextProvider><TaskNote task={task} note={note} noteTypes={noteTypes} updateNotePropagate={updateNotePropagate} removeNotePropagate={removeNotePropagate}></TaskNote></TaskNoteContextProvider>
             </Card.Text>
           </Card.Body>
         </Card>

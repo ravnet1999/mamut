@@ -4,6 +4,17 @@ const authMiddleware = require('../middleware/auth');
 const response = require('../src/response');
 const taskNoteService = require('../src/service/TaskNoteService');
 
+router.post('/:taskId', [authMiddleware], async(req, res, next) => {
+  try{
+    let result = await taskNoteService.create(req.params.taskId, req.body.note); 
+    console.log(result);   
+    response(res, false, ['Pomyślnie utworzono notatkę.'], result);  
+  } catch (err) {
+    console.log(err);
+    response(res, true, ['Wystąpił błąd poczas próby utworzenia nowej notatki.', JSON.stringify(err)], []);
+  } 
+});
+
 router.get('/types', [authMiddleware], async (req, res, next) => { 
   try{
     let results = await taskNoteService.getNoteTypes(); 
@@ -52,6 +63,17 @@ router.get('/task/:taskId/type/:typeId', [authMiddleware], async (req, res, next
     console.log(err);
     response(res, true, ['Wystąpił błąd poczas próby pobrania z translatora informacji o notatkach dla zadania wybranego typu.', JSON.stringify(err)], []);
   }
+});
+
+router.put('/:noteId', [authMiddleware], async(req, res, next) => {
+  try{
+    let result = await taskNoteService.update(req.params.noteId, req.body.note); 
+    console.log(result);   
+    response(res, false, ['Pomyślnie zaktualizowano notatkę.'], result);  
+  } catch (err) {
+    console.log(err);
+    response(res, true, ['Wystąpił błąd poczas próby aktualizacji notatki.', JSON.stringify(err)], []);
+  } 
 });
 
 router.delete('/:noteId', [authMiddleware], async (req, res, next) => {

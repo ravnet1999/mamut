@@ -9,6 +9,7 @@ import TaskNoteHandler from '../../Handlers/TaskNoteHandler';
 
 const TaskNote = (props) => {
     const { 
+      task,
       note,
       noteTypes,      
       updateNotePropagate, removeNotePropagate,
@@ -41,10 +42,12 @@ const TaskNote = (props) => {
       updateNotePropagate(selectedNote);
     }
 
-    const updateNoteContent = (content) => { 
-      let selectedNoteId = selectedNote.id;
+    const updateNoteContent = (content) => {      
+      selectedNote.tresc = content;
 
-      if(content === "" && selectedNoteId!==0) {
+      let selectedNoteId = selectedNote.id
+
+      if(content === "" && selectedNoteId !== 0) {
         let newSelectedNote = selectedNote;
         newSelectedNote.id = 0;
         newSelectedNote.index = generateIndex();
@@ -54,8 +57,22 @@ const TaskNote = (props) => {
         }).catch((err) => {
           console.log(err);
         });
-      }
-      selectedNote.tresc = content;
+      } else if(content !== "" && selectedNoteId===0) { 
+        TaskNoteHandler.create(task.id, selectedNote).then(result => {          
+          console.log(result);
+          let newSelectedNote = result.resources;
+          setSelectedNote(newSelectedNote); 
+          updateNotePropagate(selectedNote);
+        }).catch((err) => {
+          console.log(err);
+        });
+      } else if(content !== "" && selectedNoteId!==0) { 
+        TaskNoteHandler.update(selectedNoteId, selectedNote).then(result => {                    
+          console.log(result);  
+        }).catch((err) => {
+          console.log(err);
+        });
+      }      
     }
 
     const noteContentTextareaValueOnChange = (e) => {
